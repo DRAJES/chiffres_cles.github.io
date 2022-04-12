@@ -37,3 +37,8 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+ # Perso
+ .html
+ .7z
+ *_site/
