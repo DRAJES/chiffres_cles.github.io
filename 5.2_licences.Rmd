@@ -1,0 +1,856 @@
+---
+title: "Licences sportives"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+    social: menu
+    source_code: embed
+    navbar:
+      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+    theme: simplex
+---
+
+```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=F}
+
+library(sparkline)
+
+sparkline(0)
+
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/licences.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/spark.RData")
+
+regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
+
+fede_sexe_dep[c(38,89,113),1] <- "Total"
+
+pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
+
+
+# Option de chunk
+knitr::opts_chunk$set(
+ fig.width = 6,
+ fig.asp = 0.8,
+ out.width = "80%"
+)
+```
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="120"}
+-----------------------------------------------------------------------
+
+### Données générales
+
+La région Bourgogne-Franche-Comté compte **`r prettyNum(round(as.numeric(lic_reg[117,5])/1000,0)*1000,big.mark = " ")`** licenciés en 2020.
+La pratique sportive est moins développée qu'au niveau national : le taux de pénétration sportive atteint **21,9 %** contre 22,7 % en France métropolitaine.
+Mais la pratique féminine est plus fréquente : **39,7 %** des licences sont détenues par des femmes contre 38,8 % en France.  
+Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
+à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
+
+Row {.tabset .tabset-fade .tabset-pills data-height="400"}
+-----------------------------------------------------------------------
+
+### Comparaisons régionales
+
+**11e** région de France en nombre de licenciés.
+
+```{r}
+licreg <- as.data.frame(t(lic_reg[117,3:15]))
+licreg$region <- t(as.data.frame(levels(lic_reg)[4:16]))
+licreg <- licreg %>% rownames_to_column(var="reg") %>%
+                 left_join(.,regwgs@data %>% dplyr::select(reg=INSEE_REG,pop),by="reg" )    %>%
+                  adorn_totals("row",name = "FR") %>%
+                  mutate(txlic=round(100*V1/pop,1))
+licreg[14,3] <- "France"
+
+hchart(licreg %>% slice(-14) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(region,V1),y=V1,color=ifelse(reg=="27","#6a5acd","#ffd700") ), 
+       showInLegend = F, name = "Licences", pointWidth = 20) %>%
+  hc_xAxis(title=list(text="Région")) %>%
+    hc_yAxis(title=list(text="Nombre de licences")) %>%
+  hc_add_theme(thm) 
+```
+
+### Taux de licences
+
+**9e** région de France en taux de licences par habitant.  
+**0,8 points** de moins que la moyenne nationale.
+
+```{r}
+
+hchart(licreg %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(region,txlic),y=txlic,
+                                                    color=ifelse(reg=="27","#6a5acd",
+                                                                 ifelse(reg=="FR","#ff7f50","#ffd700") ) ) , 
+       showInLegend = F, name = "Taux de licences", pointWidth = 10) %>%
+  hc_xAxis(title=list(text="Région")) %>%
+    hc_yAxis(title=list(text="Taux de licences")) %>%
+  hc_add_theme(thm) 
+
+```
+
+### Carte régionale
+
+```{r}
+sportreg <- as.data.frame(t(lic_reg)) %>%
+            select(licences_tot=V117) %>% mutate(licences_tot=as.numeric(licences_tot)) %>%
+            rownames_to_column("INSEE_REG") %>% 
+            slice (3:15)
+cartosportreg <- sp::merge(regwgs,sportreg,by="INSEE_REG")
+
+leaflet(cartosportreg) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
+  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
+             group = "region", radius=~50*licences_tot^(1/2),
+             fillColor = ~pal2(100*cartosportreg$licences_tot/cartosportreg$pop),
+             weight=4, color = "#4169E1", opacity = 0.8,
+             fillOpacity = 0.8,
+             highlight = highlightOptions (fillOpacity =  0.1,
+             weight = 5,   color = "#00FFFF"),
+             popup = popupTable(cartosportreg@data %>% 
+                                   select(Région=NOM_REG_M,pop,licences_tot) %>%
+                                  mutate(tx_lic=100*licences_tot/pop),
+                                 feature.id=F,row.numbers = F)) %>%
+addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = 100*(cartosportreg$licences_tot/cartosportreg$pop) )
+```
+
+Row {.tabset .tabset-fade .tabset-pills data-height="400"}
+-----------------------------------------------------------------------
+
+### Licences par type de fédération
+
+Environ **40 % ** de licences féminines.
+
+```{r}
+lic_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
+    slice(39,91,116,117) %>%
+    pivot_longer(-`Codes régions`, 'variable', 'value') %>%
+    pivot_wider(variable, names_from =`Codes régions`) %>%
+    mutate(region=t(as.data.frame(levels(lic_reg)[c(4:16,22)]))) %>%
+   dplyr::select(6,2:5) %>% dplyr::rename("Total licences"="NA") %>%
+  bind_cols(regsexe%>% select(txfem) %>%  #tx femmes
+              mutate (`Taux de licences féminines`=color_bar('pink')
+          (digits(txfem,1,decimal.mark=",")))  ) %>%
+  bind_cols( evoreg %>%filter(type=="total")  %>% # sparkine modifier pour les différents types de fédé
+  summarise(`évolution 2010-2020`=spk_chr(lic)) ) %>%
+  relocate(REG, .before = region) %>%
+  rename(`unisport olympique`="Total fédérations unisport olympiques",`unisport non olympique`="Total fédérations unisport non olympiques", multisports=`Total fédérations multisports` ) %>% select(-7) %>%
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="rcrrrrlrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(6, bold=T) %>%
+  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+### Répartition des licences par type de fédération
+
+```{r, plotly=T}
+hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
+                                      #,France="...22"
+                                      ) %>%
+    slice(39,91,116,117) %>%
+    pivot_longer(-`Codes régions`, 'REG') %>% rename(type_fede=`Codes régions`,licences=value) %>%
+       filter(!is.na(type_fede)) %>%
+      left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) , 
+    "bar", hcaes(x = fct_rev(region), y= licences, group = type_fede) ,
+    stacking = "normal" ,
+      showInLegend = T,  pointWidth =20) %>%
+  hc_xAxis(title=list(text="Région")) %>%
+    hc_yAxis(title=list(text="Nombre de licences")) %>%
+  hc_add_theme(thm) 
+
+```
+
+### Structure des licences par type de fédération
+
+Plus de la moitié des licences dans les fédérations unisport olympiques.
+
+```{r, plotly=T}
+hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
+                                      #,France="...22"
+                                      ) %>%
+    slice(39,91,116,117) %>%
+    pivot_longer(-`Codes régions`, 'REG') %>% rename(type_fede=`Codes régions`,licences=value) %>%
+       filter(!is.na(type_fede)) %>%
+      left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) , 
+    "bar", hcaes(x = fct_rev(region), y= licences, group = type_fede) ,
+    stacking = "percent" ,
+      showInLegend = T,  pointWidth =20) %>%
+  hc_xAxis(title=list(text="Région")) %>%
+    hc_yAxis(title=list(text="Proportion de licences")) %>%
+  hc_add_theme(thm) 
+
+```
+
+Column {.tabset .tabset-fade .tabset-pills}
+-----------------------------------------------------------------------
+
+### Détail unisport olympique
+
+Une baisse des licences unisport olympique observée pour la première fois en 2020.
+
+```{r}
+lic_reg[39,1] <- "total"
+fedsexe[39,1] <- "total"
+lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+    slice(2:38) %>% arrange (desc(France)) %>% 
+  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(39) ) %>%
+  left_join(.,fedsexe %>% slice (2:38) %>%select (1,txfem=7) %>%
+                bind_rows(fedsexe %>% select (1,txfem=7) %>% slice (39)) %>%  #ajout des taux de licences feminines
+                      mutate(`Taux de licences féminines`=color_bar('pink')
+          (digits(100*txfem,1,decimal.mark=","))) ,
+            by=c("Code fédération"="Codes fédé") ) %>%
+  left_join( evofede %>%   filter(fed<200) %>% #modifier pour type de fédé 
+              bind_rows(evofede %>% filter(fed<200) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
+              summarise(`évolution 2010-2020`=spk_chr(lic)),
+               by=c("Code fédération"="fed") ) %>% select(-17) %>%
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="clrrrrrrrrrrrrrrl",
+      escape = F) %>% 
+   kable_styling("hover", full_width = F) %>%
+   column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+   column_spec(16, bold=T) %>%
+#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+### Poids unisport olympique
+
+Le football représente près du **quart** des licences unisport olympiques.
+
+```{r}
+hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(2:38) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG") ,
+       "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
+        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_add_theme(thm) 
+
+
+```
+
+
+### Détail unisport non olympique
+
+```{r}
+lic_reg[91,1] <- "total"
+fedsexe[91,1] <- "total"
+lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+    slice(41:90)  %>% arrange (desc(France)) %>% 
+  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(91) ) %>%
+    left_join(.,fedsexe %>% slice (41:90) %>% select (1,txfem=7) %>%
+                bind_rows(fedsexe  %>% select (1,txfem=7) %>% slice (91)) %>% #txfem
+                       mutate(`Taux de licences féminines`=color_bar('pink')
+          (digits(100*txfem,1,decimal.mark=","))) ,
+            by=c("Code fédération"="Codes fédé") ) %>%
+   left_join( evofede %>%   filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
+              bind_rows(evofede %>% filter(fed>200 & fed<300) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
+              summarise(`évolution 2010-2020`=spk_chr(lic)),
+               by=c("Code fédération"="fed") )%>% select(-17) %>%
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="clrrrrrrrrrrrrrrl",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+   column_spec(16, bold=T) %>%
+  #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+### Poids unisport non olympique
+
+**1/5e** des  unisport non olympique en pétanque, **1/6e** en randonnée.
+
+```{r}
+hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(41:90) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG") ,
+       "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
+        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_add_theme(thm) 
+
+```
+
+### Détail multisport
+
+```{r}
+lic_reg[116,1] <- "total"
+fedsexe[116,1] <- "total"
+lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+    slice(93:115) %>% arrange (desc(France)) %>% 
+  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(116) ) %>%
+    left_join(.,fedsexe %>% select (1,txfem=7) %>% slice(93:115) %>%
+                bind_rows(fedsexe %>% select (1,txfem=7) %>% slice (116)) %>% #txfem
+                     mutate(`Taux de licences féminines`=color_bar('pink')
+          (digits(100*txfem,1,decimal.mark=","))) ,
+            by=c("Code fédération"="Codes fédé") ) %>%
+   left_join( evofede %>%   filter(fed>400) %>% #modifier pour type de fédé 
+              bind_rows(evofede %>% filter(fed>400) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
+              summarise(`évolution 2010-2020`=spk_chr(lic)),
+               by=c("Code fédération"="fed") ) %>% select(-17) %>%
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="clrrrrrrrrrrrrrrl",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+   column_spec(16, bold=T) %>%
+  #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+### Poids multisport
+
+Près d'un **quart** des licences multisport en UNSS.
+
+```{r}
+hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(93:115) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG") ,
+       "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
+        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_add_theme(thm) 
+
+
+```
+
+
+### Sports les plus sexués
+
+Fédérations les plus sexuées : plus de 80% de licences masculines ou féminines
+
+```{r}
+  hchart(fede_sexe_dep %>% slice(-38,-89,-113) %>% filter(!is.na(txfem))%>%
+           filter(txfem <= 20 | txfem >= 80 ) %>%
+          arrange(desc(txfem)) %>%
+           left_join(lic_dep %>% select("...1"=1,"Fédération"=2),by="...1"),
+      "bar", 
+      hcaes(x=reorder(`Fédération`,txfem),
+            y=txfem,
+            color=ifelse(txfem>=80,"#ee82ee","#b0e0e6") ), 
+       showInLegend = T, name = "Taux de licences féminines BFC", pointWidth = 5) %>%
+  hc_add_series(fedsexe %>% slice(-1,-39,-40,-91,-92,-116:-124) %>%
+           filter(`% de femmes (année 2020)` <= 0.2 | `% de femmes (année 2020)` >= 0.8 ) %>%
+          arrange(desc(`% de femmes (année 2020)`)) ,
+         "bar", 
+         hcaes(x=reorder(`Fédérations françaises agréées en 2020`,`% de femmes (année 2020)`),
+               y=round(100*`% de femmes (année 2020)`,1),
+               color=ifelse(`% de femmes (année 2020)`>=0.8,"#ba55d380","#6495ed80") ), 
+       showInLegend = T, name = "Taux de licences féminines France", pointWidth = 2) %>%
+    hc_xAxis(title=list(text="Fédérations taux de femmes <b> < ou > 80 % </b>")) %>%
+    hc_yAxis(title=list(text="% de femmes (année 2020)")) %>%
+    hc_add_theme(thm) 
+```
+
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+
+### Données générales
+
+La pratique sportive est diverse en Bourgogne-Franche-Comté. Le Jura est le département où la pratique licenciées est la plus développée avec **`r prettyNum(round(as.numeric(lic_reg[117,5])/1000,0)*1000,big.mark = " ")`** licenciés en 2020, en partie par l'importance de site de sport de nature dont les massifs montagneux. à l'inverse, l'Yonne est un des départements français où la pratique sportive est la plus faible. Cela ne signifie pas que les habitants ne pratiquent pas (cyclisme, randonnée...) mais ils sont moins souvent dans une structure.
+
+ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-----------------------------------------------------------------------
+
+### Comparaisons départementales
+
+```{r}
+licdep <- as.data.frame(t(lic_dep[118,4:99]))
+licdep$departement <- t(as.data.frame(levels(lic_dep)[4:99]))
+licdep <- licdep %>% rownames_to_column(var="dep") %>% mutate (dep=ifelse(nchar(dep)==1,paste0('0',dep),dep), V1=as.numeric(V1)) %>%
+                 left_join(.,depwgs@data %>% dplyr::select(dep=INSEE_DEP,pop),by="dep" )    %>%
+                  adorn_totals("row",name = "FR") %>%
+                  mutate(txlic=round(100*V1/pop,1)) 
+licdep[97,3] <- "France"
+
+
+hchart(licdep %>% slice(-97) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
+       showInLegend = F, name = "Licences", pointWidth = 2) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de licences")) %>%
+  hc_add_theme(thm) 
+```
+
+### Taux de licences
+
+Le Jura et le Doubs au dessus de la moyenne nationale, les autres département de BFC en dessous.
+
+```{r}
+
+hchart(licdep %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(departement,txlic),y=txlic,color=ifelse(dep %in% depbfc,"#6a5acd",
+                                                                 ifelse(dep=="FR","#ff7f50","#ffd700") ) ), 
+       showInLegend = F, name = "Taux de licences", pointWidth = 1) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Taux de licences")) %>%
+  hc_add_theme(thm) 
+
+```
+
+
+
+### Comparaisons infra régionales
+
+```{r}
+hchart(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
+       showInLegend = F, name = "Licences", pointWidth = 20) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de licences")) %>%
+  hc_add_theme(thm) 
+```
+
+### Taux infra régionaux
+
+```{r}
+
+hchart(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(departement,txlic),y=txlic,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
+       showInLegend = F, name = "Taux de licences", pointWidth = 20) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Taux de licences")) %>%
+  hc_add_theme(thm) 
+
+```
+
+### Carte départementale
+
+```{r}
+sportdep <- as.data.frame(t(lic_dep)) %>%
+            select(licences_tot=V118) %>% mutate(licences_tot=as.numeric(licences_tot)) %>%
+            rownames_to_column("INSEE_DEP") 
+sportdep$INSEE_DEP <- ifelse(nchar(sportdep$INSEE_DEP)==1,paste0("0",sportdep$INSEE_DEP),sportdep$INSEE_DEP ) 
+cartosportdep <- sp::merge(depwgs,sportdep,by="INSEE_DEP")
+
+leaflet(cartosportdep) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
+  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
+             group = "region", radius=~50*licences_tot^(1/2),
+             fillColor = ~pal2(100*cartosportdep$licences_tot/cartosportdep$pop),
+             weight=4, color = "#4169E1", opacity = 0.8,
+             fillOpacity = 0.8,
+             highlight = highlightOptions (fillOpacity =  0.1,
+             weight = 5,   color = "#00FFFF"),
+             popup = popupTable(cartosportdep@data %>% 
+                                   select(Région=NOM_DEP_M,pop,licences_tot) %>%
+                                  mutate(tx_lic=100*licences_tot/pop),
+                                 feature.id=F,row.numbers = F)) %>%
+addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = 100*(cartosportdep$licences_tot/cartosportdep$pop) )
+```
+
+
+
+Row {.tabset .tabset-fade .tabset-pills data-height="400"}
+-----------------------------------------------------------------------
+
+### Licences par type de fédération
+
+La pratique féminie plus développée dans le Jura.
+
+```{r}
+lic_dep %>%  dplyr::select(2,depbfc) %>%
+    slice(40,92,117,118) %>%
+    pivot_longer(-`Codes départements`, 'variable', 'value') %>%
+    pivot_wider(variable, names_from =`Codes départements`) %>%
+    mutate(département=t(as.data.frame(levels(lic_dep) %>% select(depbfc)))) %>%
+   dplyr::select(6,2:5) %>% dplyr::rename("Total licences"="NA") %>%
+  mutate_at(2:5,as.numeric) %>% adorn_totals("row") %>%
+  
+  
+  #bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))    fonctionne également
+ bind_cols( evodep %>%filter(type=="total")  %>% #modifier pour les différents types de fédé
+          summarise(`évolution 2010-2020`=spk_chr(lic)) )%>%
+  
+  left_join(.,feddepsexe %>% select (1,txfem) %>% slice(3:11) %>%                 #txfem
+                      mutate(`Taux de licences féminines`=color_tile('white','pink',alpha=0.5)
+          (digits(txfem,1,decimal.mark=","))) ,
+            by=c("dep"="rowname") ) %>%
+    relocate(dep, .before = département) %>% relocate(`Taux de licences féminines`,.before = `évolution 2010-2020`) %>%
+rename(`unisport olympique`="Total fédérations unisport olympiques",`unisport non olympique`="Total fédérations unisport non olympiques", multisports=`Total fédérations multisports` ) %>% select(-9) %>%
+  
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="crrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  row_spec(9, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+   column_spec(6, bold=T) %>%
+  add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+### Répartition des licences par type de fédération
+
+```{r}
+hchart ( lic_dep %>%  dplyr::select(2,depbfc) %>%
+    slice(40,92,117,118) %>%
+    pivot_longer(-`Codes départements`, 'DEP') %>% rename(type_fede=`Codes départements`,licences=value) %>%
+       filter(!is.na(type_fede)) %>%
+            left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) , 
+    "bar", hcaes(x = fct_rev(département), y= as.numeric(licences), group = type_fede) ,
+    stacking = "normal" ,
+      showInLegend = T,  pointWidth =20) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de licences")) %>%
+  hc_add_theme(thm)
+
+```
+
+### Structure des licences par type de fédération
+
+Plus de la moitié des licences dans les fédérations unisport olympiques.
+
+```{r, plotly=T}
+hchart ( lic_dep %>%  dplyr::select(2,depbfc) %>%
+    slice(40,92,117,118) %>%
+    pivot_longer(-`Codes départements`, 'DEP') %>% rename(type_fede=`Codes départements`,licences=value) %>%
+       filter(!is.na(type_fede)) %>%
+            left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) , 
+    "bar", hcaes(x = fct_rev(département), y= as.numeric(licences), group = type_fede) ,
+    stacking = "percent" ,
+      showInLegend = T,  pointWidth =20) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Proportion de licences")) %>%
+  hc_add_theme(thm)
+
+```
+
+Column {.tabset .tabset-fade .tabset-pills}
+-----------------------------------------------------------------------
+
+### Détail unisport olympique
+
+Une baisse des licences unisport olympiques en 2020.
+
+```{r}
+lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","Fédération"="Codes départements") %>%
+    slice(3:39) %>% mutate_at(3:10,as.numeric) %>% 
+  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>% arrange (desc(BFC)) %>% adorn_totals("row") %>%
+  
+  
+   left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(1:39) %>%
+                         mutate(`Taux de licences féminines`=color_bar('pink')
+          (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+            by=c("Code fédération"="fede") ) %>%
+  
+  
+  left_join( evofedebfc %>% filter(fed>100 & fed<200) %>% #modifier pour type de fédé 
+              bind_rows(evofedebfc %>% filter(fed>100 & fed<200) %>% group_by(année) %>% summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
+              summarise(`évolution 2010-2020`=spk_chr(lic)), 
+             by=c("Code fédération"="fed")) %>% select(-12) %>%
+  
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrrcrl",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+   column_spec(11, bold=T) %>%
+#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+
+### Détail unisport non olympique
+
+```{r}
+lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","Fédération"="Codes départements") %>%
+    slice(42:91) %>% mutate_at(3:10,as.numeric) %>%
+  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>%  arrange (desc(BFC)) %>% adorn_totals("row") %>%
+  
+  
+   left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(39:89) %>%
+                         mutate(`Taux de licences féminines`=color_bar('pink')
+          (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+            by=c("Code fédération"="fede") ) %>%
+  
+    left_join( evofedebfc %>%   filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
+              bind_rows(evofedebfc %>% filter(fed>200 & fed<230) %>% group_by(année) %>% summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
+              summarise(`évolution 2010-2020`=spk_chr(lic)),
+               by=c("Code fédération"="fed") ) %>% select(-12) %>%
+  
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrrlrl",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(11, bold=T) %>%
+#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+
+### Détail des licences fédé multisport
+
+```{r}
+lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","Fédération"="Codes départements") %>%
+    slice(94:116) %>% mutate_at(3:10,as.numeric) %>%
+  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>%  arrange (desc(BFC)) %>% adorn_totals("row") %>%
+  
+   left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(90:113) %>%
+                         mutate(`Taux de licences féminines`=color_bar('pink')
+          (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+            by=c("Code fédération"="fede") ) %>%
+  
+    left_join( evofedebfc %>%   filter(fed>400) %>% #modifier pour type de fédé 
+              bind_rows(evofedebfc %>% filter(fed>400) %>% group_by(année) %>% summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
+              summarise(`évolution 2010-2020`=spk_chr(lic)),
+               by=c("Code fédération"="fed") ) %>% select(-12) %>%
+  
+    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrrlrl",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(11, bold=T) %>%
+#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+
+```
+
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {.tabset .tabset-fade }
+-----------------------------------------------------------------------
+
+### Comparaisons établissements publics de coopération intercommunale {vertical_layout=scroll}
+
+```{r,echo=F}
+
+lic27epci %>%
+  select(EPCI,LIBGEO,licences,txlic,txfemmes,txlicf,txlich) %>% arrange(desc(licences)) %>%
+  mutate(txlic = color_bar('orange')
+        (digits(txlic,1, decimal.mark=","))) %>%
+  mutate(txfemmes = color_tile('white','pink',alpha=0.5)
+         (digits(txfemmes,1,decimal.mark=","))) %>%
+  mutate(txlicf = color_tile('white','lightpink',alpha=0.5)
+        (digits(txlicf ,1,decimal.mark=","))) %>%
+    mutate(txlich = color_tile('white', 'lightblue',alpha=0.5)
+        (digits(txlich ,1,decimal.mark=","))) %>%
+  rename(totales=txlic,féminines=txfemmes,femmes=txlicf,hommes=txlich)%>%
+  kable("html", 
+      format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrlrrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+#  column_spec(11, bold=T) %>%
+  add_header_above(c( " "=3,"Taux de licences"=2,"Taux de licences parmi les"=2) ) %>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
+   scroll_box(height = "800px") 
+```
+
+### Carte ECPI {data-height="800"}
+
+```{r}
+ 
+lic_epci <- sp::merge(epciwgs,lic27epci %>%
+  select(CODE_EPCI=EPCI,LIBGEO,licences,txlic,txfemmes,txlicf,txlich) %>%
+    mutate_at(3:7,as.numeric) ,
+  by="CODE_EPCI")
+
+leaflet(lic_epci) %>%  addProviderTiles(providers$Wikimedia) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(fill =F , weight = 2,opacity = 0.6,
+              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addCircles(centroid(lic_epci)[,1],centroid(lic_epci)[,2],weight=4,
+             radius = ~50*licences^(1/2), 
+             #radius = ~licences,
+             color = "#4169E1",
+             fillColor = ~pal2(txlic), fillOpacity = 0.7,
+             highlight = highlightOptions (fillOpacity =  0.5,
+                                           weight = 5,   color = "#00FFFF"),
+             popup = popupTable(lic_epci@data %>% select (-2,-3) %>%
+  
+  mutate(txlic = color_tile('white','orange',alpha=0.5)
+          (digits(txlic ,1,decimal.mark=","))) %>%
+  mutate(txfemmes = color_tile('white','pink',alpha=0.5)
+          (digits(txfemmes ,1,decimal.mark=","))) %>%
+  mutate(txlicf = color_tile('white','lightpink',alpha=0.5)
+          (digits(txlicf ,1,decimal.mark=","))) %>%
+    mutate(txlich = color_tile('white', 'lightblue',alpha=0.5)
+          (digits(txlich ,1,decimal.mark=",")))
+  
+                                ,feature.id=F,row.numbers = F) ) %>%
+addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = ~txlic ) 
+#addLegendSize(position = "bottomright", values = 60000,color = "#4169E1",fillColor = "transparent",
+#              strokeWidth =2, shape = "circle", breaks = 1, baseSize = 60, title = "taille initiale" )
+```
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+ Row {.tabset .tabset-fade }
+-----------------------------------------------------------------------
+
+### Comparaisons bassins de vie {vertical_layout=scroll}
+
+```{r,echo=F}
+lic27bv %>%
+  select(BV2012,LIBGEO,licences,txlic,txfemmes,txlicf,txlich) %>% arrange(desc(licences)) %>%
+  
+  mutate(txlic = color_bar('orange')
+          (digits(txlic ,1,decimal.mark=","))) %>%
+  mutate(txfemmes = color_tile('white','pink',alpha=0.5)
+          (digits(txfemmes ,1,decimal.mark=","))) %>%
+  mutate(txlicf = color_tile('white','lightpink',alpha=0.5)
+          (digits(txlicf ,1,decimal.mark=","))) %>%
+    mutate(txlich = color_tile('white', 'lightblue',alpha=0.5)
+          (digits(txlich ,1,decimal.mark=","))) %>%
+    rename(totales=txlic,féminines=txfemmes,femmes=txlicf,hommes=txlich)%>%
+
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrlrrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+#  column_spec(11, bold=T) %>%
+  add_header_above(c( " "=3,"Taux de licences"=2,"Taux de licences parmi les"=2) ) %>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+           number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T)   %>%
+  scroll_box(height = "800px") 
+```
+
+### Carte BV {data-height="800"}
+
+```{r}
+
+lic_bv <- sp::merge(bvwgs,lic27bv %>%
+  select(BV2012,LIBGEO,licences,txlic,txfemmes,txlicf,txlich) %>%
+    mutate_at(3:7,as.numeric),
+  by="BV2012")
+
+leaflet(lic_bv) %>%  addProviderTiles(providers$Wikimedia) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(fill =F , weight = 2,opacity = 0.6,
+              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addCircles(centroid(lic_bv)[,1],centroid(lic_bv)[,2],weight=4,
+             radius = ~50*licences^(1/2), color = "#4169E1",
+             fillColor = ~pal2(txlic), fillOpacity = 0.7,
+             highlight = highlightOptions (fillOpacity =  0.5,
+                                           weight = 5,   color = "#00FFFF"),
+             popup = popupTable(lic_bv@data %>% 
+  
+  mutate(txlic = color_tile('white','orange',alpha=0.5)
+          (digits(txlic ,1,decimal.mark=","))) %>%
+  mutate(txfemmes = color_tile('white','pink',alpha=0.5)
+          (digits(txfemmes ,1,decimal.mark=","))) %>%
+  mutate(txlicf = color_tile('white','lightpink',alpha=0.5)
+          (digits(txlicf ,1,decimal.mark=","))) %>%
+    mutate(txlich = color_tile('white', 'lightblue',alpha=0.5)
+          (digits(txlich ,1,decimal.mark=",")))
+  
+                                ,feature.id=F,row.numbers = F) ) %>%
+addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = ~txlic )
+
+```
+
+
+Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="60"}
+-----------------------------------------------------------------------
+
+**Sources :**  
+
+
+
+* Injep, MEDES, recensement des licences et des clubs sportifs
+
+  + https://injep.fr/donnee/recensement-des-licences-sportives-2020/
+  + https://carto-stats.injep.fr/#c=home  
+   
+* Insee, DRDJSCS, étude sur la pratique sportive  
+Un habitant sur cinq réside dans un territoire où la pratique sportive est développée  
+
+  + https://www.insee.fr/fr/statistiques/4984597
+
+
+Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="100"}
+-----------------------------------------------------------------------
+1. **Généralités**  
+ + [Territoire(s)](1.1_demo.html)  
+ + [Structure de la population](1.2_structure.html)  
+ + [évolution de la population](1.3_evol.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+2. **Jeunesse**   
+ + [Jeunesse](2.1_jeunesse.html)   
+ + [Préscolaire](2.2_presco.html)  
+ + [Accueils collectifs de mineurs](2.3_ACM.html)    
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+3. **Engagement**   
+ + [Vie associative](3.1_VA.html)   
+ + [Service civique](3.2_SC.html)   
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+4. **Formation**   
+ + [Diplômes](4.1_diplomes.html)  
+ + [Organismes de formation](4.2_OF3.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+5. **Sport**    
+ + [Clubs sportifs](5.1_clubs.html)  
+ + [Licences sportives](5.2_licences.html)  
+ + [Sport de nature](5.3_nature.html)  
+ + [Piscines](5.4_piscines.html)  
+ + [équipements sportifs](5.5_RES.html)  

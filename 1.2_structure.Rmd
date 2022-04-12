@@ -1,0 +1,347 @@
+---
+title: "Structure"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    social: menu
+    source_code: embed
+    navbar:
+      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+    theme: simplex
+---
+ 
+ 
+```{r setup, include=FALSE ,echo=F, cache=F} 
+library(flexdashboard)
+source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/tab_demo.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+
+pal <- colorBin("Purples", domain =0:200 ,bins=c(0, 50, 75, 100 , Inf), reverse = T)
+
+pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 12.5, 15, 17.5, 20, 100) )
+
+```
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+
+Row  {data-height=100}
+-----------------------------------------------------------------------
+### Données générales
+
+La population de Bourgogne-Franche-Comté est plutôt âgée. L'indice de jeunesse s'établit à 
+**`r  prettyNum(round(region$ind_jeun[3],1),decimal.mark=",")`**, nettement en dessous de la valeur métropolitaine.
+
+Les **`r  prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark=" ")`** jeunes sont sous-représentés et les + de 65 ans sont surreprésentés.
+
+Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+  
+### Comparaisons régionales
+  
+```{r,echo=F}
+region_tab %>%
+  select(Région,Nom,Population,`15-29 ans`,`Taux<br>15/29`,
+         `65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
+  kable("html", 
+      format.args = list(decimal.mark = ",", big.mark = "'"),
+      align="clrrlrlc",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
+  row_spec(which(region_tab$Région=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+  row_spec(nrow(region_tab),bold = T,color = "navy") %>%  
+  add_header_above(c(" " = 3, "Jeunes" =2, "Population âgée" = 2," ")) %>%
+  footnote(general = " Insee RP2018", general_title = "Source : ",
+           number = "Nombre de -20 ans / nombre de + 60 ans",
+           footnote_as_chunk = T) 
+
+```   
+
+### Structure régionale
+```{r}
+hchart( region %>%  dplyr::select(REG,LIBGEO,p20,p60,pop) %>%
+          transmute(REG,LIBGEO,`1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
+                 `2_Moins de 20 ans`=round(100*p20/pop,2),
+                 `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
+    pivot_longer(-c('REG','LIBGEO'),'âge') %>% rename(région=LIBGEO,part=value) %>%
+      arrange(REG,région,âge) , 
+    "bar",  hcaes(x = région, y = part, group = âge) ,
+    stacking = "percent" , reverse = T,
+      showInLegend = T,  pointWidth =20) %>%
+  #hc_yAxis(categories = lvls) %>%
+  hc_add_theme(thm) 
+```
+
+### Carte régionale
+```{r}
+leaflet(regwgs) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
+  addPolygons(fillColor = ~pal(ind_jeun), weight = 2,opacity = 0.6,
+              color = "#2F4F4F",fillOpacity = 0.7 ) %>% 
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+   addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],weight=4,
+             radius = ~100*p1529^(1/2), color = "#4169E1",
+             fillColor = ~pal2(100*p1529/pop), fillOpacity = 0.7,
+             highlight = highlightOptions (fillOpacity =  0.4,
+               weight = 5,   color = "#00FFFF"),
+             popup = popupTable(regwgs@data %>% 
+                           select(Région=INSEE_REG) %>%
+                           left_join(.,region_tab %>%
+                      select(Région,Nom,Population,`15-29 ans`,
+                             `Taux<br>15/29`,`65 ans et +`,
+                             `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
+                             ,by="Région"),
+                      feature.id=F,row.numbers = F) )%>%
+ addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, title = "indice de jeunesse", position = "bottomright") %>%
+  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+```
+
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+
+Row  {data-height=100}
+-----------------------------------------------------------------------
+### Données générales
+
+La Côte d'Or est de département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux. Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
+
+
+  Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Comparaisons départementales 
+
+```{r,echo=F}
+dep27_tab %>%  
+  select(Région,Département,Nom,Population,`15-29 ans`,`Taux<br>15/29`,`65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
+  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
+      align="cclrrlrlc",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
+  row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
+  row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
+  add_header_above(c(" " = 4, "Jeunes" =2, "Pop âgée" = 2," ")) %>%
+  footnote(general = " Insee RP2018", general_title = "Source : ",
+           number = "Nombre de -20 ans / nombre de + 60 ans",
+           footnote_as_chunk = T) 
+```
+
+### Structure départementale
+```{r}
+hchart( departement %>% filter(DEP %in% depbfc) %>%
+          dplyr::select(DEP,LIBGEO,p20,p60,pop) %>%
+          transmute(DEP,LIBGEO,`1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
+                 `2_Moins de 20 ans`=round(100*p20/pop,2),
+                 `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
+    pivot_longer(-c('DEP','LIBGEO'),'âge') %>% rename(Département=LIBGEO,part=value) %>%
+      arrange(DEP,Département,âge) , 
+    "bar",  hcaes(x = Département, y = part, group = âge) ,
+    stacking = "percent" , reverse = T,
+      showInLegend = T,  pointWidth =20) %>%
+  #hc_yAxis(categories = lvls) %>%
+  hc_add_theme(thm) 
+```
+
+
+### Carte départementale
+```{r}
+leaflet(depwgs) %>% addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
+  addPolygons(fillColor = ~pal(ind_jeun), weight = 2,opacity = 0.6,
+              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+   addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],
+             radius = ~100*p1529^(1/2), color = "#4169E1",weight=4,
+             fillColor = ~pal2(prop1529), fillOpacity = 0.7,
+             highlight = highlightOptions (fillOpacity =  0.4,
+               weight = 5,   color = "#00FFFF"),
+             popup = popupTable(depwgs@data %>% 
+                           select(Département=INSEE_DEP) %>%
+                           left_join(.,dep_tab %>%
+                      select(Région,Département,Nom,Population,`15-29 ans`,
+                             `Taux<br>15/29`,`65 ans et +`,
+                             `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
+                             ,by="Département"),
+                      feature.id=F,row.numbers = F))%>%
+ addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, title = "indice de jeunesse", position = "bottomright") %>%
+  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+```
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+
+  Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Comparaisons établissements publics de coopération intercommunale
+  
+```{r,echo=F}
+epci27_tab %>% 
+  select(EPCI,Nom,Population,`15-29 ans`,`Taux<br>15/29`,`65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
+  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
+      align="clrrlrlc",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
+  row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
+  row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
+  add_header_above(c(" " = 3, "Jeunes" =2, "Pop âgée" = 2," ")) %>%
+  footnote(general = " Insee RP2018", general_title = "Source : ",
+           number = "Nombre de -20 ans / nombre de + 60 ans",
+           footnote_as_chunk = T) 
+```
+
+
+
+### Carte ECPI
+```{r}
+leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  
+  addPolygons(fillColor = ~pal(ind_jeun), weight = 1,opacity = 0.6,
+              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+     addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],
+             radius = ~100*p1529^(1/2), color = "#4169E1",weight=4,
+             fillColor = ~pal2(prop1529), fillOpacity = 0.7,
+             highlight = highlightOptions (fillOpacity =  0.4,
+               weight = 5,   color = "#00FFFF"),
+            popup = popupTable(epcicarto@data %>% 
+                           select(EPCI=CODE_EPCI) %>%
+                           left_join(.,epci27_tab %>%
+                      select(EPCI,Nom,Population,`15-29 ans`,
+                             `Taux<br>15/29`,`65 ans et +`,
+                             `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
+                             ,by="EPCI"),
+                      feature.id=F,row.numbers = F) ) %>%
+ addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, title = "indice de jeunesse", position = "bottomright") %>%
+  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+```
+  
+  
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+  
+  Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+  
+### Comparaisons bassins de vie
+```{r,echo=F}
+bv27_tab %>%  
+  select(BV2012,Nom,Population,`15-29 ans`,`Taux<br>15/29`,`65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
+  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
+      align="clrrlrlc",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
+  row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
+  row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
+  add_header_above(c(" " = 3, "Jeunes" =2, "Pop âgée" = 2," ")) %>%
+  footnote(general = " Insee RP2018", general_title = "Source : ",
+           number = "Nombre de -20 ans / nombre de + 60 ans",
+           footnote_as_chunk = T) 
+```  
+  
+  
+  
+### Carte BV
+```{r}
+leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(fillColor = ~pal(ind_jeun), weight = 1,opacity = 0.6,
+              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  
+     addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],
+             radius = 100*bvcarto$p1529^(1/2), color = "#4169E1", opacity = 0.8, weight=4,
+             fillColor = ~pal2(prop1529), fillOpacity = 0.7,
+              highlight = highlightOptions (fillOpacity =  0.4,
+               weight = 5,   color = "#00FFFF"),
+             popup = popupTable(bvcarto@data %>% 
+                           select(BV2012) %>%
+                           left_join(.,bv27_tab %>%
+                      select(BV2012,Nom,Population,`15-29 ans`,
+                             `Taux<br>15/29`,`65 ans et +`,
+                             `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
+                             ,by="BV2012"),
+                      feature.id=F,row.numbers = F))%>%
+ addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, title = "indice de jeunesse", position = "bottomright") %>%
+  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+```
+
+
+Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="60"}
+-----------------------------------------------------------------------
+
+**Sources :**  
+
+* Insee, Recensement de la population 2018
+
+  + https://www.insee.fr/fr/information/5369871
+  + https://www.insee.fr/fr/statistiques/5397467?geo=FE-1
+
+
+
+Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="100"}
+-----------------------------------------------------------------------
+1. **Généralités**  
+ + [Territoire(s)](1.1_demo.html)  
+ + [Structure de la population](1.2_structure.html)  
+ + [évolution de la population](1.3_evol.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+2. **Jeunesse**   
+ + [Jeunesse](2.1_jeunesse.html)   
+ + [Préscolaire](2.2_presco.html)  
+ + [Accueils collectifs de mineurs](2.3_ACM.html)    
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+3. **Engagement**   
+ + [Vie associative](3.1_VA.html)   
+ + [Service civique](3.2_SC.html)   
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+4. **Formation**   
+ + [Diplômes](4.1_diplomes.html)  
+ + [Organismes de formation](4.2_OF3.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+5. **Sport**    
+ + [Clubs sportifs](5.1_clubs.html)  
+ + [Licences sportives](5.2_licences.html)  
+ + [Sport de nature](5.3_nature.html)  
+ + [Piscines](5.4_piscines.html)  
+ + [équipements sportifs](5.5_RES.html)  

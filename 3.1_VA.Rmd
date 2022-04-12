@@ -1,0 +1,673 @@
+---
+title: "Vie associative"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+    social: menu
+    source_code: embed
+    navbar:
+      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+    theme: simplex
+---
+
+```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
+#library(flexdashboard)
+#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
+#library(gghighlight)
+#library(highcharter)
+#library(janitor)
+#library(DT)
+#library(formattable)
+#library(leaflet.providers)
+#library(leaflet)
+#library(leaflet.minicharts)
+
+
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/engagement/asso.RData")
+
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+
+
+pal2 <- colorBin("YlOrBr", domain =0:10 ,bins= c(0, 3, 3.5, 4, 4.5, 5,5.5,6,10) )
+
+pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins= c(0, 19, 22, 25, 100) )
+
+
+appartenance <- rbind(appartenance,c("REG","FR","France","-"))
+
+RNApop <- RNAcom %>%
+      left_join(.,basecom %>% select(CODGEO,LIBGEO,EPCI,BV2012),by=c("CODGEO_2021"="CODGEO"))%>%
+  left_join(.,unique(basecom %>% select(DEP,REG)),by="DEP")
+
+coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" , "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")
+
+
+# Option de chunk
+knitr::opts_chunk$set(
+ fig.width = 6,
+ fig.asp = 0.8,
+ out.width = "80%"
+)
+```
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="100"}
+-----------------------------------------------------------------------
+
+### Données générales
+
+La Bourgogne-Franche-Comté compte **115 000** associations selon le Répertoire national des Associations.
+
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-----------------------------------------------------------------------
+
+### Comparaisons régionales
+
+**9e** région française en nombre d'associations
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(REG) %>% summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+          select(CODGEO,région=LIBGEO),by=c("REG"="CODGEO") )%>%
+    arrange(desc(asso)) %>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=asso*100/pop),
+  "bar",
+hcaes(x=reorder(région,asso),y=asso, color=ifelse(REG=="27","#6a5acd","#ffd700") ),
+name="nombre d'associations",showInlegend=T, pointWidth = 20 ) %>%
+   hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
+  hc_add_theme(thm) 
+```
+### Taux d'associations
+
+**2e** région française en taux d'associations 
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(REG) %>% summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+    adorn_totals(name = "FR")%>%
+left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+          select(CODGEO,région=LIBGEO),by=c("REG"="CODGEO") )%>%
+  mutate(txasso=round(asso*100/pop,2 )) %>%
+  arrange(desc(txasso)),
+  "bar",
+hcaes(x=reorder(région,txasso),y=txasso,color=ifelse(REG=="27","#6a5acd",ifelse(REG=="FR","#ff7f50","#ffd700") ) ) ,
+      name="Taux d'association pour 100 habitants", showInlegend=T, pointWidth = 20  )%>%
+   hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Taux d'associations")) %>%
+  hc_add_theme(thm) 
+```
+
+### Carte régionale
+
+```{r}
+RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(REG) %>% summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+          select(CODGEO,Région=LIBGEO),by=c("REG"="CODGEO") )%>%
+   mutate(txasso=round(asso*100/pop,2)) %>%
+  pivot_wider(c(REG,Région),names_from = objr , values_from = asso) %>%
+   adorn_totals("col", name = "total" ) %>%
+  select(INSEE_REG=REG,Région,total,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR)
+
+RNAcarto <- merge(regwgs,RNAcarto,by="INSEE_REG")
+  
+leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
+ addProviderTiles(providers$Wikimedia) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
+  addPolygons(data=RNAcarto,group  = "régions",weight = 2,color = "#2F4F4F",
+             fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
+              popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
+                               Taux d'association :<b>%.2f</b> </center> ",  
+                              RNAcarto$Région ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
+                       #maxValues = 100,
+                       type = "pie",
+                       chartdata = RNAcarto@data[,62:72],
+                       colorPalette = coul,
+                       width = sqrt(RNAcarto$total)/5 ,
+                       opacity = 0.7) %>%
+  addLegend( position = "bottomright",pal = pal2 ,title = "taux d'associations",values = 100*(RNAcarto$total/RNAcarto$pop) )
+```
+
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-----------------------------------------------------------------------
+
+### Tableau 
+
+Les domaines du sport, des loisirs et de l'économie fortement représentés
+
+```{r}
+RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+    pivot_wider(REG,names_from = objr , values_from = asso) %>%
+   adorn_totals("col", name = "total" ) %>%
+  left_join(.,basecom %>% group_by(REG) %>% summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+          select(CODGEO,région=LIBGEO),by=c("REG"="CODGEO") )%>%
+   adorn_totals("row", name = "FR" ) %>%
+   mutate(txasso=total*100/pop) %>%
+  select(région,total,txasso,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR) %>%
+  mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
+  mutate(txasso=color_bar('gold')
+         (digits(txasso ,2,decimal.mark=",")), 
+          Culture=color_tile('transparent','lightgreen')(Culture),
+          Sports=color_tile('transparent','lightgreen')(Sports),
+          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
+          Social=color_tile('transparent','lightgreen')(Social),
+          Santé=color_tile('transparent','lightgreen')(Santé),
+          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
+          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
+          Economie=color_tile('transparent','lightgreen')(Economie),
+          Environnement=color_tile('transparent','lightgreen')(Environnement),
+          Autres=color_tile('transparent','lightblue')(Autres),
+          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="crlrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(2, bold=T) %>%
+  column_spec(3, italic=T) %>%
+  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  row_spec(13,  bold = T ) %>%
+  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+            footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+```
+
+### Domaines d'intervention des associations
+
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(REG) %>% summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+          select(CODGEO,région=LIBGEO),by=c("REG"="CODGEO") )%>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=round(asso*100/pop,2)),
+  "bar", stacking = "normal",
+hcaes(x=région,y=asso,group=objr),showInlegend=T, pointWidth = 20)  %>%
+  hc_add_theme(thm) 
+```
+
+
+### Structure régionale des domaines d'intervention des associations
+
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(REG) %>% summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+          select(CODGEO,région=LIBGEO),by=c("REG"="CODGEO") )%>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=round(asso*100/sum(asso),2)),
+  "bar", stacking = "percent",
+hcaes(x=région,y=txasso,group=objr),showInlegend=T, pointWidth = 20)  %>%
+  hc_add_theme(thm) 
+```
+
+
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {.tabset .tabset-fade .tabset-pills data-height="100"}
+-----------------------------------------------------------------------
+
+
+### Données générales
+
+Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux où les associations sont les plus fréquentes
+
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-----------------------------------------------------------------------
+
+### Comparaisons départementales
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+    arrange(desc(asso)) %>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=asso*100/pop),
+  "bar",
+hcaes(x=reorder(département,asso),y=asso, color=ifelse(REG=="27","#6a5acd","#ffd700") ),
+name="nombre d'associations",showInlegend=T, pointWidth = 2 ) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
+  hc_add_theme(thm) 
+```
+### Taux d'associations
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+    adorn_totals(name = "BFC")%>%
+left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+  mutate(txasso=round(asso*100/pop,2 )) %>%
+  arrange(desc(txasso)),
+  "bar",
+hcaes(x=reorder(département,txasso),y=txasso,color=ifelse(REG=="27","#6a5acd",ifelse(REG=="FR","#ff7f50","#ffd700") ) ) ,
+      name="Taux d'association pour 100 habitants", showInlegend=T, pointWidth = 2  )%>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Taux d'associations")) %>%
+  hc_add_theme(thm) 
+```
+
+
+### Comparaisons infra-départementales
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
+  group_by(REG,DEP) %>% filter(DEP %in% depbfc) %>%  summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+    arrange(desc(asso)) %>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=asso*100/pop),
+  "bar",
+hcaes(x=reorder(département,asso),y=asso, color=ifelse(REG=="27","#6a5acd","#ffd700") ),
+name="nombre d'associations",showInlegend=T, pointWidth = 20 ) %>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
+  hc_add_theme(thm) 
+```
+### Taux d'associations infra-départemental
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP) %>% filter(DEP %in% depbfc) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+    adorn_totals(name = "BFC")%>%
+left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+  mutate(txasso=round(asso*100/pop,2 )) %>%
+  arrange(desc(txasso)),
+  "bar",
+hcaes(x=reorder(département,txasso),y=txasso,color=ifelse(REG=="27","#6a5acd",ifelse(REG=="BFC","#ff7f50","#ffd700") ) ) ,
+      name="Taux d'association pour 100 habitants", showInlegend=T, pointWidth = 20  )%>%
+   hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Taux d'associations")) %>%
+  hc_add_theme(thm) 
+```
+
+
+### Carte départementale
+
+```{r}
+RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP, objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,Département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+   mutate(txasso=round(asso*100/pop,2)) %>%
+  pivot_wider(c(DEP,Département),names_from = objr , values_from = asso) %>%
+   adorn_totals("col", name = "total" ) %>%
+  select(INSEE_DEP=DEP,Département,total,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR)
+
+RNAcarto <- merge(depwgs,RNAcarto,by="INSEE_DEP")
+  
+leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
+ addProviderTiles(providers$Wikimedia) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
+  addPolygons(data=RNAcarto,group  = "départements",weight = 2,color = "#2F4F4F",
+             fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
+              popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
+                               Taux d'association :<b>%.2f</b> </center> ",  
+                              RNAcarto$Département ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
+                       #maxValues = 100,
+                       type = "pie",
+                       chartdata = RNAcarto@data[,64:74],
+                       colorPalette = coul,
+                       width = sqrt(RNAcarto$total)/5 ,
+                       opacity = 0.7) %>%
+  addLegend( position = "bottomright",pal = pal2 ,title = "taux d'associations",values = 100*(RNAcarto$total/RNAcarto$pop) )
+
+
+```
+
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-----------------------------------------------------------------------
+
+### Tableau 
+
+Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
+
+```{r}
+RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP, objr) %>% filter (DEP %in% depbfc) %>%  summarise(asso=sum(total,na.rm = T)) %>%
+  pivot_wider(DEP,names_from = objr , values_from = asso) %>%
+    adorn_totals("col", name = "total" ) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,Département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+    adorn_totals("row", name = "FR" ) %>%
+     mutate(txasso=total*100/pop) %>%
+  select(Département,total,txasso,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR) %>%
+   mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
+  mutate(txasso=color_bar('gold')
+         (digits(txasso ,2,decimal.mark=",")), 
+          Culture=color_tile('transparent','lightgreen')(Culture),
+          Sports=color_tile('transparent','lightgreen')(Sports),
+          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
+          Social=color_tile('transparent','lightgreen')(Social),
+          Santé=color_tile('transparent','lightgreen')(Santé),
+          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
+          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
+          Economie=color_tile('transparent','lightgreen')(Economie),
+          Environnement=color_tile('transparent','lightgreen')(Environnement),
+          Autres=color_tile('transparent','lightblue')(Autres),
+          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="crlrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(2, bold=T) %>%
+  column_spec(3, italic=T) %>%
+  #row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  row_spec(9,  bold = T ) %>%
+  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+            footnote_as_chunk = T) %>%
+   scroll_box(height = "400px") 
+```
+
+### Domaines d'intervention des associations
+
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP,objr) %>% filter (DEP %in% depbfc) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=round(asso*100/pop,2)),
+  "bar", stacking = "normal",
+hcaes(x=département,y=asso,group=objr),showInlegend=T, pointWidth = 20)  %>%
+  hc_add_theme(thm) 
+```
+
+
+### Structure régionale des domaines d'intervention des associations
+
+De nombreuses associations sportives
+
+```{r}
+hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP,objr) %>% filter (DEP %in% depbfc) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+          select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") )%>%
+  #adorn_totals(name = "FR")%>%
+  mutate(txasso=round(asso*100/sum(asso),2)),
+  "bar", stacking = "percent",
+hcaes(x=département,y=txasso,group=objr),showInlegend=T, pointWidth = 20)  %>%
+  hc_add_theme(thm) 
+```
+
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {.tabset .tabset-fade .tabset-pills data-height="900"}
+-----------------------------------------------------------------------
+
+
+### Tableau des associations 
+```{r}
+RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
+  group_by(EPCI, objr)  %>%  summarise(asso=sum(total,na.rm = T)) %>%
+    pivot_wider(EPCI,names_from = objr , values_from = asso) %>%
+     adorn_totals("col", name = "total" ) %>% 
+  left_join(.,basecom %>% group_by(EPCI) %>% summarise(pop=sum(pop,na.rm=T)),by="EPCI") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="EPCI") %>%
+          select(CODGEO,EPCIlib=LIBGEO),by=c("EPCI"="CODGEO") )%>%
+  arrange(desc(total)) %>%
+  adorn_totals("row", name = "BFC" ) %>% 
+  mutate(txasso=total*100/pop) %>%
+  select(EPCI,EPCIlib,total,txasso,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR) %>%
+  mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
+  mutate(txasso=color_bar('gold')
+         (digits(txasso ,2,decimal.mark=",")), 
+          Culture=color_tile('transparent','lightgreen')(Culture),
+          Sports=color_tile('transparent','lightgreen')(Sports),
+          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
+          Social=color_tile('transparent','lightgreen')(Social),
+          Santé=color_tile('transparent','lightgreen')(Santé),
+          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
+          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
+          Economie=color_tile('transparent','lightgreen')(Economie),
+          Environnement=color_tile('transparent','lightgreen')(Environnement),
+          Autres=color_tile('transparent','lightblue')(Autres),
+          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="rcrlrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(3, bold=T) %>%
+  column_spec(4, italic=T) %>%
+  #row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  row_spec(117,  bold = T ) %>%
+  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+            footnote_as_chunk = T) %>%
+   scroll_box(height = "800px") 
+```
+### Carte EPCI
+```{r}
+RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr))  %>% filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
+  group_by(EPCI,objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(EPCI) %>% summarise(pop=sum(pop,na.rm=T)),by="EPCI") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="EPCI") %>%
+          select(CODGEO,EPCIlib=LIBGEO),by=c("EPCI"="CODGEO") )%>%
+   mutate(txasso=round(asso*100/pop,2)) %>%
+  pivot_wider(c(EPCI,EPCIlib),names_from = objr , values_from = asso) %>%
+   adorn_totals("col", name = "total" ) %>%
+  select(CODE_EPCI=EPCI,EPCIlib,total,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR)
+
+RNAcarto <- merge(epcicarto,RNAcarto,by="CODE_EPCI")
+  
+leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
+ addProviderTiles(providers$Wikimedia) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(data=RNAcarto,group  = "régions",weight = 2,color = "#2F4F4F",
+             fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
+              popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
+                               Taux d'association :<b>%.2f</b> </center> ",  
+                              RNAcarto$EPCIlib ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
+                       #maxValues = 100,
+                       type = "pie",
+                       chartdata = RNAcarto@data[,61:71],
+                       colorPalette = coul,
+                       width = sqrt(RNAcarto$total) ,
+                       opacity = 0.7) %>%
+  addLegend( position = "bottomright",pal = pal2 ,title = "taux d'associations",values = 100*(RNAcarto$total/RNAcarto$pop) )
+```
+
+![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {.tabset .tabset-fade .tabset-pills data-height="900"}
+-----------------------------------------------------------------------
+
+
+### Tableau des associations 
+```{r}
+RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
+  group_by(BV2012, objr)  %>%  summarise(asso=sum(total,na.rm = T)) %>%
+  pivot_wider(BV2012,names_from = objr , values_from = asso) %>%
+    adorn_totals("col", name = "total" ) %>% 
+  left_join(.,basecom %>% group_by(BV2012) %>% summarise(pop=sum(pop,na.rm=T)),by="BV2012") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="BV2012") %>%
+          select(CODGEO,BV2012lib=LIBGEO),by=c("BV2012"="CODGEO") )%>%
+  arrange(desc(total)) %>%
+  adorn_totals("row", name = "BFC" ) %>% 
+     mutate(txasso=total*100/pop) %>%
+  select(BV2012,BV2012lib,total,txasso,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR) %>%
+      mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
+  mutate(txasso=color_bar('gold')
+         (digits(txasso ,2,decimal.mark=",")), 
+          Culture=color_tile('transparent','lightgreen')(Culture),
+          Sports=color_tile('transparent','lightgreen')(Sports),
+          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
+          Social=color_tile('transparent','lightgreen')(Social),
+          Santé=color_tile('transparent','lightgreen')(Santé),
+          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
+          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
+          Economie=color_tile('transparent','lightgreen')(Economie),
+          Environnement=color_tile('transparent','lightgreen')(Environnement),
+          Autres=color_tile('transparent','lightblue')(Autres),
+          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+    #      Culture= 
+   #     (comma(100*Culture/total,digits=2,big.mark = " ",decimal.mark=",")) ) %>%
+   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="rcrlrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+  column_spec(3, bold=T) %>%
+  column_spec(4, italic=T) %>%
+  row_spec(132,  bold = T ) %>%
+  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  #row_spec(length(.),bold = T,color = "navy") %>%
+  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+            footnote_as_chunk = T) %>%
+   scroll_box(height = "800px") 
+```
+
+### carte BV
+```{r}
+RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr))  %>% filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
+  group_by(BV2012,objr) %>% summarise(asso=sum(total,na.rm = T)) %>%
+  left_join(.,basecom %>% group_by(BV2012) %>% summarise(pop=sum(pop,na.rm=T)),by="BV2012") %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="BV2012") %>%
+          select(CODGEO,BV2012lib=LIBGEO),by=c("BV2012"="CODGEO") )%>%
+   mutate(txasso=round(asso*100/pop,2)) %>%
+  pivot_wider(c(BV2012,BV2012lib),names_from = objr , values_from = asso) %>%
+   adorn_totals("col", name = "total" ) %>%
+  select(BV2012,BV2012lib,total,Culture,Sports,Loisirs,
+                               Social,Santé,`Amicales-Entraide`,Enseignement,
+                               Economie,Environnement,Autres,NR)
+
+RNAcarto <- merge(bvcarto,RNAcarto,by="BV2012")
+  
+leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
+ addProviderTiles(providers$Wikimedia) %>%
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(data=RNAcarto,group  = "régions",weight = 2,color = "#2F4F4F",
+             fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
+              popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
+                               Taux d'association :<b>%.2f</b> </center> ",  
+                              RNAcarto$BV2012lib ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
+                       #maxValues = 100,
+                       type = "pie",
+                       chartdata = RNAcarto@data[,58:68],
+                       colorPalette = coul,
+                       width = sqrt(RNAcarto$total) ,
+                       opacity = 0.7) %>%
+  addLegend( position = "bottomright",pal = pal2 ,title = "taux d'associations",values = 100*(RNAcarto$total/RNAcarto$pop) )
+```
+
+
+Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="60"}
+-----------------------------------------------------------------------
+
+**Sources :**  
+
+* Répertoire National des Associations (RNA)  
+
+  + https://www.data.gouv.fr/fr/datasets/repertoire-national-des-associations/  
+  
+* Recherche et solidarités  
+
+  + https://injep.fr/donnee/accueils-collectifs-de-mineurs-colonies-et-centres-de-vacances-centres-aeres-et-de-loisirs-scoutisme-2020-2021/  
+
+
+
+Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="100"}
+-----------------------------------------------------------------------
+1. **Généralités**  
+ + [Territoire(s)](1.1_demo.html)  
+ + [Structure de la population](1.2_structure.html)  
+ + [évolution de la population](1.3_evol.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+2. **Jeunesse**   
+ + [Jeunesse](2.1_jeunesse.html)   
+ + [Préscolaire](2.2_presco.html)  
+ + [Accueils collectifs de mineurs](2.3_ACM.html)    
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+3. **Engagement**   
+ + [Vie associative](3.1_VA.html)   
+ + [Service civique](3.2_SC.html)   
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+4. **Formation**   
+ + [Diplômes](4.1_diplomes.html)  
+ + [Organismes de formation](4.2_OF3.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+5. **Sport**    
+ + [Clubs sportifs](5.1_clubs.html)  
+ + [Licences sportives](5.2_licences.html)  
+ + [Sport de nature](5.3_nature.html)  
+ + [Piscines](5.4_piscines.html)  
+ + [équipements sportifs](5.5_RES.html)  

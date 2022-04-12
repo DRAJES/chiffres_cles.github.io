@@ -1,0 +1,347 @@
+---
+title: "Sports de nature"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+    social: menu
+    source_code: embed
+    navbar:
+      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+    theme: simplex
+---
+
+```{r setup, include=FALSE ,echo=FALSE, cache=F}
+#library(flexdashboard)
+#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
+#library(gghighlight)
+#library(highcharter)
+#library(janitor)
+#library(DT)
+#library(sparkline)
+#library(formattable)
+#library(rgdal)
+#  library(leafpop)
+#  library(leaflet)
+#  library(leaflet.extras2)
+#  library(geosphere)
+#  library(sp)
+#  library(sf)
+#  library(maps)
+#  library(leaflet.providers) 
+#  library(leaflet.minicharts)
+#  library(readxl)
+#  library(raster)
+#  library(smoothr)
+#  library(rmapshaper)
+#  library(rpivotTable)
+#  library(foreign)
+#  library(osrm)
+#  library(ggmap)
+#  library(rpivotTable)
+#  library(fontawesome)
+#  library(tidyverse)
+
+sparkline(0)
+
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/RES.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+
+#load("P:/projets R/DRAJES/data/demo/tab_demo.RData")
+load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+
+
+
+icons <- awesomeIconList (
+  "407" = makeAwesomeIcon(text =  fa("truck-monster"),markerColor ="darkred",iconColor="#FF0000",squareMarker=F),
+  
+  "3001" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3003" = makeAwesomeIcon(text =  fa("child"),iconColor="#2F4F4F",markerColor ="lightgreen"),
+  "3004" = makeAwesomeIcon(text  =  fa("walking"),iconColor="#6B8E23",markerColor ="lightgreen")  ,
+  "3005" = makeAwesomeIcon(text =  fa("map-signs"),iconColor="#6B8E23",markerColor ="lightgreen")  ,
+  "3007" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3008" = makeAwesomeIcon(text =  fa("icicles"),iconColor="#696969",markerColor ="lightgreen"),
+  "3010" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3011" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#0000ff",markerColor ="lightgreen")  ,
+  "3012" = makeAwesomeIcon(text =  fa("hiking"),iconColor="#228B22",markerColor ="lightgreen")  ,
+  "3014" = makeAwesomeIcon(text =  fa("child"),iconColor="#2F4F4F",markerColor ="lightgreen"),
+  "3015" = makeAwesomeIcon(text =  fa("icicles"),iconColor="#696969",markerColor ="lightgreen"),
+  
+  "701" = makeAwesomeIcon(text =  fa("skiing"),iconColor="#778899",markerColor ="white"),
+  "703" = makeAwesomeIcon(text =  fa("skiing"),iconColor="#696969",markerColor ="white"),
+  "705" = makeAwesomeIcon(text =  fa("skiing-nordic"),iconColor="#708090",markerColor ="white"),
+  "706" = makeAwesomeIcon(text =  fa("skiing"),iconColor="#696969",markerColor ="white"),
+  
+  "603" = makeAwesomeIcon(text =  fa("biking"),iconColor="#6A5ACD",markerColor ="orange"),
+  "604" = makeAwesomeIcon(text =  fa("biking"),iconColor="#6A5ACD",markerColor ="orange"),
+  "605" = makeAwesomeIcon(text =  fa("biking"),iconColor="#6A5ACD",markerColor ="orange"),
+  "606" = makeAwesomeIcon(text =  fa("biking"),iconColor="#6A5ACD",markerColor ="orange"),
+  
+  "906" = makeAwesomeIcon(text =  fa("horse"),iconColor="#F4A460",markerColor ="black"),
+  "909" = makeAwesomeIcon(text =  fa("horse"),iconColor="#F4A460",markerColor ="black"),
+  
+  "2401" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2402" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2403" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2404" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2405" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2406" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2407" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2408" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2409" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2410" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2414" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2416" = makeAwesomeIcon(text =  fa("swimmer"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2417" = makeAwesomeIcon(text =  fa("anchor"),iconColor="#0000CD",markerColor ="lightblue"),
+  "2418" = makeAwesomeIcon(text =  fa("anchor"),iconColor="#0000CD",markerColor ="lightblue"),
+  "2419" = makeAwesomeIcon(text =  fa("water"),iconColor="#4169E1",markerColor ="lightblue"),
+  "2420" = makeAwesomeIcon(text =  fa("fish"),iconColor="#0000CD",markerColor ="lightblue"),
+  
+  "2301" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
+  "2302" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
+  "2303" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
+  "2305" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
+  "2306" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple") )
+
+
+pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
+
+pal1 <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins= c(0, 19, 22, 25, 100) )
+
+depbfc <- c('21','25','39','58','70','71','89','90')
+
+
+# Option de chunk
+knitr::opts_chunk$set(
+ fig.width = 6,
+ fig.asp = 0.8,
+ out.width = "80%"
+)
+```
+
+Données {data-orientation="rows" data-icon="fa-signal"}
+=======================================================================
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+
+### Données générales
+
+La région Bourgogne-Franche-Comté compte **1 400** sites de sport de nature en 2020.
+La présence de sites de nature est fortement liée au relief. Les massifs montagneux sont plus dotés que la plaine.
+
+Row {.tabset .tabset-fade .tabset-pills data-height="800"}
+-----------------------------------------------------------------------
+
+### Comparaisons régionales
+
+**9e** région de France en nombre de sites de sport de nature.
+
+```{r}
+nature %>% group_by(REG) %>% summarise(`sites de nature`=n() )  %>%
+  arrange(desc(`sites de nature`)) %>% adorn_totals("row") %>% 
+  left_join(.,appartenance %>% dplyr::filter (NIVGEO=="REG") %>% dplyr::select (2,3),by=c("REG"="CODGEO")) %>%
+  relocate(région=LIBGEO,.after=REG) %>%
+ kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+#  column_spec(11, bold=T) %>%
+  row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = "MEDES, recensement des équipempents sportifs 2020", general_title = "Source : ",
+           footnote_as_chunk = T)
+```
+### Comparaisons départementales
+
+La Côte-d'Or, la Saône et Loire, l'Yonne et le Terrtoire de Belfort peu dotées en sites de sport de nature.
+
+```{r}
+
+hchart(nature %>% group_by(DEP) %>% summarise(`sites de nature`=n() )  %>%  arrange(desc(`sites de nature`)) %>%
+         left_join(.,appartenance %>% dplyr::filter (NIVGEO=="DEP") %>% dplyr::select (2,3),by=c("DEP"="CODGEO")) %>%
+  relocate(département=LIBGEO,.after=DEP) 
+       ,
+       "bar", hcaes(x=reorder(département,`sites de nature`),y=`sites de nature`,color=ifelse(DEP %in% depbfc,"#6a5acd",
+                                                                 ifelse(DEP=="FR","#ff7f50","#ffd700") ) ), 
+       showInLegend = F, name = "Sites de nature", pointWidth = 1) %>%
+    hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de sites de nature")) %>%
+  hc_add_theme(thm) 
+
+```
+
+### Comparaisons infra régionales
+```{r}
+nature%>% filter(REG=='27') %>% group_by(DEP) %>%  summarise(`sites de nature`=n() )  %>%
+  arrange(desc(`sites de nature`)) %>% adorn_totals("row") %>%
+  left_join(.,appartenance %>% dplyr::filter (NIVGEO=="DEP") %>% dplyr::select (2,3),by=c("DEP"="CODGEO")) %>%
+  relocate(département=LIBGEO,.after=DEP) %>%
+ kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+#  column_spec(11, bold=T) %>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = "MEDES, recensement des équipempents sportifs 2020", general_title = "Source : ",
+           footnote_as_chunk = T)
+```
+
+### Sites de sport de nature en Bourgogne-Franche-Comté
+
+Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
+
+```{r}
+nature27 %>% filter (REG=="27") %>% group_by(EquipementFamille,EquipementTypeLib) %>% summarise(`nombre de sites`=n()) %>% arrange(desc(`nombre de sites`),.by_group = T) %>%
+   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="crrrrrrrrr",
+      escape = F) %>% 
+  kable_styling("hover", full_width = F) %>%
+#  column_spec(11, bold=T) %>%
+#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  footnote(general = "MEDES, recensement des équipempents sportifs 2020", general_title = "Source : ",
+           footnote_as_chunk = T) %>%
+   scroll_box(height = "800px") 
+
+```
+
+
+
+
+### Carte régionale des sites de sport nature
+
+```{r}
+nature27.df <- split(nature27,nature27$EquipementFamille)
+
+depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
+depnature27 <- as.data.frame(addmargins(depnature27))
+depnature27 <- spread(depnature27,Var2,Freq)
+dep27carto <- merge(dep27carto,depnature27,by.x="INSEE_DEP",by.y="Var1")
+
+l <- leaflet() %>% 
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+   addProviderTiles(providers$OpenTopoMap) 
+
+names(nature27.df) %>%
+  purrr::walk( function(df) {
+    l <<- l %>%
+      addAwesomeMarkers(data=nature27.df[[df]],
+                        lng=~EquGPSX, lat=~EquGPSY,
+                        label=~as.character(EquipementFamille),
+                        icon = ~icons[(as.character(EquipementTypeCode) )],
+                        popup=~popupTable(nature27.df[[df]],row.numbers = F,feature.id = F),
+                        group = df,
+                        #clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
+                        labelOptions = labelOptions(noHide = F,
+                                                    direction = 'auto'))
+  })
+
+
+l %>%
+ addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addLayersControl(
+    overlayGroups = names(nature27.df),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+```
+
+
+
+### carte des sites de sport nature cluster
+```{r}
+nature27.df <- split(nature27,nature27$EquipementFamille)
+
+depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
+depnature27 <- as.data.frame(addmargins(depnature27))
+depnature27 <- spread(depnature27,Var2,Freq)
+dep27carto <- merge(dep27carto,depnature27,by.x="INSEE_DEP",by.y="Var1")
+
+l <- leaflet() %>% 
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+   addProviderTiles(providers$OpenTopoMap) 
+
+names(nature27.df) %>%
+  purrr::walk( function(df) {
+    l <<- l %>%
+      addAwesomeMarkers(data=nature27.df[[df]],
+                        lng=~EquGPSX, lat=~EquGPSY,
+                        label=~as.character(EquipementFamille),
+                        icon = ~icons[(as.character(EquipementTypeCode) )],
+                        popup=~popupTable(nature27.df[[df]],row.numbers = F,feature.id = F),
+                        group = df,
+                        clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
+                        labelOptions = labelOptions(noHide = F,
+                                                    direction = 'auto'))
+  })
+
+
+l %>%
+ addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addLayersControl(
+    overlayGroups = names(nature27.df),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+```
+
+Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="60"}
+-----------------------------------------------------------------------
+
+**Sources :**  
+
+
+
+* Injep, MEDES, recensement des "licences et des clubséquipements sportifs (RES)
+
+  + https://equipements.sports.gouv.fr/pages/accueil/
+  + https://carto-stats.injep.fr/#c=home
+  + https://www.data.gouv.fr/fr/datasets/recensement-des-equipements-sportifs-espaces-et-sites-de-pratiques/  
+  
+* Insee, Base permanente des équipements
+
+  + https://www.insee.fr/fr/metadonnees/source/operation/s2027/presentation
+
+Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
+=======================================================================
+Row {data-height="20"}
+-----------------------------------------------------------------------
+Row {data-height="100"}
+-----------------------------------------------------------------------
+1. **Généralités**  
+ + [Territoire(s)](1.1_demo.html)  
+ + [Structure de la population](1.2_structure.html)  
+ + [évolution de la population](1.3_evol.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+2. **Jeunesse**   
+ + [Jeunesse](2.1_jeunesse.html)   
+ + [Préscolaire](2.2_presco.html)  
+ + [Accueils collectifs de mineurs](2.3_ACM.html)    
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+3. **Engagement**   
+ + [Vie associative](3.1_VA.html)   
+ + [Service civique](3.2_SC.html)   
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+4. **Formation**   
+ + [Diplômes](4.1_diplomes.html)  
+ + [Organismes de formation](4.2_OF3.html)  
+
+Row {data-height="100"}
+-----------------------------------------------------------------------
+5. **Sport**    
+ + [Clubs sportifs](5.1_clubs.html)  
+ + [Licences sportives](5.2_licences.html)  
+ + [Sport de nature](5.3_nature.html)  
+ + [Piscines](5.4_piscines.html)  
+ + [équipements sportifs](5.5_RES.html)  

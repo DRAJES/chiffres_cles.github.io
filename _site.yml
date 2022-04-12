@@ -1,0 +1,66 @@
+name: "JES"
+navbar:
+  title: "Données JES"
+  type: inverse
+  left:
+    - text: "Home"
+      icon: fa-home
+      href: DRAJESBFC.html
+    - text: "About"
+      icon: fa-info
+      href: 0_about.html
+    - text: "MENU"
+      icon: fa-gear
+      menu:
+        - text: "Généralités"
+        - text: "Territoire(s)"
+          href: 1.1_demo.html
+        - text: "Structure de la population"
+          href: 1.2_structure.html
+        - text: "évolution de la population"
+          href: 1.3_evol.html 
+        - text: "---------"
+        - text: "Jeunesse"
+        - text: "Données démographiques"
+          href: 2.1_jeunesse.html
+        - text: "Préscolaire"
+          href: 2.2_presco.html
+        - text: "Accueils collectifs de mineurs"
+          href: 2.3_ACM.html
+        - text: "---------"
+        - text: "Engagement"
+        - text: "Vie associative"
+          href: 3.1_VA.html
+        - text: "Service civique"
+          href: 3.2_SC.html
+        - text: "---------"
+        - text: "Formation"
+        - text: "Diplômes"
+          href: 4.1_diplomes.html
+        - text: "Organismes de formation"
+          href: 4.2_OF3.html          
+        - text: "---------"
+        - text: "Sport"
+        - text: "Clubs sportifs"
+          href: 5.1_clubs.html
+        - text: "Licences sportives"
+          href: 5.2_licences.html
+        - text: "Sport de nature"
+          href: 5.3_nature.html
+        - text: "Piscines"
+          href: 5.4_piscines.html
+        - text: "équipements sportifs"
+          href: 5.5_RES.html
+          
+  right:
+    - icon: fa-question fa-lg
+      href: https://www.ac-dijon.fr/jeunesse-engagement-et-sports-124630
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    mathjax: null
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
