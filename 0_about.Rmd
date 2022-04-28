@@ -22,8 +22,9 @@ library(leaflet.minicharts)
 library(leaflet)
 library(leaflegend)
 library(leaflet.extras2)
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
+source("librairies.R")
 
+#rmarkdown::render_site(encoding = 'UTF-8')
 
 depbfc <- c('21','25','39','58','70','71','89','90')
 

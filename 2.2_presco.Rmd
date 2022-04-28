@@ -12,8 +12,8 @@ output:
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/jeunesse/PMI.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+load("data/jeunesse/PMI.RData")
+#load("data/demo/cartes.RData")
 
 pal <- colorBin("YlOrBr", domain =0:100 ,bins= c(0,5, 7.5,10, 12.5, 15, 17.5, 20,25, 100) )
 
@@ -32,7 +32,7 @@ options(knitr.table.format = "html")
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -171,7 +171,7 @@ addPolygons(weight=2,opacity = 0.9,color = "#2F4F4F", fillColor = ~pal(accueil),
 
   
   
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------

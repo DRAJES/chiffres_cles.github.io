@@ -1,0 +1,15 @@
+image: alpine:latest
+
+pages:
+  stage: deploy
+  script:
+  - echo 'Nothing to do...'
+  - cp -r _site public # on copie _site dans public
+ 
+  artifacts:
+    paths:
+    - public
+  only:
+  - testing
+  
+  

@@ -12,7 +12,7 @@ output:
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
 #library(flexdashboard)
-#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
+#source("librairies.R")
 #library(gghighlight)
 #library(highcharter)
 #library(janitor)
@@ -23,10 +23,10 @@ output:
 #library(leaflet.minicharts)
 
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/engagement/asso.RData")
+load("data/engagement/asso.RData")
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+#load("data/demo/basecom.RData")
+#load("data/demo/cartes.RData")
 
 
 pal2 <- colorBin("YlOrBr", domain =0:10 ,bins= c(0, 3, 3.5, 4, 4.5, 5,5.5,6,10) )
@@ -51,7 +51,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -226,7 +226,7 @@ hcaes(x=région,y=txasso,group=objr),showInlegend=T, pointWidth = 20)  %>%
 
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -439,7 +439,7 @@ hcaes(x=département,y=txasso,group=objr),showInlegend=T, pointWidth = 20)  %>%
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -525,7 +525,7 @@ leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opac
   addLegend( position = "bottomright",pal = pal2 ,title = "taux d'associations",values = 100*(RNAcarto$total/RNAcarto$pop) )
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------

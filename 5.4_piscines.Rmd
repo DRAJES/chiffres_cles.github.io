@@ -25,14 +25,14 @@ output:
 #library(leaflet.extras2)
 
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/piscines.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/bassins.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/BPE/ecoles.RData")
+load("data/sport/piscines.RData")
+load("data/sport/bassins.RData")
+load("data/BPE/ecoles.RData")
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/iso.RData")
+load("data/sport/iso.RData")
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+#load("data/demo/basecom.RData")
+#load("data/demo/cartes.RData")
 
 factPal <- colorFactor("Blues", iso_diff$drive_times,na.color = "#808080")
 
@@ -51,7 +51,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -124,7 +124,7 @@ hchart(piscines %>% group_by(REG) %>% summarise_if(is.numeric,sum) %>%
 
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -250,7 +250,7 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -348,7 +348,7 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------

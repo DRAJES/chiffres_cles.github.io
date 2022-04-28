@@ -43,11 +43,10 @@ output:
 
 sparkline(0)
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/RES.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-
-#load("P:/projets R/DRAJES/data/demo/tab_demo.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+load("data/sport/RES.RData")
+#load("data/demo/basecom.RData")
+#load("data/demo/tab_demo.RData")
+#load("data/demo/cartes.RData")
 
 
 

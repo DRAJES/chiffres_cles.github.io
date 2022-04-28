@@ -12,11 +12,6 @@ output:
  
  
 ```{r setup, include=FALSE ,echo=F, cache=F} 
-library(flexdashboard)
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/tab_demo.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
 
 pal <- colorBin("Purples", domain =0:200 ,bins=c(0, 50, 75, 100 , Inf), reverse = T)
 
@@ -24,7 +19,7 @@ pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 12.5, 15, 17.5, 20, 100) )
 
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -103,7 +98,7 @@ leaflet(regwgs) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -179,7 +174,7 @@ leaflet(depwgs) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -236,7 +231,7 @@ leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   
   
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------

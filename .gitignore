@@ -29,3 +29,5 @@ vignettes/*.pdf
 # Perso
 *.7z
 *.xlsx
+*.csv
+*.dbf

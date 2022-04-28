@@ -55,8 +55,10 @@ navbar:
   right:
     - icon: fa-question fa-lg
       href: https://www.ac-dijon.fr/jeunesse-engagement-et-sports-124630
+      
 output:
   html_document:
+    self_contained: false
     theme: cosmo
     highlight: textmate
     mathjax: null

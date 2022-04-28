@@ -13,7 +13,7 @@ output:
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/formation/diplome.RData")
+load("data/formation/diplome.RData")
 
 forome <- forome %>% mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté), "years")) %>% mutate(age=ifelse(age<0,100+age,age))
 

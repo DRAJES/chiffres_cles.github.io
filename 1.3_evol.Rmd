@@ -12,18 +12,18 @@ output:
  
  
 ```{r setup, include=FALSE ,echo=F, cache=F} 
-library(flexdashboard)
+#library(flexdashboard)
 library(sparkline)
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/tab_demo.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+#source("librairies.R")
+#load("data/demo/basecom.RData")
+#load("data/demo/tab_demo.RData")
+#load("data/demo/cartes.RData")
 
 pal3 <- colorBin("RdYlBu", domain =-5:5 ,bins=c(-Inf, -1, -0.5,0,0.5, 1 , Inf), reverse = T)
 
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -43,15 +43,15 @@ Row {.tabset .tabset-fade}
 ### Comparaisons régionales
   
 ```{r,echo=F}
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/spark.RData")
-library(sparkline)
+load("data/demo/spark.RData")
 sparkline(0)
+
 region_tab %>%
   select(Région,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
   mutate(" "= if_else(substr(str_split_fixed(region_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-down-right.svg)',
+                 cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-up-right.svg)',
+                 cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.after=`évolution annuelle`) %>%
@@ -92,7 +92,7 @@ leaflet(regwgs) %>%  addProviderTiles(providers$Wikimedia) %>%
     addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -112,9 +112,9 @@ Seuls deux départements gagnent de la population entre 2013 et 2018 : la Côte 
 as.data.frame(dep27_tab) %>%  
   select(Région,Département,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
 mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-down-right.svg)',
+                 cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-up-right.svg)',
+                 cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.after=`évolution annuelle`) %>%
@@ -157,7 +157,7 @@ leaflet(depwgs) %>%  addProviderTiles(providers$Wikimedia) %>%
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -171,9 +171,9 @@ Row {data-height="20"}
 epci27_tab %>% 
   select(EPCI,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
 mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-down-right.svg)',
+                 cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-up-right.svg)',
+                 cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.after=`évolution annuelle`) %>%
@@ -214,7 +214,7 @@ leaflet(epcicarto) %>%  addProviderTiles(providers$Wikimedia) %>%
     addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -227,9 +227,9 @@ Row {data-height="20"}
 bv27_tab %>%  
   select(BV2012,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
 mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-down-right.svg)',
+                 cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
-                 cell_spec('![](C:/Users/plebre/Documents/projets R/DRAJES/images/arrow-up-right.svg)',
+                 cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.after=`évolution annuelle`) %>%

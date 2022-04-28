@@ -2,28 +2,31 @@
 title: "Données générales"
 output: 
   flexdashboard::flex_dashboard:
+    self_contained : FALSE
     orientation: rows
     social: menu
     source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
+    
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F}
-library(flexdashboard)
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/tab_demo.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/CRTE.RData")
+
+flexdashboard::flex_dashboard(self_contained = F)
+
+load("data/demo/basecom.RData")
+load("data/demo/tab_demo.RData")
+load("data/demo/cartes.RData")
+load("data/demo/CRTE.RData")
 
 pal <- colorFactor(c("#FF4500","#FFA07A","#2E8B57","#98FB98"), domain = NULL)
 palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a","#43a047","#2e7d32"), domain =0:100 ,bins= c(0, 50, 60, 70,80, 100) )
 
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height="20"}
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="20"}
 
 ## Row {data-height="20"}
 
@@ -85,7 +88,7 @@ addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B
 addLegend( position = "bottomright",colors = "#6B8E23",labels = "Zones de Revitalisation Rurale")
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20"}
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20"}
 
 ## Row {data-height="20"}
 
@@ -149,7 +152,7 @@ addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,o
 
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="20"}
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="20"}
 
 ## Row {data-height="20"}
 
@@ -207,7 +210,7 @@ leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="20"}
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="20"}
 
 ## Row {data-height="20"}
 
@@ -263,7 +266,6 @@ leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 
 ```
 
-
 # `r fa(name = "fas fa-layer-group")` Découpages administratifs {data-orientation="rows" height="20"}
 
 ## Row {data-height="20"}
@@ -271,6 +273,7 @@ leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 ## Row {.tabset .tabset-fade}
 
 ### Appartenance communale
+
 ```{r}
 basecom %>% filter(REG=='27') %>% select(CODGEO:SUPERFICIE,Population=pop) %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
@@ -283,9 +286,8 @@ basecom %>% filter(REG=='27') %>% select(CODGEO:SUPERFICIE,Population=pop) %>%
   
 ```
 
- 
-
 ### Géographie régionale
+
 ```{r}
 leaflet() %>% 
   addProviderTiles(providers$OpenStreetMap.France, group="OSM") %>%
@@ -311,9 +313,6 @@ addLayersControl(
     overlayGroups = c("rando","vélo","routes","safecast"),
     options = layersControlOptions(collapsed = F,autoZIndex = F))
 ```
-
-
-
 
 # `r fa(name = "fas fa-tree")` CRTE {data-orientation="rows" height="20"}
 
@@ -404,11 +403,11 @@ leaflet(zonage_crte) %>% addProviderTiles(providers$OpenStreetMap) %>%
 
 -   Insee, Recensement de la population 2018
 
-    -   <https://www.insee.fr/fr/information/5369871>  
+    -   <https://www.insee.fr/fr/information/5369871>
 
-Découpage Communal  
+-   Découpage Communal
 
-    -     <https://www.insee.fr/fr/information/2028028>  
+    -   <https://www.insee.fr/fr/information/2028028>
 
 -   Contrat de relance et de Transition écologique
 

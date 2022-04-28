@@ -26,10 +26,10 @@ output:
 #library(leaflet.minicharts)
 
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/RES.RData")
+load("data/sport/RES.RData")
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+#load("data/demo/basecom.RData")
+#load("data/demo/cartes.RData")
 
 appartenance <- rbind(appartenance,c("REG","FR","France","-"))
 
@@ -46,7 +46,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height="30"}
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30"}
 
 ## Row {data-height="20"}
 
@@ -74,7 +74,8 @@ equip %>% filter(!is.na(REG)) %>% group_by(REG) %>% summarise(equ=n(),
                   adorn_totals("row",name = "FR") %>%
                   mutate(txequi=color_bar("orange")
                          (digits(10000*equ/pop,1,decimal.mark=","))) %>%
-  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% select(CODGEO,LIBGEO),by=c("REG"="CODGEO") ) %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% distinct(CODGEO,LIBGEO) %>%
+              select(CODGEO,LIBGEO),by=c("REG"="CODGEO") ) %>%
   select(REG,région=LIBGEO,équipements=equ,
          structurant,`dont gymnases`=gymnases,`tennis`=tennis, `dont couverts`=tennis_couv,`grands jeux`=gdsjeux, proximité=proxi,`tous bassins`= bassins, `taux d'équipements`= txequi) %>%
  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
@@ -111,7 +112,7 @@ hchart( equip %>% filter(!is.na(REG)) %>% group_by(REG) %>% summarise(equ=n(),
                          `taux tennis`=round(10000*tennis/pop,1),
                          `taux proximité`=round(10000*proxi/pop,1),
                          autres=round(10000*(equ-bassins-gdsjeux-structurant-proxi-tennis)/pop,1 ) ) %>%
-          left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) %>%
+          left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% distinct(CODGEO,LIBGEO) %>% select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) %>%
           select(16,10:15) %>%
    pivot_longer(-1,'type')  ,
                   "bar", hcaes(x=region,y=value, group=type  ) , 
@@ -204,7 +205,7 @@ leaflet(res) %>%
             title = "taux d'équipements") 
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows"}
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows"}
 
 ## Row {data-height="20"}
 
@@ -411,7 +412,7 @@ leaflet(res) %>%
             title = "taux d'équipements") 
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows"}
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows"}
 
 ## Row {data-height="20"}
 
@@ -564,7 +565,7 @@ leaflet(res) %>%
             title = "taux d'équipements") 
 ```
 
-# ![](C:/Users/plebre/Documents/projets%20R/DRAJES/images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows"}
+# ![](images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows"}
 
 ## Row {data-height="20"}
 
@@ -767,7 +768,7 @@ Le modèle a été lissé selon un spline de régression cubique et une précisi
 
 > schématisation
 
-[![](img/GAM.PNG) </br>\
+[![](images/GAM.PNG) </br>\
 Analyse de la dotation des territoires](https://pierre-stephanelebre.shinyapps.io/ANS_carence/)
 
 # Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}

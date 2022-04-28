@@ -31,7 +31,7 @@ options(knitr.table.format = "html")
 ## Row {data-height="100"}
 
 **Cartographie interactive**\
-[![](img/FCE.PNG) </br>\
+[![](images/FCE.PNG) </br>\
 Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
 
 # Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
@@ -41,7 +41,7 @@ Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FC
 ## Row {data-height="200"}
 
 **Cartographie interactive**\
-[![](img/FCE.PNG) </br>\
+[![](images/FCE.PNG) </br>\
 Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
 
 # Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px"}

@@ -19,10 +19,10 @@ output:
 #library(DT)
 #library(formattable)
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/engagement/SC.RData")
+load("data/engagement/SC.RData")
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+#load("data/demo/basecom.RData")
+#load("data/demo/cartes.RData")
 
 
 pal2 <- colorBin("YlOrBr", domain =0:2 ,bins= c(0, 0.8, 0.9, 1, 1.1, 2) )
@@ -45,7 +45,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -136,7 +136,7 @@ hchart(density( basebfc[basebfc$depvol %in% depbfc,]$age ) ,
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------

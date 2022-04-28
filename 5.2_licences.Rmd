@@ -12,14 +12,13 @@ output:
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=F}
 
-library(sparkline)
-
+#library(sparkline)
 sparkline(0)
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/licences.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/sport/spark.RData")
+#load("data/sport/licences.RData")
+#load("data/demo/basecom.RData")
+#load("data/demo/cartes.RData")
+#load("data/sport/spark.RData")
 
 regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
 
@@ -36,7 +35,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_s.svg) Régions {data-orientation="rows" height=30}
+![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -367,7 +366,7 @@ Fédérations les plus sexuées : plus de 80% de licences masculines ou féminin
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
+![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -648,7 +647,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
 ```
 
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
+![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -722,7 +721,7 @@ addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration s
 #              strokeWidth =2, shape = "circle", breaks = 1, baseSize = 60, title = "taille initiale" )
 ```
 
-![](C:/Users/plebre/Documents/projets R/DRAJES/images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
+![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------

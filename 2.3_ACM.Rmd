@@ -19,8 +19,8 @@ output:
 #library(DT)
 #library(formattable)
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/jeunesse/ACM.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+load("data/jeunesse/ACM.RData")
+#load("data/demo/cartes.RData")
 
 #thm <- 
 #  hc_theme(
@@ -474,7 +474,7 @@ hcaes(x=REG,y=value,group=age),
 ## Row {data-height="200"}
 
 **Cartographie interactive**\
-[![](img/ACM.PNG) </br>\
+[![](images/ACM.PNG) </br>\
 Visualisation des ACM de la région](https://pierre-stephanelebre.shinyapps.io/ACMshiny/)
 
 # Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
