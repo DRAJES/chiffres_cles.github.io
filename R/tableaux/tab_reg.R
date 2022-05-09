@@ -29,48 +29,52 @@ region_tab <- region %>% filter(REG!="METRO")%>%
          evolution=evol,evol1529,evol1625,evol65,evol75,
          ind_jeun,propF,partZRR,partQPV,diffjeun) %>%
   arrange((REG)) %>% bind_rows(c(part_15_29=0,part_16_25=0,part_65=0,part_75=0,
-                                 evolution=-2,evol1529=-2,evol1625=-2,evol65=-4,evol75=-4),
+                                 evolution=-2,evol1529=-2,evol1625=-2,evol65=2,evol75=-4),
                                c(part_15_29=40,part_16_25=40,part_65=40,part_75=40,
                                  evolution=2,evol1529=2,evol1625=2,evol65=4,evol75=4)) %>%
 
-  mutate_at(vars(starts_with("pop")), ~cell_spec(comma(.,digits = 0,big.mark = " ")))%>%
+  mutate_at(vars(starts_with("pop")), ~cell_spec(digits(.,0,big.mark = " ")))%>%
   mutate(rang= if_else( rank(densite) < 4, 
                         cell_spec(rank(-densite),"html",color = "green", bold=T) ,
                         cell_spec(rank(-densite),"html",color = "grey", bold=F)  ) ) %>%
   mutate(diffjeun=if_else( diffjeun < 0,
-                           cell_spec(comma(round(diffjeun/10,0)*10 ,
-                                           digits = 0,big.mark = " "),"html",color = "red"),
-                           cell_spec(comma(round(diffjeun/10,0)*10 ,
-                                           digits = 0,big.mark = " "),"html",color = "green")
+                           cell_spec(digits(round(diffjeun/10,0)*10 ,
+                                           0,big.mark = " "),"html",color = "red"),
+                           cell_spec(digits(round(diffjeun/10,0)*10 ,
+                                           0,big.mark = " "),"html",color = "green")
            )) %>%
   mutate( densite =  color_tile('white','grey')
-          (comma(densite,digits=1,big.mark = " ",decimal.mark=",")),
-          part_15_29=color_bar("#FFD700")
-          (comma(part_15_29,digits=1,big.mark = " ",decimal.mark=",")),
-          part_16_25=color_bar("#98FB98")
-          (comma(part_16_25,digits=1,big.mark = " ",decimal.mark=",")),
+            (digits(densite,1,big.mark = " ",decimal.mark=",")),
+          part_15_29=color_bar("#98FB98")
+            (digits(part_15_29,1,big.mark = " ",decimal.mark=",")),
+          part_16_25=color_bar("#ADFF2F")
+            (digits(part_16_25,1,big.mark = " ",decimal.mark=",")),
           part_65=color_bar("Plum")
-          (comma(part_65,digits=1,big.mark = " ",decimal.mark=",")),
+            (digits(part_65,1,big.mark = " ",decimal.mark=",")),
           part_75=color_bar("Plum")
-          (comma(part_75,digits=1,big.mark = " ",decimal.mark=",")),
-          evolution=normalize_bar("lightblue")
-          (comma(evolution,digits=2,big.mark = " ",decimal.mark=",")),
-          evol1529=normalize_bar("#FFD700")
-          (comma(evol1529,digits=2,big.mark = " ",decimal.mark=",")),
-          evol1625=normalize_bar("#98FB98")
-          (comma(evol1625,digits=2,big.mark = " ",decimal.mark=",")),
-          evol65=normalize_bar("Plum")
-          (comma(evol65,digits=2,big.mark = " ",decimal.mark=",")),
-          evol75=normalize_bar("Plum")
-          (comma(evol75,digits=2,big.mark = " ",decimal.mark=",")),
+            (digits(part_75,1,big.mark = " ",decimal.mark=",")),
+          evolution= ifelse(evolution < 0,
+                            normalize_bar("#ff000050")(digits(evolution,2,decimal.mark=",")),
+                            normalize_bar("#00800050")(digits(evolution,2,decimal.mark=",")) ),
+          evol1529=ifelse(evol1529 < 0,
+                          normalize_bar("#FF7F5050")(digits(evol1529,2,decimal.mark=",")),
+                          normalize_bar("#98FB9850")(digits(evol1529,2,decimal.mark=",")) ),
+          evol1625=ifelse(evol1625 < 0,
+                          normalize_bar("#ff634750")(digits(evol1625,2,decimal.mark=",")),
+                          normalize_bar("#ADFF2F50")(digits(evol1625,2,decimal.mark=",")) ),
+          evol65=ifelse(evol65 < 0,
+                        normalize_bar("#D2B48C50")(digits(evol65,2,decimal.mark=",")),
+                        normalize_bar("#dda0dd50")(digits(evol65,2,decimal.mark=",")) ),
+          evol75=normalize_bar("#dda0dd50")
+            (digits(evol75,2,big.mark = " ",decimal.mark=",")),
           ind_jeun= color_tile('#9B90CE','#F2F0F7',alpha=0.3)
-          (comma(ind_jeun,digits=1,big.mark = " ",decimal.mark=",")),
+            (digits(ind_jeun,1,big.mark = " ",decimal.mark=",")),
           propF= color_tile('white','pink',alpha=0.5)
-          (comma(propF,digits=1,big.mark = " ",decimal.mark=",")),
+            (digits(propF,1,big.mark = " ",decimal.mark=",")),
           partZRR=color_bar('lightgreen')
-          (comma(partZRR,digits=1,big.mark = " ",decimal.mark=",")),
+            (digits(partZRR,1,big.mark = " ",decimal.mark=",")),
           partQPV=color_bar('orange')
-          (comma(partQPV,digits=1,big.mark = " ",decimal.mark=","))
+            (digits(partQPV,1,big.mark = " ",decimal.mark=","))
   )    %>% relocate(rang, .after=densite ) %>%
     slice(1:13) %>%
     rbind(metro_tot %>% select(-rang_national) %>% mutate(REG="METRO") ) %>%
@@ -90,15 +94,15 @@ reg_tot <- region %>% mutate(rang_national=as.character(rank(-densite))) %>%
          evolution=evol,evol1529,evol1625,evol65,evol75,
          ind_jeun,propF,partZRR,partQPV,diffjeun) %>%
   mutate_at(vars(matches("pop")),  
-            ~cell_spec(comma(.,digits = 0,big.mark = " ") ) )%>%
+            ~cell_spec(digits(.,0,big.mark = " ") ) )%>%
   mutate_at(vars(matches("diffjeun")),  
-            ~cell_spec(comma(.,digits = 0,big.mark = " ") ) )%>%
+            ~cell_spec(digits(.,0,big.mark = " ") ) )%>%
   mutate_at(vars(matches("part")), 
-            ~cell_spec(comma(.,digits = 1,big.mark = " ",decimal.mark=",") ) )%>%
+            ~cell_spec(digits(.,1,big.mark = " ",decimal.mark=",") ) )%>%
   mutate_at(vars(matches("evol")), 
-            ~cell_spec(comma(.,digits = 2,big.mark = " ",decimal.mark=",") ) )%>%
-  mutate(densite =cell_spec( comma(densite,digits=1,big.mark = " ",decimal.mark=",") ),
+            ~cell_spec(digits(.,2,big.mark = " ",decimal.mark=",") ) )%>%
+  mutate(densite =cell_spec( digits(densite,1,big.mark = " ",decimal.mark=",") ),
          rang="-",
-         ind_jeun=cell_spec(comma(ind_jeun,digits=1,big.mark = " ",decimal.mark=",") ),
-         propF=cell_spec(comma(propF,digits=1,big.mark = " ",decimal.mark=",") )
+         ind_jeun=cell_spec(digits(ind_jeun,1,big.mark = " ",decimal.mark=",") ),
+         propF=cell_spec(digits(propF,1,big.mark = " ",decimal.mark=",") )
   ) %>% select(-REG)

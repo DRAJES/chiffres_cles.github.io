@@ -6,10 +6,10 @@ navbar:
     - text: "Home"
       icon: fa-home
       href: DRAJESBFC.html
-    - text: "About"
+    - text: "A propos"
       icon: fa-info
       href: 0_about.html
-    - text: "MENU"
+    - text: "Navigation"
       icon: fa-gear
       menu:
         - text: "Généralités"

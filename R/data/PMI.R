@@ -6,7 +6,7 @@ library(janitor)
 library(tidyverse)
 
 
-ACM_PMI <- read_excel("C:/Users/plebre/Documents/projets R/DRAJES/data/PanoFrance2020.xlsx",range = ("A856:DO869") )
+ACM_PMI <- read_excel("data/PanoFrance2020.xlsx",range = ("A856:DO869") )
 
 
 ACM_PMI_dep <- ACM_PMI %>% select(1,15:23,111) %>% mutate_at(vars(2:11),as.numeric) 
@@ -19,4 +19,4 @@ mutate_at(vars(2:15), as.numeric)
 
 
 save(ACM_PMI,ACM_PMI_dep,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/jeunesse/PMI.RData")
+     file="data/jeunesse/PMI.RData")

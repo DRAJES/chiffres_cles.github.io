@@ -1,10 +1,14 @@
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
+source("librairies.R")
 #construction de la base communale démographie
 library(readxl)
 passage <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table_passage_annuelle_2021.xlsx",sheet=1,skip=5)
 surface <- read.dbf("I:/SUPPORT/05_CARTO/Fonds de cartes/IGN/COMMUNE GEOFLA2016/COMMUNE.dbf")
 communes <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table-appartenance-geo-communes-21.xlsx",sheet=1,skip=5)
 appartenance <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table-appartenance-geo-communes-21.xlsx",sheet=3,skip=5)
+
+appartenance <- rbind(appartenance, c("DEP","BFC","Bourgogne-Franche-Comté","-"),
+                                           c("REG","FR","France","-"),
+                                           c("REG","METRO","France métropolitaine","-") )
 
 passage$CODGEO_2014[passage$CODGEO_2021 =="55138"] <- "55138"
 
@@ -125,8 +129,7 @@ basecomQPV <- basecom %>% left_join(.,QPV2 %>% select(-pop),by=c("CODGEO"="CODGE
 basecomQPV$POP_MUN[is.na(basecomQPV$POP_MUN)] <- 0
 basecomQPV$POP_COM <- if_else(basecomQPV$POP_MUN==0,basecomQPV$pop,basecomQPV$POP_COM)
 
-
-save(basecomQPV,basecom,appartenance,communes,file="C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+save(basecomQPV,basecom,appartenance,file="data/demo/basecom.RData")
 
 
 

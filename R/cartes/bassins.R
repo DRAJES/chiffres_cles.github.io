@@ -214,4 +214,4 @@ rm(iso_diff2);rm(iso_diff3);rm(iso_diff4);rm(iso_diff5);rm(iso_diff6)
 
 save(bassins,bassins_couv,bassins_annuels,bassins_annuels_couv,colbassin,icons,icons_couv,icons_annuel,icons_couv_annuel,
      iso_diff,iso_diff_couv,iso_diff_annuel,iso_diff_couvert_annuel,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/sport/bassins.RData")
+     file="data/sport/bassins.RData")

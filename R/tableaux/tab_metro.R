@@ -1,7 +1,7 @@
 Sys.setlocale("LC_CTYPE","french")
 options(encoding = "UTF-8")
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+source("librairies.R")
+load("data/demo/basecom.RData")
 
 #création des tableaux
 
@@ -34,25 +34,25 @@ metro_tot <- metro %>%
                  evolution=evol,evol1529,evol1625,evol65,evol75,
                  ind_jeun,propF,partZRR,partQPV,diffjeun) %>%
           mutate_at(vars(matches("pop")),  
-                    ~cell_spec(comma(.,digits = 0,big.mark = " ") ) )%>%
+                    ~cell_spec(digits(.,0,big.mark = " ") ) )%>%
         mutate_at(vars(matches("diffjeun")),  
-            ~cell_spec(comma(.,digits = 0,big.mark = " ") ) )%>%
+            ~cell_spec(digits(.,0,big.mark = " ") ) )%>%
           mutate_at(vars(matches("part")), 
-                    ~cell_spec(comma(.,digits = 1,big.mark = " ",decimal.mark=",") ) )%>%
+                    ~cell_spec(digits(.,1,big.mark = " ",decimal.mark=",") ) )%>%
           mutate_at(vars(matches("evol")), 
-                    ~cell_spec(comma(.,digits = 2,big.mark = " ",decimal.mark=",") ) )%>%
-          mutate(densite =cell_spec( comma(densite,digits=1,big.mark = " ",decimal.mark=",") ),
+                    ~cell_spec(digits(.,2,big.mark = " ",decimal.mark=",") ) )%>%
+          mutate(densite =cell_spec( digits(densite,1,big.mark = " ",decimal.mark=",") ),
                  rang="-", rang_national="-",
-                 ind_jeun=cell_spec(comma(ind_jeun,digits=1,big.mark = " ",decimal.mark=",") ),
-                 propF=cell_spec(comma(propF,digits=1,big.mark = " ",decimal.mark=",") )
+                 ind_jeun=cell_spec(digits(ind_jeun,1,big.mark = " ",decimal.mark=",") ),
+                 propF=cell_spec(digits(propF,1,big.mark = " ",decimal.mark=",") )
           ) 
 
-source("C:/Users/plebre/Documents/projets R/DRAJES/R/tableaux/tab_reg.R", encoding="utf-8")
-source("C:/Users/plebre/Documents/projets R/DRAJES/R/tableaux/tab_dep.R", encoding="utf-8")
-source("C:/Users/plebre/Documents/projets R/DRAJES/R/tableaux/tab_epci.R", encoding="utf-8")
-source("C:/Users/plebre/Documents/projets R/DRAJES/R/tableaux/tab_bv.R", encoding="utf-8")
+source("R/tableaux/tab_reg.R", encoding="utf-8")
+source("R/tableaux/tab_dep.R", encoding="utf-8")
+source("R/tableaux/tab_epci.R", encoding="utf-8")
+source("R/tableaux/tab_bv.R", encoding="utf-8")
 
 
 save(region_tab,dep27_tab,dep_tab,epci27_tab,bv27_tab,
      metro,region,departement,EPCI,BV,
-     file = "C:/Users/plebre/Documents/projets R/DRAJES/data/demo/tab_demo.RData")
+     file = "data/demo/tab_demo.RData")

@@ -5,6 +5,7 @@ author: "PSLèbre"
 ---
 ```{r setup, include=F ,echo=FALSE, cache=F}
 library(BAMMtools)
+library(kableExtra)
 library(flexdashboard)
 library(gghighlight)
 library(highcharter)
@@ -22,6 +23,7 @@ library(leaflet.minicharts)
 library(leaflet)
 library(leaflegend)
 library(leaflet.extras2)
+library(tidyverse)
 source("librairies.R")
 
 #rmarkdown::render_site(encoding = 'UTF-8')

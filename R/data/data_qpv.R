@@ -1,4 +1,4 @@
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("data/demo/basecom.RData")
 library(dplyr)
 QPV <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/QPV/DEMO_2020_V1.xlsx",sheet = 1,skip=5)
 QPV_COM <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/QPV/DEMO_2020_V1.xlsx",sheet = 3,skip=5)

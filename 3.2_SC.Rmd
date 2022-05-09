@@ -167,6 +167,8 @@ hchart( basebfc %>% filter(depvol %in% depbfc ) %>% mutate(dept_vol=as.character
 **Une large majorité de femmes parmi les volontaires, près de 30% de peu diplômés, 37% étaient chômeurs auparavant, un contrat sur cinq rompu avant son terme**
 
 ```{r}
+
+
 basebfc %>%filter(depvol %in% depbfc ) %>%
   group_by(depvol) %>%
   summarise(tot=n(),tot20=sum(debut==2020),
@@ -180,7 +182,7 @@ basebfc %>%filter(depvol %in% depbfc ) %>%
               "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
               "05 - Embauche en CDD moins de 6 mois")/rupture )
   ) %>% bind_rows( basebfc %>%filter(depvol %in% depbfc ) %>% group_by() %>%
-  summarise(depvol="BFC",tot=n(),tot20=sum(debut==2020),
+        summarise(depvol="BFC",tot=n(),tot20=sum(debut==2020),
             mage=mean(age),mage20=mean(age[debut==2020]),
             femmes=100*sum(CIV_LIBCOURT =="MME")/tot,femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
             peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
@@ -190,22 +192,23 @@ basebfc %>%filter(depvol %in% depbfc ) %>%
             embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
               "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
               "05 - Embauche en CDD moins de 6 mois")/rupture ) ) ) %>% 
-  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("depvol"="CODGEO") ) %>%
-  select(`département volontaire`=depvol,département,`volontaires depuis création`=tot,`volontaires 2020`=tot20,`moyenne d'âge`=mage20,`part de femmes`=femmes20,`Part de célibataires`=sitfam20,`part de peu diplômés`=peudipl20,`part de chômeurs`=chomage20,`taux de rupture`=txrupture,`rupture pour embauche`=embauche) %>%
-  mutate(`moyenne d'âge`=color_bar('gold')
-          (digits(`moyenne d'âge` ,1,decimal.mark=",")), 
+    left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+                select(CODGEO,département=LIBGEO),by=c("depvol"="CODGEO") ) %>%
+    select(`département volontaire`=depvol,département,`volontaires depuis création`=tot,`volontaires 2020`=tot20,`moyenne d'âge`=mage20,`part de femmes`=femmes20,`Part de célibataires`=sitfam20,`part de peu diplômés`=peudipl20,`part de chômeurs`=chomage20,`taux de rupture`=txrupture,`rupture pour embauche`=embauche) %>%
+    mutate(`moyenne d'âge`=color_bar('gold')
+                          (digits(`moyenne d'âge` ,1,decimal.mark=",")), 
           `part de femmes`=color_bar('pink')
-          (digits(`part de femmes` ,1,decimal.mark=",")), 
+                          (digits(`part de femmes` ,1,decimal.mark=",")), 
           `part de peu diplômés`=color_bar('gold')
-          (digits(`part de peu diplômés` ,1,decimal.mark=",")), 
+                          (digits(`part de peu diplômés` ,1,decimal.mark=",")), 
           `Part de célibataires`=color_bar('lightblue')
-          (digits(`Part de célibataires` ,1,decimal.mark=",")) ,
+                          (digits(`Part de célibataires` ,1,decimal.mark=",")) ,
           `part de chômeurs`=color_bar('gold')
-          (digits(`part de chômeurs` ,1,decimal.mark=",")) , 
+                          (digits(`part de chômeurs` ,1,decimal.mark=",")) , 
           `taux de rupture`=color_bar('lightgreen')
-          (digits(`taux de rupture` ,1,decimal.mark=",")) , 
+                          (digits(`taux de rupture` ,1,decimal.mark=",")) , 
           `rupture pour embauche`=color_bar('lightgreen')
-          (digits(`rupture pour embauche` ,1,decimal.mark=","))
+                         (digits(`rupture pour embauche` ,1,decimal.mark=","))
            ) %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="ccrrlllllll",
@@ -345,7 +348,7 @@ basebfcsig %>%filter(depvol %in% depbfc) %>%
 
 
 
-Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -360,41 +363,3 @@ Row {data-height="60"}
 
 
 
-Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
-1. **Généralités**  
- + [Territoire(s)](1.1_demo.html)  
- + [Structure de la population](1.2_structure.html)  
- + [évolution de la population](1.3_evol.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-2. **Jeunesse**   
- + [Jeunesse](2.1_jeunesse.html)   
- + [Préscolaire](2.2_presco.html)  
- + [Accueils collectifs de mineurs](2.3_ACM.html)    
-
-Row {data-height="100"}
------------------------------------------------------------------------
-3. **Engagement**   
- + [Vie associative](3.1_VA.html)   
- + [Service civique](3.2_SC.html)   
-
-Row {data-height="100"}
------------------------------------------------------------------------
-4. **Formation**   
- + [Diplômes](4.1_diplomes.html)  
- + [Organismes de formation](4.2_OF3.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-5. **Sport**    
- + [Clubs sportifs](5.1_clubs.html)  
- + [Licences sportives](5.2_licences.html)  
- + [Sport de nature](5.3_nature.html)  
- + [Piscines](5.4_piscines.html)  
- + [équipements sportifs](5.5_RES.html)  

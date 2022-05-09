@@ -75,4 +75,4 @@ RNA <- RNAimport %>%
 RNAcom <- RNA %>% group_by(CODGEO_2021,DEP,objr) %>% summarise(total=n())
 
 
-save(RNA,RNAcom,   file = "C:/Users/plebre/Documents/projets R/DRAJES/data/engagement/asso.RData")
+save(RNA,RNAcom,   file = "data/engagement/asso.RData")

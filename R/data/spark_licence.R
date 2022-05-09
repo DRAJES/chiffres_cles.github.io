@@ -84,7 +84,7 @@ evodep <- lic10  %>% slice(34,94,119,121) %>% select(1,depbfc) %>% mutate_at(2:9
 
 
 save(evoreg,evodep,evofede,evofedebfc,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/sport/spark.RData")
+     file="data/sport/spark.RData")
 
 
 formattable(serie_epci) %>%

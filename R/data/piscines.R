@@ -25,7 +25,7 @@
 equipement <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/RES/2020/2020_Equipements.csv",as.is = T,encoding = "UTF-8")
 passage <-  read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/communes/table_passage_annuelle_2021.xlsx",sheet=1,skip=5)
 
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("data/demo/basecom.RData")
 
 proprio <- c("Etablissement privé commercial","Privé non commercial")
 equips <- equipement %>% filter(ComInsee<"96000") %>%
@@ -71,7 +71,7 @@ piscines <- equip %>% filter (EquipementTypeCode %in% c('101','102','103') ) %>%
 piscines[is.na(piscines)] <- 0
 
 
-save(piscines,file = "C:/Users/plebre/Documents/projets R/DRAJES/data/sport/piscines.RData")
+save(piscines,file = "data/sport/piscines.RData")
 
 
 

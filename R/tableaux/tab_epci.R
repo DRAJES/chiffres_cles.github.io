@@ -28,9 +28,9 @@ epci27_tab <- EPCI %>% filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
          evolution=evol,evol1529,evol1625,evol65,evol75,
          ind_jeun,propF,rang,partZRR,partQPV,diffjeun) %>% 
   arrange(desc(population)) %>% bind_rows(c(part_15_29=0,part_16_25=0,part_65=0,part_75=0,
-                                            evolution=-10,evol1529=-10,evol1625=-10,evol65=-10,evol75=-10),
+                                            evolution=-5,evol1529=-5,evol1625=-5,evol65=0,evol75=-10),
                                           c(part_15_29=30,part_16_25=30,part_65=60,part_75=60,
-                                            evolution=10,evol1529=10,evol1625=10,evol65=10,evol75=10)) %>%
+                                            evolution=5,evol1529=5,evol1625=5,evol65=8,evol75=10)) %>%
   mutate_at(vars(starts_with("pop")), ~cell_spec(comma(.,digits = 0,big.mark = " ")))%>%
   mutate(rang= if_else( rank(densite) < 15, 
                         cell_spec(rank(-densite),"html",color = "green", bold=T) ,
@@ -42,34 +42,39 @@ epci27_tab <- EPCI %>% filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
                                            digits = 0,big.mark = " "),"html",color = "green")
   )) %>%
   mutate( densite =  color_tile('white','grey')
-          (comma(densite,digits=1,big.mark = " ",decimal.mark=",")),
-          part_15_29=color_bar("#FFD700")
-          (comma(part_15_29,digits=1,big.mark = " ",decimal.mark=",")),
-          part_16_25=color_bar("#98FB98")
-          (comma(part_16_25,digits=1,big.mark = " ",decimal.mark=",")),
+          (digits(densite,1,big.mark = " ",decimal.mark=",")),
+          part_15_29=color_bar("#98FB98")
+          (digits(part_15_29,1,big.mark = " ",decimal.mark=",")),
+          part_16_25=color_bar("#ADFF2F")
+          (digits(part_16_25,1,big.mark = " ",decimal.mark=",")),
           part_65=color_bar("Plum")
-          (comma(part_65,digits=1,big.mark = " ",decimal.mark=",")),
+          (digits(part_65,1,big.mark = " ",decimal.mark=",")),
           part_75=color_bar("Plum")
-          (comma(part_75,digits=1,big.mark = " ",decimal.mark=",")),
-          evolution=normalize_bar("lightblue")
-          (comma(evolution,digits=2,big.mark = " ",decimal.mark=",")),
-          evol1529=normalize_bar("#FFD700")
-          (comma(evol1529,digits=2,big.mark = " ",decimal.mark=",")),
-          evol1625=normalize_bar("#98FB98")
-          (comma(evol1625,digits=2,big.mark = " ",decimal.mark=",")),
-          evol65=normalize_bar("Plum")
-          (comma(evol65,digits=2,big.mark = " ",decimal.mark=",")),
-          evol75=normalize_bar("Plum")
-          (comma(evol75,digits=2,big.mark = " ",decimal.mark=",")),
+          (digits(part_75,1,big.mark = " ",decimal.mark=",")),
+          evolution=ifelse(evolution < 0,
+                           normalize_bar("#ff000050")(digits(evolution,2,decimal.mark=",")),
+                           normalize_bar("#00800050")(digits(evolution,2,decimal.mark=",")) ),
+          evol1529=ifelse(evol1529 < 0,
+                          normalize_bar("#FF7F5050")(digits(evol1529,2,decimal.mark=",")),
+                          normalize_bar("#98FB9850")(digits(evol1529,2,decimal.mark=",")) ),
+          evol1625=ifelse(evol1625 < 0,
+                          normalize_bar("#ff634750")(digits(evol1625,2,decimal.mark=",")),
+                          normalize_bar("#ADFF2F50")(digits(evol1625,2,decimal.mark=",")) ),
+          evol65=ifelse(evol65 < 0,
+                        normalize_bar("#D2B48C50")(digits(evol65,2,decimal.mark=",")),
+                        normalize_bar("#dda0dd50")(digits(evol65,2,decimal.mark=",")) ),
+          evol75=normalize_bar("#dda0dd50")
+          (digits(evol75,2,big.mark = " ",decimal.mark=",")),
           ind_jeun= color_tile('#9B90CE','#F2F0F7',alpha=0.3)
-          (comma(ind_jeun,digits=1,big.mark = " ",decimal.mark=",")),
+          (digits(ind_jeun,1,big.mark = " ",decimal.mark=",")),
           propF= color_tile('white','pink',alpha=0.5)
-          (comma(propF,digits=1,big.mark = " ",decimal.mark=",")),
-          partZRR=ifelse(partZRR>0, color_bar('lightgreen')
-                         (comma(partZRR,digits=1,big.mark = " ",decimal.mark=",")),"0"),
-          partQPV=ifelse(partQPV>0, color_bar('orange')
-                         (comma(partQPV,digits=1,big.mark = " ",decimal.mark=",")),"0")
-  )    %>% slice(1:116) %>%
+          (digits(propF,1,big.mark = " ",decimal.mark=",")),
+          partZRR=color_bar('lightgreen')
+          (digits(partZRR,1,big.mark = " ",decimal.mark=",")),
+          partQPV=color_bar('orange')
+          (digits(partQPV,1,big.mark = " ",decimal.mark=","))
+          )          %>% 
+  slice(1:116) %>%
   rbind(reg_tot %>% select(-rang_national) %>% mutate(EPCI="BFC") ) %>%
   rbind(metro_tot %>% select(-rang_national) %>%  mutate(EPCI="METRO") )  %>%
   dplyr::rename(Nom=LIBGEO,"Densité"=densite,Population=population,

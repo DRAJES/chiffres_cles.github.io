@@ -203,4 +203,4 @@ rpivotTable::rpivotTable(basebfc%>% mutate(dep_v=substr(CODE_COMMUNE_INSEE,1,2) 
 
 
 
-save(basebfc,basebfcsig,file="C:/Users/plebre/Documents/projets R/DRAJES/data/engagement/SC.RData")
+save(basebfc,basebfcsig,file="data/engagement/SC.RData")

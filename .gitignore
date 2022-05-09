@@ -31,3 +31,5 @@ vignettes/*.pdf
 *.xlsx
 *.csv
 *.dbf
+_site/
+_site.old/

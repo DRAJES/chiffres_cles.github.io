@@ -1,7 +1,7 @@
 library(readxl)
 library(sparkline)
 sparkline(0)
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("data/demo/basecom.RData")
 
 serie <- read.csv2 ("I:/SUPPORT/04_STATS/Sources/INSEE/RP/evolution/base-cc-serie-historique-2018.CSV",as.is = T)
 serie <- serie %>% select(1:9) %>% 
@@ -41,7 +41,7 @@ serie_bv <- serie %>% group_by(BV2012) %>%  summarise_if(is.numeric,sum)%>%
   rbind(serie_reg %>% filter (REG=='27') %>% mutate(BV2012="BFC") %>% select(-REG))
 
 save(serie_metro,serie_reg,serie_dep,serie_epci,serie_bv,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/demo/spark.RData")
+     file="data/demo/spark.RData")
 
 #formattable(serie_reg) %>%
 #  formattable::as.htmlwidget() %>%

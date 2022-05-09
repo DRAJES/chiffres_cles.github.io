@@ -1,4 +1,4 @@
-source("C:/Users/PLEBRE/Documents/R/librairies.R")
+source("librairies.R")
 library(survey)
 epci <- read_xls("N:/Fonds de cartes/epci/Intercommunalité - Métropole au 01-01-2019.xls",sheet=2,skip = 5)
 com <- read_xls("N:/Fonds de cartes/communes/table_passage_geo2003_geo2019.xls",sheet = 1,skip = 5)

@@ -23,6 +23,8 @@ sparkline(0)
 regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
 
 fede_sexe_dep[c(38,89,113),1] <- "Total"
+fede_sexe_dep[is.na(fede_sexe_dep)] <- 0
+
 
 pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
 
@@ -473,7 +475,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="400"}
 
 ### Licences par type de fédération
 
-La pratique féminie plus développée dans le Jura.
+La pratique féminine plus développée dans le Jura.
 
 ```{r}
 lic_dep %>%  dplyr::select(2,depbfc) %>%
@@ -559,9 +561,9 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
   mutate(BFC=rowSums(.[3:10],na.rm = T)) %>% arrange (desc(BFC)) %>% adorn_totals("row") %>%
   
   
-   left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(1:39) %>%
+   left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(1:38) %>%
                          mutate(`Taux de licences féminines`=color_bar('pink')
-          (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+                                         (digits(as.numeric(txfem),1,decimal.mark=","))) ,
             by=c("Code fédération"="fede") ) %>%
   
   
@@ -571,7 +573,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
              by=c("Code fédération"="fed")) %>% select(-12) %>%
   
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrrrrrrrrrcrl",
+      align="lcrrrrrrrrrlrl",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
    column_spec(11, bold=T) %>%
@@ -594,7 +596,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
   
    left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(39:89) %>%
                          mutate(`Taux de licences féminines`=color_bar('pink')
-          (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+                                                (digits(as.numeric(txfem),1,decimal.mark=","))) ,
             by=c("Code fédération"="fede") ) %>%
   
     left_join( evofedebfc %>%   filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
@@ -625,7 +627,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
   
    left_join(.,fede_sexe_dep %>% select (fede=1,txfem) %>% slice(90:113) %>%
                          mutate(`Taux de licences féminines`=color_bar('pink')
-          (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+                                            (digits(as.numeric(txfem),1,decimal.mark=","))) ,
             by=c("Code fédération"="fede") ) %>%
   
     left_join( evofedebfc %>%   filter(fed>400) %>% #modifier pour type de fédé 
@@ -793,7 +795,7 @@ addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration s
 ```
 
 
-Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -815,41 +817,3 @@ Un habitant sur cinq réside dans un territoire où la pratique sportive est dé
   + https://www.insee.fr/fr/statistiques/4984597
 
 
-Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
-1. **Généralités**  
- + [Territoire(s)](1.1_demo.html)  
- + [Structure de la population](1.2_structure.html)  
- + [évolution de la population](1.3_evol.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-2. **Jeunesse**   
- + [Jeunesse](2.1_jeunesse.html)   
- + [Préscolaire](2.2_presco.html)  
- + [Accueils collectifs de mineurs](2.3_ACM.html)    
-
-Row {data-height="100"}
------------------------------------------------------------------------
-3. **Engagement**   
- + [Vie associative](3.1_VA.html)   
- + [Service civique](3.2_SC.html)   
-
-Row {data-height="100"}
------------------------------------------------------------------------
-4. **Formation**   
- + [Diplômes](4.1_diplomes.html)  
- + [Organismes de formation](4.2_OF3.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-5. **Sport**    
- + [Clubs sportifs](5.1_clubs.html)  
- + [Licences sportives](5.2_licences.html)  
- + [Sport de nature](5.3_nature.html)  
- + [Piscines](5.4_piscines.html)  
- + [équipements sportifs](5.5_RES.html)  

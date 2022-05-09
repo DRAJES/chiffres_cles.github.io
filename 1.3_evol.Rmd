@@ -54,10 +54,10 @@ region_tab %>%
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
-  relocate(" ",.after=`évolution annuelle`) %>%
+  relocate(" ",.before=`évolution annuelle`) %>%
   left_join(.,serie_reg,by=c("Région" = "REG") ) %>%
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrrlcllc",
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="clrrrrlllc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
@@ -117,10 +117,10 @@ mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>"
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
-  relocate(" ",.after=`évolution annuelle`) %>%
+  relocate(" ",.before=`évolution annuelle`) %>%
     left_join(.,serie_dep[,2:3],by=c("Département" = "DEP") ) %>%
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="cclrrrlcllc",
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="cclrrrrlllc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
@@ -176,10 +176,10 @@ mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
-  relocate(" ",.after=`évolution annuelle`) %>%
+  relocate(" ",.before=`évolution annuelle`) %>%
     left_join(.,serie_epci,by= "EPCI" ) %>%
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrrlcllc",
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="clrrrrlllc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
@@ -232,10 +232,10 @@ mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
-  relocate(" ",.after=`évolution annuelle`) %>%
+  relocate(" ",.before=`évolution annuelle`) %>%
     left_join(.,serie_bv,by="BV2012" ) %>%
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrrlcllc",
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="clrrrrlllc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
@@ -273,7 +273,7 @@ leaflet(bvcarto) %>%  addProviderTiles(providers$Wikimedia) %>%
 
 
 
-Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -288,42 +288,3 @@ Row {data-height="60"}
   + https://www.insee.fr/fr/information/2837787
 
 
-
-Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
-1. **Généralités**  
- + [Territoire(s)](1.1_demo.html)  
- + [Structure de la population](1.2_structure.html)  
- + [évolution de la population](1.3_evol.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-2. **Jeunesse**   
- + [Jeunesse](2.1_jeunesse.html)   
- + [Préscolaire](2.2_presco.html)  
- + [Accueils collectifs de mineurs](2.3_ACM.html)    
-
-Row {data-height="100"}
------------------------------------------------------------------------
-3. **Engagement**   
- + [Vie associative](3.1_VA.html)   
- + [Service civique](3.2_SC.html)   
-
-Row {data-height="100"}
------------------------------------------------------------------------
-4. **Formation**   
- + [Diplômes](4.1_diplomes.html)  
- + [Organismes de formation](4.2_OF3.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-5. **Sport**    
- + [Clubs sportifs](5.1_clubs.html)  
- + [Licences sportives](5.2_licences.html)  
- + [Sport de nature](5.3_nature.html)  
- + [Piscines](5.4_piscines.html)  
- + [équipements sportifs](5.5_RES.html)  

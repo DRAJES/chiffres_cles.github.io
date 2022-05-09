@@ -1,4 +1,4 @@
-source("C:/Users/plebre/Documents/projets R/librairies.R")
+source("librairies.R")
 passage <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table_passage_annuelle_2021.xlsx",sheet=1,skip=5)
 communes <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table-appartenance-geo-communes-21.xlsx",sheet=1,skip=5)
 appartenance <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table-appartenance-geo-communes-21.xlsx",sheet=3,skip=5)

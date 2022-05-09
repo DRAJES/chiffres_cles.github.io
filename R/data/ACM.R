@@ -5,9 +5,9 @@ library(readxl)
 library(janitor)
 library(tidyverse)
 
-ACM_SH <- read_excel("C:/Users/plebre/Documents/projets R/DRAJES/data/PanoFrance2020.xlsx",range = ("A748:DO796") )
-ACM_colo <- read_excel("C:/Users/plebre/Documents/projets R/DRAJES/data/PanoFrance2020.xlsx",range = ("A802:DO834") )
-ACM_scout <- read_excel("C:/Users/plebre/Documents/projets R/DRAJES/data/PanoFrance2020.xlsx",range = ("A840:DO849") )
+ACM_SH <- read_excel("data/PanoFrance2020.xlsx",range = ("A748:DO796") )
+ACM_colo <- read_excel("data/PanoFrance2020.xlsx",range = ("A802:DO834") )
+ACM_scout <- read_excel("data/PanoFrance2020.xlsx",range = ("A840:DO849") )
 
 ACM_SH_dep <- ACM_SH %>% select(1,15:23,111) %>% mutate_at(vars(2:11),as.numeric) 
 
@@ -31,4 +31,4 @@ mutate_at(vars(2:15), as.numeric)
 
 
 save(ACM_colo,ACM_SH,ACM_scout,ACM_colo_dep,ACM_SH_dep,ACM_scout_dep,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/jeunesse/ACM.RData")
+     file="data/jeunesse/ACM.RData")

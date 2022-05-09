@@ -15,8 +15,8 @@ library(rmapshaper)
 #library(esquisse)
 #library(gtsummary)
 #library(GGally)
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/tab_demo.RData")
+load("data/demo/basecom.RData")
+load("data/demo/tab_demo.RData")
 epciwgs <- readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/IGN/2020/ADE-COG_2-1_SHP_WGS84G_FRA/EPCI.shp")
 regwgs84 <- readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/IGN/2020/ADE-COG_2-1_SHP_WGS84G_FRA/REGION.shp")
 depwgs84 <- readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/IGN/2020/ADE-COG_2-1_SHP_WGS84G_FRA/DEPARTEMENT.shp")
@@ -82,6 +82,6 @@ leaflet(regwgs_s) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 
 
 save(regwgs,depwgs,bvwgs,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
-     com27wgs,QPV27,ZRR,file = "C:/Users/plebre/Documents/projets R/DRAJES/data/demo/cartes.RData")
+     com27wgs,QPV27,ZRR,file = "data/demo/cartes.RData")
 save(regwgs,depwgs,bvwgs,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
      com27wgs,QPV27,ZRR,file = "I:/SUPPORT/05_CARTO/Fonds de cartes/cartes.RData")

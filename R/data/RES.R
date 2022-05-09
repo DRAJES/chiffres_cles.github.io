@@ -24,7 +24,7 @@ equipement <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/RES/2020/2020_Equipem
 codeequ <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/RES/2020/2020-dictionnairevariablesres.xls",sheet = 2)
 passage <-  read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/communes/table_passage_annuelle_2021.xlsx",sheet=1,skip=5)
                        
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("data/demo/basecom.RData")
 
 proprio <- c("Etablissement privé commercial","Privé non commercial")
 equip <- equipement %>% filter(ComInsee<"96000") %>% 
@@ -79,4 +79,4 @@ nature <- nature %>%
 nature27 <- nature %>% dplyr::filter (EPCI %in% basecom$EPCI[basecom$REG=="27"] |
                                         BV2012 %in% basecom$BV2012[basecom$REG=="27"]) 
 
-save(equip,equip27,nature,nature27,file="C:/Users/plebre/Documents/projets R/DRAJES/data/sport/RES.RData")
+save(equip,equip27,nature,nature27,file="data/sport/RES.RData")

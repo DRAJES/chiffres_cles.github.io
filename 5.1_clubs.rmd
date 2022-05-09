@@ -366,6 +366,8 @@ clubdep[97,3] <- "France"
 
 hchart(clubdep %>% slice(-97) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
        showInLegend = F, name = "Clubs sportifs", pointWidth = 2) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de clubs")) %>%
   hc_add_theme(thm) 
 ```
 
@@ -378,6 +380,8 @@ La Nièvre et le Jura fortement dotées en clubs par habitant.
 hchart(clubdep %>% arrange(desc(txclub)),"bar", hcaes(x=reorder(departement,txclub),y=txclub,color=ifelse(dep %in% depbfc,"#6a5acd",
                                                                  ifelse(dep=="FR","#ff7f50","#ffd700") ) ), 
        showInLegend = F, name = "Clubs sportifs", pointWidth = 1) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Taux de clubs")) %>%
   hc_add_theme(thm) 
 
 ```
@@ -388,6 +392,8 @@ hchart(clubdep %>% arrange(desc(txclub)),"bar", hcaes(x=reorder(departement,txcl
 ```{r}
 hchart(clubdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
        showInLegend = F, name = "Clubs sportifs", pointWidth = 20) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de clubs")) %>%
   hc_add_theme(thm) 
 ```
 
@@ -397,6 +403,8 @@ hchart(clubdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar", hcaes(x=
 
 hchart(clubdep %>% filter(dep %in% depbfc) %>% arrange(desc(txclub)),"bar", hcaes(x=reorder(departement,txclub),y=txclub,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
        showInLegend = F, name = "Clubs sportifs", pointWidth = 20) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Taux de clubs")) %>%
   hc_add_theme(thm) 
 
 ```
@@ -482,6 +490,8 @@ club_dep %>%  dplyr::select(2,depbfc) %>%
       "bar",    hcaes(x = fct_rev(département), group = type_fede, y = as.numeric(clubs) ) ,
    stacking = "normal" ,
       showInLegend = T,  pointWidth =20) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de clubs")) %>%
   hc_add_theme(thm) 
 
 
@@ -499,6 +509,8 @@ club_dep %>%  dplyr::select(2,depbfc) %>%
       "bar",    hcaes(x = fct_rev(département), group = type_fede, y = as.numeric(clubs) ) ,
    stacking = "percent" ,
       showInLegend = T,  pointWidth =20) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Proportion de clubs")) %>%
   hc_add_theme(thm) 
 
 ```
@@ -550,10 +562,10 @@ club_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F
   left_join(lic_dep %>%  dplyr::select(1,depbfc) %>% rename("Code fédération"="...1") %>%
     slice(42:91) %>% mutate_at(2:9,as.numeric) %>% 
   transmute(`Code fédération`, Licences=rowSums(.[2:9],na.rm = T)) %>%  adorn_totals("row"),
-  by="Code fédération") %>%
-
-  mutate(lic_club = color_tile('lightgreen','white',alpha=0.5)
-          (digits(Licences /BFC ,1,decimal.mark=","))) %>%
+  by="Code fédération") %>% 
+  
+  mutate(lic_club =color_tile('lightgreen','white',alpha=0.5)
+                (digits(ifelse(BFC!=0,Licences /BFC,NA) ,1,decimal.mark=","))) %>%
   
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="lcrrrrrrrrr",
@@ -582,7 +594,7 @@ club_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F
   by="Code fédération") %>%
 
   mutate(lic_club = color_tile('lightgreen','white',alpha=0.5)
-          (digits(Licences /BFC ,1,decimal.mark=","))) %>%
+          (digits(ifelse(BFC!=0,Licences /BFC,NA),1,decimal.mark=","))) %>%
   
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="lcrrrrrrrrr",
@@ -785,7 +797,7 @@ addLegend( position = "bottomright",pal = pallic ,title = "taux de pénétration
 ```
 
 
-Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
@@ -803,41 +815,3 @@ Row {data-height="60"}
   
 
 
-Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
-1. **Généralités**  
- + [Territoire(s)](1.1_demo.html)  
- + [Structure de la population](1.2_structure.html)  
- + [évolution de la population](1.3_evol.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-2. **Jeunesse**   
- + [Jeunesse](2.1_jeunesse.html)   
- + [Préscolaire](2.2_presco.html)  
- + [Accueils collectifs de mineurs](2.3_ACM.html)    
-
-Row {data-height="100"}
------------------------------------------------------------------------
-3. **Engagement**   
- + [Vie associative](3.1_VA.html)   
- + [Service civique](3.2_SC.html)   
-
-Row {data-height="100"}
------------------------------------------------------------------------
-4. **Formation**   
- + [Diplômes](4.1_diplomes.html)  
- + [Organismes de formation](4.2_OF3.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-5. **Sport**    
- + [Clubs sportifs](5.1_clubs.html)  
- + [Licences sportives](5.2_licences.html)  
- + [Sport de nature](5.3_nature.html)  
- + [Piscines](5.4_piscines.html)  
- + [équipements sportifs](5.5_RES.html)  

@@ -2,6 +2,7 @@
 title: "Chiffres clés Jeunesse Engagement Sports Bourgogne-Franche-Comté"
 output:
   html_document:
+    self_contained : false
     toc: true
     toc_depth: 3
     toc_float: true

@@ -3,7 +3,7 @@ library(readxl)
 
 
 clubs <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/2. Données data.gouv.fr/2018/clubs-data-2018.csv",as.is = T)
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("data/demo/basecom.RData")
 
 club_dep <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2020/Clubs-2020.xlsx",sheet = 4,skip = 2)
 levels(club_dep) <-  club_dep[1,]
@@ -21,4 +21,4 @@ club_dep_bfc <- club_dep %>% slice (2:119) %>%
 
 
 save(club_dep_bfc, club_dep,club_reg,club_fede,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/sport/clubs.RData")
+     file="data/sport/clubs.RData")

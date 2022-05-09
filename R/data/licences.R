@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 
 licences <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/2. Données data.gouv.fr/2018/lic-data-2018.csv",as.is = T)
-load("C:/Users/plebre/Documents/projets R/DRAJES/data/demo/basecom.RData")
+load("data/demo/basecom.RData")
 
 lic_dep <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2020/licences-par-departement-2020.xlsx",sheet = 2,skip=2)
 levels(lic_dep) <-  lic_dep[1,]
@@ -103,6 +103,6 @@ lic27bv <- licences27 %>% group_by(CODGEO,BV2012,pop,popf,poph) %>%
 
 
 save(lic27bv,lic27epci,lic_dep,lic_dep_bfc,feddepsexe,lic_reg_sexe,lic_reg,fedsexe,fede_sexe_dep,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/sport/licences.RData")
+     file="data/sport/licences.RData")
 
 

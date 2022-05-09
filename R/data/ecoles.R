@@ -48,8 +48,8 @@ ecole <- spTransform(ecole,CRS=CRS("+init=epsg:4326"))
 
 
 ecoleicon <- iconList(
-  Maternelle = makeIcon("C:/Users/plebre/Documents/projets R/DRAJES/images/briefcase-mat.svg","C:/Users/plebre/Documents/projets R/DRAJES/images/briefcase-mat.svg",10,30),
-  Elémentaire = makeIcon("C:/Users/plebre/Documents/projets R/DRAJES/images/briefcase-ele.svg","C:/Users/plebre/Documents/projets R/DRAJES/images/briefcase-ele.svg",10,30) )
+  Maternelle = makeIcon("images/briefcase-mat.svg","images/briefcase-mat.svg",10,30),
+  Elémentaire = makeIcon("images/briefcase-ele.svg","images/briefcase-ele.svg",10,30) )
 
 
 
@@ -65,4 +65,4 @@ comecole <- subset(comecole,comecole$Maternelle>0 |comecole$Primaire>0 )
 
 
 save(ecole,comecole, ecoleicon ,
-     file="C:/Users/plebre/Documents/projets R/DRAJES/data/BPE/ecoles.RData")
+     file="data/BPE/ecoles.RData")

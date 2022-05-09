@@ -2,6 +2,7 @@
 title: "Piscines publiques accessibles aux scolaires"
 output: 
   flexdashboard::flex_dashboard:
+    self_contained : false
     orientation: rows
     social: menu
     source_code: embed
@@ -51,20 +52,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30"}
+
+## Row {data-height="20"}
+
+## Row {data-height="100"}
 
 ### Données générales
 
-La région Bourgogne-Franche-Comté compte **283** piscines publiques accessibles aux scolaires en 2020 pour une surface de nage par habitant de **190 m²**.  
-**124** d'entre elles sont couvertes.
+La région Bourgogne-Franche-Comté compte **283** bassins de natation publics accessibles aux scolaires en 2020 pour une surface de nage par habitant de **190 m²**.\
+**124** d'entre eux sont couvertes.
 
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
+## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Comparaisons régionales
 
@@ -89,7 +88,7 @@ piscines %>% group_by(REG) %>% summarise_if(is.numeric,sum) %>%
                                        "250 à 350 m² / 10 000",
                                        "> 350 m² / 10 000"  )  )) %>%
   left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% dplyr::select(CODGEO,LIBGEO),by=c("REG"="CODGEO") ) %>%
-  dplyr::select (région=REG, LIBGEO, `Nombre de piscines publiques`=nbpiscines,`Piscines couvertes`=nbpiscines_couv,`Piscines saisonnières`=nbpisc_saison,
+  dplyr::select (région=REG, LIBGEO, `Nombre de bassins publics`=nbpiscines,`Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrlrr",
@@ -103,7 +102,6 @@ piscines %>% group_by(REG) %>% summarise_if(is.numeric,sum) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
            footnote_as_chunk = T)
 ```
-
 
 ### Surface natatoire pour 10 000 habitants
 
@@ -122,27 +120,19 @@ hchart(piscines %>% group_by(REG) %>% summarise_if(is.numeric,sum) %>%
   hc_add_theme(thm) 
 ```
 
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="30"}
 
+## Row {data-height="20"}
 
-![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-
-Row {data-height="100"}
------------------------------------------------------------------------
+## Row {data-height="100"}
 
 ### Données générales
 
+L'éloignement joue un rôle déterminant dans la surface de baignade. Le Jura, département montagneux, la Saône et Loire et l'Yonne, départements peu denses, sont bien dotées. à l'Inverse, les départements plus denses ou ceux où la population se concentre dans les grandes villes sont moins dotés. Le territoire de Belfort est ainsi le moins bien équipé sur la surface natatoire pour 10 000 habitants.
 
-L'éloignement joue un rôle déterminant dans surface de baignade. Le Jura, département montagneux, la Saône et Loire et l'Yonne, départements peu denses, sont bien dotées. à l'Inverse, les départements plus denses ou ceux où la population se concentre dans les grandes villes sont moins dotés. Le territoire de Belfort est ainsi le moins bien équipé sur la surface natatoire pour 10 000 habitants.
-
-
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
+## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Comparaisons départementales
-
 
 ```{r}
 piscines %>% group_by(DEP) %>% filter(DEP %in% depbfc) %>% summarise_if(is.numeric,sum) %>%
@@ -163,7 +153,7 @@ piscines %>% group_by(DEP) %>% filter(DEP %in% depbfc) %>% summarise_if(is.numer
                                        "250 à 350 m² / 10 000",
                                        "> 350 m² / 10 000"  )  )) %>%
   left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% dplyr::select(CODGEO,LIBGEO),by=c("DEP"="CODGEO") ) %>%
-  select (Département=DEP, LIBGEO, `Nombre de piscines publiques`=nbpiscines,`Piscines couvertes`=nbpiscines_couv,`Piscines saisonnières`=nbpisc_saison,
+  select (Département=DEP, LIBGEO, `Nombre de bassins publics`=nbpiscines,`Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrlrr",
@@ -178,11 +168,9 @@ piscines %>% group_by(DEP) %>% filter(DEP %in% depbfc) %>% summarise_if(is.numer
            footnote_as_chunk = T)
 ```
 
-
-### Surface natatoire pour 10 000 habitants 
+### Surface natatoire pour 10 000 habitants
 
 Le Jura est le **5e** département pour la surface natatoire disponible pour 10 000 habitants, l'Yonne le dixième. à l'inverse, le Territoire de Belfort est le 5e département le moins bien doté.
-
 
 ```{r}
 hchart(piscines %>% group_by(DEP) %>% summarise_if(is.numeric,sum) %>%
@@ -195,7 +183,8 @@ hchart(piscines %>% group_by(DEP) %>% summarise_if(is.numeric,sum) %>%
     hc_yAxis(title=list(text="surface natatoire")) %>%
   hc_add_theme(thm) 
 ```
-### Surface natatoire pour 10 000 habitants  infrarégionale
+
+### Surface natatoire pour 10 000 habitants infrarégionale
 
 ```{r}
 hchart(piscines %>% group_by(DEP) %>% filter (DEP %in% depbfc) %>% summarise_if(is.numeric,sum) %>%
@@ -211,6 +200,7 @@ hchart(piscines %>% group_by(DEP) %>% filter (DEP %in% depbfc) %>% summarise_if(
 ```
 
 ### Carte départementale
+
 ```{r}
 
 piscinesdep <- sp::merge(depwgs,piscines %>% group_by(INSEE_DEP=DEP) %>%  summarise_if(is.numeric,sum) %>%
@@ -249,17 +239,15 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 
 ```
 
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="30"}
 
-![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {.tabset .tabset-fade }
------------------------------------------------------------------------
+## Row {data-height="20"}
 
-### Comparaisons établissements publics de coopération intercommunale {vertical_layout=scroll}
+## Row {.tabset .tabset-fade}
 
-Les grandes agglomérations servent de centre de service pour les EPCI alentours. Les piscines y sont plus nombreuses.  
+### Comparaisons établissements publics de coopération intercommunale {vertical_layout="scroll"}
+
+Les grandes agglomérations servent de centre de service pour les EPCI alentours. Les piscines y sont plus nombreuses.\
 31 EPCI n'ont aucune piscine publique accessible aux scolaires.
 
 ```{r,echo=F}
@@ -282,7 +270,7 @@ piscines %>% filter(REG=='27')  %>% group_by(EPCI) %>% summarise_if(is.numeric,s
                                        "250 à 350 m² / 10 000",
                                        "> 350 m² / 10 000"  )  )) %>%
   left_join(.,appartenance %>% filter(NIVGEO=="EPCI") %>% select(CODGEO,LIBGEO),by=c("EPCI"="CODGEO") ) %>%
-  select (EPCI, LIBGEO, `Nombre de piscines publiques`=nbpiscines,`Piscines couvertes`=nbpiscines_couv,`Piscines saisonnières`=nbpisc_saison,
+  select (EPCI, LIBGEO, `Nombre de bassins publics`=nbpiscines,`Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrlrr",
@@ -346,18 +334,15 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 
 ```
 
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="30"}
 
+## Row {data-height="20"}
 
-![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
- Row {.tabset .tabset-fade }
------------------------------------------------------------------------
+## Row {.tabset .tabset-fade}
 
-### Comparaisons bassins de vie {vertical_layout=scroll}
+### Comparaisons bassins de vie {vertical_layout="scroll"}
 
-Les bassins de vie égalisent un peu le poids des grandes agglomération en mettant les piscines en rapport à la population. Toutefois, certaines sortent du lot comme Vesoul qui est très bien doté, et les bassins de vie des montagne du Jura qui propose des infrastructures nombreuses (Champagnole, Saint-Claude).  
+Les bassins de vie égalisent un peu le poids des grandes agglomération en mettant les piscines en rapport avec la population. Toutefois, certaines sortent du lot comme Vesoul qui est très bien doté, et les bassins de vie des montagne du Jura qui proposent des infrastructures nombreuses (Champagnole, Saint-Claude).\
 42 bassins de vie n'ont pas de piscines publique accessible aux scolaires.
 
 ```{r,echo=F}
@@ -380,7 +365,7 @@ piscines %>% filter(REG=='27')  %>% group_by(BV2012) %>% summarise_if(is.numeric
                                        "250 à 350 m² / 10 000",
                                        "> 350 m² / 10 000"  )  )) %>%
   left_join(.,appartenance %>% filter(NIVGEO=="BV2012") %>% select(CODGEO,LIBGEO),by=c("BV2012"="CODGEO") ) %>%
-  select (BV2012, LIBGEO, `Nombre de piscines publiques`=nbpiscines,`Piscines couvertes`=nbpiscines_couv,`Piscines saisonnières`=nbpisc_saison,
+  select (BV2012, LIBGEO, `Nombre de bassins publics`=nbpiscines,`Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrlrr",
@@ -443,13 +428,13 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 
 ```
 
-`r fa(name="fas fa-history")` Temps d'accès {data-orientation="rows"}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="800"}
------------------------------------------------------------------------
-### Temps d'accès aux piscines de la région
+# `r fa(name="fas fa-history")` Temps d'accès {data-orientation="rows"}
+
+## Row {data-height="20"}
+
+## Row {data-height="700"}
+
+### Temps d'accès aux piscines de la région (©[OpenStreetMap](https://www.openstreetmap.org/copyright) et ©[OSRM](http://project-osrm.org/) ) {data-height="700"}
 
 Certains territoires sont éloignés des bassins de natation, particulièrement les bassins couverts, y compris des communes équipées d'écoles primaires : dans le Morvan, le nord Côte-d'Or, entre Pouilly en Auxois et Arnay le Duc ou encore autour de Pierre de Bresse.
 
@@ -506,64 +491,20 @@ leaflet() %>%
             title = "temps d'accès") 
 ```
 
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
+## Row {data-height="20"}
 
-Pour en savoir plus {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+## Row {data-height="60"}
 
-**Sources :**  
+**Sources :**
 
+-   Injep, MEDES, recensement des "licences et des clubséquipements sportifs (RES)
 
+    -   <https://equipements.sports.gouv.fr/pages/accueil/>
+    -   <https://carto-stats.injep.fr/#c=home>
+    -   <https://www.data.gouv.fr/fr/datasets/recensement-des-equipements-sportifs-espaces-et-sites-de-pratiques/>
 
-* Injep, MEDES, recensement des "licences et des clubséquipements sportifs (RES)
+-   Insee, Base permanente des équipements
 
-  + https://equipements.sports.gouv.fr/pages/accueil/
-  + https://carto-stats.injep.fr/#c=home
-  + https://www.data.gouv.fr/fr/datasets/recensement-des-equipements-sportifs-espaces-et-sites-de-pratiques/  
-  
-* Insee, Base permanente des équipements
-
-  + https://www.insee.fr/fr/metadonnees/source/operation/s2027/presentation
-
-Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
-1. **Généralités**  
- + [Territoire(s)](1.1_demo.html)  
- + [Structure de la population](1.2_structure.html)  
- + [évolution de la population](1.3_evol.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-2. **Jeunesse**   
- + [Jeunesse](2.1_jeunesse.html)   
- + [Préscolaire](2.2_presco.html)  
- + [Accueils collectifs de mineurs](2.3_ACM.html)    
-
-Row {data-height="100"}
------------------------------------------------------------------------
-3. **Engagement**   
- + [Vie associative](3.1_VA.html)   
- + [Service civique](3.2_SC.html)   
-
-Row {data-height="100"}
------------------------------------------------------------------------
-4. **Formation**   
- + [Diplômes](4.1_diplomes.html)  
- + [Organismes de formation](4.2_OF3.html)  
-
-Row {data-height="100"}
------------------------------------------------------------------------
-5. **Sport**    
- + [Clubs sportifs](5.1_clubs.html)  
- + [Licences sportives](5.2_licences.html)  
- + [Sport de nature](5.3_nature.html)  
- + [Piscines](5.4_piscines.html)  
- + [équipements sportifs](5.5_RES.html)  
+    -   <https://www.insee.fr/fr/metadonnees/source/operation/s2027/presentation>
