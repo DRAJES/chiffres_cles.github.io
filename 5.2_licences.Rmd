@@ -693,7 +693,7 @@ lic_epci <- sp::merge(epciwgs,lic27epci %>%
     mutate_at(3:7,as.numeric) ,
   by="CODE_EPCI")
 
-leaflet(lic_epci) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(lic_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
@@ -767,7 +767,7 @@ lic_bv <- sp::merge(bvwgs,lic27bv %>%
     mutate_at(3:7,as.numeric),
   by="BV2012")
 
-leaflet(lic_bv) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(lic_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%

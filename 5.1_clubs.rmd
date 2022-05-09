@@ -650,7 +650,7 @@ club_epci <- sp::merge(epciwgs,lic27epci %>%
     mutate_at(3:7,as.numeric),
   by="CODE_EPCI")
 
-leaflet(club_epci) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(club_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
@@ -679,7 +679,7 @@ addLegend( position = "bottomright",pal = pal2 ,title = "taux de clubs",values =
 Nombre de clubs et taux de pénétration sportive
 
 ```{r}
-leaflet(club_epci) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(club_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
@@ -744,7 +744,7 @@ club_bv <- sp::merge(bvwgs,lic27bv %>%
   by="BV2012")
 
 
-leaflet(club_bv) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(club_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
@@ -773,7 +773,7 @@ addLegend( position = "bottomright",pal = pal2 ,title = "taux de clubs",values =
 Nombre de clubs et taux de pénétration sportive
 
 ```{r}
-leaflet(club_bv) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(club_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%

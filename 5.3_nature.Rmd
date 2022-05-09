@@ -41,7 +41,6 @@ output:
 #  library(fontawesome)
 #  library(tidyverse)
 
-sparkline(0)
 
 load("data/sport/RES.RData")
 #load("data/demo/basecom.RData")
@@ -218,7 +217,8 @@ dep27carto <- merge(dep27carto,depnature27,by.x="INSEE_DEP",by.y="Var1")
 
 l <- leaflet() %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-   addProviderTiles(providers$OpenTopoMap) 
+   addProviderTiles(providers$OpenTopoMap) %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking ) 
 
 names(nature27.df) %>%
   purrr::walk( function(df) {
@@ -258,7 +258,9 @@ dep27carto <- merge(dep27carto,depnature27,by.x="INSEE_DEP",by.y="Var1")
 
 l <- leaflet() %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-   addProviderTiles(providers$OpenTopoMap) 
+   addProviderTiles(providers$OpenTopoMap) %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking) 
+
 
 names(nature27.df) %>%
   purrr::walk( function(df) {

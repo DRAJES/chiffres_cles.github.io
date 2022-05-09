@@ -124,7 +124,7 @@ RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
 RNAcarto <- merge(regwgs,RNAcarto,by="INSEE_REG")
   
 leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
- addProviderTiles(providers$Wikimedia) %>%
+ addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(data=RNAcarto,group  = "régions",weight = 2,color = "#2F4F4F",
              fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
@@ -335,7 +335,7 @@ RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
 RNAcarto <- merge(depwgs,RNAcarto,by="INSEE_DEP")
   
 leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
- addProviderTiles(providers$Wikimedia) %>%
+ addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(data=RNAcarto,group  = "départements",weight = 2,color = "#2F4F4F",
              fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
@@ -507,7 +507,7 @@ RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr))  %>% filter(EPCI %in%
 RNAcarto <- merge(epcicarto,RNAcarto,by="CODE_EPCI")
   
 leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
- addProviderTiles(providers$Wikimedia) %>%
+ addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=RNAcarto,group  = "régions",weight = 2,color = "#2F4F4F",
              fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
@@ -595,7 +595,7 @@ RNAcarto <- RNApop %>% filter (!is.na(REG) & !is.na(objr))  %>% filter(BV2012 %i
 RNAcarto <- merge(bvcarto,RNAcarto,by="BV2012")
   
 leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
- addProviderTiles(providers$Wikimedia) %>%
+ addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=RNAcarto,group  = "régions",weight = 2,color = "#2F4F4F",
              fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,

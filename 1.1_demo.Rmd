@@ -15,6 +15,9 @@ output:
 
 flexdashboard::flex_dashboard(self_contained = F)
 
+use_providers(get_providers())
+
+
 load("data/demo/basecom.RData")
 load("data/demo/tab_demo.RData")
 load("data/demo/cartes.RData")
@@ -127,8 +130,6 @@ dep27_tab %>%  select(Région,Département,Nom,Population,Densité,rang,rang_nat
 
 ### Carte départementale
 
-**Sous-couche de grille de densité en fond de carte**
-
 ```{r}
 leaflet(depwgs) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
@@ -181,7 +182,6 @@ epci27_tab %>%  select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,p
 
 ### Carte ECPI
 
-**Sous-couche de grille de densité en fond de carte**
 
 ```{r}
 leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
@@ -289,27 +289,28 @@ basecom %>% filter(REG=='27') %>% select(CODGEO:SUPERFICIE,Population=pop) %>%
 
 ```{r}
 leaflet() %>% 
-  addProviderTiles(providers$OpenStreetMap.France, group="OSM") %>%
-  addProviderTiles(providers$OpenTopoMap, group="Topo") %>%
-  addProviderTiles(providers$GeoportailFrance.orthos, group="Geoportail") %>%
-  addProviderTiles(providers$GeoportailFrance.maps, group="Geoportail.maps") %>%
-  addProviderTiles(providers$Wikimedia, group="wikimedia") %>%
+  addProviderTiles(providers$OpenStreetMap, group="OSM") %>%
+  addProviderTiles(providers$OpenStreetMap.France, group="OSM France") %>%
+  addProviderTiles(providers$OpenTopoMap, group="Topographie") %>%
+  addProviderTiles(providers$GeoportailFrance, group="Geoportail") %>%
+  addProviderTiles(providers$GeoportailFrance.orthos, group="Geoportail.ortho") %>%
+  addProviderTiles(providers$GeoportailFrance.plan, group="Geoportail.plan") %>%
+  addProviderTiles(providers$CyclOSM, group="vélo") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="NASA") %>%
   addProviderTiles(providers$OpenSeaMap, group="hydro") %>%
-  #addProviderTiles(providers$WaymarkedTrails_riding , group="rando") %>%
-  addProviderTiles(providers$Thunderforest.OpenCycleMap, group="vélo") %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking , group="rando") %>%
+  addProviderTiles(providers$WaymarkedTrails.cycling, group="cycle") %>%
   addProviderTiles(providers$OpenRailwayMap, group="routes") %>%
   addProviderTiles(providers$SafeCast, group="safecast") %>%
-
-
+  addProviderTiles(providers$WaymarkedTrails.slopes, group="slopes") %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
  # addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B8E23", stroke=F,weight = 1) %>%
   #addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F ) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
 addLayersControl(
-    baseGroups = c("OSM","Topo","Geoportail","Geoportail.maps","wikimedia","NASA", "hydro"),
-    overlayGroups = c("rando","vélo","routes","safecast"),
+    baseGroups = c("OSM","OSM France", "Topographie","Geoportail", "Geoportail.ortho","Geoportail.plan","vélo","NASA", "hydro"),
+    overlayGroups = c("rando","cycle","routes","safecast","slopes"),
     options = layersControlOptions(collapsed = F,autoZIndex = F))
 ```
 

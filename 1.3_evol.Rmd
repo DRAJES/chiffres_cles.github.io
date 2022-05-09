@@ -73,7 +73,7 @@ region_tab %>%
 
 ```{r,echo=F}
 
-leaflet(regwgs) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(regwgs) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
@@ -136,7 +136,7 @@ mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>"
 
 ```{r,echo=F}
 
-leaflet(depwgs) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(depwgs) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 )%>%
@@ -194,7 +194,7 @@ mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>
   
 ```{r,echo=F}
 
-leaflet(epcicarto) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(epcicarto) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
@@ -250,7 +250,7 @@ mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",
 
 ```{r,echo=F}
 
-leaflet(bvcarto) %>%  addProviderTiles(providers$Wikimedia) %>%
+leaflet(bvcarto) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%

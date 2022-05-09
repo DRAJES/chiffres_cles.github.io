@@ -221,7 +221,7 @@ piscinesdep <- sp::merge(depwgs,piscines %>% group_by(INSEE_DEP=DEP) %>%  summar
                                        "> 350 m² / 10 000"  )  )) ,by="INSEE_DEP")
 
 leaflet(piscinesdep) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
     setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=T, 
                            fillColor = ~pal(tranche), fillOpacity = 0.8 ) %>%
@@ -310,7 +310,7 @@ piscinesepci <- sp::merge(epciwgs,piscines %>% group_by(CODE_EPCI=EPCI) %>%
                                        "> 350 m² / 10 000"  )  )) ,by="CODE_EPCI")
 
 leaflet(piscinesepci) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
     setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addAwesomeMarkers(data=bassins,icon=icons,popup = popupTable(bassins,row.numbers = F,feature.id = F),
                     group = "tous bassins") %>%
@@ -404,7 +404,7 @@ piscinesbv <- sp::merge(bvwgs,piscines %>% group_by(BV2012) %>%
                                        "> 350 m² / 10 000"  )  )) ,by="BV2012")
 
 leaflet(piscinesbv) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
     setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addAwesomeMarkers(data=bassins,icon=icons,popup = popupTable(bassins,row.numbers = F,feature.id = F),
                     group = "tous bassins") %>%
@@ -441,7 +441,7 @@ Certains territoires sont éloignés des bassins de natation, particulièrement 
 ```{r}
 leaflet() %>% 
   setView(mean(bassins$lon), mean(bassins$lat), zoom = 8) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   addAwesomeMarkers(data=bassins,icon=icons,popup = popupTable(bassins,row.numbers = F,feature.id = F),
                     group = "tous bassins") %>%
   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~factPal(iso_diff$drive_times),

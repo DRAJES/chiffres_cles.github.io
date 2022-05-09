@@ -167,7 +167,7 @@ res <- sp::merge(regwgs,res,by="INSEE_REG")
   
 leaflet(res) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi),
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% select(75,60,68:74), feature.id=F,row.numbers = F),
@@ -374,7 +374,7 @@ res <- sp::merge(depwgs,res,by="INSEE_DEP")
   
 leaflet(res) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi),
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% select(77,62,70:76), feature.id=F,row.numbers = F),
@@ -527,7 +527,7 @@ res <- sp::merge(epcicarto,res,by="CODE_EPCI")
   
 leaflet(res) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi),
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% select(74,59,67:73), feature.id=F,row.numbers = F),
@@ -680,7 +680,7 @@ res <- sp::merge(bvcarto,res,by="BV2012")
   
 leaflet(res) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addProviderTiles(providers$Wikimedia) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi),
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% select(71,56,64:70), feature.id=F,row.numbers = F),
