@@ -4,26 +4,15 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
-#library(flexdashboard)
-#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-#library(gghighlight)
-#library(highcharter)
-#library(janitor)
-#library(DT)
-#library(formattable)
 
 load("data/engagement/SC.RData")
-
-#load("data/demo/basecom.RData")
-#load("data/demo/cartes.RData")
-
 
 pal2 <- colorBin("YlOrBr", domain =0:2 ,bins= c(0, 0.8, 0.9, 1, 1.1, 2) )
 
@@ -216,8 +205,6 @@ basebfc %>%filter(depvol %in% depbfc ) %>%
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", general_title = "Source : ",
             footnote_as_chunk = T)  
 
@@ -300,9 +287,6 @@ basebfc %>%filter(depmis=="ETRANGER") %>%
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
-  #row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", general_title = "Source : ",
             footnote_as_chunk = T) 
 ```
@@ -339,8 +323,6 @@ basebfcsig %>%filter(depvol %in% depbfc) %>%
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", general_title = "Source : ",
             footnote_as_chunk = T)
 

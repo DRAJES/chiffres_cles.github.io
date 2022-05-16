@@ -4,32 +4,17 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F}
-#library(flexdashboard)
-#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-#library(plotly)
-#library(gghighlight)
-#library(highcharter)
-#library(plotly)
-#library(ggiraph)
-#library(janitor)
-#library(DT)
-#library(formattable)
-#library(leaflet)
-#library(leaflet.extras2)
-#library(leaflet.minicharts)
+
 
 
 load("data/sport/RES.RData")
-
-#load("data/demo/basecom.RData")
-#load("data/demo/cartes.RData")
 
 appartenance <- rbind(appartenance,c("REG","FR","France","-"))
 
@@ -135,9 +120,6 @@ equip %>% filter(REG=='27') %>% group_by(`Famille d'équipement`=EquipementFamil
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   add_header_above(c(" "=3,"dont"=2)) %>%
- # row_spec(nrow(),bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
              number = c("couverts : équipements intérieurs, découvrables ou extérieurs couverts  \n","proximité : terrains en accès libre"), footnote_as_chunk = T) %>%
   scroll_box(height="800px")
@@ -493,10 +475,6 @@ equip %>% filter(!is.na(EPCI)) %>% filter(EPCI %in% basecom$EPCI[basecom$REG=="2
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   add_header_above(c(" "=4,"taux structurant"=2,"taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
- # row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
- # row_spec(9,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
              number = c("structurant : salles de sport collectifs \n","proximité : terrains en accès libre"), footnote_as_chunk = T) %>%
   scroll_box(height="800px")
@@ -585,8 +563,6 @@ equip %>% filter(!is.na(BV2012)) %>% filter(BV2012 %in% basecom$BV2012[basecom$R
                                       proxi=sum (EquipementCateg == "Equipements Ext."
                                                    & EquProximite== 1,na.rm = T ) ) %>%
                   left_join(.,basecom %>% select(BV2012,pop) %>% group_by(BV2012) %>% summarise(pop=sum(pop,na.rm=T)),by="BV2012") %>% arrange(desc(equ)) %>%
-                  #adorn_totals("row",name = "BFC") %>%
-                 # mutate(txequi=round(10000*equ/pop,1) ) %>%
   left_join(.,appartenance %>% filter(NIVGEO=="BV2012") %>% select(CODGEO,LIBGEO),by=c("BV2012"="CODGEO") ) %>%
   select(BV2012,`bassin de vie`=LIBGEO,équipements=equ,
          structurant,`dont gymnases`=gymnases,`tennis`=tennis, `dont couverts`=tennis_couv,`grands jeux`=gdsjeux, proximité=proxi,`tous bassins`= bassins) %>%
@@ -597,9 +573,6 @@ equip %>% filter(!is.na(BV2012)) %>% filter(BV2012 %in% basecom$BV2012[basecom$R
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1)) %>%
-#  row_spec(9,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
              number = c("structurant : salles de sport collectifs \n","proximité : terrains en accès libre"), footnote_as_chunk = T) %>%
   scroll_box(height="800px")
@@ -646,10 +619,6 @@ equip %>% filter(!is.na(BV2012)) %>% filter(BV2012 %in% basecom$BV2012[basecom$R
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   add_header_above(c(" "=4,"taux structurant"=2,"taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
- # row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
- # row_spec(9,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
              number = c("structurant : salles de sport collectifs \n","proximité : terrains en accès libre"), footnote_as_chunk = T) %>%
   scroll_box(height="800px") 

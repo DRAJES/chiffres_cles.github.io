@@ -5,35 +5,19 @@ output:
     self_contained : false
     orientation: rows
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F}
-#library(flexdashboard)
-#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-##library(plotly)
-##library(gghighlight)
-#library(highcharter)
-##library(plotly)
-##library(ggiraph)
-#library(janitor)
-#library(DT)
-#library(formattable)
-#library(leaflet)
-#library(leaflet.extras2)
-
 
 load("data/sport/piscines.RData")
 load("data/sport/bassins.RData")
 load("data/BPE/ecoles.RData")
 
 load("data/sport/iso.RData")
-
-#load("data/demo/basecom.RData")
-#load("data/demo/cartes.RData")
 
 factPal <- colorFactor("Blues", iso_diff$drive_times,na.color = "#808080")
 
@@ -97,8 +81,7 @@ piscines %>% group_by(REG) %>% summarise_if(is.numeric,sum) %>%
   column_spec(7, bold=T) %>%
   row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   row_spec(14,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
            footnote_as_chunk = T)
 ```
@@ -160,10 +143,6 @@ piscines %>% group_by(DEP) %>% filter(DEP %in% depbfc) %>% summarise_if(is.numer
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(6, bold=T) %>%
- # row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
- # row_spec(14,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
            footnote_as_chunk = T)
 ```
@@ -277,10 +256,6 @@ piscines %>% filter(REG=='27')  %>% group_by(EPCI) %>% summarise_if(is.numeric,s
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(6, bold=T) %>%
- # row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
- # row_spec(14,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
            footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
@@ -372,10 +347,6 @@ piscines %>% filter(REG=='27')  %>% group_by(BV2012) %>% summarise_if(is.numeric
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(6, bold=T) %>%
- # row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
- # row_spec(14,bold = T ) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
            footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 

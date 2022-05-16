@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
@@ -13,12 +13,8 @@ output:
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
 
 load("data/jeunesse/PMI.RData")
-#load("data/demo/cartes.RData")
 
 pal <- colorBin("YlOrBr", domain =0:100 ,bins= c(0,5, 7.5,10, 12.5, 15, 17.5, 20,25, 100) )
-
-#pal3 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 5,7.5, 10,12.5, 15,20, 100) )
-
 
 # Option de chunk
 knitr::opts_chunk$set(
@@ -61,11 +57,9 @@ ACM_PMI %>% pivot_longer(-1,names_to = "reg") %>% pivot_wider(names_from = ...1)
   kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
     align="crrrrrrcrcrrrr")%>%
   kable_styling("hover", full_width = F) %>%
-  #column_spec(1,width = "10cm")%>%
   column_spec(c(2,8,10), bold=T) %>%
   row_spec(2,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   add_header_above(c( " "=2,"détail des accueils collectifs"=5," "=3,"Particuliers employeurs"=2) ) %>%
-  #row_spec(c(2,9,17,25,33,41),bold = T,color = "red") %>%
   footnote(general = "DREES, enquête aide sociale", general_title = "Source : ",
             number = c("pour 100 enfants nés au cours des 3 dernières années \n","Rentrée 2019-2020 pour 100 enfants de 2 ans"),
             footnote_as_chunk = T)  %>%
@@ -200,11 +194,9 @@ FRANCHE-COMTE`,.before = `France métropolitaine`) %>%
   kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
     align="crrrrrrcrcrrrr")%>%
   kable_styling("hover", full_width = F) %>%
-  #column_spec(1,width = "10cm")%>%
   column_spec(c(2,8,10), bold=T) %>%
   row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   add_header_above(c( " "=2,"détail des accueils collectifs"=5," "=3,"Particuliers employeurs"=2) ) %>%
-  #row_spec(c(2,9,17,25,33,41),bold = T,color = "red") %>%
   footnote(general = "DREES, enquête aide sociale", general_title = "Source : ",
            number = c("pour 100 enfants nés au cours des 3 dernières années \n","Rentrée 2019-2020 pour 100 enfants de 2 ans"),
             footnote_as_chunk = T)  %>%
@@ -240,8 +232,6 @@ ACM_PMI_dep %>% slice(1:6)%>%
   column_spec(1,width = "10cm")%>%
   column_spec(11, bold=T) %>%
   column_spec(10,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #row_spec(c(2,9,17,25,33,41),bold = T,color = "red") %>%
   footnote(general = "DREES, enquête aide sociale", general_title = "Source : ",
             footnote_as_chunk = T)  %>%
   scroll_box(height = "600px")

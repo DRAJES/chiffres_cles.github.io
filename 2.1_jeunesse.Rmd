@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
@@ -12,11 +12,6 @@ output:
 
  
 ```{r setup, include=FALSE ,echo=FALSE, cache=F} 
-#library(flexdashboard)
-#source("librairies.R")
-#load("data/demo/basecom.RData")
-#load("data/demo/tab_demo.RData")
-#load("data/demo/cartes.RData")
 
 pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 12.5, 15, 17.5, 20, 100) )
 pal3 <- colorBin("RdYlBu", domain =-10:10 ,bins=c(-Inf,-2, -1, -0.5,0,0.5, 1 ,2, Inf), reverse = T)

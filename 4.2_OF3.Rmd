@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex

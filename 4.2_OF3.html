@@ -22,7 +22,7 @@ window.FlexDashboardComponents = [];
 </script>
 
 <script id="flexdashboard-navbar" type="application/json">
-[{"title":"Accueil","href":"DRAJESBFC.html","align":"right","icon":"fa-home"},{"icon":"fa-share-alt","items":[{"title":"Twitter","icon":"fa-twitter"},{"title":"Facebook","icon":"fa-facebook"},{"title":"Google+","icon":"fa-google-plus"},{"title":"LinkedIn","icon":"fa-linkedin"},{"title":"Pinterest","icon":"fa-pinterest"}]},{"title":"Source Code","icon":"fa-code","href":"source_embed","align":"right"}]
+[{"title":"Accueil","href":"DRAJESBFC.html","align":"right","icon":"fa-home"},{"icon":"fa-share-alt","items":[{"title":"Twitter","icon":"fa-twitter"},{"title":"Facebook","icon":"fa-facebook"},{"title":"Google+","icon":"fa-google-plus"},{"title":"LinkedIn","icon":"fa-linkedin"},{"title":"Pinterest","icon":"fa-pinterest"}]}]
 </script>
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -43,10 +43,6 @@ window.FlexDashboardComponents = [];
 <script src="site_libs/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
-<link href="site_libs/featherlight-1.3.5/featherlight.min.css" rel="stylesheet" />
-<script src="site_libs/featherlight-1.3.5/featherlight.min.js"></script>
-<link href="site_libs/prism-1.4.1/prism.css" rel="stylesheet" />
-<script src="site_libs/prism-1.4.1/prism.js"></script>
 <style type="text/css">
 
 /*
@@ -2721,99 +2717,6 @@ $(document).ready(function () {
 });
 </script>
 
-<div id="flexdashboard-source-code">
-<pre class="line-numbers"><code class="language-r">---
-title: "Organismes de formation"
-output: 
-  flexdashboard::flex_dashboard:
-    vertical_layout: scroll
-    social: menu
-    source_code: embed
-    navbar:
-      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
-    theme: simplex
----
-
-```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
-
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
-
-options(knitr.kable.NA = '')
-options(knitr.table.format = "html")
-```
-
-# `r fa(name = "fas fa-map-marked-alt")` Cartographie des OF {data-orientation="rows" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-**Cartographie interactive**\
-[![](images/FCE.PNG) </br>\
-Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
-
-# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="200"}
-
-**Cartographie interactive**\
-[![](images/FCE.PNG) </br>\
-Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
-
-
-# Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-1.  **Généralités**\
-
--   [Territoire(s)](1.1_demo.html)\
--   [Structure de la population](1.2_structure.html)\
--   [évolution de la population](1.3_evol.html)
-
-## Row {data-height="100"}
-
-2.  **Jeunesse**\
-
--   [Jeunesse](2.1_jeunesse.html)\
--   [Préscolaire](2.2_presco.html)\
--   [Accueils collectifs de mineurs](2.3_ACM.html)
-
-## Row {data-height="100"}
-
-3.  **Engagement**\
-
--   [Vie associative](3.1_VA.html)\
--   [Service civique](3.2_SC.html)
-
-## Row {data-height="100"}
-
-4.  **Formation**\
-
--   [Diplômes](4.1_diplomes.html)\
--   [Organismes de formation](4.2_OF3.html)
-
-## Row {data-height="100"}
-
-5.  **Sport**\
-
--   [Clubs sportifs](5.1_clubs.html)\
--   [Licences sportives](5.2_licences.html)\
--   [Sport de nature](5.3_nature.html)\
--   [Piscines](5.4_piscines.html)\
--   [équipements sportifs](5.5_RES.html)
-</code></pre>
-</div>
 <script type="text/javascript">
 $(document).ready(function () {
   FlexDashboard.init({

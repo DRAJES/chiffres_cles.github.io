@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
@@ -12,13 +12,7 @@ output:
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=F}
 
-#library(sparkline)
 sparkline(0)
-
-#load("data/sport/licences.RData")
-#load("data/demo/basecom.RData")
-#load("data/demo/cartes.RData")
-#load("data/sport/spark.RData")
 
 regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
 
@@ -221,8 +215,6 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
    kable_styling("hover", full_width = F) %>%
    column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(16, bold=T) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -269,8 +261,6 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
   kable_styling("hover", full_width = F) %>%
   column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(16, bold=T) %>%
-  #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -315,8 +305,6 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
   kable_styling("hover", full_width = F) %>%
 column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(16, bold=T) %>%
-  #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -505,7 +493,6 @@ rename(`unisport olympique`="Total fédérations unisport olympiques",`unisport 
   row_spec(9, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(6, bold=T) %>%
   add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -609,8 +596,6 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -640,8 +625,6 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
-#  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -676,9 +659,7 @@ lic27epci %>%
       align="lcrlrrrrrrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-#  column_spec(11, bold=T) %>%
   add_header_above(c( " "=3,"Taux de licences"=2,"Taux de licences parmi les"=2) ) %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
@@ -750,9 +731,7 @@ lic27bv %>%
       align="lcrlrrrrrrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-#  column_spec(11, bold=T) %>%
   add_header_above(c( " "=3,"Taux de licences"=2,"Taux de licences parmi les"=2) ) %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T)   %>%
   scroll_box(height = "800px") 

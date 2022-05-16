@@ -4,36 +4,15 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
-#library(flexdashboard)
-#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-#library(gghighlight)
-#library(highcharter)
-#library(janitor)
-#library(DT)
-#library(formattable)
 
 load("data/jeunesse/ACM.RData")
-#load("data/demo/cartes.RData")
-
-#thm <- 
-#  hc_theme(
-#  #  colors = c("#1a6ecc", "#434348", "#90ed7d"),
-#    chart = list(
-#      backgroundColor = "transparent",
-#      style = list(fontFamily = "Source Sans Pro")
-#    ),
-#    xAxis = list(
-#      gridLineWidth = 1
-#    )
-#  )
-
 
 # Option de chunk
 knitr::opts_chunk$set(
@@ -71,7 +50,6 @@ ACM_SH %>%
   column_spec(1,width = "10cm")%>%
   column_spec(15, bold=T) %>%
   column_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(c(2,9,17,25,33,41),bold = T,color = "red") %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
             footnote_as_chunk = T)  %>%
@@ -147,7 +125,6 @@ ACM_SH_dep %>%
   column_spec(1,width = "10cm")%>%
   column_spec(11, bold=T) %>%
   column_spec(10,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(c(2,9,17,25,33,41),bold = T,color = "red") %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
             footnote_as_chunk = T)  %>%
@@ -194,7 +171,6 @@ ACM_colo %>%
   column_spec(1,width = "10cm")%>%
   column_spec(15, bold=T) %>%
   column_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(c(1,11,16,21,27),bold = T,color = "red") %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
             footnote_as_chunk = T)  %>%
@@ -282,7 +258,6 @@ ACM_colo_dep %>%
   column_spec(1,width = "10cm")%>%
   column_spec(11, bold=T) %>%
   column_spec(10,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(c(1,11,16,21,27),bold = T,color = "red") %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
             footnote_as_chunk = T)  %>%
@@ -367,7 +342,6 @@ ACM_scout %>%
   column_spec(1,width = "10cm")%>%
   column_spec(15, bold=T) %>%
   column_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(2,bold = T,color = "red") %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
             footnote_as_chunk = T)  %>%
@@ -428,7 +402,6 @@ ACM_scout_dep %>%
   column_spec(1,width = "10cm")%>%
   column_spec(11, bold=T) %>%
   column_spec(10,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(2,bold = T,color = "red") %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
             footnote_as_chunk = T)  %>%

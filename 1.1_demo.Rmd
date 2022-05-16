@@ -5,7 +5,7 @@ output:
     self_contained : FALSE
     orientation: rows
     social: menu
-    source_code: embed
+   #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
@@ -60,11 +60,10 @@ region_tab %>%  dplyr::select(Région,Nom,Population,Densité,rang,`Taux femmes`
       align="clrrrccll",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  #column_spec(16, width = "4cm") %>%
   row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
   row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2013/population RP 2018"), footnote_as_chunk = T)
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2013/population RP 2018"), footnote_as_chunk = T) 
 
 ```
 
@@ -119,7 +118,6 @@ dep27_tab %>%  select(Région,Département,Nom,Population,Densité,rang,rang_nat
         align="cclrrrcccll",
         escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  #column_spec(16, width = "4cm") %>%
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
   footnote(general = " Insee RP2018", general_title = "Source : ",
@@ -304,8 +302,6 @@ leaflet() %>%
   addProviderTiles(providers$SafeCast, group="safecast") %>%
   addProviderTiles(providers$WaymarkedTrails.slopes, group="slopes") %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
- # addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B8E23", stroke=F,weight = 1) %>%
-  #addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F ) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
 addLayersControl(

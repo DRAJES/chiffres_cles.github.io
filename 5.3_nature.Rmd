@@ -4,49 +4,15 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F}
-#library(flexdashboard)
-#source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-#library(gghighlight)
-#library(highcharter)
-#library(janitor)
-#library(DT)
-#library(sparkline)
-#library(formattable)
-#library(rgdal)
-#  library(leafpop)
-#  library(leaflet)
-#  library(leaflet.extras2)
-#  library(geosphere)
-#  library(sp)
-#  library(sf)
-#  library(maps)
-#  library(leaflet.providers) 
-#  library(leaflet.minicharts)
-#  library(readxl)
-#  library(raster)
-#  library(smoothr)
-#  library(rmapshaper)
-#  library(rpivotTable)
-#  library(foreign)
-#  library(osrm)
-#  library(ggmap)
-#  library(rpivotTable)
-#  library(fontawesome)
-#  library(tidyverse)
-
 
 load("data/sport/RES.RData")
-#load("data/demo/basecom.RData")
-#load("data/demo/tab_demo.RData")
-#load("data/demo/cartes.RData")
-
 
 
 icons <- awesomeIconList (

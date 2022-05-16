@@ -4,30 +4,15 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
-#library(flexdashboard)
-#source("librairies.R")
-#library(gghighlight)
-#library(highcharter)
-#library(janitor)
-#library(DT)
-#library(formattable)
-#library(leaflet.providers)
-#library(leaflet)
-#library(leaflet.minicharts)
-
 
 load("data/engagement/asso.RData")
-
-#load("data/demo/basecom.RData")
-#load("data/demo/cartes.RData")
-
 
 pal2 <- colorBin("YlOrBr", domain =0:10 ,bins= c(0, 3, 3.5, 4, 4.5, 5,5.5,6,10) )
 
@@ -162,20 +147,15 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
   select(région,total,txasso,Culture,Sports,Loisirs,
                                Social,Santé,`Amicales-Entraide`,Enseignement,
                                Economie,Environnement,Autres,NR) %>%
-  mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
-  mutate(txasso=color_bar('gold')
-         (digits(txasso ,2,decimal.mark=",")), 
-          Culture=color_tile('transparent','lightgreen')(Culture),
-          Sports=color_tile('transparent','lightgreen')(Sports),
-          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
-          Social=color_tile('transparent','lightgreen')(Social),
-          Santé=color_tile('transparent','lightgreen')(Santé),
-          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
-          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
-          Economie=color_tile('transparent','lightgreen')(Economie),
-          Environnement=color_tile('transparent','lightgreen')(Environnement),
-          Autres=color_tile('transparent','lightblue')(Autres),
-          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+  mutate_at(vars(Culture:NR),~round(.*100/total,1) ) %>%
+  mutate_at(vars(Culture:Environnement),~color_tile('transparent','lightgreen')
+                                         (digits(.,1,decimal.mark=",") ) ) %>%
+    mutate(txasso=color_bar('gold')
+          (digits(txasso ,2,decimal.mark=",")), 
+          Autres=color_tile('transparent','lightblue')
+          (digits(Autres,1,decimal.mark=",") ),
+          NR=color_tile('transparent','lightgrey')
+          (digits(NR,1,decimal.mark=",") ) ) %>%
    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="crlrrrrrr",
       escape = F) %>% 
@@ -184,8 +164,6 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
   column_spec(3, italic=T) %>%
   row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   row_spec(13,  bold = T ) %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Répertoire National des Associations", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -375,30 +353,22 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
   select(Département,total,txasso,Culture,Sports,Loisirs,
                                Social,Santé,`Amicales-Entraide`,Enseignement,
                                Economie,Environnement,Autres,NR) %>%
-   mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
-  mutate(txasso=color_bar('gold')
-         (digits(txasso ,2,decimal.mark=",")), 
-          Culture=color_tile('transparent','lightgreen')(Culture),
-          Sports=color_tile('transparent','lightgreen')(Sports),
-          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
-          Social=color_tile('transparent','lightgreen')(Social),
-          Santé=color_tile('transparent','lightgreen')(Santé),
-          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
-          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
-          Economie=color_tile('transparent','lightgreen')(Economie),
-          Environnement=color_tile('transparent','lightgreen')(Environnement),
-          Autres=color_tile('transparent','lightblue')(Autres),
-          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+  mutate_at(vars(Culture:NR),~round(.*100/total,1) ) %>%
+  mutate_at(vars(Culture:Environnement),~color_tile('transparent','lightgreen')
+                                         (digits(.,1,decimal.mark=",") ) ) %>%
+    mutate(txasso=color_bar('gold')
+          (digits(txasso ,2,decimal.mark=",")), 
+          Autres=color_tile('transparent','lightblue')
+          (digits(Autres,1,decimal.mark=",") ),
+          NR=color_tile('transparent','lightgrey')
+          (digits(NR,1,decimal.mark=",") ) ) %>%
    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="crlrrrrrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(2, bold=T) %>%
   column_spec(3, italic=T) %>%
-  #row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   row_spec(9,  bold = T ) %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Répertoire National des Associations", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -462,30 +432,22 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(EPCI %in% basecom$EPC
   select(EPCI,EPCIlib,total,txasso,Culture,Sports,Loisirs,
                                Social,Santé,`Amicales-Entraide`,Enseignement,
                                Economie,Environnement,Autres,NR) %>%
-  mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
-  mutate(txasso=color_bar('gold')
-         (digits(txasso ,2,decimal.mark=",")), 
-          Culture=color_tile('transparent','lightgreen')(Culture),
-          Sports=color_tile('transparent','lightgreen')(Sports),
-          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
-          Social=color_tile('transparent','lightgreen')(Social),
-          Santé=color_tile('transparent','lightgreen')(Santé),
-          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
-          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
-          Economie=color_tile('transparent','lightgreen')(Economie),
-          Environnement=color_tile('transparent','lightgreen')(Environnement),
-          Autres=color_tile('transparent','lightblue')(Autres),
-          NR=color_tile('transparent','lightgrey')(NR) )  %>%
+  mutate_at(vars(Culture:NR),~round(.*100/total,1) ) %>%
+  mutate_at(vars(Culture:Environnement),~color_tile('transparent','lightgreen')
+                                         (digits(.,1,decimal.mark=",") ) ) %>%
+    mutate(txasso=color_bar('gold')
+          (digits(txasso ,2,decimal.mark=",")), 
+          Autres=color_tile('transparent','lightblue')
+          (digits(Autres,1,decimal.mark=",") ),
+          NR=color_tile('transparent','lightgrey')
+          (digits(NR,1,decimal.mark=",") ) ) %>%
    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrlrrrrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   column_spec(4, italic=T) %>%
-  #row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   row_spec(117,  bold = T ) %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Répertoire National des Associations", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
@@ -548,22 +510,15 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(BV2012 %in% basecom$B
   select(BV2012,BV2012lib,total,txasso,Culture,Sports,Loisirs,
                                Social,Santé,`Amicales-Entraide`,Enseignement,
                                Economie,Environnement,Autres,NR) %>%
-      mutate_at(vars(Culture:NR),~round(.*100/total,2) ) %>%
-  mutate(txasso=color_bar('gold')
-         (digits(txasso ,2,decimal.mark=",")), 
-          Culture=color_tile('transparent','lightgreen')(Culture),
-          Sports=color_tile('transparent','lightgreen')(Sports),
-          Loisirs=color_tile('transparent','lightgreen')(Loisirs),
-          Social=color_tile('transparent','lightgreen')(Social),
-          Santé=color_tile('transparent','lightgreen')(Santé),
-          `Amicales-Entraide`=color_tile('transparent','lightgreen')(`Amicales-Entraide`),
-          Enseignement=color_tile('transparent','lightgreen')(Enseignement),
-          Economie=color_tile('transparent','lightgreen')(Economie),
-          Environnement=color_tile('transparent','lightgreen')(Environnement),
-          Autres=color_tile('transparent','lightblue')(Autres),
-          NR=color_tile('transparent','lightgrey')(NR) )  %>%
-    #      Culture= 
-   #     (comma(100*Culture/total,digits=2,big.mark = " ",decimal.mark=",")) ) %>%
+  mutate_at(vars(Culture:NR),~round(.*100/total,1) ) %>%
+  mutate_at(vars(Culture:Environnement),~color_tile('transparent','lightgreen')
+                                         (digits(.,1,decimal.mark=",") ) ) %>%
+    mutate(txasso=color_bar('gold')
+          (digits(txasso ,2,decimal.mark=",")), 
+          Autres=color_tile('transparent','lightblue')
+          (digits(Autres,1,decimal.mark=",") ),
+          NR=color_tile('transparent','lightgrey')
+          (digits(NR,1,decimal.mark=",") ) ) %>%
    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrlrrrrr",
       escape = F) %>% 
@@ -571,8 +526,6 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(BV2012 %in% basecom$B
   column_spec(3, bold=T) %>%
   column_spec(4, italic=T) %>%
   row_spec(132,  bold = T ) %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #row_spec(length(.),bold = T,color = "navy") %>%
   footnote(general = "Répertoire National des Associations", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 

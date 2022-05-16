@@ -5,7 +5,7 @@ output:
     vertical_layout: scroll
     href: index.html
     social: menu
-    source_code: embed
+    #source_code: embed
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
@@ -164,7 +164,6 @@ bafareg %>%
   kable_styling("hover", full_width = F) %>%
   column_spec(15, bold=T) %>%
   column_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
   row_spec(c(1,4),bold = T) %>%
   footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports", general_title = "Source : ",
             footnote_as_chunk = T) 
@@ -202,8 +201,6 @@ bafa %>% relocate(2,.before = 11)%>%
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
   column_spec(10,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports", general_title = "Source : ",
             footnote_as_chunk = T) 
 
