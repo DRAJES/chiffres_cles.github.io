@@ -71,7 +71,8 @@ piscines %>% group_by(REG) %>% summarise_if(is.numeric,sum) %>%
                                        "200 à 250 m² / 10 000",
                                        "250 à 350 m² / 10 000",
                                        "> 350 m² / 10 000"  )  )) %>%
-  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% dplyr::select(CODGEO,LIBGEO),by=c("REG"="CODGEO") ) %>%
+  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% 
+              dplyr::distinct(CODGEO,LIBGEO),by=c("REG"="CODGEO") ) %>%
   dplyr::select (région=REG, LIBGEO, `Nombre de bassins publics`=nbpiscines,`Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
@@ -153,30 +154,39 @@ Le Jura est le **5e** département pour la surface natatoire disponible pour 10 
 
 ```{r}
 hchart(piscines %>% group_by(DEP) %>% summarise_if(is.numeric,sum) %>%
-                  mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>% arrange(desc(surfnat)) %>%
-         left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,LIBGEO),by=c("DEP"="CODGEO") ) ,
-                  "bar", hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
-                               color=ifelse(DEP %in% depbfc,"#6a5acd","#ffd700" )) , 
-       showInLegend = F, name = "surface natatoire /n pour 10 000 habitants", pointWidth = 2) %>%
-    hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="surface natatoire")) %>%
-  hc_add_theme(thm) 
-```
-
-### Surface natatoire pour 10 000 habitants infrarégionale
-
-```{r}
-hchart(piscines %>% group_by(DEP) %>% filter (DEP %in% depbfc) %>% summarise_if(is.numeric,sum) %>%
+         adorn_totals("row",name = "France") %>%
+         mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>% 
+         arrange(desc(surfnat)) %>%
+         left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% 
+                     select(CODGEO,LIBGEO),by=c("DEP"="CODGEO") ) %>%
+         mutate(LIBGEO=ifelse(DEP=="France","France",LIBGEO)),
+                  "bar", 
+      hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
+            color=ifelse(DEP %in% depbfc,"#6a5acd",
+                         ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
+        showInLegend = T, 
+        name = "surface natatoire <br/> pour 10 000 habitants", 
+        pointWidth = 2) %>%
+  
+  hc_add_series(piscines %>% group_by(DEP) %>% filter (DEP %in% depbfc) %>% 
+                  summarise_if(is.numeric,sum) %>%
+                  adorn_totals("row",name = "BFC") %>%
                   mutate(surfnat=round(10000*surfpiscines/pop,1) )  %>%
                   arrange(desc(surfnat)) %>%
-         left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,LIBGEO),by=c("DEP"="CODGEO") ) ,
-                  "bar", hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
-                               color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50" )) , 
-       showInLegend = F, name = "surface natatoire /n pour 10 000 habitants", pointWidth = 20) %>%
-      hc_xAxis(title=list(text="Départements")) %>%
+                  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+                              select(CODGEO,LIBGEO),by=c("DEP"="CODGEO") ) ,
+                  "bar", 
+                hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
+                          color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50" )) , 
+                  showInLegend = F, 
+                  name = "surface natatoire <br/> pour 10 000 habitants", pointWidth = 2) %>%
+  
+    hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
+    hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="surface natatoire")) %>%
-  hc_add_theme(thm) 
+    hc_add_theme(thm) 
 ```
+
 
 ### Carte départementale
 

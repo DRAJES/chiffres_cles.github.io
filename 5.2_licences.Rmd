@@ -383,10 +383,21 @@ licdep <- licdep %>% rownames_to_column(var="dep") %>% mutate (dep=ifelse(nchar(
 licdep[97,3] <- "France"
 
 
-hchart(licdep %>% slice(-97) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
-       showInLegend = F, name = "Licences", pointWidth = 2) %>%
-   hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Nombre de licences")) %>%
+hchart(licdep %>% slice(-97) %>% arrange(desc(V1)),"bar",
+       hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ),
+        showInLegend = T, 
+        name = "Licences", 
+        pointWidth = 2) %>%
+  
+  hc_add_series(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar",
+                hcaes(x=reorder(departement,V1),y=V1),
+                  color="#6a5acd", 
+                  showInLegend = F, 
+                  name = "Licences", 
+                  pointWidth = 2) %>%
+  hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+  hc_yAxis(title=list(text="Nombre de licences")) %>%
   hc_add_theme(thm) 
 ```
 
@@ -396,38 +407,27 @@ Le Jura et le Doubs au dessus de la moyenne nationale, les autres département d
 
 ```{r}
 
-hchart(licdep %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(departement,txlic),y=txlic,color=ifelse(dep %in% depbfc,"#6a5acd",
-                                                                 ifelse(dep=="FR","#ff7f50","#ffd700") ) ), 
-       showInLegend = F, name = "Taux de licences", pointWidth = 1) %>%
-   hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Taux de licences")) %>%
+hchart(licdep %>% arrange(desc(txlic)),"bar", 
+       hcaes(x=reorder(departement,txlic),y=txlic,color=ifelse(dep %in% depbfc,"#6a5acd",
+                                                               ifelse(dep=="FR","#ff7f50","#ffd700"))), 
+        showInLegend = T, 
+        name = "Taux de licences", 
+        pointWidth = 1) %>%
+  
+  hc_add_series(licdep %>% filter(dep %in% depbfc | dep == "FR") %>% arrange(desc(txlic)),"bar",
+                hcaes(x=reorder(departement,txlic),y=txlic,
+                      color=ifelse(dep %in% depbfc,"#6a5acd","#ff7f50") ),
+                  showInLegend = F, 
+                  name = "Taux de licences", 
+                  pointWidth = 2) %>%
+
+  hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+  hc_yAxis(title=list(text="Taux de licences")) %>%
   hc_add_theme(thm) 
 
 ```
 
-
-
-### Comparaisons infra régionales
-
-```{r}
-hchart(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
-       showInLegend = F, name = "Licences", pointWidth = 20) %>%
-   hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Nombre de licences")) %>%
-  hc_add_theme(thm) 
-```
-
-### Taux infra régionaux
-
-```{r}
-
-hchart(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(departement,txlic),y=txlic,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ), 
-       showInLegend = F, name = "Taux de licences", pointWidth = 20) %>%
-   hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Taux de licences")) %>%
-  hc_add_theme(thm) 
-
-```
 
 ### Carte départementale
 

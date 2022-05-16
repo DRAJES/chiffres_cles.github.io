@@ -232,25 +232,50 @@ equip %>% filter(!is.na(DEP)) %>% filter(DEP %in% depbfc) %>%
              number = c("structurant : salles de sport collectifs \n","proximité : terrains en accès libre"), footnote_as_chunk = T)
 ```
 
-### Taux d'équipements pour 10 000 habitants par département
+### Taux d'équipements / 10 000 habitants
 
 La Haute-Saône est particulièrement bien dotée en équipement. La plupart des départements bien dotés sont peu denses.
 
 ```{r}
 hchart( equip %>% filter(!is.na(DEP)) %>% group_by(DEP) %>% summarise(equ=n() ) %>%
-                  left_join(.,basecom %>% select(DEP,pop) %>% group_by(DEP) %>% summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
-                  adorn_totals("row",name = "BFC") %>%
-                  mutate(txequi=round(10000*equ/pop,1) ) %>%
-          left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) %>%
+                  left_join(.,basecom %>% select(DEP,pop) %>% group_by(DEP) %>%
+                              summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+          adorn_totals("row",name = "France") %>%
+          mutate(txequi=round(10000*equ/pop,1) ) %>%
+          left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+                      select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) %>%
+          mutate(département=ifelse(DEP=="France","France",département) ) %>%
           arrange(desc(txequi))   ,
-                  "bar", hcaes(x=reorder(département,txequi),y=txequi, color=ifelse(DEP %in% depbfc,"#6a5acd","#ffd700") ) , 
-            stacking= 'normal' ,name = "taux d'équipements pour 10 000 habitants" , shadow=F,  showInLegend = T,  pointWidth =2) %>%
-      hc_xAxis(title=list(text="Départements")) %>%
+        "bar", 
+        hcaes(x=reorder(département,txequi),y=txequi, 
+                color=ifelse(DEP %in% depbfc,"#6a5acd",
+                             ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
+          name = "taux d'équipements<br/> pour 10 000 habitants" ,
+          showInLegend = T,
+          pointWidth =2) %>%
+  
+  hc_add_series( equip %>% filter(DEP %in% depbfc) %>% group_by(DEP) %>% summarise(equ=n() ) %>%
+                  left_join(.,basecom %>% select(DEP,pop) %>% group_by(DEP) %>%
+                              summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
+          adorn_totals("row",name = "BFC") %>%
+          mutate(txequi=round(10000*equ/pop,1) ) %>%
+          left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
+                      select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) %>%
+          arrange(desc(txequi))   ,
+        "bar", 
+        hcaes(x=reorder(département,txequi),y=txequi, 
+                color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50") ) ,
+          name = "Taux d'équipements<br/> pour 10 000 habitants" ,
+          showInLegend = F,
+          pointWidth =2) %>%
+  
+    hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
+    hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Taux d'équipements")) %>%
-  hc_add_theme(thm) 
+    hc_add_theme(thm) 
 ```
 
-### Taux d'équipements infrarégionaux pour 10 000 habitants et répartition
+### répartition par catégorie
 
 ```{r}
 hchart( equip %>% filter(!is.na(DEP)) %>% filter(DEP %in% depbfc) %>%
