@@ -241,9 +241,17 @@ hchart( equip %>% filter(!is.na(DEP)) %>% group_by(DEP) %>% summarise(equ=n() ) 
                   left_join(.,basecom %>% select(DEP,pop) %>% group_by(DEP) %>%
                               summarise(pop=sum(pop,na.rm=T)),by="DEP") %>%
           adorn_totals("row",name = "France") %>%
-          mutate(txequi=round(10000*equ/pop,1) ) %>%
           left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
                       select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) %>%
+          
+         bind_rows(equip %>% filter(REG=="27") %>%group_by(REG) %>%
+                     summarise(equ=n()) %>%
+                   left_join(.,basecom %>% group_by(REG) %>% 
+                              summarise(pop=sum(pop,na.rm=T)),by="REG") %>%
+                 rename(DEP=REG) %>% mutate(département="Bourgogne-Franche-Comté" )
+                    ) %>%
+          
+          mutate(txequi=round(10000*equ/pop,1) ) %>%
           mutate(département=ifelse(DEP=="France","France",département) ) %>%
           arrange(desc(txequi))   ,
         "bar", 

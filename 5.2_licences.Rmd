@@ -126,21 +126,25 @@ lic_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
     pivot_longer(-`Codes régions`, 'variable', 'value') %>%
     pivot_wider(variable, names_from =`Codes régions`) %>%
     mutate(region=t(as.data.frame(levels(lic_reg)[c(4:16,22)]))) %>%
-   dplyr::select(6,2:5) %>% dplyr::rename("Total licences"="NA") %>%
+   dplyr::select(6,2:5) %>% dplyr::rename("Nombre"="NA") %>%
+  bind_cols(licreg$txlic) %>%
   bind_cols(regsexe%>% select(txfem) %>%  #tx femmes
               mutate (`Taux de licences féminines`=color_bar('pink')
           (digits(txfem,1,decimal.mark=",")))  ) %>%
   bind_cols( evoreg %>%filter(type=="total")  %>% # sparkine modifier pour les différents types de fédé
   summarise(`évolution 2010-2020`=spk_chr(lic)) ) %>%
   relocate(REG, .before = region) %>%
-  rename(`unisport olympique`="Total fédérations unisport olympiques",`unisport non olympique`="Total fédérations unisport non olympiques", multisports=`Total fédérations multisports` ) %>% select(-7) %>%
+  rename(`unisport olympique`="Total fédérations unisport olympiques",
+         `unisport non olympique`="Total fédérations unisport non olympiques", 
+         multisports=`Total fédérations multisports`,
+         `Taux`="...6") %>% select(-8) %>%
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrlrr",
+      align="rcrrrrrlrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(6, bold=T) %>%
   row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  add_header_above(c( " "=2,"Fédérations"=3,"Licences"=2," "=2) ) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -471,28 +475,34 @@ lic_dep %>%  dplyr::select(2,depbfc) %>%
     pivot_longer(-`Codes départements`, 'variable', 'value') %>%
     pivot_wider(variable, names_from =`Codes départements`) %>%
     mutate(département=t(as.data.frame(levels(lic_dep) %>% select(depbfc)))) %>%
-   dplyr::select(6,2:5) %>% dplyr::rename("Total licences"="NA") %>%
+   dplyr::select(6,2:5) %>% dplyr::rename("Nombre"="NA") %>%
   mutate_at(2:5,as.numeric) %>% adorn_totals("row") %>%
   
-  
+    bind_cols(licdep %>% filter(dep %in% depbfc) %>%
+                adorn_totals("row")  %>%
+                mutate(txlic=round(100*V1/pop,1) ) %>% select(txlic) %>% pull
+              ) %>%
   #bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))    fonctionne également
- bind_cols( evodep %>%filter(type=="total")  %>% #modifier pour les différents types de fédé
+   bind_cols( evodep %>%filter(type=="total")  %>% #modifier pour les différents types de fédé
           summarise(`évolution 2010-2020`=spk_chr(lic)) )%>%
   
-  left_join(.,feddepsexe %>% select (1,txfem) %>% slice(3:11) %>%                 #txfem
+    left_join(.,feddepsexe %>% select (1,txfem) %>% slice(3:11) %>%                 #txfem
                       mutate(`Taux de licences féminines`=color_tile('white','pink',alpha=0.5)
           (digits(txfem,1,decimal.mark=","))) ,
             by=c("dep"="rowname") ) %>%
     relocate(dep, .before = département) %>% relocate(`Taux de licences féminines`,.before = `évolution 2010-2020`) %>%
-rename(`unisport olympique`="Total fédérations unisport olympiques",`unisport non olympique`="Total fédérations unisport non olympiques", multisports=`Total fédérations multisports` ) %>% select(-9) %>%
+rename(`unisport olympique`="Total fédérations unisport olympiques",
+       `unisport non olympique`="Total fédérations unisport non olympiques", 
+       multisports=`Total fédérations multisports`,
+       Taux="...6") %>% select(-10) %>%
   
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="crrrrrrr",
+      align="crrrrrrrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   row_spec(9, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(6, bold=T) %>%
-  add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
+  add_header_above(c( " "=2,"Fédérations"=3,"Licences"=2, " "=2) ) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 

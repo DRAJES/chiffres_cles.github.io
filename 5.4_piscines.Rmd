@@ -155,11 +155,16 @@ Le Jura est le **5e** département pour la surface natatoire disponible pour 10 
 ```{r}
 hchart(piscines %>% group_by(DEP) %>% summarise_if(is.numeric,sum) %>%
          adorn_totals("row",name = "France") %>%
-         mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>% 
-         arrange(desc(surfnat)) %>%
-         left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% 
+          left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% 
                      select(CODGEO,LIBGEO),by=c("DEP"="CODGEO") ) %>%
-         mutate(LIBGEO=ifelse(DEP=="France","France",LIBGEO)),
+         mutate(LIBGEO=ifelse(DEP=="France","France",LIBGEO)) %>%
+            bind_rows(
+                piscines %>% filter (REG=="27") %>% 
+                        group_by(REG) %>%  summarise_if(is.numeric,sum) %>%
+               rename(DEP=REG) %>% mutate(LIBGEO="Bourgogne-Franche-Comté" )
+                     ) %>%
+                  mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>% 
+         arrange(desc(surfnat)) ,
                   "bar", 
       hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
             color=ifelse(DEP %in% depbfc,"#6a5acd",
