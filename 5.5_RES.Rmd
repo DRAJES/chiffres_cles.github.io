@@ -258,7 +258,7 @@ hchart( equip %>% filter(!is.na(DEP)) %>% group_by(DEP) %>% summarise(equ=n() ) 
         hcaes(x=reorder(département,txequi),y=txequi, 
                 color=ifelse(DEP %in% depbfc,"#6a5acd",
                              ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
-          name = "taux d'équipements<br/> pour 10 000 habitants" ,
+          name = "Taux d'équipements<br/> pour 10 000 habitants" ,
           showInLegend = T,
           pointWidth =2) %>%
   
