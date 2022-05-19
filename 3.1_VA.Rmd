@@ -231,7 +231,7 @@ hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
        hcaes(x=reorder(département,asso),y=asso, color=ifelse(REG=="27","#6a5acd","#ffd700") ),
           name="Nombre d'associations",
           showInLegend=T, 
-          pointWidth = 2 ) %>%
+          pointWidth = 1 ) %>%
   
   hc_add_series(RNApop %>% filter (REG =="27" & !is.na(objr)) %>%
                   group_by(REG,DEP) %>% 
@@ -243,7 +243,7 @@ hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
                   color="#6a5acd",
                   name="Nombre d'associations",
                   showInLegend=F, 
-                  pointWidth = 2 ) %>%
+                  pointWidth = 3 ) %>%
   
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_xAxis(title=list(text="Départements")) %>%
@@ -291,7 +291,7 @@ hchart(RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
                                                               ifelse(DEP=="BFC","#ff7f50","#ffd700"))),
                   name="Taux d'association pour 100 habitants", 
                   showInLegend=F, 
-                  pointWidth = 1 ) %>%
+                  pointWidth = 3 ) %>%
    
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
 

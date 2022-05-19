@@ -171,7 +171,7 @@ hchart(piscines %>% group_by(DEP) %>% summarise_if(is.numeric,sum) %>%
                          ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
         showInLegend = T, 
         name = "surface natatoire <br/> pour 10 000 habitants", 
-        pointWidth = 2) %>%
+        pointWidth = 1) %>%
   
   hc_add_series(piscines %>% group_by(DEP) %>% filter (DEP %in% depbfc) %>% 
                   summarise_if(is.numeric,sum) %>%
@@ -184,7 +184,7 @@ hchart(piscines %>% group_by(DEP) %>% summarise_if(is.numeric,sum) %>%
                 hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
                           color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50" )) , 
                   showInLegend = F, 
-                  name = "surface natatoire <br/> pour 10 000 habitants", pointWidth = 2) %>%
+                  name = "surface natatoire <br/> pour 10 000 habitants", pointWidth = 3) %>%
   
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_xAxis(title=list(text="Départements")) %>%

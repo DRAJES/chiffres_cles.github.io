@@ -260,7 +260,7 @@ hchart( equip %>% filter(!is.na(DEP)) %>% group_by(DEP) %>% summarise(equ=n() ) 
                              ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
           name = "Taux d'équipements<br/> pour 10 000 habitants" ,
           showInLegend = T,
-          pointWidth =2) %>%
+          pointWidth =1) %>%
   
   hc_add_series( equip %>% filter(DEP %in% depbfc) %>% group_by(DEP) %>% summarise(equ=n() ) %>%
                   left_join(.,basecom %>% select(DEP,pop) %>% group_by(DEP) %>%
@@ -275,7 +275,7 @@ hchart( equip %>% filter(!is.na(DEP)) %>% group_by(DEP) %>% summarise(equ=n() ) 
                 color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50") ) ,
           name = "Taux d'équipements<br/> pour 10 000 habitants" ,
           showInLegend = F,
-          pointWidth =2) %>%
+          pointWidth =3) %>%
   
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_xAxis(title=list(text="Départements")) %>%

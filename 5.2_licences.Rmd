@@ -391,14 +391,14 @@ hchart(licdep %>% slice(-97) %>% arrange(desc(V1)),"bar",
        hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ),
         showInLegend = T, 
         name = "Licences", 
-        pointWidth = 2) %>%
+        pointWidth = 1) %>%
   
   hc_add_series(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar",
                 hcaes(x=reorder(departement,V1),y=V1),
                   color="#6a5acd", 
                   showInLegend = F, 
                   name = "Licences", 
-                  pointWidth = 2) %>%
+                  pointWidth = 3) %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de licences")) %>%
@@ -412,18 +412,20 @@ Le Jura et le Doubs au dessus de la moyenne nationale, les autres département d
 ```{r}
 
 hchart(licdep %>% arrange(desc(txlic)),"bar", 
-       hcaes(x=reorder(departement,txlic),y=txlic,color=ifelse(dep %in% depbfc,"#6a5acd",
-                                                               ifelse(dep=="FR","#ff7f50","#ffd700"))), 
+       hcaes(x=reorder(departement,txlic),
+             y=txlic,
+             color=ifelse(dep %in% depbfc,"#6a5acd",ifelse(dep=="FR","#ff7f50","#ffd700"))
+             ), 
         showInLegend = T, 
         name = "Taux de licences", 
-        pointWidth = 1) %>%
+        pointWidth =  1 ) %>%
   
   hc_add_series(licdep %>% filter(dep %in% depbfc | dep == "FR") %>% arrange(desc(txlic)),"bar",
                 hcaes(x=reorder(departement,txlic),y=txlic,
                       color=ifelse(dep %in% depbfc,"#6a5acd","#ff7f50") ),
                   showInLegend = F, 
                   name = "Taux de licences", 
-                  pointWidth = 2) %>%
+                  pointWidth = 3) %>%
 
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
