@@ -343,7 +343,7 @@ La Nièvre et le Jura comptent plus de 10 clubs sportifs pour 10 000 habitants. 
 ### Comparaisons départementales
 
 ```{r}
-clubdep <- as.data.frame(t(club_dep[118,4:99]))
+clubdep <- as.data.frame(t(club_dep[119,4:99]))
 clubdep$departement <- t(as.data.frame(levels(club_dep)[4:99]))
 clubdep <- clubdep %>% rownames_to_column(var="dep") %>% 
                  mutate (dep=ifelse(nchar(dep)==1,paste0('0',dep),dep), V1=as.numeric(V1)) %>%
@@ -356,14 +356,14 @@ hchart(clubdep %>% slice(-97) %>% arrange(desc(V1)),"bar",
        hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ),
           showInLegend = T, 
           name = "Nombre de clubs", 
-          pointWidth = 2) %>%
+          pointWidth = 1) %>%
   
     hc_add_series(clubdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar",
                   hcaes(x=reorder(departement,V1),y=V1) ,
                     color="#6a5acd" ,
                     showInLegend = F, 
                     name = "Nombre de clubs", 
-                    pointWidth = 2) %>%
+                    pointWidth = 3) %>%
    
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   
@@ -390,7 +390,7 @@ hchart(clubdep %>% arrange(desc(txclub)),"bar",
                 hcaes(x=reorder(departement,txclub),y=txclub,color=ifelse(dep %in% depbfc,"#6a5acd","#ff7f50") ),
                   showInLegend = F, 
                   name = "Nombre de clubs", 
-                  pointWidth = 1) %>%
+                  pointWidth = 3) %>%
   
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
 
