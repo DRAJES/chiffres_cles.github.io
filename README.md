@@ -31,7 +31,7 @@ Vous pouvez également cloner le projet ou faire remonter vos remarques et propo
 
 <!-- -->
 
-    https://github.com/DRAJES/chiffres_cles.github.io.git
+    git clone https://github.com/DRAJES/chiffres_cles.github.io.git
     
 ## Auteur
 
