@@ -1,6 +1,7 @@
 ---
-title: "About This Website"
+title: "à propos de ce site"
 author: "PSLèbre"
+output: html_document
 
 ---
 ```{r setup, include=F ,echo=FALSE, cache=F}

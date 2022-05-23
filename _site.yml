@@ -8,7 +8,7 @@ navbar:
       href: DRAJESBFC.html
     - text: "A propos"
       icon: fa-info
-      href: 0_about.html
+      href: Lisez-moi.html
     - text: "Navigation"
       icon: fa-gear
       menu:
