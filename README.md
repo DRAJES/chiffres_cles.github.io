@@ -23,9 +23,9 @@ Elles se font au fil de l'eau en fonction des disponibilités des données open 
 
 ## Contributions
 
-Toute contribution ou proposition d'amélioration sera lue avec intérêt
+Toute contribution ou proposition d'amélioration sera lue avec intérêt.
 
-Lors de votre navigation, vous pouvez faire remonter vos remarques ou tout problème de mise en page (faute de frappe, source illisible ou manquante, proposition d'amélioration...) sur mon mail : [pierre-stephane.lebre\@ac-dijon.fr](mailto:pierre-stephane.lebre@ac-dijon.fr){.email}
+Lors de votre navigation, vous pouvez faire remonter vos remarques ou tout problème de mise en page (faute de frappe, source illisible ou manquante, proposition d'amélioration...) sur mon mail : [pierre-stephane.lebre\@ac-dijon.fr](mailto:pierre-stephane.lebre@ac-dijon.fr)
 
 Vous pouvez également cloner le projet ou faire remonter vos remarques et propositions d'améliorations sur la boîte fonctionnelle [ce.drajes.observation\@region-academique-bourgogne-franche-comte.fr](mailto:ce.drajes.observation@region-academique-bourgogne-franche-comte.fr)
 
