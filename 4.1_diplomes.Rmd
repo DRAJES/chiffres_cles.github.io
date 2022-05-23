@@ -222,11 +222,22 @@ hchart( bar ,
 
 ```
 
-# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
+# Insertion des diplômés {data-orientation="rows" height="30" data-icon="fa-user-tie"}
 
 ## Row {data-height="20"}
 
 ## Row {data-height="60"}
+
+Le ministère des Sports et l'Injep réalisent chaque année une enquête sur l'insertion professionnelle des diplômés Jeunesse et Sports sept mois après l'obtention de leur diplôme. Les résultats peuvent être consultés sur les fiches régionales réalisées chaque année :
+
+[![](images/IDJEPS.PNG) </br>\
+Insertion Professionnelle des diplômés de l'animation et du sport](https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf)
+
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
+
+## Row {data-height="20"}
+
+## Row {data-height="300"}
 
 **Sources :**
 
@@ -235,5 +246,3 @@ hchart( bar ,
 Le dispositif régional d'observation de l'emploi et de la formation (DROEF) est un réseau de correspondants régionaux animé par la direction des Sports et chargé de suivre la formation et l'insertion des diplômés, en particulier à travers une enquête d'insertion des diplômés Jeunesse et Sports :\
 
 -   <https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf>
-
-
