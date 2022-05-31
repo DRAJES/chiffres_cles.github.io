@@ -202,5 +202,204 @@ write.csv(tableauqpv,"C:/Users/plebre/Documents/projets R/service civique/2020/t
 rpivotTable::rpivotTable(basebfc%>% mutate(dep_v=substr(CODE_COMMUNE_INSEE,1,2) ))  
 
 
+save(basebfc,basebfcsig,oursin,oursinxy,flows,file="data/engagement/SC.RData")
 
-save(basebfc,basebfcsig,file="data/engagement/SC.RData")
+library(geosphere)
+library(rgdal)
+
+oursin <- read.dbf("I:/SUPPORT/04_STATS/Jeunesse/SERVICE CIVIQUE/service_civique_2019/oursin.dbf")
+
+
+library(photon)
+
+
+load("data/demo/cartes.RData")
+cartexy <- centroid(com27wgs)
+cartexy <- cbind(com27wgs,cartexy)
+
+oursinxy <- left_join(oursin,cartexy@data %>% select(INSEE_COM,origine=NOM_COM,origine.x=X1,origine.y=X2),by=c("volontaire"="INSEE_COM"))
+oursinxy <- left_join(oursinxy,cartexy@data %>% select(INSEE_COM,destination=NOM_COM,destination.x=X1,destination.y=X2),by=c("mission"="INSEE_COM")) %>%
+  filter(!is.na(origine.x) & !is.na(destination.x)) 
+oursinxy <- oursinxy %>%  group_by(destination) %>%
+  mutate(missions=sum(nombre),
+         rayon=missions*10)
+
+library(ggforce)
+
+flows <- gcIntermediate(oursinxy[,5:6],oursinxy[,8:9],n=5, sp=T,addStartEnd = T)
+
+ggplot()+geom_bezier(aes(x=oursinxy[,5],y=oursinxy[,8]),data=oursinxy)
+
+flows$nombre <- oursinxy$nombre
+flows$origine <- oursinxy$origine
+flows$destination <- oursinxy$destination
+
+library(leaflet)
+library(RColorBrewer)
+
+hover <- paste0(flows$origine, " à ", 
+                flows$destination, ': ', 
+                as.character(flows$nombre))
+
+pal <- colorFactor(brewer.pal(4, 'Set2'), flows$origine)
+
+
+
+leaflet() %>%
+  addProviderTiles('CartoDB.Positron') %>%
+  addCircles(data=oursinxy, ~destination.x, ~destination.y,
+             weight =~oursinxy%>% group_by(destination)%>% mutate(sum(nombre)^(1/2))%>%pull, 
+             #radius=40, 
+             label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5) %>%
+  addPolylines(data = flows, 
+               weight = ~ifelse(nombre>3,nombre^(1/2), 0),
+               label = hover,
+              # group = ~origine
+              stroke = T, 
+              #color = "#6eff2a",
+              #color = colorRampPalette(c("orange", "green"), alpha = TRUE)(8),
+              #color = rainbow(30, alpha = NULL),
+              #opacity = 0.8,
+              fill = F, fillOpacity = 0.8, dashArray = NULL,
+              smoothFactor = 1,
+              fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
+              color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")(seq(0, 1, length.out = 25))
+                             ) 
+
+
+leaflet(oursinxy) %>%
+  addProviderTiles('CartoDB.Positron')  %>%
+  addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
+            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.y),
+            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.x),
+            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.y),
+            flow = oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(nombre),
+               #popup = hover,
+               # group = ~origine
+               opacity = 0.6, 
+               color = "lightblue",
+               #color = colorRampPalette(c("orange", "green"), alpha = TRUE),
+               #color = rainbow(30, alpha = NULL),
+               #fill = F, fillOpacity = 0.8, dashArray = NULL,
+               #smoothFactor = 1,
+               #fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
+               #color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")(seq(0, 1, length.out = 25))
+  ) %>%
+  addMinicharts( oursinxy %>% filter(destination==origine) %>% pull(destination.x),
+                 oursinxy %>% filter(destination==origine) %>% pull(destination.y),
+                 chartdata =  oursinxy %>% filter(destination==origine) %>%ungroup() %>% mutate(entrant=missions-nombre) %>%
+                   select(stable=nombre,entrant),
+                  opacity = 0.7,              
+                 type = "pie",
+                 colorPalette = c("lightgreen", "lightblue"),
+                width = oursinxy %>% filter(destination==origine) %>% mutate(2*missions^(1/2)) %>% pull(12),
+               #label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5
+             )
+
+
+
+library(mapdeck)
+
+
+mapdeck( style = mapdeck_style("dark"), pitch = 45 ) %>%
+   add_animated_arc(
+    data = oursinxy[oursinxy$nombre>4,]
+    , layer_id = "arc_layer"
+    , origin = c("origine.x", "origine.y")
+    , destination = c("destination.x", "destination.y")
+    , stroke_from = "origine"
+    , stroke_to = "destination"
+    , stroke_width = ifelse("nombre"> 10,"nombre", 0)
+    , animation_speed = 1
+  ) %>%
+  add_scatterplot(
+    data = oursinxy[oursinxy$nombre>0,]
+                  , layer_id = "arc_point"
+                  , lon = "destination.x"
+                  , lat = "destination.y"
+                  , radius = "rayon"
+                  , fill_colour = "country"
+                  )
+
+
+
+
+
+
+
+
+
+#Identify the points of the curve
+p1 <- c(oursinxy$origine.x,
+        oursinxy$origine.y)
+p2 <- c(oursinxy$destination.x,
+        oursinxy$destination.y)
+
+#Create function to draw Brezier curve
+bezier.curve <- function(p1, p2, p3) {
+  n <- seq(0,1,length.out=50)
+  bx <- (1-n)^2 * p1[[1]] +
+    (1-n) * n * 2 * p3[[1]] +
+    n^2 * p2[[1]]
+  by <- (1-n)^2 * p1[[2]] +
+    (1-n) * n * 2 * p3[[2]] +
+    n^2 * p2[[2]]
+  data.frame(lon=bx, lat=by)
+}
+
+bezier.arc <- function(p1, p2) {
+  intercept.long <- (p1[[1]] + p2[[1]]) / 2
+  intercept.lat  <- 85
+  p3 <- c(intercept.long, intercept.lat)
+  bezier.curve(p1, p2, p3)
+}
+
+arc3 <- bezier.arc(p1,p2)
+
+bezier.uv.arc <- function(p1, p2) {
+  # Get unit vector from P1 to P2
+  u <- p2 - p1
+  u <- u / sqrt(sum(u*u))
+  d <- sqrt(sum((p1-p2)^2))
+  
+  # Calculate third point for spline
+  m <- d / 2
+  h <- floor(d * .2)
+  
+  # Create new points in rotated space 
+  pp1 <- c(0,0)
+  pp2 <- c(d,0)
+  pp3 <- c(m, h)
+  
+  mx <- as.matrix(bezier.curve(pp1, pp2, pp3))
+  
+  # Now translate back to original coordinate space
+  theta <- acos(sum(u * c(1,0))) * sign(u[2])
+  ct <- cos(theta)
+  st <- sin(theta)
+  tr <- matrix(c(ct,  -1 * st, st, ct),ncol=2)
+  tt <- matrix(rep(p1,nrow(mx)),ncol=2,byrow=TRUE)
+  points <- tt + (mx %*% tr)
+  
+  tmp.df <- data.frame(points)
+  colnames(tmp.df) <- c("lon","lat")
+  tmp.df
+}
+
+
+arc4 <- bezier.uv.arc(p1,p2)
+
+bezier.uv.merc.arc <- function(p1, p2) {
+  pp1 <- p1
+  pp2 <- p2
+  pp1[2] <- asinh(tan(p1[2]/180 * pi))/pi * 180
+  pp2[2] <- asinh(tan(p2[2]/180 * pi))/pi * 180
+  
+  arc <- bezier.uv.arc(pp1,pp2)
+  arc$lat <-  atan(sinh(arc$lat/180 * pi))/pi * 180
+  arc
+}
+
+
+arc5 <- bezier.uv.merc.arc(p1, p2)
+

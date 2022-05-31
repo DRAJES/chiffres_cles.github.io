@@ -264,6 +264,100 @@ addLegend( position = "bottomright",pal = pal2 ,title = "taux de volontaires",va
 
 ```
 
+
+### Flux (volontaires -> mission)
+
+```{r}
+flows <- gcIntermediate(oursinxy[,5:6],oursinxy[,8:9],n=5, sp=T,addStartEnd = T)
+flows$nombre <- oursinxy$nombre
+flows$origine <- oursinxy$origine
+flows$destination <- oursinxy$destination
+
+hover <- paste0(flows$origine, " à ", 
+                flows$destination, ': ', 
+                as.character(flows$nombre))
+
+pal <- colorFactor(brewer.pal(4, 'Set2'), flows$origine)
+
+
+
+leaflet() %>%
+ addProviderTiles(providers$CartoDB.Positron) %>% 
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addCircles(data=oursinxy, ~destination.x, ~destination.y,
+             weight =~oursinxy%>% group_by(destination)%>% mutate(sum(nombre)^(1/2))%>%pull, 
+             label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5) %>%
+  addPolylines(data = flows, 
+               weight = ~ifelse(nombre>3,nombre^(1/2), 0),
+               label = hover,
+              stroke = T, 
+              fill = F, fillOpacity = 0.8, dashArray = NULL,
+              smoothFactor = 1,
+              fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
+              color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")(seq(0, 1, length.out = 25))
+                             ) 
+```
+### Flux 2
+
+
+```{r}
+
+leaflet() %>%
+ addProviderTiles(providers$CartoDB.Positron) %>% 
+  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+ addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
+            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.y),
+            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.x),
+            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.y),
+            flow = oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(nombre),
+               opacity = 0.6, 
+               color = "lightgreen"  ) %>%
+  addMinicharts( oursinxy %>% filter(destination==origine) %>% pull(destination.x),
+                 oursinxy %>% filter(destination==origine) %>% pull(destination.y),
+                 chartdata =  oursinxy %>% filter(destination==origine) %>%ungroup() %>% mutate(entrant=missions-nombre) %>%
+                   select(stable=nombre,entrant),
+                  opacity = 0.7,              
+                 type = "pie",
+                 colorPalette = c("#ffa500", "lightgreen"),
+                width = oursinxy %>% filter(destination==origine) %>% mutate(2*missions^(1/2)) %>% pull(12)             )
+```
+
+
+
+
+### Flux arc
+
+```{r}
+library(mapdeck)
+
+mapdeck( style = mapdeck_style("dark"), pitch = 45 ) %>%
+   add_animated_arc(
+    data = oursinxy[oursinxy$nombre>4,]
+    , layer_id = "arc_layer"
+    , origin = c("origine.x", "origine.y")
+    , destination = c("destination.x", "destination.y")
+    , stroke_from = "origine"
+    , stroke_to = "destination"
+    , stroke_width = ifelse("nombre"> 10,"nombre", 0)
+    , animation_speed = 1
+  ) %>%
+  add_scatterplot(
+    data = oursinxy[oursinxy$nombre>0,]
+                  , layer_id = "arc_point"
+                  , lon = "destination.x"
+                  , lat = "destination.y"
+                  , radius = "missions"
+                  , fill_colour = "country"
+                  )
+
+```
+
+
+
 Engagement international {data-orientation="rows" data-icon="fa-globe-africa"}
 =======================================================================
 Row {data-height="20"}
