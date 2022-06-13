@@ -418,11 +418,16 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 
 ## Row {data-height="20"}
 
+## Row {data-height="100"}
+
+### Données générales
+
+Certains territoires sont éloignés des bassins de natation, particulièrement les bassins couverts, y compris des communes équipées d'écoles primaires : dans le Morvan, le nord Côte-d'Or, entre Pouilly en Auxois et Arnay le Duc ou encore autour de Pierre de Bresse.
+
 ## Row {data-height="700"}
 
 ### Temps d'accès aux piscines de la région (©[OpenStreetMap](https://www.openstreetmap.org/copyright) et ©[OSRM](http://project-osrm.org/) ) {data-height="700"}
 
-Certains territoires sont éloignés des bassins de natation, particulièrement les bassins couverts, y compris des communes équipées d'écoles primaires : dans le Morvan, le nord Côte-d'Or, entre Pouilly en Auxois et Arnay le Duc ou encore autour de Pierre de Bresse.
 
 ```{r}
 leaflet() %>% 
