@@ -24,6 +24,33 @@ options(knitr.kable.NA = '')
 options(knitr.table.format = "html")
 ```
 
+# `r fa(name = "fas fa-calendar-check")` Calendrier des formations {data-orientation="rows" font-size="25px"}
+
+## Row {data-height="20"}
+
+## Row {data-height="100"}
+
+**Cartographie interactive**\
+[![](images/calendrier.png) </br>\
+Calendrier des formations du ministère des Sports](https://foromes.calendrier.sports.gouv.fr/#/formation)
+
+
+# `r fa(name = "fas fa-map-pin")` Cartographie nationale des OF {data-orientation="rows" font-size="25px"}
+
+## Row {data-height="20"}
+
+## Row {data-height="100"}
+
+Forômes-Exploit est une cartographie interactive des formations en cours ou à venir en France métropolitaine et Outre-mer pour les diplômes d'Etat professionnels délivrés par les ministères chargés de la Jeunesse et des Sports.
+
+**Cartographie Foromes-exploit**\
+[![](images/exploit.PNG) </br>\
+Cartographie nationale des formations en cours ou à venir](https://donnees-formation-js.social.gouv.fr/)
+
+
+
+
+
 # `r fa(name = "fas fa-map-marked-alt")` Cartographie des OF {data-orientation="rows" font-size="25px"}
 
 ## Row {data-height="20"}
@@ -32,7 +59,7 @@ options(knitr.table.format = "html")
 
 **Cartographie interactive**\
 [![](images/FCE.PNG) </br>\
-Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
+Visualisation des Oragnismes de Formation de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
@@ -40,51 +67,10 @@ Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FC
 
 ## Row {data-height="200"}
 
-**Cartographie interactive**\
-[![](images/FCE.PNG) </br>\
-Visualisation des OF de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
+Sur le site du ministère des Sports rubrique Emplois et métiers : https://www.sports.gouv.fr/emplois-metiers/offres-de-formations/calendrier-des-formations/Calendrier-des-formations-15145
 
 
-# Navigation {data-orientation="rows" data-icon="fa-map-signs" font-size="25px"}
+L'exploitation de l'outil de gestion des formations et des diplômes (Voir rubrique Aide et à propos) :
+https://donnees-formation-js.social.gouv.fr/
 
-## Row {data-height="20"}
 
-## Row {data-height="100"}
-
-1.  **Généralités**\
-
--   [Territoire(s)](1.1_demo.html)\
--   [Structure de la population](1.2_structure.html)\
--   [évolution de la population](1.3_evol.html)
-
-## Row {data-height="100"}
-
-2.  **Jeunesse**\
-
--   [Jeunesse](2.1_jeunesse.html)\
--   [Préscolaire](2.2_presco.html)\
--   [Accueils collectifs de mineurs](2.3_ACM.html)
-
-## Row {data-height="100"}
-
-3.  **Engagement**\
-
--   [Vie associative](3.1_VA.html)\
--   [Service civique](3.2_SC.html)
-
-## Row {data-height="100"}
-
-4.  **Formation**\
-
--   [Diplômes](4.1_diplomes.html)\
--   [Organismes de formation](4.2_OF3.html)
-
-## Row {data-height="100"}
-
-5.  **Sport**\
-
--   [Clubs sportifs](5.1_clubs.html)\
--   [Licences sportives](5.2_licences.html)\
--   [Sport de nature](5.3_nature.html)\
--   [Piscines](5.4_piscines.html)\
--   [équipements sportifs](5.5_RES.html)
