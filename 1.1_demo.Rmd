@@ -63,7 +63,7 @@ region_tab %>%  dplyr::select(Région,Nom,Population,Densité,rang,`Taux femmes`
   row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
   row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2013/population RP 2018"), footnote_as_chunk = T) 
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T) 
 
 ```
 
@@ -121,7 +121,7 @@ dep27_tab %>%  select(Région,Département,Nom,Population,Densité,rang,rang_nat
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
   footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2013/population RP 2018"), footnote_as_chunk = T)
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T)
 
 
 ```
@@ -175,7 +175,7 @@ epci27_tab %>%  select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,p
   row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
   footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2013/population RP 2018"), footnote_as_chunk = T)
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T)
 ```
 
 ### Carte ECPI
@@ -232,7 +232,7 @@ bv27_tab %>%  select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,p
   row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
   footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2013/population RP 2018"), footnote_as_chunk = T)
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T)
 ```
 
 ### Carte BV

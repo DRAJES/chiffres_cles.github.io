@@ -22,7 +22,7 @@ metro <- basecomQPV %>%
          prop75=100*p75/pop,
          ind_jeun=100*p20/p60,
          partZRR=100*popZRR/pop,
-         partQPV=100*POP_MUN/pop,
+         partQPV=100*popMuniQPV/pop,
          diffjeun=p1529-p1529_ante,
          LIBGEO="METRO")
 
