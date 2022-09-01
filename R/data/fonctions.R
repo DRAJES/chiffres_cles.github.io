@@ -1,7 +1,7 @@
 tableau <- function(.tbl){
   .tbl %>% 
     summarise_if(is.numeric,~sum(.x,na.rm=T)) %>%
-    mutate( densite=100*pop/SUPERF,
+    mutate( densite=pop/SUPERF,
             evol=100*((pop/pop_ante)^(1/6)-1),
             evol1529=100*((p1529/p1529_ante)^(1/6)-1),
             evol1625=100*((p1625/p1625_ante)^(1/6)-1),

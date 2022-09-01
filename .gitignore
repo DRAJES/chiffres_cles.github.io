@@ -33,3 +33,5 @@ vignettes/*.pdf
 *.dbf
 _site/
 _site.old/
+_site2018/
+_site2019/
