@@ -40,19 +40,19 @@ Row {.tabset .tabset-fade}
   
 ```{r,echo=F}
 region_tab %>%
-  select(Région,Nom,Population,`15-29 ans`,`Taux<br>15/29`,
-         `65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  select(Région,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
+         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   kable("html", 
       format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrlrlc",
+      align="clrrlcrlcc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
   row_spec(which(region_tab$Région=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
   row_spec(nrow(region_tab),bold = T,color = "navy") %>%  
-  add_header_above(c(" " = 3, "Jeunes" =2, "Population âgée" = 2," ")) %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 3, "Jeunes" =3, "Population âgée" = 3," ")) %>%
+  footnote(general = " Insee RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 
@@ -117,17 +117,18 @@ La Côte d'Or est de département où les 15/29 ans sont les plus nombreux tandi
 
 ```{r,echo=F}
 dep27_tab %>%  
-  select(Région,Département,Nom,Population,`15-29 ans`,`Taux<br>15/29`,`65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+ select(Région, Département,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
+         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="cclrrlrlc",
+      align="cclrrlcrlcc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 4, "Jeunes" =2, "Pop âgée" = 2," ")) %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 4, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
+  footnote(general = " Insee RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```
@@ -186,17 +187,18 @@ Row {data-height="20"}
   
 ```{r,echo=F}
 epci27_tab %>% 
-  select(EPCI,Nom,Population,`15-29 ans`,`Taux<br>15/29`,`65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  select(EPCI,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
+         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrlrlc",
+      align="clrrlcrlcc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
   row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 3, "Jeunes" =2, "Pop âgée" = 2," ")) %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 3, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
+  footnote(general = " Insee RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```
@@ -242,17 +244,18 @@ Row {data-height="20"}
 ### Comparaisons bassins de vie
 ```{r,echo=F}
 bv27_tab %>%  
-  select(BV2012,Nom,Population,`15-29 ans`,`Taux<br>15/29`,`65 ans et +`,`Taux<br>>65 ans`,ind_jeun) %>%
+  select(BV2012,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
+         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrlrlc",
+      align="clrrlcrlcc",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(5,width = "3cm") %>% column_spec(7,width = "3cm") %>%
   row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 3, "Jeunes" =2, "Pop âgée" = 2," ")) %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 3, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
+  footnote(general = " Insee RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```  

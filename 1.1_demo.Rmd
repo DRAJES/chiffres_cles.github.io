@@ -36,7 +36,7 @@ palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a","#43a047","#2e7d32"), domain
 
 ### Données générales
 
-La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$pop[3]/1000,0)*1000,big.mark = " ")`** habitants au 1er janvier 2018 .
+La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$pop[3]/1000,0)*1000,big.mark = " ")`** habitants au 1er janvier 2019 .
 
 Elle est la **`r rank(-region$densite)[3]`e** région la moins dense des 13 régions de France métropolitaine avec **`r prettyNum(round(region$densite,1)[3],decimal.mark=",")`** habitants par km²
 
@@ -62,8 +62,8 @@ region_tab %>%  dplyr::select(Région,Nom,Population,Densité,rang,`Taux femmes`
   kable_styling("hover", full_width = F) %>%
   row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
   row_spec(nrow(region_tab),bold = T,color = "navy") %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T) 
+  footnote(general = " Insee RP2019", general_title = "Source : ",
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), footnote_as_chunk = T) 
 
 ```
 
@@ -120,8 +120,8 @@ dep27_tab %>%  select(Région,Département,Nom,Population,Densité,rang,rang_nat
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T)
+  footnote(general = " Insee RP2019", general_title = "Source : ",
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), footnote_as_chunk = T)
 
 
 ```
@@ -174,8 +174,8 @@ epci27_tab %>%  select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,p
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T)
+  footnote(general = " Insee RP2019", general_title = "Source : ",
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), footnote_as_chunk = T)
 ```
 
 ### Carte ECPI
@@ -231,8 +231,8 @@ bv27_tab %>%  select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,p
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
-  footnote(general = " Insee RP2018", general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2018"), footnote_as_chunk = T)
+  footnote(general = " Insee RP2019", general_title = "Source : ",
+           number = c("Zone de Revitalisation Rurale 2018 \n","Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), footnote_as_chunk = T)
 ```
 
 ### Carte BV
@@ -272,9 +272,9 @@ leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 ### Appartenance communale
 
 ```{r}
-basecom %>% filter(REG=='27') %>% select(CODGEO:SUPERFICIE,Population=pop) %>%
+basecom %>% filter(REG=='27') %>% select(CODGEO:SUPERF) %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="clrrrrrrrrrrrrrrl",
+        align="clrrrrrrrrrrrrrrrrrr",
         escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   footnote(general = "Insee, Code officiel géographique", general_title = "Source : ",

@@ -51,7 +51,7 @@ Cartographie nationale des formations en cours ou à venir](https://donnees-form
 
 
 
-# `r fa(name = "fas fa-map-marked-alt")` Cartographie des OF {data-orientation="rows" font-size="25px"}
+# `r fa(name = "fas fa-map-location-dot")` Cartographie des OF {data-orientation="rows" font-size="25px"}
 
 ## Row {data-height="20"}
 

@@ -56,8 +56,8 @@ kable("html",
   kable_styling("hover", full_width = F) %>%
   row_spec(which(region_tab$Région=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
   row_spec(nrow(region_tab),bold = T,color = "navy") %>%  
-  add_header_above(c(" " = 5, "évolution 2013 - 2018" =4, " ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 5, "évolution 2013 - 2019" =4, " ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```
@@ -123,8 +123,8 @@ as.data.frame(dep27_tab) %>%
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 6, "évolution 2013 - 2018" =4, " ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 6, "évolution 2013 - 2019" =4, " ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```
@@ -182,8 +182,8 @@ epci27_tab %>%
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 5, "évolution 2013 - 2018" =4, " ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 5, "évolution 2013 - 2019" =4, " ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```
@@ -242,8 +242,8 @@ bv27_tab %>%
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 5, "évolution 2013 - 2018" =4, " ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ",
+  add_header_above(c(" " = 5, "évolution 2013 - 2019" =4, " ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T) 
 ```  

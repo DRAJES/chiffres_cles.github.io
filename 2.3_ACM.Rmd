@@ -440,7 +440,7 @@ hcaes(x=REG,y=value,group=age),
   hc_add_theme(thm) 
 ```
 
-# `r fa(name = "fas fa-map-marked-alt")` Cartographie interactive {data-orientation="rows" font-size="25px"}
+# `r fa(name = "fas fa-map-location-dot")` Cartographie interactive {data-orientation="rows" font-size="25px"}
 
 ## Row {data-height="20"}
 

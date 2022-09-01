@@ -57,8 +57,8 @@ region_tab %>%
   kable_styling("hover", full_width = F) %>%
   row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
   row_spec(nrow(region_tab),bold = T,color = "navy") %>%  
-  add_header_above(c(" " = 5, "Evolution 2013-2018" = 4," ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ", footnote_as_chunk = T) 
+  add_header_above(c(" " = 5, "Evolution 2013-2019" = 4," ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T) 
 
 ```   
 
@@ -120,8 +120,8 @@ mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>"
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 6, "Evolution 2013-2018" =4," ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ", footnote_as_chunk = T) 
+  add_header_above(c(" " = 6, "Evolution 2013-2019" =4," ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T) 
 
 
 ```
@@ -179,8 +179,8 @@ mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 5, "Evolution 2013-2018" =4," ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ", footnote_as_chunk = T)
+  add_header_above(c(" " = 5, "Evolution 2013-2019" =4," ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T)
 ```
 
 
@@ -235,8 +235,8 @@ mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",
   kable_styling("hover", full_width = F) %>%
   row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
   row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
-  add_header_above(c(" " = 5, "Evolution 2013-2018" =4," ")) %>%
-  footnote(general = " Insee RP2013, RP2018", general_title = "Source : ", footnote_as_chunk = T) 
+  add_header_above(c(" " = 5, "Evolution 2013-2019" =4," ")) %>%
+  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T) 
 ```  
   
 

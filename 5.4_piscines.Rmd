@@ -414,7 +414,7 @@ addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 1
 
 ```
 
-# `r fa(name="fas fa-history")` Temps d'accès {data-orientation="rows"}
+# `r fa(name="fas fa-clock-rotate-left")` Temps d'accès {data-orientation="rows"}
 
 ## Row {data-height="20"}
 
