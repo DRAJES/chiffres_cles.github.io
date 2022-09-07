@@ -23,7 +23,7 @@ load("data/demo/tab_demo.RData")
 load("data/demo/cartes.RData")
 load("data/demo/CRTE.RData")
 
-pal <- colorFactor(c("#FF4500","#FFA07A","#2E8B57","#98FB98"), domain = NULL)
+pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c","#e98e8b","#bfef94","#a0d27b","#006a49"), domain = NULL)
 palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a","#43a047","#2e7d32"), domain =0:100 ,bins= c(0, 50, 60, 70,80, 100) )
 
 ```
@@ -82,8 +82,8 @@ addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(regwgs@data %>% 
-                                   select(Région=INSEE_REG) %>%
-                                   left_join(.,region_tab %>% select(Région,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
+                                   dplyr::select(Région=INSEE_REG) %>%
+                                   left_join(.,region_tab %>% dplyr::select(Région,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
                                              ,by="Région"),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",colors = "#6B8E23",labels = "Zones de Revitalisation Rurale")
@@ -105,7 +105,7 @@ La densité dépasse 230 habitants par km² dans le Territoire de Belfort et att
 
 ```{r,echo=F}
 
-dep27_tab %>%  select(Région,Département,Nom,Population,Densité,rang,rang_national,`Taux femmes`,partZRR,partQPV) %>%
+dep27_tab %>%  dplyr::select(Région,Département,Nom,Population,Densité,rang,rang_national,`Taux femmes`,partZRR,partQPV) %>%
   left_join(.,basecom %>% filter (DEP %in% depbfc) %>% group_by(DEP) %>% 
               summarise(comm=n()) %>% adorn_totals("row",name="BFC") %>%
               bind_rows(.,basecom %>% group_by () %>% summarise(DEP="METRO", comm=n())),
@@ -132,7 +132,7 @@ dep27_tab %>%  select(Région,Département,Nom,Population,Densité,rang,rang_nat
 leaflet(depwgs) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=densitewgs,fillColor = ~pal(typo), stroke = F,
+  addPolygons(data=densitewgs,fillColor = ~pal(Typdgrd), stroke = F,
               fillOpacity = 0.5, group = "densite" ) %>%  
 addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
@@ -142,11 +142,11 @@ addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,o
                highlight = highlightOptions (fillOpacity =  0.1,
                weight = 5,   color = "#00FFFF"),
                popup = popupTable(depwgs@data %>% 
-                                   select(Département=INSEE_DEP) %>%
-                                   left_join(.,dep_tab %>% select(Région,Département,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
+                                   dplyr::select(Département=INSEE_DEP) %>%
+                                   left_join(.,dep_tab %>% dplyr::select(Région,Département,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
                                              ,by="Département"),
                                  feature.id=F,row.numbers = F)) %>%
-  addLegend(pal = pal, values = c("dense","intermédiaire","peu dense","très peu dense"), opacity = 0.7, title = "grille densité", position = "bottomright") 
+  addLegend(pal = pal, values = unique(densitewgs$Lblldgr), opacity = 0.7, title = "grille densité 7 niveaux", position = "bottomright") 
 
 ```
 
@@ -159,7 +159,7 @@ addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,o
 ### Comparaisons établissements publics de coopération intercommunale
 
 ```{r,echo=F}
-epci27_tab %>%  select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
+epci27_tab %>%  dplyr::select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
   left_join(.,basecom %>% group_by(EPCI) %>% summarise(comm=n())  %>%
               bind_rows(.,basecom %>% filter (DEP %in% depbfc) %>% group_by () %>% summarise(EPCI="BFC", comm=n())) %>%
               bind_rows(.,basecom %>% group_by () %>% summarise(EPCI="METRO", comm=n())),
@@ -184,7 +184,7 @@ epci27_tab %>%  select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,p
 ```{r}
 leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=densiteBFC,fillColor = ~pal(typo), stroke = F,
+  addPolygons(data=densiteBFC,fillColor = ~pal(Typdgrd), stroke = F,
               fillOpacity = 0.5, group = "densite" ) %>%  
   addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F ) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
@@ -195,15 +195,15 @@ leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
                highlight = highlightOptions (fillOpacity =  0.1,
                weight = 5,   color = "#00FFFF"),
                popup = popupTable(epcicarto@data %>% 
-                                   select(EPCI=CODE_EPCI) %>%
-                                   left_join(.,epci27_tab %>% select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
+                                   dplyr::select(EPCI=CODE_EPCI) %>%
+                                   left_join(.,epci27_tab %>% dplyr::select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
                                              ,by="EPCI"),
                                  feature.id=F,row.numbers = F)) %>% 
   addPolygons(data=QPV27, group  = "QPV",fill = T,color="#2F4F4F",weight = 2,
               highlight = highlightOptions (fillOpacity =  0.4,
              weight = 5,   color = "#000080"),
               popup = sprintf("QP : %s <br> pop : %.0f",QPV27$LIBGEO,QPV27$POP_MUN )) %>%
-  addLegend(pal = pal, values = c("dense","intermédiaire","peu dense","très peu dense"), opacity = 0.7, title = "grille densité", position = "bottomright")    
+  addLegend(pal = pal, values = unique(densiteBFC$Lblldgr), opacity = 0.7, title = "grille densité 7 niveaux", position = "bottomright")    
 
 ```
 
@@ -216,7 +216,7 @@ leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 ### Comparaisons bassins de vie
 
 ```{r,echo=F}
-bv27_tab %>%  select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
+bv27_tab %>%  dplyr::select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
   left_join(.,basecom %>% group_by(BV2012) %>% summarise(comm=n())  %>%
               bind_rows(.,basecom %>% filter (DEP %in% depbfc) %>% group_by () %>% summarise(BV2012="BFC", comm=n())) %>%
               bind_rows(.,basecom %>% group_by () %>% summarise(BV2012="METRO", comm=n())),
@@ -250,8 +250,8 @@ leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
                highlight = highlightOptions (fillOpacity =  0.1,
                weight = 5,   color = "#00FFFF"),
                popup = popupTable(bvcarto@data %>% 
-                                   select(BV2012) %>%
-                                   left_join(.,bv27_tab %>% select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
+                                   dplyr::select(BV2012) %>%
+                                   left_join(.,bv27_tab %>% dplyr::select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV)
                                              ,by="BV2012"),
                                  feature.id=F,row.numbers = F)) %>%  
   addPolygons(data=QPV27, group  = "QPV",fill = T,color="#2F4F4F",weight = 2,

@@ -37,13 +37,13 @@ options(knitr.table.format = "html")
 
 ### Données générales sur les diplômes professionnels délivrés en Bourgogne-Franche-Comté en 2019
 
-**1 900** diplômes des professions du sport et de l'animation délivrés en 2019
+**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = ",")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Diplômes du sport et de l'animation
 
-Près de 1 000 diplômés de STAPS, Une large part de BPJEPS pour le reste des diplômes délivrés en 2019
+**Près de 1 000 diplômés de STAPS, Une large part de BPJEPS pour le reste des diplômes délivrés en 2019**
 
 ```{r}
 diplreg %>% 
@@ -64,7 +64,7 @@ diplreg %>%
 
 ### Comparaisons régionales
 
-8e région de France en nombre de diplômes délivrés
+**8e région de France en nombre de diplômes délivrés**
 
 ```{r}
 bar <- as.data.frame(t(diplreg %>% slice(14)) )%>% mutate(total=as.numeric(V1)) %>% slice(2:14) %>% arrange(desc(total))
@@ -101,7 +101,7 @@ hcaes(x=diplome,y=nombre,z=france),
 
 ### Répartition par sexe (hors STAPS)
 
-Taux de femmes en formation `r forome %>% group_by ()%>% summarise(total=n(),                                                           femmes=sum(Sexe=="Femme")) %>%          mutate(txfem=100*femmes/total)` %
+**Taux de femmes en formation `r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**
 
 ```{r}
 
@@ -116,7 +116,7 @@ hchart(forome %>% group_by (Type.de.diplôme)%>% summarise(hommes=sum(Sexe=="Hom
 
 ### Répartition par âge (hors STAPS)
 
-âge moyen des diplômés `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%  group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans le sport : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>% filter (!Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans l'animation : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%   filter (Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans.
+**âge moyen des diplômés `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%  group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans le sport : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>% filter (!Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans l'animation : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%   filter (Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans.**
 
 ```{r}
 hchart(density(forome$age ),    
@@ -148,7 +148,7 @@ hchart(forome %>% group_by(Type.de.diplôme,Spécialité)%>% summarise(mage=mean
 
 ### Données générales
 
-**1 300** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2019
+**`r prettyNum(round(bafareg[4,3]/100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2019
 
 Plus de 250 BAFA délivrés dans le Doubs et en Saône et Loire.
 

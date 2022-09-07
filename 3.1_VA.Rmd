@@ -45,7 +45,9 @@ Row {data-height="100"}
 
 ### Données générales
 
-La Bourgogne-Franche-Comté compte **115 000** associations selon le Répertoire national des Associations.
+En décembre 2020, la Bourgogne-Franche-Comté compte **115 000** associations selon le Répertoire national des Associations.
+C'est le deuxième taux d'association par habitant de France derrière la région Occitanie.
+Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
@@ -120,7 +122,7 @@ leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opac
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
-                       chartdata = RNAcarto@data[,62:72],
+                       chartdata = RNAcarto@data %>% select("Culture":"NR"),
                        colorPalette = coul,
                        width = sqrt(RNAcarto$total)/5 ,
                        opacity = 0.7) %>%
@@ -164,7 +166,7 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
   column_spec(3, italic=T) %>%
   row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   row_spec(13,  bold = T ) %>%
-  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+  footnote(general = "Répertoire National des Associations (RNA 2020); Insee, RP2019", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 ```
@@ -331,7 +333,7 @@ leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opac
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
-                       chartdata = RNAcarto@data[,64:74],
+                       chartdata = RNAcarto@data %>% select("Culture":"NR"),
                        colorPalette = coul,
                        width = sqrt(RNAcarto$total)/5 ,
                        opacity = 0.7) %>%
@@ -376,7 +378,7 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%
   column_spec(2, bold=T) %>%
   column_spec(3, italic=T) %>%
   row_spec(9,  bold = T ) %>%
-  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+  footnote(general = "Répertoire National des Associations (RNA 2020); Insee, RP 2019", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 ```
@@ -455,7 +457,7 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(EPCI %in% basecom$EPC
   column_spec(3, bold=T) %>%
   column_spec(4, italic=T) %>%
   row_spec(117,  bold = T ) %>%
-  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+  footnote(general = "Répertoire National des Associations (RNA 2020); Insee, RP 2019", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
@@ -487,7 +489,7 @@ leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opac
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
-                       chartdata = RNAcarto@data[,61:71],
+                       chartdata = RNAcarto@data %>% select("Culture":"NR"),
                        colorPalette = coul,
                        width = sqrt(RNAcarto$total) ,
                        opacity = 0.7) %>%
@@ -533,7 +535,7 @@ RNApop %>% filter (!is.na(REG) & !is.na(objr)) %>%  filter(BV2012 %in% basecom$B
   column_spec(3, bold=T) %>%
   column_spec(4, italic=T) %>%
   row_spec(132,  bold = T ) %>%
-  footnote(general = "Répertoire National des Associations", general_title = "Source : ",
+  footnote(general = "Répertoire National des Associations (RNA 2020); Insee, RP 2019", general_title = "Source : ",
             footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
@@ -566,7 +568,7 @@ leaflet(RNAcarto) %>%  addTiles(group = "OSM",options = providerTileOptions(opac
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
-                       chartdata = RNAcarto@data[,58:68],
+                       chartdata = RNAcarto@data %>% select("Culture":"NR"),
                        colorPalette = coul,
                        width = sqrt(RNAcarto$total) ,
                        opacity = 0.7) %>%

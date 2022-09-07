@@ -60,7 +60,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 
 ### évolution du nombre de nouveaux volontaires originaires de la région et des nouvelles missions réalisées dans la région
 
-Légèrement plus de missions que de volontaires dans la région.
+**Légèrement plus de missions que de volontaires dans la région.**
 
 ```{r}
 hchart(basebfc %>% filter(depvol %in% depbfc ) %>% group_by(debut) %>% summarise(tot=n())
@@ -76,7 +76,7 @@ hchart(basebfc %>% filter(depvol %in% depbfc ) %>% group_by(debut) %>% summarise
 
 ### Domaines de mission
 
-Une majorité de missions dans l'éducation populaire et la solidarité. 
+**Une majorité de missions dans l'éducation populaire et la solidarité. **
 
 ```{r}
 hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
@@ -96,7 +96,7 @@ hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
 
 ### Origine de l'agrément
 
-Une part prépondérante des agréments nationaux.
+**Une part prépondérante des agréments nationaux.**
 
 ```{r}
 hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
@@ -113,7 +113,7 @@ hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
 
 ### Répartition par âge
 
-Un pic de volontaires entre 19 et 20 ans.
+**Un pic de volontaires entre 19 et 20 ans.**
 
 ```{r}
 
@@ -135,7 +135,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### évolutions départementales
 
-Une forte progression jusqu'en 2017 et un recul lié à la crise sanitaire en 2020.
+**Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020.**
 
 ```{r}
 hchart( basebfc %>% filter(depvol %in% depbfc ) %>% mutate(dept_vol=as.character(depvol)) %>%
@@ -370,7 +370,7 @@ Row {data-height="800"}
 
 ### Missions à l'étranger
 
-Des liens privilégiés avec l'Allemagne
+**Des liens privilégiés avec l'Allemagne**
 
 
 ```{r}
@@ -396,7 +396,7 @@ Row {data-height="600"}
 
 ### Missions effectuées par les jeunes en QPV
 
-Près de 1% des 16/25 ans s'engagent sur une mission de Service civique, y compris dans les QPV
+**Près de 1% des 16/25 ans s'engagent sur une mission de Service civique, y compris dans les QPV**
 
 ```{r}
 basebfcsig %>%filter(depvol %in% depbfc) %>%
@@ -419,7 +419,7 @@ basebfcsig %>%filter(depvol %in% depbfc) %>%
   kable_styling("hover", full_width = F) %>%
   column_spec(3, bold=T) %>%
   row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", general_title = "Source : ",
+  footnote(general = "Agence du Service Civique, Elisa; Insee, RP 2019. Traitements DRAJES", general_title = "Source : ",
             footnote_as_chunk = T)
 
 ```

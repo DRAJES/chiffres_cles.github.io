@@ -27,9 +27,9 @@ Row  {data-height=100}
 -----------------------------------------------------------------------
 ### Données générales
 
-La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2017 .
+La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2019 .
 
-Le nombre de jeunes diminue entre 2013 et 2018 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
+Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
 
 
 
@@ -95,7 +95,7 @@ Row  {data-height=100}
 -----------------------------------------------------------------------
 ### Données générales
 
-Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2018. Les jeunes quittent la région pour les études ou pour trouver un travail. 
+Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail. 
 Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
 
 

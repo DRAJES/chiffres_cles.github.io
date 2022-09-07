@@ -95,7 +95,7 @@ Row  {data-height=100}
 -----------------------------------------------------------------------
 ### Données générales
 
-Seuls deux départements gagnent de la population entre 2013 et 2018 : la Côte d'Or et le Doubs, portés par l'attractivité de leurs capitales Dijon et Besançon.La Nièvre est le département où la population décroît le plus en 5 ans.
+Seuls deux départements gagnent de la population entre 2013 et 2019 : la Côte d'Or et le Doubs, portés par l'attractivité de leurs capitales Dijon et Besançon.La Nièvre est le département où la population décroît le plus en 5 ans.
 
   Row {.tabset .tabset-fade}
 -----------------------------------------------------------------------

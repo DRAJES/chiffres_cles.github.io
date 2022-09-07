@@ -227,7 +227,7 @@ leaflet(piscinesdep) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(piscinesdep@data %>% 
-                                   select(Département=NOM_DEP_M,pop.x,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
+                                   select(Département=LIBGEO,pop.x,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 10000 habitants",values = piscinesdep$tranche )
 
@@ -307,7 +307,7 @@ leaflet(piscinesepci) %>%
   addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=T, 
                            fillColor = ~pal(tranche), fillOpacity = ~ifelse(is.na(tranche),0, 0.8 ),
               popup = popupTable(piscinesepci@data %>% 
-                                   select(EPCI=NOM_EPCI,pop,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
+                                   select(EPCI=NOM,pop,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
                                  feature.id=F,row.numbers = F)) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
@@ -318,7 +318,7 @@ leaflet(piscinesepci) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(piscinesepci@data %>% 
-                                   select(EPCI=NOM_EPCI,pop,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
+                                   select(EPCI=NOM,pop,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",pal = pal ,title = "surface natatoire pour 10000 habitants",values = piscinesepci$tranche )
 

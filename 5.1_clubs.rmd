@@ -108,7 +108,7 @@ leaflet(cartosportreg) %>% addProviderTiles(providers$CartoDB.Positron) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(cartosportreg@data %>% 
-                                   select(Région=NOM_REG_M,pop,clubs_tot) %>%
+                                   select(Région=LIBGEO,pop,clubs_tot) %>%
                                   mutate(tx_club=10000*clubs_tot/pop),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",pal = pal2 ,title = "taux de clubs sportifs",values = 10000*(cartosportreg$clubs_tot/cartosportreg$pop) )
@@ -119,7 +119,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="400"}
 
 ### Clubs par type de fédération
 
-La moitié des clubs affiliés à une fédération unisport olympique.
+**La moitié des clubs sont affiliés à une fédération unisport olympique.**
 
 ```{r}
 club_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
@@ -197,7 +197,7 @@ Column {.tabset .tabset-fade .tabset-pills}
 
 ### Détail fédération unisport olympique
 
-Des clubs de grande taille en football, handball, golf, gymnastique ou encore natation.
+**Des clubs de grande taille en football, handball, golf, gymnastique ou encore en natation.**
 
 ```{r}
 club_reg[39,1] <- "total"
@@ -241,7 +241,7 @@ hchart(club_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(2:38) %>%
 
 ### Détail fédération unisport non olympique
 
-Des clubs de plus petite taille pour les fédérations unisport non olympiques.
+**Des clubs de plus petite taille pour les fédérations unisport non olympiques.**
 
 ```{r}
 club_reg[91,1] <- "total"
@@ -283,7 +283,7 @@ hchart(club_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(41:90) %>%
 
 ### Détail fédération multisport
 
-Une part importante du sport scolaire dans les fédérations multisports.
+**Une part importante du sport scolaire dans les fédérations multisports.**
 
 ```{r}
 club_reg[117,1] <- "total"
@@ -423,7 +423,7 @@ leaflet(cartosportdep) %>% addProviderTiles(providers$CartoDB.Positron) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(cartosportdep@data %>% 
-                                   select(Région=NOM_DEP_M,pop,clubs_tot) %>%
+                                   select(Région=LIBGEO,pop,clubs_tot) %>%
                                   mutate(tx_lic=10000*clubs_tot/pop),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",pal = pal2 ,title = "taux de clubs sportifs",values = 10000*(cartosportdep$clubs_tot/cartosportdep$pop) )

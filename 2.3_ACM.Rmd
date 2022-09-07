@@ -34,7 +34,7 @@ options(knitr.table.format = "html")
 ### Données générales
 
 Les Accueils collectifs de mineurs sans hébergement regroupent les accueils périscolaires, les centres de loisirs...\
-**1 300** lieux d'accueils sans hébergement en BFC\
+**`r prettyNum(round(ACM_SH[6,3]/100,0)*100,big.mark = ",")`** lieux d'accueils sans hébergement en BFC\
 De nombreuses place dans le Doubs et en Côte-d'Or
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="900"}
@@ -156,7 +156,7 @@ hchart(bar
 ### Données générales
 
 Les Accueils collectifs de mineurs avec hébergement regroupent les centres de vacances, les colonies de vacances...\
-**1 100** lieux d'accueils avec hébergement en BFC
+**`r prettyNum(round(ACM_colo[2,3]/100,0)*100,big.mark = ",")`** séjours avec hébergement en BFC
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="900"}
 
@@ -325,7 +325,7 @@ leaflet(ACMcarte) %>% addProviderTiles(providers$CartoDB.Positron) %>%
 
 ### Données générales
 
-**3 840** places de scoutisme en Bourgogne-Franche-Comté
+**`r prettyNum(round(ACM_scout[5,3]/100,0)*100,big.mark = ",")`** places de scoutisme en Bourgogne-Franche-Comté
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="900"}
 

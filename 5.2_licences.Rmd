@@ -107,7 +107,7 @@ leaflet(cartosportreg) %>% addProviderTiles(providers$CartoDB.Positron) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(cartosportreg@data %>% 
-                                   select(Région=NOM_REG_M,pop,licences_tot) %>%
+                                   select(Région=LIBGEO,pop,licences_tot) %>%
                                   mutate(tx_lic=100*licences_tot/pop),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = 100*(cartosportreg$licences_tot/cartosportreg$pop) )
@@ -456,7 +456,7 @@ leaflet(cartosportdep) %>% addProviderTiles(providers$CartoDB.Positron) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(cartosportdep@data %>% 
-                                   select(Région=NOM_DEP_M,pop,licences_tot) %>%
+                                   select(Région=LIBGEO,pop,licences_tot) %>%
                                   mutate(tx_lic=100*licences_tot/pop),
                                  feature.id=F,row.numbers = F)) %>%
 addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = 100*(cartosportdep$licences_tot/cartosportdep$pop) )
