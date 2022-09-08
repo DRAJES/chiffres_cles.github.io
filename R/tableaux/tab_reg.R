@@ -8,20 +8,21 @@ region <- basecomQPV %>%
 #tableau---- 
 
 
-region_tab <- region %>% filter(REG!="METRO")%>%
+region_tab <- region %>% 
+  #filter(REG!="METRO")%>%
   select(REG,LIBGEO,population=pop,densite,pop_15_29=p1529,
          part_15_29=prop1529,part_16_25=prop1625,pop_65=p65,part_65=prop65,part_75=prop75,
          evolution=evol,evol1529,evol1625,evol65,evol75,
          ind_jeun,propF,prop1529F,prop1625F,prop65F,partZRR,partQPV,diffjeun) %>%
-  arrange((REG)) %>% bind_rows(c(part_15_29=0,part_16_25=0,part_65=0,part_75=0,
-                                 evolution=-2,evol1529=-2,evol1625=-2,evol65=2,evol75=-4),
-                               c(part_15_29=40,part_16_25=40,part_65=40,part_75=40,
-                                 evolution=2,evol1529=2,evol1625=2,evol65=4,evol75=4)) %>%
-  forme() %>%
-    slice(1:13) %>%
+          arrange((REG)) %>% 
+  
+   #       limites() %>%
+  
+          forme() %>%
+    filter(!is.na(REG)) %>%
     rbind(metro_tot %>% select(-rang_national) %>% mutate(REG="METRO") ) %>%
-  rename (Région=REG) %>%
- noms()
+    rename (Région=REG) %>%
+    noms() 
                 
 
 
