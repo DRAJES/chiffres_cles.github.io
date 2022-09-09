@@ -608,7 +608,8 @@ Row {.tabset .tabset-fade }
 
 ```{r,echo=F}
 lic27epci %>%
-  select(EPCI,LIBGEO,`nombre de clubs`=total_clubs_2018,`nombre de licences`=licences,txclub,txlic,liclub)  %>% arrange(desc(`nombre de clubs`)) %>%
+  select(EPCI,LIBGEO,`nombre de clubs`=total_clubs,`nombre de licences`=licences,txclub,txlic,liclub)  %>% 
+  arrange(desc(`nombre de clubs`)) %>%
   
     mutate(clubs = color_bar('gold')
           (digits(txclub ,1,decimal.mark=","))) %>%
@@ -622,7 +623,7 @@ lic27epci %>%
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
 add_header_above(c(" "=4,"Taux"=2," ")) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2019", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
@@ -632,7 +633,7 @@ add_header_above(c(" "=4,"Taux"=2," ")) %>%
 ```{r}
  
 club_epci <- sp::merge(epciwgs,lic27epci %>%
-  select(CODE_EPCI=EPCI,LIBGEO,total_clubs_2018,licences,txclub,txlic,liclub) %>%
+  select(CODE_EPCI=EPCI,LIBGEO,total_clubs,licences,txclub,txlic,liclub) %>%
     mutate_at(3:7,as.numeric),
   by="CODE_EPCI")
 
@@ -643,7 +644,7 @@ leaflet(club_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
   addCircles(centroid(club_epci)[,1],centroid(club_epci)[,2],weight=4,
-             radius = ~500*total_clubs_2018^(1/2), color = "#4169E1",
+             radius = ~500*total_clubs^(1/2), color = "#4169E1",
              fillColor = ~pal2(txclub), fillOpacity = 0.7,
              highlight = highlightOptions (fillOpacity =  0.5,
                                            weight = 5,   color = "#00FFFF"),
@@ -672,7 +673,7 @@ leaflet(club_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
   addCircles(centroid(club_epci)[,1],centroid(club_epci)[,2],weight=4,
-             radius = ~500*total_clubs_2018^(1/2), color = "#4169E1",
+             radius = ~500*total_clubs^(1/2), color = "#4169E1",
              fillColor = ~pallic(txlic), fillOpacity = 0.7,
              highlight = highlightOptions (fillOpacity =  0.5,
                                            weight = 5,   color = "#00FFFF"),
@@ -700,7 +701,8 @@ Row {data-height="20"}
 
 ```{r,echo=F}
 lic27bv %>%
-  select(BV2012,LIBGEO,`nombre de clubs`=total_clubs_2018,`nombre de licences`=licences,txclub,txlic,liclub)  %>% arrange(desc(`nombre de clubs`)) %>%
+  select(BV2012,LIBGEO,`nombre de clubs`=total_clubs,`nombre de licences`=licences,txclub,txlic,liclub)  %>% 
+  arrange(desc(`nombre de clubs`)) %>%
    mutate(clubs = color_bar('gold')
           (digits(txclub ,1,decimal.mark=","))) %>%
   mutate(licences = color_bar('lightgreen')
@@ -714,7 +716,7 @@ lic27bv %>%
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
 add_header_above(c(" "=4,"Taux"=2," ")) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2019", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
@@ -723,7 +725,7 @@ add_header_above(c(" "=4,"Taux"=2," ")) %>%
 
 ```{r}
 club_bv <- sp::merge(bvwgs,lic27bv %>%
-  select(BV2012,LIBGEO,total_clubs_2018,licences,txclub,txlic,liclub) %>%
+  select(BV2012,LIBGEO,total_clubs,licences,txclub,txlic,liclub) %>%
     mutate_at(3:7,as.numeric),
   by="BV2012")
 
@@ -735,7 +737,7 @@ leaflet(club_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
   addCircles(centroid(club_bv)[,1],centroid(club_bv)[,2],weight=4,
-             radius = ~500*total_clubs_2018^(1/2), color = "#4169E1",
+             radius = ~500*total_clubs^(1/2), color = "#4169E1",
              fillColor = ~pal2(txclub), fillOpacity = 0.7,
              highlight = highlightOptions (fillOpacity =  0.5,
                                            weight = 5,   color = "#00FFFF"),
@@ -764,7 +766,7 @@ leaflet(club_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
   addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
   addCircles(centroid(club_bv)[,1],centroid(club_bv)[,2],weight=4,
-             radius = ~500*total_clubs_2018^(1/2), color = "#4169E1",
+             radius = ~500*total_clubs^(1/2), color = "#4169E1",
              fillColor = ~pallic(txlic), fillOpacity = 0.7,
              highlight = highlightOptions (fillOpacity =  0.5,
                                            weight = 5,   color = "#00FFFF"),

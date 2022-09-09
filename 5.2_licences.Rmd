@@ -672,7 +672,7 @@ lic27epci %>%
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=3,"Taux de licences"=2,"Taux de licences parmi les"=2) ) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2019", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
@@ -744,7 +744,7 @@ lic27bv %>%
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=3,"Taux de licences"=2,"Taux de licences parmi les"=2) ) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2019", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T)   %>%
   scroll_box(height = "800px") 
 ```

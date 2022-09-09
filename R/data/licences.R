@@ -1,7 +1,7 @@
 library(tidyverse)
 library(readxl)
 
-licences <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/2. Données data.gouv.fr/2018/lic-data-2018.csv",as.is = T)
+licences <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/2. Données data.gouv.fr/2019/lic-data-2019.csv",as.is = T)
 load("data/demo/basecom.RData")
 
 lic_dep <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2020/licences-par-departement-2020.xlsx",sheet = 2,skip=2)
@@ -51,12 +51,12 @@ licences27 <- basecom %>%
                                dplyr::select (CODGEO) %>% pull ) ) %>%
   dplyr::select(CODGEO,EPCI,BV2012,poph,popf,pop) %>%
   left_join(.,licences %>% 
-              dplyr::select (code_commune,fede=fed_2018,licences=l_2018,
-                             lic_femmes=l_f_2018,lic_hommes=l_h_2018,lic_qpv=l_qp_2018)
+              dplyr::select (code_commune,fede=fed_2019,licences=l_2019,
+                             lic_femmes=l_f_2019,lic_hommes=l_h_2019,lic_qpv=l_qp_2019)
             ,by=c("CODGEO"="code_commune")) %>% 
   left_join(.,clubs %>%
-              dplyr::select (Code_commune, code_federation,clubs_sportifs_2018,etablissements_prof_2018,total_clubs_2018)
-            ,by=c("CODGEO"="Code_commune","fede"="code_federation")) 
+              dplyr::select (code_commune, code_federation,clubs_sportifs_2019,etablissements_prof_2019,total_clubs_2019)
+            ,by=c("CODGEO"="code_commune","fede"="code_federation")) 
 
 
 
@@ -65,17 +65,17 @@ lic27epci <- licences27 %>% group_by(CODGEO,EPCI,pop,popf,poph) %>%
                             summarise(licences=sum(licences,na.rm=T),
                                       licfemmes=sum(lic_femmes,na.rm=T),
                                       lichommes=sum(lic_hommes,na.rm=T),
-                                      clubs_sportifs_2018=sum(clubs_sportifs_2018,na.rm=T),
-                                      etablissements_prof_2018=sum(etablissements_prof_2018,na.rm=T),
-                                      total_clubs_2018=sum(total_clubs_2018,na.rm=T)) %>%
+                                      clubs_sportifs=sum(clubs_sportifs_2019,na.rm=T),
+                                      etablissements=sum(etablissements_prof_2019,na.rm=T),
+                                      total_clubs=sum(total_clubs_2019,na.rm=T)) %>%
                           group_by(EPCI) %>% 
                           summarise_if(is.numeric,~sum(.x,na.rm=T)) %>%
                           mutate(txlic=100*licences/pop,
                                  txfemmes=100*licfemmes/licences,
                                  txlicf=100*licfemmes/popf,
                                  txlich=100*lichommes/poph,
-                                 txclub=10000*total_clubs_2018/pop,
-                                 liclub=licences/total_clubs_2018) %>%
+                                 txclub=10000*total_clubs/pop,
+                                 liclub=licences/total_clubs) %>%
   left_join(.,appartenance %>% dplyr::filter(NIVGEO=="EPCI") %>%
               dplyr::select(CODGEO,LIBGEO) ,
             by=c("EPCI" = "CODGEO") ) 
@@ -85,17 +85,17 @@ lic27bv <- licences27 %>% group_by(CODGEO,BV2012,pop,popf,poph) %>%
     summarise(licences=sum(licences,na.rm=T),
             licfemmes=sum(lic_femmes,na.rm=T),
             lichommes=sum(lic_hommes,na.rm=T),
-            clubs_sportifs_2018=sum(clubs_sportifs_2018,na.rm=T),
-            etablissements_prof_2018=sum(etablissements_prof_2018,na.rm=T),
-            total_clubs_2018=sum(total_clubs_2018,na.rm=T)) %>%
+            clubs_sportifs=sum(clubs_sportifs_2019,na.rm=T),
+            etablissements_prof=sum(etablissements_prof_2019,na.rm=T),
+            total_clubs=sum(total_clubs_2019,na.rm=T)) %>%
   group_by(BV2012) %>% 
   summarise_if(is.numeric,~sum(.x,na.rm=T)) %>%
   mutate(txlic=100*licences/pop,
          txfemmes=100*licfemmes/licences,
          txlicf=100*licfemmes/popf,
          txlich=100*lichommes/poph,
-         txclub=10000*total_clubs_2018/pop,
-         liclub=licences/total_clubs_2018) %>%
+         txclub=10000*total_clubs/pop,
+         liclub=licences/total_clubs) %>%
   left_join(.,appartenance %>% dplyr::filter(NIVGEO=="BV2012") %>%
               dplyr::select(CODGEO,LIBGEO) ,
             by=c("BV2012" = "CODGEO") ) 

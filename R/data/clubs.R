@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 
 
-clubs <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/2. Données data.gouv.fr/2018/clubs-data-2018.csv",as.is = T)
+clubs <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/2. Données data.gouv.fr/2019/clubs-data-2019.csv",as.is = T)
 load("data/demo/basecom.RData")
 
 club_dep <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2020/Clubs-2020.xlsx",sheet = 4,skip = 2)
