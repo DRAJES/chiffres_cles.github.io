@@ -13,6 +13,7 @@ lic17 <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licence
 lic18 <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/licencesdep18.xlsx",sheet = 2,skip=2 )
 lic19 <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/licences-par-departement-2019.xlsx",sheet = 2,skip=2  )
 lic20 <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2020/licences-par-departement-2020.xlsx",sheet = 2,skip=2  )
+lic21 <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-departement-2021.xlsx",sheet = 2,skip=2  )
 depreg <- read.csv("I:/SUPPORT/05_CARTO/Outils et Documentation/departement2021.csv",as.is=T)
 depreg[102,1:2] <- "FR"
 
@@ -27,8 +28,9 @@ evofede <- lic10  %>%  filter(...1>100 & ...1<700) %>% select(fed=1,l2010=158) %
             full_join(.,lic17 %>% filter(...1>100 & ...1<700) %>% select(fed=1,l2017=114) %>% mutate(l2017=as.numeric(l2017)), by="fed" )%>%
             full_join(.,lic18 %>% filter(...1>100 & ...1<700) %>% select(fed=1,l2018=114) %>% mutate(l2018=as.numeric(l2018)), by="fed" )%>%
             full_join(.,lic19 %>% filter(...1>100 & ...1<700) %>% select(fed=1,l2019=116) %>% mutate(l2019=as.numeric(l2019)), by="fed" )%>%
-            full_join(.,lic20 %>% filter(...1>100 & ...1<700) %>% select(fed=1,fede=2,l2020=116) %>% mutate(l2020=as.numeric(l2020)), by="fed" ) %>%
-      pivot_longer(!c(fed,fede), names_to = "année",values_to = "lic") %>% group_by(fed) %>%
+            full_join(.,lic20 %>% filter(...1>100 & ...1<700) %>% select(fed=1,l2020=116) %>% mutate(l2020=as.numeric(l2020)), by="fed" ) %>%
+            full_join(.,lic21 %>% filter(...1>100 & ...1<700) %>% select(fed=1,fede=2,l2021=116) %>% mutate(l2021=as.numeric(l2021)), by="fed" ) %>%
+          pivot_longer(!c(fed,fede), names_to = "année",values_to = "lic") %>% group_by(fed) %>%
             arrange((année),.by_group=T) 
 #evofede <-  evofede %>% filter(fed>200 & fed<300) %>% #modifier pour type de fédé
 #           bind_rows(evofede %>% filter(fed>200 & fed<300) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
@@ -44,8 +46,9 @@ evofedebfc <- lic10  %>% filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>
     full_join(.,lic17 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2017=10) )%>%
     full_join(.,lic18 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2018=10) )%>%
     full_join(.,lic19 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2019=10) )%>%
-    full_join(.,lic20 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,fede=2,depbfc) %>% mutate_at(3:10,as.numeric) %>% adorn_totals("col") %>% select(1,2,l2020=11) )%>%
-    pivot_longer(!c(fed,fede), names_to = "année",values_to = "lic") %>% group_by(fed) %>%
+    full_join(.,lic20 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(3:10,as.numeric) %>% adorn_totals("col") %>% select(1,2,l2020=11) )%>%
+    full_join(.,lic21 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,fede=2,depbfc) %>% mutate_at(3:10,as.numeric) %>% adorn_totals("col") %>% select(1,2,l2021=11) )%>%
+  pivot_longer(!c(fed,fede), names_to = "année",values_to = "lic") %>% group_by(fed) %>%
     arrange((année),.by_group=T) 
 #evofedebfc <- evofedebfc %>% filter(fed>100 & fed<200) %>% #modifier pour type de fédé 
 #              bind_rows(evofedebfc %>% filter(fed>100 & fed<200) %>% group_by(année) %>% summarise(fed="bfc",lic=sum(lic,na.rm=T))) %>%
@@ -62,6 +65,7 @@ evoreg <- lic10  %>% select (-c(144:157)) %>%  slice(34,94,119,121) %>%  mutate(
   bind_rows(.,lic18 %>% slice(39,92,117,118) %>% select (-c(100:113)) %>% mutate(année="2018",type=c("uni","nonolym","multi","total")) %>% rename("FR"=...114) %>% pivot_longer(-c(101:102),names_to = "DEP",values_to = "lic") %>% left_join(.,depreg[,1:2],by="DEP") %>% group_by(année,type, REG) %>% summarise(lic=sum(as.numeric(lic),na.rm=T))) %>%
   bind_rows(.,lic19 %>% slice(39,92,117,118) %>% select (-c(100:115)) %>% mutate(année="2019",type=c("uni","nonolym","multi","total")) %>% rename("FR"=...116) %>% pivot_longer(-c(101:102),names_to = "DEP",values_to = "lic") %>% left_join(.,depreg[,1:2],by="DEP") %>% group_by(année,type, REG) %>% summarise(lic=sum(as.numeric(lic),na.rm=T))) %>%
   bind_rows(.,lic20 %>% slice(40,92,117,118) %>% select (-c(100:115)) %>% mutate(année="2020",type=c("uni","nonolym","multi","total")) %>% rename("FR"=...116) %>% pivot_longer(-c(101:102),names_to = "DEP",values_to = "lic") %>% left_join(.,depreg[,1:2],by="DEP") %>% group_by(année,type, REG) %>% summarise(lic=sum(as.numeric(lic),na.rm=T))) %>%
+  bind_rows(.,lic21 %>% slice(40,92,117,118) %>% select (-c(100:115)) %>% mutate(année="2021",type=c("uni","nonolym","multi","total")) %>% rename("FR"=...116) %>% pivot_longer(-c(101:102),names_to = "DEP",values_to = "lic") %>% left_join(.,depreg[,1:2],by="DEP") %>% group_by(année,type, REG) %>% summarise(lic=sum(as.numeric(lic),na.rm=T))) %>%
   group_by(REG) %>% arrange(REG, année)  %>% filter(!is.na(REG))
 #evoreg <- evoreg %>%filter(type=="total")  %>% #modifier pour les différents types de fédé
 #  summarise(evo2010_2020=spk_chr(lic))
@@ -77,6 +81,7 @@ evodep <- lic10  %>% slice(34,94,119,121) %>% select(1,depbfc) %>% mutate_at(2:9
   bind_rows(.,lic18 %>%  slice(39,92,117,118) %>% select(1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col",name="BFC") %>% mutate(année="2018",type=c("uni","nonolym","multi","total")) )%>%
   bind_rows(.,lic19 %>%  slice(39,92,117,118) %>% select(1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col",name="BFC") %>% mutate(année="2019",type=c("uni","nonolym","multi","total")) )%>%
   bind_rows(.,lic20 %>%  slice(40,92,117,118) %>% select(1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col",name="BFC")  %>% mutate(année="2020",type=c("uni","nonolym","multi","total")) ) %>%
+  bind_rows(.,lic21 %>%  slice(40,92,117,118) %>% select(1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col",name="BFC")  %>% mutate(année="2021",type=c("uni","nonolym","multi","total")) ) %>%
   select(-1) %>%   
   pivot_longer(!c(année,type), names_to = "dep",values_to = "lic") %>% group_by(dep) %>% arrange(dep,année) 
 #evodep <- evodep %>%filter(type=="total")  %>% #modifier pour les différents types de fédé
