@@ -37,17 +37,17 @@ evofede <- lic10  %>%  filter(...1>100 & ...1<700) %>% select(fed=1,l2010=158) %
 #           summarise(evo2010_2020=spk_chr(lic))
 
 evofedebfc <- lic10  %>% filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2010=10) %>%
-    full_join(.,lic11 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2011=10) )%>%
-    full_join(.,lic12 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2012=10) )%>%
-    full_join(.,lic13 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2013=10) )%>%
-    full_join(.,lic14 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2014=10) )%>%
-    full_join(.,lic15 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2015=10) )%>%
-    full_join(.,lic16 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2016=10) )%>%
-    full_join(.,lic17 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2017=10) )%>%
-    full_join(.,lic18 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2018=10) )%>%
-    full_join(.,lic19 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2019=10) )%>%
-    full_join(.,lic20 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2020=10) )%>%
-    full_join(.,lic21 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,fede=2,depbfc) %>% mutate_at(3:10,as.numeric) %>% adorn_totals("col") %>% select(1,2,l2021=11) )%>%
+    full_join(.,lic11 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2011=10), by="fed" )%>%
+    full_join(.,lic12 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2012=10), by="fed" )%>%
+    full_join(.,lic13 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2013=10), by="fed" )%>%
+    full_join(.,lic14 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2014=10), by="fed" )%>%
+    full_join(.,lic15 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2015=10), by="fed" )%>%
+    full_join(.,lic16 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2016=10), by="fed" )%>%
+    full_join(.,lic17 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2017=10), by="fed" )%>%
+    full_join(.,lic18 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2018=10), by="fed" )%>%
+    full_join(.,lic19 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2019=10), by="fed" )%>%
+    full_join(.,lic20 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,depbfc) %>% mutate_at(2:9,as.numeric) %>% adorn_totals("col") %>% select(1,l2020=10), by="fed" )%>%
+    full_join(.,lic21 %>%  filter(...1>100 & ...1<700) %>% select(fed=1,fede=2,depbfc) %>% mutate_at(3:10,as.numeric) %>% adorn_totals("col") %>% select(1,2,l2021=11), by="fed" )%>%
   pivot_longer(!c(fed,fede), names_to = "année",values_to = "lic") %>% group_by(fed) %>%
     arrange((année),.by_group=T) 
 #evofedebfc <- evofedebfc %>% filter(fed>100 & fed<200) %>% #modifier pour type de fédé 

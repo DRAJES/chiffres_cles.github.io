@@ -173,7 +173,7 @@ hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
 
 ```{r, plotly=T}
 hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
-                                      #,France="...22"
+                                      ,`METRO`="...22"
                                       ) %>%
     slice(39,91,116,117) %>%
     pivot_longer(-`Codes régions`, 'REG') %>% rename(type_fede=`Codes régions`,licences=value) %>%
@@ -198,9 +198,9 @@ Une baisse des licences unisport olympique observée pour la première fois en 2
 ```{r}
 lic_reg[39,1] <- "total"
 fedsexe[39,1] <- "total"
-lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
-    slice(2:38) %>% arrange (desc(France)) %>% 
-  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(39) ) %>%
+lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+    slice(2:38) %>% arrange (desc(`France métro`)) %>% 
+  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(39) ) %>%
   left_join(.,fedsexe %>% slice (2:38) %>%select (1,txfem=7) %>%
                 bind_rows(fedsexe %>% select (1,txfem=7) %>% slice (39)) %>%  #ajout des taux de licences feminines
                       mutate(`Taux de licences féminines`=color_bar('pink')
@@ -244,9 +244,9 @@ hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(2:38) %>%
 ```{r}
 lic_reg[91,1] <- "total"
 fedsexe[91,1] <- "total"
-lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
-    slice(41:90)  %>% arrange (desc(France)) %>% 
-  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(91) ) %>%
+lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+    slice(41:90)  %>% arrange (desc(`France métro`)) %>% 
+  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(91) ) %>%
     left_join(.,fedsexe %>% slice (41:90) %>% select (1,txfem=7) %>%
                 bind_rows(fedsexe  %>% select (1,txfem=7) %>% slice (91)) %>% #txfem
                        mutate(`Taux de licences féminines`=color_bar('pink')
@@ -288,9 +288,9 @@ hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(41:90) %>%
 ```{r}
 lic_reg[116,1] <- "total"
 fedsexe[116,1] <- "total"
-lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
-    slice(93:115) %>% arrange (desc(France)) %>% 
-  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(116) ) %>%
+lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+    slice(93:115) %>% arrange (desc(`France métro`)) %>% 
+  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(116) ) %>%
     left_join(.,fedsexe %>% select (1,txfem=7) %>% slice(93:115) %>%
                 bind_rows(fedsexe %>% select (1,txfem=7) %>% slice (116)) %>% #txfem
                      mutate(`Taux de licences féminines`=color_bar('pink')
