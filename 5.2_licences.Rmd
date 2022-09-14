@@ -129,7 +129,7 @@ lic_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
               mutate (`Taux de licences féminines`=color_bar('pink')
           (digits(txfem,1,decimal.mark=",")))  ) %>%
   bind_cols( evoreg %>%filter(type=="total")  %>% # sparkine modifier pour les différents types de fédé
-  summarise(`évolution 2010-2020`=spk_chr(lic)) ) %>%
+  summarise(`évolution 2010-2021`=spk_chr(lic)) ) %>%
   relocate(REG, .before = region) %>%
   rename(`unisport olympique`="Total fédérations unisport olympiques",
          `unisport non olympique`="Total fédérations unisport non olympiques", 
@@ -142,7 +142,7 @@ lic_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
   column_spec(6, bold=T) %>%
   row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   add_header_above(c( " "=2,"Fédérations"=3,"Licences"=2," "=2) ) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
@@ -169,7 +169,7 @@ hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
 
 ### Structure des licences par type de fédération
 
-Plus de la moitié des licences dans les fédérations unisport olympiques.
+**Plus de la moitié des licences dans les fédérations unisport olympiques.**
 
 ```{r, plotly=T}
 hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
@@ -208,7 +208,7 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
             by=c("Code fédération"="Codes fédé") ) %>%
   left_join( evofede %>%   filter(fed<200) %>% #modifier pour type de fédé 
               bind_rows(evofede %>% filter(fed<200) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2020`=spk_chr(lic)),
+              summarise(`évolution 2010-2021`=spk_chr(lic)),
                by=c("Code fédération"="fed") ) %>% select(-17) %>%
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="clrrrrrrrrrrrrrrl",
@@ -216,7 +216,7 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
    kable_styling("hover", full_width = F) %>%
    column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(16, bold=T) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
@@ -254,7 +254,7 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
             by=c("Code fédération"="Codes fédé") ) %>%
    left_join( evofede %>%   filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
               bind_rows(evofede %>% filter(fed>200 & fed<300) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2020`=spk_chr(lic)),
+              summarise(`évolution 2010-2021`=spk_chr(lic)),
                by=c("Code fédération"="fed") )%>% select(-17) %>%
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="clrrrrrrrrrrrrrrl",
@@ -262,7 +262,7 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
   kable_styling("hover", full_width = F) %>%
   column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(16, bold=T) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
@@ -298,7 +298,7 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
             by=c("Code fédération"="Codes fédé") ) %>%
    left_join( evofede %>%   filter(fed>400) %>% #modifier pour type de fédé 
               bind_rows(evofede %>% filter(fed>400) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2020`=spk_chr(lic)),
+              summarise(`évolution 2010-2021`=spk_chr(lic)),
                by=c("Code fédération"="fed") ) %>% select(-17) %>%
     kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="clrrrrrrrrrrrrrrl",
@@ -306,7 +306,7 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",France="...22") %>% rename("Code fédé
   kable_styling("hover", full_width = F) %>%
 column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
    column_spec(16, bold=T) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
@@ -575,7 +575,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
    column_spec(11, bold=T) %>%
 #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
 #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
@@ -605,7 +605,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
@@ -634,7 +634,7 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
-  footnote(general = " MEDES recensement des licences sportives et des clubs 2020", general_title = "Source : ",
+  footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
 
