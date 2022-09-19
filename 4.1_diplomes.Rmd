@@ -12,8 +12,10 @@ output:
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
+sparkline(0)
 
 load("data/formation/diplome.RData")
+load("data/formation/bafa.RData")
 
 forome <- forome %>% mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté), "years")) %>% mutate(age=ifelse(age<0,100+age,age))
 
@@ -148,24 +150,81 @@ hchart(forome %>% group_by(Type.de.diplôme,Spécialité)%>% summarise(mage=mean
 
 ### Données générales
 
-**`r prettyNum(round(bafareg[4,3]/100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2019
+**`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2019
 
-Plus de 250 BAFA délivrés dans le Doubs et en Saône et Loire.
+Les femmes représentent plus de 2/3 des effectifs.
 
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+Les recrutements baissent fortement dans les départements de la région, comme au national.
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="700"}
 
 ### Tableau des diplômes non professionnels
 
 ```{r}
-bafareg %>%
-  rename(" "="...1") %>%
+bafaregm %>% filter (année==2021 & sexe =='Ensemble') %>%
+  bind_cols(bafdregm %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`BAFD`) ) %>%
+  rename(BAFD=...6) %>% 
+  bind_cols(bafaregagem %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`age BAFA`) ) %>%
+   mutate(`age BAFA`=color_bar('lightblue',na.rm=T)
+          (digits(as.numeric(...7),1,decimal.mark=",")))  %>%
+  
+  bind_cols(bafdregagem %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`age BAFD`) ) %>%
+  
+     mutate(`age BAFD`=color_bar('lightblue',na.rm=T)
+          (digits(as.numeric(...9),1,decimal.mark=",")))  %>% 
+  
+  bind_cols(  bafaregm %>% filter(année==2021) %>%
+  mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
+           filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
+  
+  mutate(`femmes BAFA`=color_bar('pink',na.rm=T)
+          (digits(as.numeric(...11),1,decimal.mark=",")))  %>% 
+  
+ bind_cols(  bafdregm %>% filter(année==2021) %>%
+  mutate (txfem=100*BAFD[sexe=="Femmes"]/BAFD) %>%
+           filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
+
+   mutate(`femmes BAFD`=color_bar('pink',na.rm=T)
+          (digits(as.numeric(...13),1,decimal.mark=",")))  %>% 
+  
+   bind_cols(  bafaregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
+                 pivot_wider(names_from = année,values_from = BAFA) %>%
+  mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
+  
+    mutate(`evo BAFA`=
+             ifelse(...15 < 0,
+                    normalize_bar("#ff000050")(digits(...15,1,decimal.mark=",")),
+                    normalize_bar("#00800050")(digits(...15,1,decimal.mark=",")) ) ) %>%
+  
+bind_cols(  bafdregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
+                 pivot_wider(names_from = année,values_from = BAFD) %>%
+  mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
+  
+      mutate(`evo BAFD`=
+                ifelse(...17 < 0,
+                    normalize_bar("#ff000050")(digits(...17,1,decimal.mark=",")),
+                    normalize_bar("#00800050")(digits(...17,1,decimal.mark=",")) ) ) %>%
+   arrange(CODGEO) %>%
+   bind_cols( bafaregm %>%filter(sexe=="Ensemble")  %>% # sparkine
+                group_by(CODGEO) %>%  
+                summarise(`évo`=spk_chr(BAFA)) ) %>%
+   bind_cols( bafaregm %>%filter(sexe=="Femmes")  %>% # sparkine
+                group_by(CODGEO) %>%  
+                summarise(`évo Femmes`=spk_chr(BAFA)) ) %>%
+   bind_cols( bafaregm %>%filter(sexe=="Hommes")  %>% # sparkine 
+                group_by(CODGEO) %>%  
+                summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
+  select(CODGEO=CODGEO...2,region,BAFA,BAFD,`age BAFA`, `age BAFD`,`femmes BAFA`,`femmes BAFD`, `evo BAFA`, `evo BAFD`,`évo`,`évo Femmes`, `évo Hommes`) %>%
+  
+    
  kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="crrrrrrrrrrrrrr")%>%
+    align="clrrllllllccc")%>%
   kable_styling("hover", full_width = F) %>%
-  column_spec(15, bold=T) %>%
-  column_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  row_spec(c(1,4),bold = T) %>%
-  footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports", general_title = "Source : ",
+  add_header_above(c( " "=4,"âge médian"=2,"Taux de femmes"=2,"évolution 2011-2021"=2,"evo annuelle 2011-2021"=3) ) %>%
+  row_spec(15, bold=T) %>%
+  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+#  row_spec(c(1,4),bold = T) %>%
+  footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022", general_title = "Source : ",
             footnote_as_chunk = T) 
 
 
@@ -176,51 +235,125 @@ bafareg %>%
 **12e** région de France pour le nombre de BAFA/BAFD
 
 ```{r}
-bar <-   bafareg %>% mutate_at(vars(2:15), as.numeric) %>%
-  slice (2:3) %>% select(-15) %>% pivot_longer(-1,names_to = "REG") %>%
-  arrange(desc(value))
 
-hchart(bar  ,
-  "bar",hcaes(x=reorder(REG,value ),y=value,group=bar$...1),
+hchart(bafaregm %>% filter (année==2021 & sexe =='Ensemble') %>%
+                           filter(!(CODGEO %in% c("France", "METRO"))) %>%
+mutate(année="BAFA") %>%
+  bind_rows(bafdregm %>% filter (année==2021 & sexe =='Ensemble') %>%
+                                filter(!(CODGEO %in% c("France", "METRO"))) %>%
+rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
+  "bar",hcaes(x=reorder(region,BAFA ),y=BAFA, group=année),
     stacking = "normal" ,name=c("BAFA","BAFD"), showInLegend = T) %>%
      hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de diplômes")) %>%
   hc_add_theme(thm) 
 ```
 
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+### évolution du poids des régions
+
+```{r}
+
+  hchart( bafaregm %>%
+                  filter(sexe %in% "Ensemble") %>%
+                  filter(!(CODGEO %in% c("France", "METRO"))),
+  hcaes(x = année, y = BAFA, group = CODGEO),
+  type= "areaspline", stacking =T,
+  showInLegend =T,  pointWidth = 20)
+
+```
+
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="1000"}
 
 ### Diplômes non professionnels délivrés par département
 
 ```{r}
-bafa %>% relocate(2,.before = 11)%>%
-  rename(" "="...1") %>%
-  adorn_totals("row",name="Total") %>%
+bafadepm %>% filter(dep %in% depbfc) %>%
+  filter (année==2021 & sexe =='Ensemble') %>%
+
+  bind_cols(bafadepagem %>% filter (dep %in% depbfc & année==2021 & sexe =='Ensemble') %>% pull(`age BAFA`) ) %>%
+   mutate(`age BAFA`=color_bar('lightblue',na.rm=T)
+          (digits(as.numeric(...6),1,decimal.mark=",")))  %>%
+  
+  bind_cols(  bafadepm %>% filter(dep %in% depbfc & année==2021) %>%
+  mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
+           filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
+  
+  mutate(`femmes BAFA`=color_bar('pink',na.rm=T)
+          (digits(as.numeric(...8),1,decimal.mark=",")))  %>% 
+  
+
+   bind_cols(  bafadepm %>% filter(dep %in% depbfc & sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
+                 pivot_wider(names_from = année,values_from = BAFA) %>%
+  mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
+  
+    mutate(`evo BAFA`=
+             ifelse(...10 < 0,
+                    normalize_bar("#ff000050")(digits(...10,1,decimal.mark=",")),
+                    normalize_bar("#00800050")(digits(...10,1,decimal.mark=",")) ) ) %>%
+  
+
+   bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Ensemble")  %>% # sparkine 
+                group_by(dep) %>%
+                summarise(`évo`=spk_chr(BAFA)) ) %>%
+   bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Femmes")  %>% # sparkine 
+                group_by(dep) %>%
+                summarise(`évo Femmes`=spk_chr(BAFA)) ) %>%
+   bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Hommes")  %>% # sparkine
+                group_by(dep) %>%
+                summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
+  select(dep=dep...2,département=deplib,BAFA,`age BAFA`, `femmes BAFA`,`evo BAFA`, `évo`,`évo Femmes`, `évo Hommes`) %>%
+  
+     arrange(dep) %>%
+     
  kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="crrrrrrrrrrrrrr")%>%
+    align="clrlllccc")%>%
   kable_styling("hover", full_width = F) %>%
-  column_spec(11, bold=T) %>%
-  column_spec(10,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports", general_title = "Source : ",
+#  add_header_above(c( " "=4,"âge médian"=2,"Taux de femmes"=2,"évolution 2011-2021"=2,"evo annuelle 2011-2021"=3) ) %>%
+#  row_spec(15, bold=T) %>%
+#  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  column_spec(3,bold = T) %>%
+  footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022", general_title = "Source : ",
             footnote_as_chunk = T) 
 
 ```
 
-### Répartition des BAFA de Bourgogne-Franche-Comté
+### évolution des BAFA de Bourgogne-Franche-Comté
+
 
 ```{r}
-bar <-   bafa %>% slice(1) %>% mutate_at(vars(2:11), as.numeric) %>%
-   select(-2,-11) %>% pivot_longer(-1,names_to = "DEP") %>%
-  arrange(desc(value))
+list_of_plots <- map(depbfc, function(x) {
+  
+  filtered <-
+    bafadepm %>%
+    filter(dep == x)
 
-hchart( bar ,
-  "bar",hcaes(x=DEP,y=value), name="Brevets d'Aptitude aux Fonctions d'Animateur",
-   showInLegend = T,  pointWidth = 20) %>%
-     hc_xAxis(title=list(text="Département")) %>%
-    hc_yAxis(title=list(text="Nombre de diplômes")) %>%
+  highchart() %>%
+    hc_add_series(data = filtered %>% filter (sexe=='Ensemble' ),
+                  hcaes(x = année, y = BAFA, group = dep),
+                  type = "spline",
+                  #title = deplib,
+                  name = "Ensemble",  pointWidth = 20,
+                  ) %>%
+    hc_add_series(data = filtered %>% filter (sexe=='Femmes' ),
+                  hcaes(x = année, y = BAFA, group = dep),
+                  type = "spline", 
+                   name = "Femmes",  pointWidth = 10, dashStyle=  'Dash') %>%
+    hc_add_series(data = filtered %>% filter (sexe=='Hommes' ),
+                  hcaes(x = année, y = BAFA, group = dep),
+                  type = "spline",
+                  name = "Hommes",  pointWidth = 10, dashStyle=  'ShortDot') %>%
+    hc_title(text = x) %>%
     hc_add_theme(thm) 
+  
+  })
+
+hw_grid(list_of_plots, rowheight = 300) %>%
+  htmltools::browsable()
 
 ```
+
+
 
 # Insertion des diplômés {data-orientation="rows" height="30" data-icon="fa-user-tie"}
 
@@ -242,6 +375,8 @@ Insertion Professionnelle des diplômés de l'animation et du sport](https://inj
 **Sources :**
 
 -   Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports
+- Données BAFA/BAFD <https://injep.fr/donnee/bafa-bafd-2011-2021/>
+Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
 
 Le dispositif régional d'observation de l'emploi et de la formation (DROEF) est un réseau de correspondants régionaux animé par la direction des Sports et chargé de suivre la formation et l'insertion des diplômés, en particulier à travers une enquête d'insertion des diplômés Jeunesse et Sports :\
 
