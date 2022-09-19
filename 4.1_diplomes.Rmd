@@ -150,7 +150,7 @@ hchart(forome %>% group_by(Type.de.diplôme,Spécialité)%>% summarise(mage=mean
 
 ### Données générales
 
-**`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2019
+**`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2021
 
 Les femmes représentent plus de 2/3 des effectifs.
 
@@ -161,49 +161,53 @@ Les recrutements baissent fortement dans les départements de la région, comme 
 ### Tableau des diplômes non professionnels
 
 ```{r}
-bafaregm %>% filter (année==2021 & sexe =='Ensemble') %>%
-  bind_cols(bafdregm %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`BAFD`) ) %>%
-  rename(BAFD=...6) %>% 
+bafaregm %>% filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
+  bind_cols (bafdregm %>% filter (année %in% 2019:2021 & sexe =='Ensemble') %>% pull(`BAFD`)) %>%
+  pivot_wider(names_from = année,values_from = c(BAFA,...6) ) %>%
+  rename(BAFD19=...6_2019,BAFD20=...6_2020,BAFD21=...6_2021) %>%
+
+               bind_cols(bafdregm %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`BAFD`) ) %>%
+  rename(BAFD=...10) %>% 
   bind_cols(bafaregagem %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`age BAFA`) ) %>%
    mutate(`age BAFA`=color_bar('lightblue',na.rm=T)
-          (digits(as.numeric(...7),1,decimal.mark=",")))  %>%
+          (digits(as.numeric(...11),1,decimal.mark=",")))  %>%
   
   bind_cols(bafdregagem %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`age BAFD`) ) %>%
   
      mutate(`age BAFD`=color_bar('lightblue',na.rm=T)
-          (digits(as.numeric(...9),1,decimal.mark=",")))  %>% 
+          (digits(as.numeric(...13),1,decimal.mark=",")))  %>% 
   
   bind_cols(  bafaregm %>% filter(année==2021) %>%
   mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
            filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
   
   mutate(`femmes BAFA`=color_bar('pink',na.rm=T)
-          (digits(as.numeric(...11),1,decimal.mark=",")))  %>% 
+          (digits(as.numeric(...15),1,decimal.mark=",")))  %>% 
   
  bind_cols(  bafdregm %>% filter(année==2021) %>%
   mutate (txfem=100*BAFD[sexe=="Femmes"]/BAFD) %>%
            filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
 
    mutate(`femmes BAFD`=color_bar('pink',na.rm=T)
-          (digits(as.numeric(...13),1,decimal.mark=",")))  %>% 
+          (digits(as.numeric(...17),1,decimal.mark=",")))  %>% 
   
    bind_cols(  bafaregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
                  pivot_wider(names_from = année,values_from = BAFA) %>%
   mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
   
-    mutate(`evo BAFA`=
-             ifelse(...15 < 0,
-                    normalize_bar("#ff000050")(digits(...15,1,decimal.mark=",")),
-                    normalize_bar("#00800050")(digits(...15,1,decimal.mark=",")) ) ) %>%
+    mutate(`BAFA %`=
+             ifelse(...19 < 0,
+                    normalize_bar("#ff000050")(digits(...19,1,decimal.mark=",")),
+                    normalize_bar("#00800050")(digits(...19,1,decimal.mark=",")) ) ) %>%
   
 bind_cols(  bafdregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
                  pivot_wider(names_from = année,values_from = BAFD) %>%
   mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
   
-      mutate(`evo BAFD`=
-                ifelse(...17 < 0,
-                    normalize_bar("#ff000050")(digits(...17,1,decimal.mark=",")),
-                    normalize_bar("#00800050")(digits(...17,1,decimal.mark=",")) ) ) %>%
+      mutate(`BAFD %`=
+                ifelse(...21 < 0,
+                    normalize_bar("#ff000050")(digits(...21,1,decimal.mark=",")),
+                    normalize_bar("#00800050")(digits(...21,1,decimal.mark=",")) ) ) %>%
    arrange(CODGEO) %>%
    bind_cols( bafaregm %>%filter(sexe=="Ensemble")  %>% # sparkine
                 group_by(CODGEO) %>%  
@@ -214,13 +218,14 @@ bind_cols(  bafdregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>%
    bind_cols( bafaregm %>%filter(sexe=="Hommes")  %>% # sparkine 
                 group_by(CODGEO) %>%  
                 summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
-  select(CODGEO=CODGEO...2,region,BAFA,BAFD,`age BAFA`, `age BAFD`,`femmes BAFA`,`femmes BAFD`, `evo BAFA`, `evo BAFD`,`évo`,`évo Femmes`, `évo Hommes`) %>%
+  select(CODGEO=CODGEO...2,region,BAFA19=BAFA_2019,BAFD19,BAFA20=BAFA_2020,BAFD20,
+         BAFA21=BAFA_2021,BAFD21,`age BAFA`, `age BAFD`,`femmes BAFA`,`femmes BAFD`, `BAFA %`, `BAFD %`,Ensemble=`évo`,Femmes=`évo Femmes`, Hommes=`évo Hommes`) %>%
   
     
  kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="clrrllllllccc")%>%
+    align="clrrrrrrllllllccc")%>%
   kable_styling("hover", full_width = F) %>%
-  add_header_above(c( " "=4,"âge médian"=2,"Taux de femmes"=2,"évolution 2011-2021"=2,"evo annuelle 2011-2021"=3) ) %>%
+  add_header_above(c( " "=2,"2019"=2,"2020"=2, "2021"=2, "âge médian 2021 (années)"=2,"Taux de femmes 2021 (%)"=2,"évolution 2011-2021 (%)"=2,"Effectifs annuels"=3) ) %>%
   row_spec(15, bold=T) %>%
   row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
 #  row_spec(c(1,4),bold = T) %>%
@@ -245,7 +250,7 @@ rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
   "bar",hcaes(x=reorder(region,BAFA ),y=BAFA, group=année),
     stacking = "normal" ,name=c("BAFA","BAFD"), showInLegend = T) %>%
      hc_xAxis(title=list(text="Région")) %>%
-    hc_yAxis(title=list(text="Nombre de diplômes")) %>%
+    hc_yAxis(title=list(text="Nombre de Brevets d'Aptitude")) %>%
   hc_add_theme(thm) 
 ```
 
@@ -257,7 +262,7 @@ rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
                   filter(sexe %in% "Ensemble") %>%
                   filter(!(CODGEO %in% c("France", "METRO"))),
   hcaes(x = année, y = BAFA, group = CODGEO),
-  type= "areaspline", stacking =T,
+  type= "areaspline", stacking = "normal",
   showInLegend =T,  pointWidth = 20)
 
 ```
@@ -269,18 +274,19 @@ rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
 
 ```{r}
 bafadepm %>% filter(dep %in% depbfc) %>%
-  filter (année==2021 & sexe =='Ensemble') %>%
+  filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
+  pivot_wider(names_from = année,values_from = BAFA ) %>%
 
   bind_cols(bafadepagem %>% filter (dep %in% depbfc & année==2021 & sexe =='Ensemble') %>% pull(`age BAFA`) ) %>%
    mutate(`age BAFA`=color_bar('lightblue',na.rm=T)
-          (digits(as.numeric(...6),1,decimal.mark=",")))  %>%
+          (digits(as.numeric(...7),1,decimal.mark=",")))  %>%
   
   bind_cols(  bafadepm %>% filter(dep %in% depbfc & année==2021) %>%
   mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
            filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
   
   mutate(`femmes BAFA`=color_bar('pink',na.rm=T)
-          (digits(as.numeric(...8),1,decimal.mark=",")))  %>% 
+          (digits(as.numeric(...9),1,decimal.mark=",")))  %>% 
   
 
    bind_cols(  bafadepm %>% filter(dep %in% depbfc & sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
@@ -288,9 +294,9 @@ bafadepm %>% filter(dep %in% depbfc) %>%
   mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
   
     mutate(`evo BAFA`=
-             ifelse(...10 < 0,
-                    normalize_bar("#ff000050")(digits(...10,1,decimal.mark=",")),
-                    normalize_bar("#00800050")(digits(...10,1,decimal.mark=",")) ) ) %>%
+             ifelse(...11 < 0,
+                    normalize_bar("#ff000050")(digits(...11,1,decimal.mark=",")),
+                    normalize_bar("#00800050")(digits(...11,1,decimal.mark=",")) ) ) %>%
   
 
    bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Ensemble")  %>% # sparkine 
@@ -302,14 +308,14 @@ bafadepm %>% filter(dep %in% depbfc) %>%
    bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Hommes")  %>% # sparkine
                 group_by(dep) %>%
                 summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
-  select(dep=dep...2,département=deplib,BAFA,`age BAFA`, `femmes BAFA`,`evo BAFA`, `évo`,`évo Femmes`, `évo Hommes`) %>%
+  select(dep=dep...2,département=deplib,`2019`,`2020`,`2021`,`age médian (ans)`=`age BAFA`, `Taux de femmes (%)`=`femmes BAFA`,`évolution 2011-2021 (%)`=`evo BAFA`, Ensemble=`évo`,Femmes=`évo Femmes`, Hommes=`évo Hommes`) %>%
   
      arrange(dep) %>%
      
  kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="clrlllccc")%>%
+    align="clrrrlllccc")%>%
   kable_styling("hover", full_width = F) %>%
-#  add_header_above(c( " "=4,"âge médian"=2,"Taux de femmes"=2,"évolution 2011-2021"=2,"evo annuelle 2011-2021"=3) ) %>%
+  add_header_above(c( " "=2,"BAFA"=6,"effectifs annuels 2011-2021"=3) ) %>%
 #  row_spec(15, bold=T) %>%
 #  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   column_spec(3,bold = T) %>%
