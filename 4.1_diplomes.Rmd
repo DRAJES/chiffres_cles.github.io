@@ -318,7 +318,7 @@ bafadepm %>% filter(dep %in% depbfc) %>%
   add_header_above(c( " "=2,"BAFA"=6,"effectifs annuels 2011-2021"=3) ) %>%
 #  row_spec(15, bold=T) %>%
 #  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  column_spec(3,bold = T) %>%
+  column_spec(5,bold = T) %>%
   footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022", general_title = "Source : ",
             footnote_as_chunk = T) 
 
