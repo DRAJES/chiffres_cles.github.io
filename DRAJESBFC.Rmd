@@ -174,7 +174,7 @@ $Région$
 
 -   [BAFA /
     BAFD](4.1_diplomes.html#diplômes-non-professionnels-bafabafd)
-    $Région, Département$
+    $Région, Département, Sparkline$
 
 -   [Insertion des diplômés](4.1_diplomes.html#insertion-des-diplômés)
 
@@ -201,7 +201,7 @@ $Région, Département, EPCI, BV$
 $Région, Département, EPCI, BV$
 
 -   Nombre et taux par fédération et par sexe, carte, structure et
-    évolution
+    évolution $Sparkline$
 
 -   Poids des fédération et détail
 
