@@ -54,7 +54,7 @@ navbar:
           
   right:
     - icon: fa-question fa-lg
-      href: https://www.ac-dijon.fr/jeunesse-engagement-et-sports-124630
+      href: https://www.ac-dijon.fr/jeunesse-engagement-et-sports-126826
       
 output:
   html_document:
