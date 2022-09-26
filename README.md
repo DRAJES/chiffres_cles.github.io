@@ -35,8 +35,9 @@ Vous pouvez également cloner le projet ou faire remonter vos remarques et propo
     
 ## Auteur
 
-Ce site a été pensé, créé et alimenté par PS Lèbre, statisticien Insee pour la DRAJES BFC.
+Ce site a été pensé, créé et mis à jour par PS Lèbre, statisticien Insee pour la DRAJES BFC.
 
-## License
+## Licence
 
-Pas pour le moment...
+[![](images\by-nc-sa.png){width=10%}](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr)  
+Licence CC BY-NC-SA : Creative Commons Attribution, Pas d'utilisation commerciale, Partage dans les mêmes conditions
