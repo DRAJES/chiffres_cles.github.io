@@ -94,8 +94,8 @@ cartosportreg <- sp::merge(regwgs,sportreg,by="INSEE_REG")
 
 leaflet(cartosportreg) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
              group = "region", radius=~50*licences_tot^(1/2),
              fillColor = ~pal2(100*cartosportreg$licences_tot/cartosportreg$pop),
@@ -450,8 +450,8 @@ cartosportdep <- sp::merge(depwgs,sportdep,by="INSEE_DEP")
 
 leaflet(cartosportdep) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
              group = "region", radius=~50*licences_tot^(1/2),
              fillColor = ~pal2(100*cartosportdep$licences_tot/cartosportdep$pop),
@@ -703,8 +703,8 @@ leaflet(lic_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 2) %>%
   addCircles(centroid(lic_epci)[,1],centroid(lic_epci)[,2],weight=4,
              radius = ~50*licences^(1/2), 
              #radius = ~licences,
@@ -786,8 +786,8 @@ leaflet(lic_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fill =F , weight = 2,opacity = 0.6,
               color = "#2F4F4F",fillOpacity = 0.7 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 2) %>%
   addCircles(centroid(lic_bv)[,1],centroid(lic_bv)[,2],weight=4,
              radius = ~50*licences^(1/2), color = "#4169E1",
              fillColor = ~pal2(txlic), fillOpacity = 0.7,

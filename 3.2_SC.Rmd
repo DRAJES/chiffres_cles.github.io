@@ -241,8 +241,8 @@ cartedep <- sp::merge(depwgs,cartedep,by="INSEE_DEP")
 
 leaflet(cartedep) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(cartedep)[,1],centroid(cartedep)[,2],
              group = "region", radius=~500*`Volontaires 2020`^(1/2),
              fillColor = ~pal2(`Taux de volontaires parmi les 16-25 ans`),
@@ -284,8 +284,8 @@ pal <- colorFactor(brewer.pal(4, 'Set2'), flows$origine)
 leaflet() %>%
  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(data=oursinxy, ~destination.x, ~destination.y,
              weight =~oursinxy%>% group_by(destination)%>% mutate(sum(nombre)^(1/2))%>%pull, 
              label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5) %>%
@@ -307,8 +307,8 @@ leaflet() %>%
 leaflet() %>%
  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
  addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.y),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.x),

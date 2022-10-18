@@ -72,9 +72,9 @@ region_tab %>%  dplyr::select(Région,Nom,Population,Densité,rang,`Taux femmes`
 ```{r}
 leaflet(regwgs) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
-addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B8E23", stroke=F,weight = 1) %>%  
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2) %>%
+addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B8E23", stroke=F,weight = 1, smoothFactor = 2) %>%  
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],
              group = "region", radius = 50*regwgs$pop^(1/2), weight=4,
              color = "#4169E1", opacity = 0.8,
@@ -131,11 +131,11 @@ dep27_tab %>%  dplyr::select(Région,Département,Nom,Population,Densité,rang,r
 ```{r}
 leaflet(depwgs) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F ) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
   addPolygons(data=densitewgs,fillColor = ~pal(Typdgrd), stroke = F,
               fillOpacity = 0.5, group = "densite" ) %>%  
-addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],group = "BV",
                radius = 50*depwgs$pop^(1/2), color = "#4169E1", opacity = 0.8,weight=4,
                fillColor = "#FFFFFF", fillOpacity = 0.3,
@@ -185,10 +185,10 @@ epci27_tab %>%  dplyr::select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,pa
 leaflet(epcicarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=densiteBFC,fillColor = ~pal(Typdgrd), stroke = F,
-              fillOpacity = 0.5, group = "densite" ) %>%  
+              fillOpacity = 0.5, group = "densite", ) %>%  
   addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],group = "BV",
                radius = 50*epcicarto$pop^(1/2), color = "#4169E1", opacity = 0.8,weight=4,
                fillColor = "#FFFFFF", fillOpacity = 0.3,
@@ -240,10 +240,10 @@ bv27_tab %>%  dplyr::select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,pa
 ```{r}
 leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B8E23", stroke=F,weight = 1) %>%
+  addPolygons(data=ZRR, group  = "ZRR",fill = T,fillOpacity = 0.4,fillColor = "#6B8E23", stroke=F,weight = 1, smoothFactor = 2) %>%
   addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],group = "BV",weight=4,
                radius = 50*bvcarto$pop^(1/2), color = "#4169E1", opacity = 0.8,
                fillColor = "#FFFFFF", fillOpacity = 0.3,
@@ -302,8 +302,8 @@ leaflet() %>%
   addProviderTiles(providers$SafeCast, group="safecast") %>%
   addProviderTiles(providers$WaymarkedTrails.slopes, group="slopes") %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
 addLayersControl(
     baseGroups = c("OSM","OSM France", "Topographie","Geoportail", "Geoportail.ortho","Geoportail.plan","vélo","NASA", "hydro"),
     overlayGroups = c("rando","cycle","routes","safecast","slopes"),

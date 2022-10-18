@@ -150,7 +150,7 @@ res <- sp::merge(regwgs,res,by="INSEE_REG")
 leaflet(res) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addProviderTiles(providers$CartoDB.Positron) %>% 
-  addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi),
+  addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -162,7 +162,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux équi/10 000 hab") %>%
-   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*structurant/pop.y),
+   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*structurant/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -174,7 +174,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux structurant/50 000hab") %>%
-   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*gdsjeux/pop.y),
+   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*gdsjeux/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -186,7 +186,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux grands jeux/50 000hab") %>%
-    addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*proxi/pop.y),
+    addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*proxi/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -198,7 +198,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux proxi/50 000hab") %>%
-   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(400000*bassins/pop.y),
+   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(400000*bassins/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -217,12 +217,13 @@ leaflet(res) %>%
                        chartdata = res@data %>% select("bassins":"autres"),
                        colorPalette = coul,
                        width = sqrt(res$equ) ,
-                       opacity = 0.6 ) %>%
-    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+                       opacity = 0.6) %>% syncWith("minicharts") %>%
+    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
 
     addLayersControl(
     baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab","taux grands jeux/50 000hab","taux proxi/50 000hab", "taux bassins/400 000hab"),
-    options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
+    overlayGroups = c("minicharts"),
+    options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%  
     addLegend("bottomright", pal = pal, values = ~txequi,   
             title = "taux d'équipements") 
 ```
@@ -430,7 +431,7 @@ res <- sp::merge(depwgs,res,by="INSEE_DEP")
 leaflet(res) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addProviderTiles(providers$CartoDB.Positron) %>% 
-  addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi),
+  addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(txequi), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -442,7 +443,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux équi/10 000 hab") %>%
-   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*structurant/pop.y),
+   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*structurant/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -454,7 +455,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux structurant/50 000hab") %>%
-   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*gdsjeux/pop.y),
+   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*gdsjeux/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -466,7 +467,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux grands jeux/50 000hab") %>%
-    addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*proxi/pop.y),
+    addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(50000*proxi/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -478,7 +479,7 @@ leaflet(res) %>%
                                           `Tx proximité`=txproxi),
                                  feature.id=F,row.numbers = F),
               group = "taux proxi/50 000hab") %>%
-   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(400000*bassins/pop.y),
+   addPolygons(fill = TRUE, fillOpacity = 0.6, fillColor = ~pal(400000*bassins/pop.y), smoothFactor = 2,
               weight = 2, opacity = 0.6, color = "#2F4F4F",
               popup = popupTable(res@data %>% 
                                    select(NOM,`nb équipements`=equ,Population=pop.y,
@@ -498,7 +499,7 @@ leaflet(res) %>%
                        colorPalette = coul,
                        width = sqrt(res$equ) ,
                        opacity = 0.6 ) %>%
-    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
 
     addLayersControl(
     baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab","taux grands jeux/50 000hab","taux proxi/50 000hab", "taux bassins/400 000hab"),
@@ -687,7 +688,7 @@ leaflet(res) %>%
                        colorPalette = coul,
                        width = sqrt(10*res$equ) ,
                        opacity = 0.7 ) %>%
-    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
 
     addLayersControl(
     baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab","taux grands jeux/50 000hab","taux proxi/50 000hab", "taux bassins/400 000hab"),
@@ -871,7 +872,7 @@ leaflet(res) %>%
                        colorPalette = coul,
                        width = sqrt(10*res$equ) ,
                        opacity = 0.7 ) %>%
-    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
 
     addLayersControl(
     baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab","taux grands jeux/50 000hab","taux proxi/50 000hab", "taux bassins/400 000hab"),

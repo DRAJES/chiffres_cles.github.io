@@ -218,8 +218,8 @@ leaflet(piscinesdep) %>%
   addProviderTiles(providers$CartoDB.Positron) %>% 
     setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=T, 
-                           fillColor = ~pal(tranche), fillOpacity = 0.8 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
+                           fillColor = ~pal(tranche), fillOpacity = 0.8, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(piscinesdep)[,1],centroid(piscinesdep)[,2],
              group = "region", radius=~5000*nbpiscines^(1/2),
              weight=4, color = "#4169E1", opacity = 0.8,
@@ -309,8 +309,8 @@ leaflet(piscinesepci) %>%
               popup = popupTable(piscinesepci@data %>% 
                                    select(EPCI=NOM,pop,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
                                  feature.id=F,row.numbers = F)) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 2) %>%
   addCircles(centroid(piscinesepci)[,1],centroid(piscinesepci)[,2],
              group = "region", radius=~5000*nbpiscines^(1/2),
              weight=1, color = "#4169E1", opacity = 0.8,
@@ -399,8 +399,8 @@ leaflet(piscinesbv) %>%
                popup = popupTable(piscinesbv@data %>% 
                                    select(BV2012 ,pop,nbpiscines,nbpiscines_couv,nbpisc_saison,surfnat,tranche),
                                  feature.id=F,row.numbers = F))   %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 2) %>%
   addCircles(centroid(piscinesbv)[,1],centroid(piscinesbv)[,2],
              group = "region", radius=~5000*nbpiscines^(1/2),
              weight=1, color = "#4169E1", opacity = 0.8,
@@ -476,8 +476,8 @@ leaflet() %>%
     baseGroups = c("tous bassins","bassins couverts","bassins annuels","bassins annuels couverts"),
     overlayGroups="écoles",
     options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
-  addPolygons(data=reg27carto,fill=F,weight = 4,color = "white",group = "écoles" ) %>%
-  addPolygons(data=dep27carto,fill=F, weight = 3,color = "white",group = "écoles") %>%
+  addPolygons(data=reg27carto,fill=F,weight = 4,color = "white",group = "écoles", smoothFactor = 5 ) %>%
+  addPolygons(data=dep27carto,fill=F, weight = 3,color = "white",group = "écoles", smoothFactor = 2) %>%
     addLegend("bottomright", pal = factPal, values = iso_diff$drive_times,   
             title = "temps d'accès") 
 ```

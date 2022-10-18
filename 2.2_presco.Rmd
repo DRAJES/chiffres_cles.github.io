@@ -143,13 +143,15 @@ cartereg <- merge(regwgs,cartereg,by="INSEE_REG")
 
 leaflet(cartereg) %>%   addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
-addPolygons(weight=2,opacity = 0.9,color = "#2F4F4F", fillColor = ~pal(accueil),
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
+addPolygons(weight=2,opacity = 0.9,color = "#2F4F4F",  smoothFactor = 2,
+            fillColor = ~pal(accueil),
               popup = popupTable(cartereg@data %>% 
                                    select(Région=LIBGEO,pop,txaccueils=accueil),
                                   feature.id=F,row.numbers = F),
             group="taux d'accueils collectifs") %>% 
-  addPolygons(weight=2,opacity = 0.9,color = "#2F4F4F", fillColor = ~pal(scolarisation),
+  addPolygons(weight=2,opacity = 0.9,color = "#2F4F4F",  smoothFactor = 2,
+              fillColor = ~pal(scolarisation),
               popup = popupTable(cartereg@data %>% 
                                    select(Région=LIBGEO,pop,txscolarisation=scolarisation),
                                   feature.id=F,row.numbers = F),
@@ -297,13 +299,15 @@ cartedep <- merge(depwgs,cartedep,by="INSEE_DEP")
 
 leaflet(cartedep) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1) %>%
-    addPolygons(weight=2,opacity = 0.8,color = "#2F4F4F", fillColor = ~pal(accueil),
+    addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
+    addPolygons(weight=2,opacity = 0.8,color = "#2F4F4F",  smoothFactor = 2,
+                fillColor = ~pal(accueil),
               popup = popupTable(cartedep@data %>% 
                                    select(Région=LIBGEO,pop,txaccueils=accueil),
                                   feature.id=F,row.numbers = F),
              group="taux d'accueils collectifs" ) %>%
-  addPolygons(weight=2,opacity = 0.8,color = "#2F4F4F", fillColor = ~pal(scolarisation),
+  addPolygons(weight=2,opacity = 0.8,color = "#2F4F4F",  smoothFactor = 2,
+              fillColor = ~pal(scolarisation),
               popup = popupTable(cartedep@data %>% 
                                    select(Région=LIBGEO,pop,txscolarisation=scolarisation),
                                   feature.id=F,row.numbers = F),  

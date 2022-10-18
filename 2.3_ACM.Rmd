@@ -306,7 +306,7 @@ ACMcarte <- sp::merge(depwgs,ACMcarte,by="INSEE_DEP")
 
 leaflet(ACMcarte) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3 ,opacity = 1) %>%
+  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3 ,opacity = 1, smoothFactor = 2) %>%
   addCircles(centroid(ACMcarte)[,1],centroid(ACMcarte)[,2],
              radius = ~100*value^(1/2), weight=4,
              color = "#4169E1", opacity = 0.8,
