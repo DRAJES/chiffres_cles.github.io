@@ -42,7 +42,7 @@ Mais la pratique féminine est plus fréquente : **39,7 %** des licences sont d�
 Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
 à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
 
-Row {.tabset .tabset-fade .tabset-pills data-height="400"}
+Row {.tabset .tabset-fade .tabset-pills data-height="450"}
 -----------------------------------------------------------------------
 
 ### Comparaisons régionales
@@ -59,11 +59,12 @@ licreg <- licreg %>% rownames_to_column(var="REG") %>%
                   mutate(txlic=round(100*V1/pop,1))
 licreg[14,3] <- "France"
 
-hchart(licreg %>% slice(-14) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(region,V1),y=V1,color=ifelse(REG=="27","#6a5acd","#ffd700") ), 
+hchart(licreg %>% slice(-14) %>% arrange(desc(V1)),"bar",
+       hcaes(x=reorder(region,V1),y=V1,color=ifelse(REG=="27","#6a5acd","#ffd700") ),
        showInLegend = F, name = "Licences", pointWidth = 20) %>%
-  hc_xAxis(title=list(text="Région")) %>%
+    hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de licences")) %>%
-  hc_add_theme(thm) 
+    hc_add_theme(thm) 
 ```
 
 ### Taux de licences
@@ -73,13 +74,14 @@ hchart(licreg %>% slice(-14) %>% arrange(desc(V1)),"bar", hcaes(x=reorder(region
 
 ```{r}
 
-hchart(licreg %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(region,txlic),y=txlic,
-                                                    color=ifelse(REG=="27","#6a5acd",
-                                                                 ifelse(REG=="FR","#ff7f50","#ffd700") ) ) , 
+hchart(licreg %>% arrange(desc(txlic)),"bar",
+       hcaes(x=reorder(region,txlic),y=txlic,
+             color=ifelse(REG=="27","#6a5acd",
+                   ifelse(REG=="FR","#ff7f50","#ffd700") ) ) , 
        showInLegend = F, name = "Taux de licences", pointWidth = 10) %>%
-  hc_xAxis(title=list(text="Région")) %>%
+    hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Taux de licences (%)")) %>%
-  hc_add_theme(thm) 
+    hc_add_theme(thm) 
 
 ```
 
@@ -87,15 +89,19 @@ hchart(licreg %>% arrange(desc(txlic)),"bar", hcaes(x=reorder(region,txlic),y=tx
 
 ```{r}
 sportreg <- as.data.frame(t(lic_reg)) %>%
-            select(licences_tot=V117) %>% mutate(licences_tot=as.numeric(licences_tot)) %>%
+            select(licences_tot=V117) %>%
+            mutate(licences_tot=as.numeric(licences_tot)) %>%
             rownames_to_column("INSEE_REG") %>% 
             slice (3:15)
 cartosportreg <- sp::merge(regwgs,sportreg,by="INSEE_REG")
 
-leaflet(cartosportreg) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
+leaflet(cartosportreg) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F",
+              fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",fill = F,
+              color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
   addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
              group = "region", radius=~50*licences_tot^(1/2),
              fillColor = ~pal2(100*cartosportreg$licences_tot/cartosportreg$pop),
@@ -107,7 +113,8 @@ leaflet(cartosportreg) %>% addProviderTiles(providers$CartoDB.Positron) %>%
                                    select(Région=LIBGEO,pop,licences_tot) %>%
                                   mutate(`Taux de licences`=100*licences_tot/pop),
                                  feature.id=F,row.numbers = F)) %>%
-addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = 100*(cartosportreg$licences_tot/cartosportreg$pop) )
+addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",
+           values = 100*(cartosportreg$licences_tot/cartosportreg$pop) )
 ```
 
 Row {.tabset .tabset-fade .tabset-pills data-height="400"}
@@ -135,7 +142,7 @@ lic_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
          `unisport non olympique`="Total fédérations unisport non olympiques", 
          multisports=`Total fédérations multisports`,
          `Taux de licences (%)`="...6") %>% select(-8) %>%
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrrlrr",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
@@ -144,7 +151,7 @@ lic_reg %>%  dplyr::select(2,"11":"94",France="...22") %>%
   add_header_above(c( " "=2,"Fédérations"=3,"Licences"=4) ) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+   scroll_box(height = "350px") 
 
 ```
 
@@ -155,15 +162,17 @@ hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
                                       #,France="...22"
                                       ) %>%
     slice(39,91,116,117) %>%
-    pivot_longer(-`Codes régions`, 'REG') %>% rename(type_fede=`Codes régions`,licences=value) %>%
-       filter(!is.na(type_fede)) %>%
-      left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) , 
+    pivot_longer(-`Codes régions`, 'REG') %>% 
+      rename(type_fede=`Codes régions`,licences=value) %>%
+      filter(!is.na(type_fede)) %>%
+      left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+                  select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) , 
     "bar", hcaes(x = fct_rev(region), y= licences, group = type_fede) ,
-    stacking = "normal" ,
+      stacking = "normal" ,
       showInLegend = T,  pointWidth =20) %>%
-  hc_xAxis(title=list(text="Région")) %>%
+    hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de licences")) %>%
-  hc_add_theme(thm) 
+    hc_add_theme(thm) 
 
 ```
 
@@ -176,15 +185,17 @@ hchart ( lic_reg %>%  dplyr::select(2,"11":"94"
                                       ,`METRO`="...22"
                                       ) %>%
     slice(39,91,116,117) %>%
-    pivot_longer(-`Codes régions`, 'REG') %>% rename(type_fede=`Codes régions`,licences=value) %>%
-       filter(!is.na(type_fede)) %>%
-      left_join(.,appartenance %>% filter(NIVGEO=="REG") %>% select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) , 
+    pivot_longer(-`Codes régions`, 'REG') %>% 
+      rename(type_fede=`Codes régions`,licences=value) %>%
+      filter(!is.na(type_fede)) %>%
+      left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+                  select(CODGEO,region=LIBGEO),by=c("REG"="CODGEO") ) , 
     "bar", hcaes(x = fct_rev(region), y= licences, group = type_fede) ,
-    stacking = "percent" ,
+      stacking = "percent" ,
       showInLegend = T,  pointWidth =20) %>%
-  hc_xAxis(title=list(text="Région")) %>%
+    hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Proportion de licences")) %>%
-  hc_add_theme(thm) 
+    hc_add_theme(thm) 
 
 ```
 
@@ -198,25 +209,42 @@ Une baisse des licences unisport olympique observée pour la première fois en 2
 ```{r}
 lic_reg[39,1] <- "total"
 fedsexe[39,1] <- "total"
-lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
-    slice(2:38) %>% arrange (desc(`France métro`)) %>% 
-  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(39) ) %>%
-  left_join(.,fedsexe %>% slice (2:38) %>%select (1,txfem=7) %>%
-                bind_rows(fedsexe %>% select (1,txfem=7) %>% slice (39)) %>%  #ajout des taux de licences feminines
+
+lic_reg %>%  
+  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% 
+  rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+  slice(2:38) %>%
+  arrange (desc(`France métro`)) %>% 
+  bind_rows(lic_reg %>%
+              dplyr::select(1:2,"11":"94",`France métro`="...22") %>%
+              rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+              slice(39) ) %>%
+  left_join(.,fedsexe %>%
+              slice (2:38) %>%
+              select (1,txfem=7) %>%
+                bind_rows(fedsexe %>%
+                            select (1,txfem=7) %>% 
+                            slice (39)) %>%  #ajout des taux de licences feminines
                       mutate(`Licences féminines (%)`=color_bar('pink')
-          (digits(100*txfem,1,decimal.mark=","))) ,
+                            (digits(100*txfem,1,decimal.mark=","))) ,
             by=c("Code fédération"="Codes fédé") ) %>%
-  left_join( evofede %>%   filter(fed<200) %>% #modifier pour type de fédé 
-              bind_rows(evofede %>% filter(fed<200) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2021`=spk_chr(lic)),
-               by=c("Code fédération"="fed") ) %>% select(-17) %>%
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+  left_join( evofede %>%   
+               filter(fed<200) %>% #modifier pour type de fédé 
+               bind_rows(evofede %>% 
+                           filter(fed<200) %>% 
+                           group_by(année) %>%
+                           summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
+                           summarise(`évolution 2010-2021`=spk_chr(lic)),
+               by=c("Code fédération"="fed") ) %>% 
+  select(-17) %>%
+  
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="clrrrrrrrrrrrrrrl",
       escape = F) %>% 
-   kable_styling("hover", full_width = F) %>%
-      add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
-   column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
-   column_spec(16, bold=T) %>%
+  kable_styling("hover", full_width = F) %>%
+  add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
+  column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+  column_spec(16, bold=T) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
    scroll_box(height = "400px") 
@@ -228,13 +256,16 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Co
 Le football représente près du **quart** des licences unisport olympiques.
 
 ```{r}
-hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(2:38) %>%
+hchart(lic_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(2:38) %>%
          mutate(txBFC=100*bfc/sum(bfc,na.rm=T), txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         select(-2,-3) %>%
+         arrange(desc(txBFC))  %>%
          pivot_longer(!fede ,names_to = "REG") ,
-       "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
-        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-          hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+       "treemap", hcaes(x=fede, group = REG, value=round(value,1) ),
+         color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
   hc_add_theme(thm) 
 
 
@@ -246,28 +277,45 @@ hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(2:38) %>%
 ```{r}
 lic_reg[91,1] <- "total"
 fedsexe[91,1] <- "total"
-lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
-    slice(41:90)  %>% arrange (desc(`France métro`)) %>% 
-  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(91) ) %>%
-    left_join(.,fedsexe %>% slice (41:90) %>% select (1,txfem=7) %>%
-                bind_rows(fedsexe  %>% select (1,txfem=7) %>% slice (91)) %>% #txfem
-                       mutate(`Licences féminines (%)`=color_bar('pink')
-          (digits(100*txfem,1,decimal.mark=","))) ,
+
+lic_reg %>%  
+  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% 
+  rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+  slice(41:90)  %>% 
+  arrange (desc(`France métro`)) %>% 
+  bind_rows(lic_reg %>% 
+              dplyr::select(1:2,"11":"94",`France métro`="...22") %>% 
+              rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+              slice(91) ) %>%
+  left_join(.,fedsexe %>% 
+              slice (41:90) %>% 
+              select (1,txfem=7) %>%
+              bind_rows(fedsexe  %>% 
+                          select (1,txfem=7) %>% 
+                          slice (91)) %>% #txfem
+              mutate(`Licences féminines (%)`=color_bar('pink')
+                    (digits(100*txfem,1,decimal.mark=","))) ,
             by=c("Code fédération"="Codes fédé") ) %>%
-   left_join( evofede %>%   filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
-              bind_rows(evofede %>% filter(fed>200 & fed<300) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2021`=spk_chr(lic)),
-               by=c("Code fédération"="fed") )%>% select(-17) %>%
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+  left_join( evofede %>%   
+               filter(fed>200 & fed<300) %>% #modifier pour type de fédé
+               bind_rows(evofede %>% 
+                           filter(fed>200 & fed<300) %>% 
+                           group_by(année) %>%
+                           summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
+               summarise(`évolution 2010-2021`=spk_chr(lic)),
+               by=c("Code fédération"="fed") )%>% 
+  select(-17) %>%
+  
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="clrrrrrrrrrrrrrrl",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-      add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
+  add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
   column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
-   column_spec(16, bold=T) %>%
+  column_spec(16, bold=T) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+  scroll_box(height = "400px") 
 
 ```
 
@@ -276,13 +324,16 @@ lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Co
 **1/5e** des  unisport non olympique en pétanque, **1/6e** en randonnée.
 
 ```{r}
-hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(41:90) %>%
+hchart(lic_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(41:90) %>%
          mutate(txBFC=100*bfc/sum(bfc,na.rm=T), txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         select(-2,-3) %>% 
+         arrange(desc(txBFC))  %>%
          pivot_longer(!fede ,names_to = "REG") ,
        "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
-        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-          hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+         color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
   hc_add_theme(thm) 
 
 ```
@@ -292,28 +343,45 @@ hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(41:90) %>%
 ```{r}
 lic_reg[116,1] <- "total"
 fedsexe[116,1] <- "total"
-lic_reg %>%  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>%
-    slice(93:115) %>% arrange (desc(`France métro`)) %>% 
-  bind_rows(lic_reg %>% dplyr::select(1:2,"11":"94",`France métro`="...22") %>% rename("Code fédération"="...1","Fédération"="Codes régions") %>% slice(116) ) %>%
-    left_join(.,fedsexe %>% select (1,txfem=7) %>% slice(93:115) %>%
-                bind_rows(fedsexe %>% select (1,txfem=7) %>% slice (116)) %>% #txfem
-                     mutate(`Licences féminines (%)`=color_bar('pink')
-          (digits(100*txfem,1,decimal.mark=","))) ,
+
+lic_reg %>%  
+  dplyr::select(1:2,"11":"94",`France métro`="...22") %>% 
+  rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+  slice(93:115) %>% 
+  arrange (desc(`France métro`)) %>% 
+  bind_rows(lic_reg %>% 
+              dplyr::select(1:2,"11":"94",`France métro`="...22") %>% 
+              rename("Code fédération"="...1","Fédération"="Codes régions") %>%
+              slice(116) ) %>%
+  left_join(.,fedsexe %>% 
+              select (1,txfem=7) %>% 
+              slice(93:115) %>%
+              bind_rows(fedsexe %>% 
+                          select (1,txfem=7) %>% 
+                          slice (116)) %>% #txfem
+              mutate(`Licences féminines (%)`=color_bar('pink')
+                    (digits(100*txfem,1,decimal.mark=","))) ,
             by=c("Code fédération"="Codes fédé") ) %>%
-   left_join( evofede %>%   filter(fed>400) %>% #modifier pour type de fédé 
-              bind_rows(evofede %>% filter(fed>400) %>% group_by(année) %>% summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2021`=spk_chr(lic)),
-               by=c("Code fédération"="fed") ) %>% select(-17) %>%
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+  left_join( evofede %>%   
+               filter(fed>400) %>% #modifier pour type de fédé 
+               bind_rows(evofede %>% 
+                           filter(fed>400) %>% 
+                           group_by(année) %>%
+                           summarise(fed="total",lic=sum(lic,na.rm=T))) %>%
+               summarise(`évolution 2010-2021`=spk_chr(lic)),
+             by=c("Code fédération"="fed") ) %>% 
+  select(-17) %>%
+  
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="clrrrrrrrrrrrrrrl",
       escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-      add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
-column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
-   column_spec(16, bold=T) %>%
+  add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
+  column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+  column_spec(16, bold=T) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+  scroll_box(height = "400px") 
 
 ```
 
@@ -322,13 +390,16 @@ column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
 Près d'un **quart** des licences multisport en UNSS.
 
 ```{r}
-hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(93:115) %>%
+hchart(lic_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(93:115) %>%
          mutate(txBFC=100*bfc/sum(bfc,na.rm=T), txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         select(-2,-3) %>% 
+         arrange(desc(txBFC))  %>%
          pivot_longer(!fede ,names_to = "REG") ,
        "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
-        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-          hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+         color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
   hc_add_theme(thm) 
 
 
@@ -340,23 +411,24 @@ hchart(lic_reg  %>% select(fede=2,bfc="27",FR="...22") %>% slice(93:115) %>%
 **Fédérations les plus sexuées : plus de 80% de licences masculines ou féminines**
 
 ```{r}
-  hchart(fede_sexe_dep %>% filter(DEP=="BFC")%>%
-           filter(txfem <= 20 | txfem >= 80 ) %>%
-          arrange(desc(txfem)) %>%
-           left_join(lic_dep %>% select(fede=1,"Fédération"=2),by="fede"),
-      "bar", 
-      hcaes(x=reorder(`Fédération`,txfem),
-            y=txfem,
+  hchart(fede_sexe_dep %>% 
+           filter(DEP=="BFC")%>%
+           filter(txfem < 20 | txfem > 80 ) %>%
+           arrange(desc(txfem)) %>%
+           left_join(lic_dep %>% 
+                       select(fede=1,"Fédération"=2),by="fede"),
+      "bar", hcaes(x=reorder(`Fédération`,txfem), y=txfem,
             color=ifelse(txfem>=80,"#ee82ee","#b0e0e6") ), 
-       showInLegend = T, name = "Taux de licences féminines BFC", pointWidth = 5) %>%
-  hc_add_series(fedsexe %>% slice(-1,-39,-40,-91,-92,-116:-124) %>%
-           filter(`% de femmes (année 2021)` <= 0.2 | `% de femmes (année 2021)` >= 0.8 ) %>%
-          arrange(desc(`% de femmes (année 2021)`)) ,
-         "bar", 
-         hcaes(x=reorder(`Fédérations françaises agréées en 2021`,`% de femmes (année 2021)`),
-               y=round(100*`% de femmes (année 2021)`,1),
-               color=ifelse(`% de femmes (année 2021)`>=0.8,"#ba55d380","#6495ed80") ), 
-       showInLegend = T, name = "Taux de licences féminines France", pointWidth = 2) %>%
+            showInLegend = T, name = "Taux de licences féminines BFC", pointWidth = 5) %>%
+  hc_add_series(fedsexe %>% 
+                  slice(-1,-39,-40,-91,-92,-116:-124) %>%
+                  filter(`% de femmes (année 2021)` <= 0.2 |
+                         `% de femmes (année 2021)` >= 0.8 ) %>%
+                  arrange(desc(`% de femmes (année 2021)`)) ,
+          "bar", hcaes(x=reorder(`Fédérations françaises agréées en 2021`,`% de femmes (année 2021)`),
+                       y=round(100*`% de femmes (année 2021)`,1),
+                       color=ifelse(`% de femmes (année 2021)` >= 0.8, "#ba55d380", "#6495ed80") ), 
+          showInLegend = T, name = "Taux de licences féminines France", pointWidth = 2) %>%
     hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
     hc_xAxis(title=list(text="Fédérations taux de femmes <b> < ou > 80 % </b>")) %>%
     hc_yAxis(title=list(text="% de femmes (année 2021)")) %>%
@@ -384,25 +456,29 @@ La pratique sportive est diverse en Bourgogne-Franche-Comté. Le Jura est le dé
 ```{r}
 licdep <- as.data.frame(t(lic_dep[118,4:99]))
 licdep$departement <- t(as.data.frame(levels(lic_dep)[4:99]))
-licdep <- licdep %>% rownames_to_column(var="dep") %>% mutate (dep=ifelse(nchar(dep)==1,paste0('0',dep),dep), V1=as.numeric(V1)) %>%
-                 left_join(.,depwgs@data %>% dplyr::select(dep=INSEE_DEP,pop),by="dep" )    %>%
-                  adorn_totals("row",name = "FR") %>%
-                  mutate(txlic=round(100*V1/pop,1)) 
+
+licdep <- licdep %>%
+            rownames_to_column(var="dep") %>%
+            mutate (dep=ifelse(nchar(dep)==1,paste0('0',dep),dep), V1=as.numeric(V1)) %>%
+            left_join(.,depwgs@data %>% 
+                        dplyr::select(dep=INSEE_DEP,pop),by="dep" ) %>%
+            adorn_totals("row",name = "FR") %>%
+            mutate(txlic=round(100*V1/pop,1)) 
+
 licdep[97,3] <- "France"
 
-
-hchart(licdep %>% slice(-97) %>% arrange(desc(V1)),"bar",
-       hcaes(x=reorder(departement,V1),y=V1,color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ),
-        showInLegend = T, 
-        name = "Licences", 
-        pointWidth = 1) %>%
-  
-  hc_add_series(licdep %>% filter(dep %in% depbfc) %>% arrange(desc(V1)),"bar",
-                hcaes(x=reorder(departement,V1),y=V1),
+hchart(licdep %>% 
+         slice(-97) %>% 
+         arrange(desc(V1)),
+  "bar", hcaes(x=reorder(departement,V1),y=V1,
+               color=ifelse(dep %in% depbfc,"#6a5acd","#ffd700") ),
+        showInLegend = T, name = "Licences", pointWidth = 1) %>%
+  hc_add_series(licdep %>% 
+                  filter(dep %in% depbfc) %>% 
+                  arrange(desc(V1)),
+           "bar", hcaes(x=reorder(departement,V1),y=V1),
                   color="#6a5acd", 
-                  showInLegend = F, 
-                  name = "Licences", 
-                  pointWidth = 3) %>%
+                  showInLegend = F, name = "Licences", pointWidth = 3) %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de licences")) %>%
@@ -415,22 +491,18 @@ hchart(licdep %>% slice(-97) %>% arrange(desc(V1)),"bar",
 
 ```{r}
 
-hchart(licdep %>% arrange(desc(txlic)),"bar", 
-       hcaes(x=reorder(departement,txlic),
-             y=txlic,
-             color=ifelse(dep %in% depbfc,"#6a5acd",ifelse(dep=="FR","#ff7f50","#ffd700"))
-             ), 
-        showInLegend = T, 
-        name = "Taux de licences", 
-        pointWidth =  1 ) %>%
-  
-  hc_add_series(licdep %>% filter(dep %in% depbfc | dep == "FR") %>% arrange(desc(txlic)),"bar",
-                hcaes(x=reorder(departement,txlic),y=txlic,
-                      color=ifelse(dep %in% depbfc,"#6a5acd","#ff7f50") ),
-                  showInLegend = F, 
-                  name = "Taux de licences (%)", 
-                  pointWidth = 3) %>%
-
+hchart(licdep %>% 
+         arrange(desc(txlic)),
+  "bar", hcaes(x=reorder(departement,txlic),y=txlic,
+               color=ifelse(dep %in% depbfc,"#6a5acd",
+                     ifelse(dep=="FR","#ff7f50","#ffd700")) ),
+         showInLegend = T, name = "Taux de licences", pointWidth =  1 ) %>%
+  hc_add_series(licdep %>% 
+                  filter(dep %in% depbfc | dep == "FR") %>%
+                  arrange(desc(txlic)),
+          "bar",  hcaes(x=reorder(departement,txlic),y=txlic,
+                        color=ifelse(dep %in% depbfc,"#6a5acd","#ff7f50") ),
+                  showInLegend = F, name = "Taux de licences (%)", pointWidth = 3) %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Taux de licences")) %>%
@@ -443,27 +515,37 @@ hchart(licdep %>% arrange(desc(txlic)),"bar",
 
 ```{r}
 sportdep <- as.data.frame(t(lic_dep)) %>%
-            select(licences_tot=V118) %>% mutate(licences_tot=as.numeric(licences_tot)) %>%
-            rownames_to_column("INSEE_DEP") 
-sportdep$INSEE_DEP <- ifelse(nchar(sportdep$INSEE_DEP)==1,paste0("0",sportdep$INSEE_DEP),sportdep$INSEE_DEP ) 
+                select(licences_tot=V118) %>%
+                mutate(licences_tot=as.numeric(licences_tot)) %>%
+                rownames_to_column("INSEE_DEP") 
+
+sportdep$INSEE_DEP <- ifelse(nchar(sportdep$INSEE_DEP)==1,
+                             paste0("0",sportdep$INSEE_DEP),
+                             sportdep$INSEE_DEP ) 
+
 cartosportdep <- sp::merge(depwgs,sportdep,by="INSEE_DEP")
 
-leaflet(cartosportdep) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
+leaflet(cartosportdep) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
+  addPolygons(color = "#2F4F4F",weight=2,opacity = 0.6, 
+              fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5, opacity = 1,
+              fill = F, smoothFactor = 5) %>%
   addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
              group = "region", radius=~50*licences_tot^(1/2),
              fillColor = ~pal2(100*cartosportdep$licences_tot/cartosportdep$pop),
              weight=4, color = "#4169E1", opacity = 0.8,
              fillOpacity = 0.8,
-             highlight = highlightOptions (fillOpacity =  0.1,
-             weight = 5,   color = "#00FFFF"),
+             highlight = highlightOptions (
+                          color = "#00FFFF", weight = 5,  fillOpacity =  0.1 ),
              popup = popupTable(cartosportdep@data %>% 
-                                   select(Région=LIBGEO,pop,licences_tot) %>%
+                                  select(Région=LIBGEO,pop,licences_tot) %>%
                                   mutate(`Taux de licences`=100*licences_tot/pop),
-                                 feature.id=F,row.numbers = F)) %>%
-addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = 100*(cartosportdep$licences_tot/cartosportdep$pop) )
+                                feature.id=F,row.numbers = F)) %>%
+addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",
+           values = 100*(cartosportdep$licences_tot/cartosportdep$pop) )
 ```
 
 
@@ -476,58 +558,74 @@ Row {.tabset .tabset-fade .tabset-pills data-height="400"}
 **La pratique féminine plus développée dans le Jura.**
 
 ```{r}
-lic_dep %>%  dplyr::select(2,depbfc) %>%
-    slice(40,92,117,118) %>%
-    pivot_longer(-`Codes départements`, 'variable', 'value') %>%
-    pivot_wider(variable, names_from =`Codes départements`) %>%
-    mutate(département=t(as.data.frame(levels(lic_dep) %>% select(depbfc)))) %>%
-   dplyr::select(6,2:5) %>% dplyr::rename("Nombre"="NA") %>%
-  mutate_at(2:5,as.numeric) %>% adorn_totals("row") %>%
+lic_dep %>%  
+  dplyr::select(2,depbfc) %>%
+  slice(40,92,117,118) %>%
+  pivot_longer(-`Codes départements`, 'variable', 'value') %>%
+  pivot_wider(variable, names_from =`Codes départements`) %>%
+  mutate(département=t(as.data.frame(levels(lic_dep) %>% 
+                                       select(depbfc)))) %>%
+  dplyr::select(6,2:5) %>% 
+  dplyr::rename("Nombre"="NA") %>%
+  mutate_at(2:5,as.numeric) %>% 
+  adorn_totals("row") %>%
   
-    bind_cols(licdep %>% filter(dep %in% depbfc) %>%
-                adorn_totals("row")  %>%
-                mutate(txlic=round(100*V1/pop,1) ) %>% select(txlic) %>% pull
-              ) %>%
+  bind_cols(licdep %>% 
+              filter(dep %in% depbfc) %>%
+              adorn_totals("row")  %>%
+              mutate(txlic=round(100*V1/pop,1) ) %>% 
+              select(txlic) %>% pull ) %>%
   #bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))    fonctionne également
-   bind_cols( evodep %>%filter(type=="total")  %>% #modifier pour les différents types de fédé
-          summarise(`évolution 2010-2021`=spk_chr(lic)) )%>%
+  bind_cols( evodep %>%
+               filter(type=="total")  %>% #modifier pour les différents types de fédé
+               summarise(`évolution 2010-2021`=spk_chr(lic)) )%>%
   
-    left_join(.,feddepsexe %>% select (1,txfem) %>% slice(3:11) %>%                 #txfem
-                      mutate(`Licences féminines (%)`=color_bar('pink')
-          (digits(txfem,1,decimal.mark=","))) ,
+  left_join(.,feddepsexe %>% 
+              select (1,txfem) %>% 
+              slice(3:11) %>%                 #txfem
+              mutate(`Licences féminines (%)`=color_bar('pink')
+                    (digits(txfem,1,decimal.mark=","))) ,
             by=c("dep"="rowname") ) %>%
-    relocate(dep, .before = département) %>% relocate(`Licences féminines (%)`,.before = `évolution 2010-2021`) %>%
-rename(`unisport olympique`="Total fédérations unisport olympiques",
-       `unisport non olympique`="Total fédérations unisport non olympiques", 
-       multisports=`Total fédérations multisports`,
-       `Taux de licences (%)`="...6") %>% select(-10) %>%
+  relocate(dep, .before = département) %>% 
+  relocate(`Licences féminines (%)`,.before = `évolution 2010-2021`) %>%
+  rename(`unisport olympique`="Total fédérations unisport olympiques",
+         `unisport non olympique`="Total fédérations unisport non olympiques", 
+         multisports=`Total fédérations multisports`,
+         `Taux de licences (%)`="...6") %>% 
+  select(-10) %>%
   
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="crrrrrrlr",
-      escape = F) %>% 
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="crrrrrrlr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   row_spec(9, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
-   column_spec(6, bold=T) %>%
+  column_spec(6, bold=T) %>%
   add_header_above(c( " "=2,"Fédérations"=3,"Licences"=4) ) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+   scroll_box(height = "350px") 
 
 ```
 
 ### Répartition des licences par type de fédération
 
 ```{r}
-hchart ( lic_dep %>%  dplyr::select(2,depbfc) %>%
-    slice(40,92,117,118) %>%
-    pivot_longer(-`Codes départements`, 'DEP') %>% rename(type_fede=`Codes départements`,licences=value) %>%
-       filter(!is.na(type_fede)) %>%
-            left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) , 
-    "bar", hcaes(x = fct_rev(département), y= as.numeric(licences), group = type_fede) ,
-    stacking = "normal" ,
-      showInLegend = T,  pointWidth =20) %>%
-   hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Nombre de licences")) %>%
+hchart ( lic_dep %>%  
+           dplyr::select(2,depbfc) %>%
+           slice(40,92,117,118) %>%
+           pivot_longer(-`Codes départements`, 'DEP') %>% 
+           rename(type_fede=`Codes départements`,licences=value) %>%
+           filter(!is.na(type_fede)) %>%
+           left_join(.,appartenance %>% 
+                       filter(NIVGEO=="DEP") %>%
+                       select(CODGEO,département=LIBGEO),
+                     by=c("DEP"="CODGEO") ) , 
+    "bar", hcaes(x = fct_rev(département), 
+                 y= as.numeric(licences), 
+                 group = type_fede) ,
+           stacking = "normal" ,
+           showInLegend = T,  pointWidth =20) %>%
+  hc_xAxis(title=list(text="Départements")) %>%
+  hc_yAxis(title=list(text="Nombre de licences")) %>%
   hc_add_theme(thm)
 
 ```
@@ -537,17 +635,24 @@ hchart ( lic_dep %>%  dplyr::select(2,depbfc) %>%
 Plus de la moitié des licences dans les fédérations unisport olympiques.
 
 ```{r, plotly=T}
-hchart ( lic_dep %>%  dplyr::select(2,depbfc) %>%
-    slice(40,92,117,118) %>%
-    pivot_longer(-`Codes départements`, 'DEP') %>% rename(type_fede=`Codes départements`,licences=value) %>%
-       filter(!is.na(type_fede)) %>%
-            left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) , 
-    "bar", hcaes(x = fct_rev(département), y= as.numeric(licences), group = type_fede) ,
-    stacking = "percent" ,
-      showInLegend = T,  pointWidth =20) %>%
+hchart ( lic_dep %>%  
+           dplyr::select(2,depbfc) %>%
+           slice(40,92,117,118) %>%
+           pivot_longer(-`Codes départements`, 'DEP') %>% 
+           rename(type_fede=`Codes départements`,licences=value) %>%
+           filter(!is.na(type_fede)) %>%
+           left_join(.,appartenance %>% 
+                       filter(NIVGEO=="DEP") %>%
+                       select(CODGEO,département=LIBGEO),
+                     by=c("DEP"="CODGEO") ) , 
+    "bar", hcaes(x = fct_rev(département), 
+                 y= as.numeric(licences), 
+                 group = type_fede) ,
+           stacking = "percent" ,
+           showInLegend = T,  pointWidth =20) %>%
    hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Proportion de licences")) %>%
-  hc_add_theme(thm)
+   hc_yAxis(title=list(text="Proportion de licences")) %>%
+   hc_add_theme(thm)
 
 ```
 
@@ -559,32 +664,40 @@ Column {.tabset .tabset-fade .tabset-pills}
 Une baisse des licences unisport olympiques en 2020.
 
 ```{r}
-lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","Fédération"="Codes départements") %>%
-    slice(3:39) %>% mutate_at(3:10,as.numeric) %>% 
-  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>% arrange (desc(BFC)) %>% adorn_totals("row") %>%
+lic_dep %>%  
+  dplyr::select(1:2,depbfc) %>% 
+  rename("Code fédération"="...1","Fédération"="Codes départements") %>%
+  slice(3:39) %>% 
+  mutate_at(3:10,as.numeric) %>% 
+  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>% 
+  arrange (desc(BFC)) %>% 
+  adorn_totals("row") %>%
+  left_join(.,fede_sexe_dep %>% 
+              select (fede,DEP,txfem) %>% 
+              filter (DEP=="BFC") %>%
+              mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
+                    (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+            by=c("Code fédération"="fede") ) %>% 
+  select(-txfem) %>%
+  left_join( evofedebfc %>% 
+               filter(fed>100 & fed<200) %>% #modifier pour type de fédé 
+               bind_rows(evofedebfc %>% 
+                           filter(fed>100 & fed<200) %>% 
+                           group_by(année) %>%
+                           summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
+               summarise(`évolution 2010-2021`=spk_chr(lic)), 
+             by=c("Code fédération"="fed")) %>%
+  select(-12) %>%
   
-  
-   left_join(.,fede_sexe_dep %>% select (fede,DEP,txfem) %>% filter (DEP=="BFC") %>%
-                         mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
-                                         (digits(as.numeric(txfem),1,decimal.mark=","))) ,
-            by=c("Code fédération"="fede") ) %>% select(-txfem) %>%
-  
-  
-  left_join( evofedebfc %>% filter(fed>100 & fed<200) %>% #modifier pour type de fédé 
-              bind_rows(evofedebfc %>% filter(fed>100 & fed<200) %>% group_by(année) %>% summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2021`=spk_chr(lic)), 
-             by=c("Code fédération"="fed")) %>% select(-12) %>%
-  
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrrrrrrrrrlrl",
-      escape = F) %>% 
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrrlrl", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-   column_spec(11, bold=T) %>%
+  column_spec(11, bold=T) %>%
 #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
 #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+  scroll_box(height = "400px") 
 
 ```
 
@@ -592,29 +705,38 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
 ### Détail unisport non olympique
 
 ```{r}
-lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","Fédération"="Codes départements") %>%
-    slice(42:91) %>% mutate_at(3:10,as.numeric) %>%
-  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>%  arrange (desc(BFC)) %>% adorn_totals("row") %>%
+lic_dep %>%  
+  dplyr::select(1:2,depbfc) %>% 
+  rename("Code fédération"="...1","Fédération"="Codes départements") %>%
+  slice(42:91) %>% 
+  mutate_at(3:10,as.numeric) %>%
+  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>%  
+  arrange (desc(BFC)) %>% 
+  adorn_totals("row") %>%
+  left_join(.,fede_sexe_dep %>% 
+              select (fede,DEP,txfem) %>% 
+              filter (DEP=="BFC") %>%
+              mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
+                    (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+            by=c("Code fédération"="fede") ) %>%
+  select(-txfem) %>%
+  left_join( evofedebfc %>%   
+               filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
+               bind_rows(evofedebfc %>% 
+                           filter(fed>200 & fed<230) %>% 
+                           group_by(année) %>%
+                           summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
+               summarise(`évolution 2010-2021`=spk_chr(lic)),
+             by=c("Code fédération"="fed") ) %>% 
+  select(-12) %>%
   
-  
-    left_join(.,fede_sexe_dep %>% select (fede,DEP,txfem) %>% filter (DEP=="BFC") %>%
-                         mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
-                                         (digits(as.numeric(txfem),1,decimal.mark=","))) ,
-            by=c("Code fédération"="fede") ) %>% select(-txfem) %>%
-  
-    left_join( evofedebfc %>%   filter(fed>200 & fed<300) %>% #modifier pour type de fédé 
-              bind_rows(evofedebfc %>% filter(fed>200 & fed<230) %>% group_by(année) %>% summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2021`=spk_chr(lic)),
-               by=c("Code fédération"="fed") ) %>% select(-12) %>%
-  
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrrrrrrrrrlrl",
-      escape = F) %>% 
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrrlrl", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+  scroll_box(height = "400px") 
 
 ```
 
@@ -622,28 +744,38 @@ lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","F�
 ### Détail des licences fédé multisport
 
 ```{r}
-lic_dep %>%  dplyr::select(1:2,depbfc) %>% rename("Code fédération"="...1","Fédération"="Codes départements") %>%
-    slice(94:116) %>% mutate_at(3:10,as.numeric) %>%
-  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>%  arrange (desc(BFC)) %>% adorn_totals("row") %>%
+lic_dep %>%  
+  dplyr::select(1:2,depbfc) %>% 
+  rename("Code fédération"="...1","Fédération"="Codes départements") %>%
+  slice(94:116) %>% 
+  mutate_at(3:10,as.numeric) %>%
+  mutate(BFC=rowSums(.[3:10],na.rm = T)) %>%  
+  arrange (desc(BFC)) %>% 
+  adorn_totals("row") %>%
+  left_join(.,fede_sexe_dep %>% 
+              select (fede,DEP,txfem) %>% 
+              filter (DEP=="BFC") %>%
+              mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
+                    (digits(as.numeric(txfem),1,decimal.mark=","))) ,
+            by=c("Code fédération"="fede") ) %>% 
+  select(-txfem) %>%
+  left_join( evofedebfc %>%   
+               filter(fed>400) %>% #modifier pour type de fédé 
+               bind_rows(evofedebfc %>% 
+                           filter(fed>400) %>% 
+                           group_by(année) %>%
+                           summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
+               summarise(`évolution 2010-2021`=spk_chr(lic)),
+             by=c("Code fédération"="fed") ) %>% 
+  select(-12) %>%
   
-   left_join(.,fede_sexe_dep %>% select (fede,DEP,txfem) %>% filter (DEP=="BFC") %>%
-                         mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
-                                         (digits(as.numeric(txfem),1,decimal.mark=","))) ,
-            by=c("Code fédération"="fede") ) %>% select(-txfem) %>%
-  
-    left_join( evofedebfc %>%   filter(fed>400) %>% #modifier pour type de fédé 
-              bind_rows(evofedebfc %>% filter(fed>400) %>% group_by(année) %>% summarise(fed="Total",lic=sum(lic,na.rm=T))) %>%
-              summarise(`évolution 2010-2021`=spk_chr(lic)),
-               by=c("Code fédération"="fed") ) %>% select(-12) %>%
-  
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrrrrrrrrrlrl",
-      escape = F) %>% 
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrrrrrrrrrlrl", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(11, bold=T) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "400px") 
+  scroll_box(height = "400px") 
 
 ```
 
@@ -664,7 +796,6 @@ lic27epci %>%
   arrange(desc(licences)) %>%
   mutate(txlic = color_bar('orange')
         (digits(txlic,1, decimal.mark=","))) %>%
- 
   mutate(txlicf = color_bar('lightpink',na.rm=T)
         (digits(txlicf ,1,decimal.mark=","))) %>%
   mutate(txlich = color_bar('lightblue',na.rm=T)
@@ -679,15 +810,14 @@ lic27epci %>%
 
   rename(totales=txlic,femmes=txlicf,hommes=txlich,jeunes=txlicjeunes,
          féminines=txfemmes,`jeunes<20`=txjeunes) %>%
-  kable("html", 
-      format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrllllrrrrr",
-      escape = F) %>% 
+  
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="lcrllllrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=3,"Taux de licences parmi"=4,"Part de licences "=2) ) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2019", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T) %>%
-   scroll_box(height = "800px") 
+  scroll_box(height = "800px") 
 ```
 
 ### Carte ECPI {data-height="800"}
@@ -695,39 +825,45 @@ lic27epci %>%
 ```{r}
  
 lic_epci <- sp::merge(epciwgs,lic27epci %>%
-  select(CODE_EPCI=EPCI,LIBGEO,licences,txlic,txfemmes,txlicf,txlich,txjeunes,txlicjeunes) %>%
-    mutate_at(3:8,as.numeric) ,
-  by="CODE_EPCI")
+                        select(CODE_EPCI=EPCI, LIBGEO, licences, 
+                               txlic, txfemmes, txlicf,txlich,txjeunes, txlicjeunes) %>%
+                        mutate_at(3:8,as.numeric) ,
+                      by="CODE_EPCI")
 
-leaflet(lic_epci) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(lic_epci) %>%  
+  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(fill =F , weight = 2,opacity = 0.6,
-              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 2) %>%
+  addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
+              fill = F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",
+              color="#9370DB",weight = 3,opacity = 1, 
+              fill = F, smoothFactor = 2) %>%
   addCircles(centroid(lic_epci)[,1],centroid(lic_epci)[,2],weight=4,
-             radius = ~50*licences^(1/2), 
+             radius = ~50*licences^(1/2),  color = "#4169E1",
              #radius = ~licences,
-             color = "#4169E1",
              fillColor = ~pal2(txlic), fillOpacity = 0.7,
-             highlight = highlightOptions (fillOpacity =  0.5,
-                                           weight = 5,   color = "#00FFFF"),
-             popup = popupTable(lic_epci@data %>% select (-2,-3) %>%
-  
-  mutate(txlic = color_tile('white','orange',alpha=0.5)
-          (digits(txlic ,1,decimal.mark=","))) %>%
-  mutate(txfemmes = color_tile('white','pink',alpha=0.5)
-          (digits(txfemmes ,1,decimal.mark=","))) %>%
-  mutate(txlicf = color_tile('white','lightpink',alpha=0.5)
-          (digits(txlicf ,1,decimal.mark=","))) %>%
-  mutate(txlich = color_tile('white', 'lightblue',alpha=0.5)
-          (digits(txlich ,1,decimal.mark=","))) %>%
-  mutate(txjeunes= color_tile('white','lightgreen',alpha=0.5)
-         (digits(txjeunes,1,decimal.mark=","))) %>%
-  mutate(txlicjeunes= color_tile('white','lightgreen',alpha=0.5)
-         (digits(txlicjeunes,1,decimal.mark=","))) 
-                                ,feature.id=F,row.numbers = F) ) %>%
-addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = ~txlic ) 
+             highlight = highlightOptions (
+                            color = "#00FFFF",fillOpacity =  0.5, weight = 5 ),
+             popup = popupTable(lic_epci@data %>% 
+                                  select (-2,-3) %>%
+                                  mutate(txlic = color_tile('white','orange',alpha = 0.5)
+                                        (digits(txlic ,1,decimal.mark=","))) %>%
+                                  mutate(txfemmes = color_tile('white','pink', alpha = 0.5)
+                                        (digits(txfemmes ,1,decimal.mark=","))) %>%
+                                  mutate(txlicf = color_tile('white','lightpink', alpha = 0.5)
+                                        (digits(txlicf ,1,decimal.mark=","))) %>%
+                                  mutate(txlich = color_tile('white', 'lightblue', alpha = 0.5)
+                                        (digits(txlich ,1,decimal.mark=","))) %>%
+                                  mutate(txjeunes= color_tile('white', 'lightgreen', alpha = 0.5)
+                                        (digits(txjeunes,1,decimal.mark=","))) %>%
+                                  mutate(txlicjeunes= color_tile('white', 'lightgreen', alpha=0.5)
+                                        (digits(txlicjeunes,1,decimal.mark=","))),
+                                feature.id=F,row.numbers = F) ) %>%
+  addLegend( position = "bottomright",pal = pal2 ,values = ~txlic,
+             title = "taux de pénétration sportive") 
 #addLegendSize(position = "bottomright", values = 60000,color = "#4169E1",fillColor = "transparent",
 #              strokeWidth =2, shape = "circle", breaks = 1, baseSize = 60, title = "taille initiale" )
 ```
@@ -743,7 +879,8 @@ Row {data-height="20"}
 
 ```{r,echo=F}
 lic27bv %>%
-  select(BV2012,LIBGEO,licences,txlic,txlicf,txlich,txlicjeunes,txfemmes,txjeunes) %>% 
+  select(BV2012,LIBGEO,licences,
+         txlic,txlicf,txlich,txlicjeunes,txfemmes,txjeunes) %>% 
   arrange(desc(licences)) %>%
   mutate(txlic = color_bar('orange')
         (digits(txlic,1, decimal.mark=","))) %>%
@@ -764,13 +901,12 @@ lic27bv %>%
          féminines=txfemmes,`jeunes<20`=txjeunes) %>%
 
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrllllrrrrr",
-      escape = F) %>% 
+      align="lcrllllrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=3,"Taux de licences parmi"=4,"Part de licences "=2) ) %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2019", general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), footnote_as_chunk = T)   %>%
-  scroll_box(height = "800px") 
+ scroll_box(height = "800px") 
 ```
 
 ### Carte BV {data-height="800"}
@@ -778,38 +914,44 @@ lic27bv %>%
 ```{r}
 
 lic_bv <- sp::merge(bvwgs,lic27bv %>%
-  select(BV2012,LIBGEO,licences,txlic,txfemmes,txlicf,txlich,txjeunes,txlicjeunes) %>%
-    mutate_at(3:8,as.numeric) ,
-  by="BV2012")
+                      select(BV2012,LIBGEO,licences,
+                            txlic,txfemmes,txlicf,txlich,txjeunes,txlicjeunes) %>%
+                      mutate_at(3:8,as.numeric) ,
+                    by="BV2012")
 
-leaflet(lic_bv) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(lic_bv) %>%  
+  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(fill =F , weight = 2,opacity = 0.6,
-              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 2) %>%
+  addPolygons( color = "#2F4F4F", weight = 2,opacity = 0.6,
+               fill =F) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5,opacity = 1, 
+             fill = F, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",
+              color="#9370DB",weight = 3,opacity = 1, 
+              fill = F, smoothFactor = 2) %>%
   addCircles(centroid(lic_bv)[,1],centroid(lic_bv)[,2],weight=4,
              radius = ~50*licences^(1/2), color = "#4169E1",
              fillColor = ~pal2(txlic), fillOpacity = 0.7,
-             highlight = highlightOptions (fillOpacity =  0.5,
-                                           weight = 5,   color = "#00FFFF"),
+             highlight = highlightOptions (
+                         color = "#00FFFF", fillOpacity =  0.5, weight = 5 ),
              popup = popupTable(lic_bv@data %>% 
-  
-  
+                                  
   mutate(txlic = color_tile('white','orange',alpha=0.5)
-          (digits(txlic ,1,decimal.mark=","))) %>%
+        (digits(txlic ,1,decimal.mark=","))) %>%
   mutate(txfemmes = color_tile('white','pink',alpha=0.5)
-          (digits(txfemmes ,1,decimal.mark=","))) %>%
+        (digits(txfemmes ,1,decimal.mark=","))) %>%
   mutate(txlicf = color_tile('white','lightpink',alpha=0.5)
-          (digits(txlicf ,1,decimal.mark=","))) %>%
+        (digits(txlicf ,1,decimal.mark=","))) %>%
   mutate(txlich = color_tile('white', 'lightblue',alpha=0.5)
-          (digits(txlich ,1,decimal.mark=","))) %>%
+        (digits(txlich ,1,decimal.mark=","))) %>%
   mutate(txjeunes= color_tile('white','lightgreen',alpha=0.5)
-         (digits(txjeunes,1,decimal.mark=","))) %>%
-      mutate(txlicjeunes= color_tile('white','lightgreen',alpha=0.5)
-         (digits(txlicjeunes,1,decimal.mark=","))) 
-                                ,feature.id=F,row.numbers = F) ) %>%
-addLegend( position = "bottomright",pal = pal2 ,title = "taux de pénétration sportive",values = ~txlic )
+        (digits(txjeunes,1,decimal.mark=","))) %>%
+  mutate(txlicjeunes= color_tile('white','lightgreen',alpha=0.5)
+        (digits(txlicjeunes,1,decimal.mark=","))) ,
+                                    feature.id=F,row.numbers = F) ) %>%
+addLegend( position = "bottomright",pal = pal2 ,values = ~txlic,
+           title = "taux de pénétration sportive")
 
 ```
 

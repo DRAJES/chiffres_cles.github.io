@@ -50,15 +50,20 @@ region_tab %>%
                            color="green")
                  ) ) %>%
   relocate(" ",.before=`évolution annuelle`) %>%
-  left_join(.,serie_reg,by=c("Région" = "REG") ) %>%
+  left_join(.,serie_reg,
+            by=c("Région" = "REG") ) %>%
+  
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrrlllc",
-      escape = F) %>% 
+      align="clrrrrlllc", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-  row_spec(nrow(region_tab),bold = T,color = "navy") %>%  
+  row_spec(which(region$REG=='27'),
+           background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
+  row_spec(nrow(region_tab),
+           bold = T,color = "navy") %>%  
   add_header_above(c(" " = 5, "Evolution 2013-2019" = 4," ")) %>%
-  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T) 
+  footnote(general = " Insee RP2013, RP2019", 
+           general_title = "Source : ", 
+           footnote_as_chunk = T) 
 
 ```   
 
@@ -68,23 +73,28 @@ region_tab %>%
 
 ```{r,echo=F}
 
-leaflet(regwgs) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(regwgs) %>%  
+  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(fill =F , weight = 2,opacity = 0.6,
-              color = "#2F4F4F",fillOpacity = 0.7, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
+              fill =F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
   addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],weight=4,
              radius = ~50*pop^(1/2), color = "#4169E1",
              fillColor = ~pal3(evol), fillOpacity = 0.7,
-             highlight = highlightOptions (fillOpacity =  0.5,
-                                           weight = 5,   color = "#00FFFF"),
-             popup = popupTable(regwgs@data %>% 
+             highlight = highlightOptions (
+                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
+             popup = popupTable(regwgs@data %>%
                                   select(Région=INSEE_REG) %>%
                                   left_join(.,region_tab %>%
-                                              select(Région,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`)
+                                              select(Région,Nom,Population,`15-29 ans`,`65 ans et +`,
+                                                     `évolution annuelle`, `evo15/29`,`evo>65`)
                                             ,by="Région"),
                                 feature.id=F,row.numbers = F) )%>%
-    addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
+    addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, 
+              title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
 ```
 
 ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
@@ -106,22 +116,27 @@ Seuls deux départements gagnent de la population entre 2013 et 2019 : la Côte 
 
 as.data.frame(dep27_tab) %>%  
   select(Région,Département,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
-mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
+  mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
                  cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.before=`évolution annuelle`) %>%
-    left_join(.,serie_dep[,2:3],by=c("Département" = "DEP") ) %>%
+  left_join(.,serie_dep[,2:3],
+            by=c("Département" = "DEP") ) %>%
+  
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="cclrrrrlllc",
-      escape = F) %>% 
+      align="cclrrrrlllc", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(dep27_tab)-1,bold = T,color = "steelblue") %>%
-  row_spec(nrow(dep27_tab),bold = T,color = "navy") %>%
+  row_spec(nrow(dep27_tab)-1,
+           bold = T,color = "steelblue") %>%
+  row_spec(nrow(dep27_tab),
+           bold = T,color = "navy") %>%
   add_header_above(c(" " = 6, "Evolution 2013-2019" =4," ")) %>%
-  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T) 
+  footnote(general = " Insee RP2013, RP2019", 
+           general_title = "Source : ", 
+           footnote_as_chunk = T) 
 
 
 ```
@@ -131,24 +146,31 @@ mutate(" "= if_else(substr(str_split_fixed(dep27_tab$`évolution annuelle`,"<*>"
 
 ```{r,echo=F}
 
-leaflet(depwgs) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(depwgs) %>%  
+  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(fill =F , weight = 2,opacity = 0.6,
-              color = "#2F4F4F",fillOpacity = 0.7, smoothFactor = 2 )%>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
+  addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
+             fill =F , smoothFactor = 2 )%>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",
+              color="#9370DB",weight = 3,opacity = 1, 
+              fill = F,  smoothFactor = 5) %>%
   addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],weight=4,
              radius = ~50*pop^(1/2), color = "#4169E1",
              fillColor = ~pal3(evol), fillOpacity = 0.7,
-             highlight = highlightOptions (fillOpacity =  0.5,
-                                           weight = 5,   color = "#00FFFF"),
-             popup = popupTable(depwgs@data %>% 
+             highlight = highlightOptions (
+                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
+             popup = popupTable(depwgs@data %>%
                                   select(Département=INSEE_DEP) %>%
                                   left_join(.,dep_tab %>%
-                                              select(Région,Département,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`)
+                                              select(Région,Département,Nom,Population,`15-29 ans`,
+                                                     `65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`)
                                             ,by="Département"),
                                 feature.id=F,row.numbers = F) )%>%
-    addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
+    addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, 
+              title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
 ```
 
 
@@ -165,22 +187,27 @@ Row {data-height="20"}
 ```{r,echo=F}
 epci27_tab %>% 
   select(EPCI,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
-mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
+  mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
                  cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.before=`évolution annuelle`) %>%
-    left_join(.,serie_epci,by= "EPCI" ) %>%
+  left_join(.,serie_epci,
+            by= "EPCI" ) %>%
+  
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrrlllc",
-      escape = F) %>% 
+      align="clrrrrlllc", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(epci27_tab)-1,bold = T,color = "steelblue") %>%
-  row_spec(nrow(epci27_tab),bold = T,color = "navy") %>%
+  row_spec(nrow(epci27_tab)-1,
+           bold = T,color = "steelblue") %>%
+  row_spec(nrow(epci27_tab),
+           bold = T,color = "navy") %>%
   add_header_above(c(" " = 5, "Evolution 2013-2019" =4," ")) %>%
-  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T)
+  footnote(general = " Insee RP2013, RP2019", 
+           general_title = "Source : ", 
+           footnote_as_chunk = T)
 ```
 
 
@@ -189,24 +216,32 @@ mutate(" "= if_else(substr(str_split_fixed(epci27_tab$`évolution annuelle`,"<*>
   
 ```{r,echo=F}
 
-leaflet(epcicarto) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(epcicarto) %>%  
+  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(fill =F , weight = 2,opacity = 0.6,
-              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
-  addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],weight=4,
-             radius = ~50*pop^(1/2), color = "#4169E1",
+  addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
+             fill =F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",
+              color="#9370DB",weight = 3,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],
+             radius = ~50*pop^(1/2), 
+             color = "#4169E1", weight = 4,
              fillColor = ~pal3(evol), fillOpacity = 0.7,
-             highlight = highlightOptions (fillOpacity =  0.5,
-                                           weight = 5,   color = "#00FFFF"),
+             highlight = highlightOptions (
+                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
              popup = popupTable(epcicarto@data %>% 
                                   select(EPCI=CODE_EPCI) %>%
                                   left_join(.,epci27_tab %>%
-                                              select(EPCI,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`)
+                                              select(EPCI,Nom,Population,`15-29 ans`,`65 ans et +`,
+                                                     `évolution annuelle`, `evo15/29`,`evo>65`)
                                             ,by="EPCI"),
                                 feature.id=F,row.numbers = F) )%>%
-    addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
+    addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, 
+              title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
 ```
 
 ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
@@ -221,22 +256,27 @@ Row {data-height="20"}
 ```{r,echo=F}
 bv27_tab %>%  
   select(BV2012,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`) %>%
-mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
+  mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",3)[,2],1,4)   < 0,
                  cell_spec('![](images/arrow-down-right.svg)',
                            color="red") ,
                  cell_spec('![](images/arrow-up-right.svg)',
                            color="green")
                  ) ) %>%
   relocate(" ",.before=`évolution annuelle`) %>%
-    left_join(.,serie_bv,by="BV2012" ) %>%
+    left_join(.,serie_bv,
+              by="BV2012" ) %>%
+  
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrrlllc",
-      escape = F) %>% 
+      align="clrrrrlllc", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(bv27_tab)-1,bold = T,color = "steelblue") %>%
-  row_spec(nrow(bv27_tab),bold = T,color = "navy") %>%
+  row_spec(nrow(bv27_tab)-1,
+           bold = T,color = "steelblue") %>%
+  row_spec(nrow(bv27_tab),
+           bold = T,color = "navy") %>%
   add_header_above(c(" " = 5, "Evolution 2013-2019" =4," ")) %>%
-  footnote(general = " Insee RP2013, RP2019", general_title = "Source : ", footnote_as_chunk = T) 
+  footnote(general = " Insee RP2013, RP2019", 
+           general_title = "Source : ", 
+           footnote_as_chunk = T) 
 ```  
   
 
@@ -245,25 +285,32 @@ mutate(" "= if_else(substr(str_split_fixed(bv27_tab$`évolution annuelle`,"<*>",
 
 ```{r,echo=F}
 
-leaflet(bvcarto) %>%  addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(bvcarto) %>%  
+  addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(fill =F , weight = 2,opacity = 0.6,
-              color = "#2F4F4F",fillOpacity = 0.7 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5,opacity = 1, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",fill = F,color="#9370DB",weight = 3,opacity = 1, smoothFactor = 5) %>%
-  addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],weight=4,
-             radius = ~50*pop^(1/2), color = "#4169E1",
+  addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
+               fill =F ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto,group  = "départements",
+              color="#9370DB",weight = 3,opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],
+             radius = ~50*pop^(1/2),
+             color = "#4169E1", weight = 4,
              fillColor = ~pal3(evol), fillOpacity = 0.7,
-             highlight = highlightOptions (fillOpacity =  0.5,
-                                           weight = 5,   color = "#00FFFF"),
+             highlight = highlightOptions (
+                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
              popup = popupTable(bvcarto@data %>% 
                                   select(BV2012) %>%
                                   left_join(.,bv27_tab %>%
-                                              select(BV2012,Nom,Population,`15-29 ans`,`65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`)
+                                              select(BV2012,Nom,Population,`15-29 ans`,`65 ans et +`,
+                                                     `évolution annuelle`, `evo15/29`,`evo>65`)
                                             ,by="BV2012"),
-                                feature.id=F,row.numbers = F) )%>%
-  
-  addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
+                                feature.id=F,row.numbers = F) ) %>%
+  addLegend(pal = pal3, values =  regwgs$evol, opacity = 0.7, 
+            title = "évolution annuelle", position = "bottomright",labFormat = labelFormat(suffix =  " %"))
 ```
 
 
