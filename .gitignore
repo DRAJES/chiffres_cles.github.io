@@ -28,6 +28,7 @@ vignettes/*.pdf
 .Renviron
 # Perso
 *.7z
+*.zip
 *.xlsx
 *.csv
 *.dbf
