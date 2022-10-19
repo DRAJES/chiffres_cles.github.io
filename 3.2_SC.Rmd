@@ -63,14 +63,23 @@ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 **Légèrement plus de missions que de volontaires dans la région.**
 
 ```{r}
-hchart(basebfc %>% filter(depvol %in% depbfc ) %>% group_by(debut) %>% summarise(tot=n())
-         ,"areaspline", hcaes(x=debut,y=tot), 
+hchart(basebfc %>% 
+         filter(depvol %in% depbfc ) %>% 
+         group_by(debut) %>% 
+         summarise(tot=n()),
+  "areaspline", hcaes(x=debut,y=tot), 
        #color="#f0808060",
-       showInLegend = T, name = "Nouveaux volontaires", pointWidth = 20) %>%
-  hc_add_series(basebfc %>% filter(depmis %in% depbfc ) %>% group_by(debut) %>% summarise(tot=n()),
-               "areaspline", hcaes(x=debut,y=tot), 
-               #color = "#4682b460" , 
-       showInLegend = T, name = "Nouvelles missions", pointWidth = 50 ) %>%
+       showInLegend = T, pointWidth = 20,
+       name = "Nouveaux volontaires" ) %>%
+  
+  hc_add_series(basebfc %>% 
+                  filter(depmis %in% depbfc ) %>% 
+                  group_by(debut) %>% 
+                  summarise(tot=n()),
+    "areaspline", hcaes(x=debut,y=tot), 
+                #color = "#4682b460" , 
+                showInLegend = T, pointWidth = 50 ,
+                name = "Nouvelles missions") %>%
   hc_add_theme(thm) 
 ```
 
@@ -79,14 +88,15 @@ hchart(basebfc %>% filter(depvol %in% depbfc ) %>% group_by(debut) %>% summarise
 **Une majorité de missions dans l'éducation populaire et la solidarité. **
 
 ```{r}
-hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
-  filter() %>%
-  group_by(mission,debut) %>%
-  count(),
+hchart( basebfc %>% 
+          filter(depmis %in% depbfc)  %>%
+          filter() %>%
+          group_by(mission,debut) %>%
+          count(),
   "bar",hcaes(x=debut,y=n ,group=mission),
-    stacking = "normal" , showInLegend = T) %>%
-   hc_xAxis(title=list(text="Année")) %>%
-    hc_yAxis(title=list(text="Nombre de missions")) %>%
+        stacking = "normal" , showInLegend = T) %>%
+  hc_xAxis(title=list(text="Année")) %>%
+  hc_yAxis(title=list(text="Nombre de missions")) %>%
   hc_add_theme(thm) 
 
 
@@ -99,14 +109,17 @@ hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
 **Une part prépondérante des agréments nationaux.**
 
 ```{r}
-hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
-  filter(agre %in% c('NA','FC','BO')) %>%
-  group_by(agre,debut) %>%
-  count(),
+hchart( basebfc %>% 
+          filter(depmis %in% depbfc)  %>%
+          filter(agre %in% c('NA','FC','BO')) %>%
+          group_by(agre,debut) %>%
+          count(),
   "bar",hcaes(x=debut,y=n ,group=agre),
-    stacking = "normal" ,name=c("Bourgogne","Franche-Comté","National"), showInLegend = T) %>%
-   hc_xAxis(title=list(text="Année")) %>%
-    hc_yAxis(title=list(text="Nombre de missions")) %>%
+        stacking = "normal" ,
+        name=c("Bourgogne","Franche-Comté","National"), 
+        showInLegend = T) %>%
+  hc_xAxis(title=list(text="Année")) %>%
+  hc_yAxis(title=list(text="Nombre de missions")) %>%
   hc_add_theme(thm) 
 ```
 
@@ -117,9 +130,11 @@ hchart( basebfc %>% filter(depmis %in% depbfc)    %>%
 
 ```{r}
 
-hchart(density( basebfc[basebfc$depvol %in% depbfc,]$age ) ,    
-  "area",color="#b71c1c",
-     showInLegend = T,name="âge du volontaire") %>%
+hchart( density( basebfc[basebfc$depvol %in% depbfc,]$age ) , 
+        "area",
+        color="#b71c1c",
+        showInLegend = T,
+        name="âge du volontaire") %>%
   hc_add_theme(thm) 
 
 ```
@@ -138,15 +153,20 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 **Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020.**
 
 ```{r}
-hchart( basebfc %>% filter(depvol %in% depbfc ) %>% mutate(dept_vol=as.character(depvol)) %>%
-  group_by(depvol,debut) %>%
-  summarise(volresid=n()) %>%
-  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("depvol"="CODGEO") ) ,
-  "spline",hcaes(x=debut,y=volresid,group=département),
-   showInLegend = T,  pointWidth = 20) %>%
-   hc_xAxis(title=list(text="Année")) %>%
-    hc_yAxis(title=list(text="Nombre de volontaires")) %>%
-    hc_add_theme(thm) 
+hchart( basebfc %>% 
+          filter(depvol %in% depbfc ) %>% 
+          mutate(dept_vol=as.character(depvol)) %>%
+          group_by(depvol,debut) %>%
+          summarise(volresid=n()) %>%
+          left_join(.,appartenance %>% 
+                      filter(NIVGEO=="DEP") %>% 
+                      select(CODGEO,département=LIBGEO),
+                    by=c("depvol"="CODGEO") ) ,
+"spline",hcaes(x=debut,y=volresid,group=département),
+        showInLegend = T,  pointWidth = 20) %>%
+  hc_xAxis(title=list(text="Année")) %>%
+  hc_yAxis(title=list(text="Nombre de volontaires")) %>%
+  hc_add_theme(thm) 
 
 ```
 
@@ -158,55 +178,86 @@ hchart( basebfc %>% filter(depvol %in% depbfc ) %>% mutate(dept_vol=as.character
 ```{r}
 
 
-basebfc %>%filter(depvol %in% depbfc ) %>%
+basebfc %>%
+  filter(depvol %in% depbfc ) %>%
   group_by(depvol) %>%
-  summarise(tot=n(),tot20=sum(debut==2020),
-            mage=mean(age),mage20=mean(age[debut==2020]),
-            femmes=100*sum(CIV_LIBCOURT =="MME")/tot,femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
-            peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
-            sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,sitfam20=100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,
-            chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,chomage20=100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,
-            rupture=sum(MRC_MOTIF_RUPTURE != " - "),txrupture=100*rupture/tot,
+  summarise(tot=n(), 
+            tot20=sum(debut==2020),
+            mage=mean(age),
+            mage20=mean(age[debut==2020]),
+            femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
+            femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
+            peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
+            peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
+            sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
+            sitfam20=100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,
+            chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
+            chomage20=100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,
+            rupture=sum(MRC_MOTIF_RUPTURE != " - "),
+            txrupture=100*rupture/tot,
             embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
               "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
-              "05 - Embauche en CDD moins de 6 mois")/rupture )
-  ) %>% bind_rows( basebfc %>%filter(depvol %in% depbfc ) %>% group_by() %>%
-        summarise(depvol="BFC",tot=n(),tot20=sum(debut==2020),
-            mage=mean(age),mage20=mean(age[debut==2020]),
-            femmes=100*sum(CIV_LIBCOURT =="MME")/tot,femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
-            peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
-            sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,sitfam20=100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,
-            chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,chomage20=100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,
-            rupture=sum(MRC_MOTIF_RUPTURE != " - "),txrupture=100*rupture/tot,
-            embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
-              "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
-              "05 - Embauche en CDD moins de 6 mois")/rupture ) ) ) %>% 
-    left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>%
-                select(CODGEO,département=LIBGEO),by=c("depvol"="CODGEO") ) %>%
-    select(`département volontaire`=depvol,département,`volontaires depuis création`=tot,`volontaires 2020`=tot20,`moyenne d'âge`=mage20,`part de femmes`=femmes20,`Part de célibataires`=sitfam20,`part de peu diplômés`=peudipl20,`part de chômeurs`=chomage20,`taux de rupture`=txrupture,`rupture pour embauche`=embauche) %>%
-    mutate(`moyenne d'âge`=color_bar('gold')
-                          (digits(`moyenne d'âge` ,1,decimal.mark=",")), 
+              "05 - Embauche en CDD moins de 6 mois")/rupture )  ) %>%
+  bind_rows( basebfc %>%
+               filter(depvol %in% depbfc ) %>% 
+               group_by() %>%
+               summarise(depvol="BFC",
+                         tot=n(),
+                         tot20=sum(debut==2020),
+                         mage=mean(age),
+                         mage20=mean(age[debut==2020]),
+                         femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
+                         femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
+                         peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
+                         peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
+                         sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
+                         sitfam20=100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,
+                         chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
+                         chomage20=100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,
+                         rupture=sum(MRC_MOTIF_RUPTURE != " - "),
+                         txrupture=100*rupture/tot,
+                         embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
+                           "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
+                           "05 - Embauche en CDD moins de 6 mois")/rupture ) ) ) %>% 
+  left_join(.,appartenance %>% 
+              filter(NIVGEO=="DEP") %>%
+              select(CODGEO,département=LIBGEO),
+            by=c("depvol"="CODGEO") ) %>%
+  select(`département volontaire`=depvol,département,
+         `volontaires depuis création`=tot,`volontaires 2020`=tot20,
+         `moyenne d'âge`=mage20,
+         `part de femmes`=femmes20,
+         `Part de célibataires`=sitfam20,
+         `part de peu diplômés`=peudipl20,
+         `part de chômeurs`=chomage20,
+         `taux de rupture`=txrupture,
+         `rupture pour embauche`=embauche) %>%
+  mutate(`moyenne d'âge`=color_bar('gold')
+                         (digits(`moyenne d'âge` ,1,decimal.mark=",")), 
           `part de femmes`=color_bar('pink')
-                          (digits(`part de femmes` ,1,decimal.mark=",")), 
+                           (digits(`part de femmes` ,1,decimal.mark=",")), 
           `part de peu diplômés`=color_bar('gold')
-                          (digits(`part de peu diplômés` ,1,decimal.mark=",")), 
+                                 (digits(`part de peu diplômés` ,1,decimal.mark=",")), 
           `Part de célibataires`=color_bar('lightblue')
-                          (digits(`Part de célibataires` ,1,decimal.mark=",")) ,
+                                 (digits(`Part de célibataires` ,1,decimal.mark=",")) ,
           `part de chômeurs`=color_bar('gold')
-                          (digits(`part de chômeurs` ,1,decimal.mark=",")) , 
+                             (digits(`part de chômeurs` ,1,decimal.mark=",")) , 
           `taux de rupture`=color_bar('lightgreen')
-                          (digits(`taux de rupture` ,1,decimal.mark=",")) , 
+                            (digits(`taux de rupture` ,1,decimal.mark=",")) , 
           `rupture pour embauche`=color_bar('lightgreen')
-                         (digits(`rupture pour embauche` ,1,decimal.mark=","))
+                                  (digits(`rupture pour embauche` ,1,decimal.mark=","))
            ) %>%
+  
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="ccrrlllllll",
-      escape = F) %>% 
+      align="ccrrlllllll", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
-  row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", general_title = "Source : ",
-            footnote_as_chunk = T)  
+  column_spec(3, 
+              bold=T) %>%
+  row_spec(9,
+           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", 
+           general_title = "Source : ",
+           footnote_as_chunk = T)  
 
 
 ```
@@ -217,39 +268,63 @@ basebfc %>%filter(depvol %in% depbfc ) %>%
 ### Carte départementale
 
 ```{r}
-cartedep <- basebfcsig %>%filter(depvol %in% depbfc) %>%
-  group_by(DEP=depvol) %>%
-  summarise(tot=n(),tot20=sum(debut==2020),qpv=sum(!(CODE_QUARTIER=="") & debut==2020),
-            tot=n(),tot20=sum(debut==2020),
-            mage=mean(age),mage20=round(mean(age[debut==2020]),1),
-            femmes=100*sum(CIV_LIBCOURT =="MME")/tot,femmes20=round( 100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,1),
-            peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,peudipl20=round( 100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,1),
-            sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,sitfam20=round( 100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,1),
-            chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,chomage20=round( 100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,1),
-            rupture=sum(MRC_MOTIF_RUPTURE != " - "),txrupture=round( 100*rupture/tot,1),
-            embauche=round( 100*sum(MRC_MOTIF_RUPTURE %in% c(
-              "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
-              "05 - Embauche en CDD moins de 6 mois")/rupture ),1)
-  ) %>%
-  left_join(.,basecomQPV %>% filter(DEP %in% depbfc) %>% group_by(DEP) %>% summarise(pop=sum(pop),popQPV=sum(popMuniQPV,na.rm=T),pop1625=sum(p1625)) %>% adorn_totals(name="BFC"),by="DEP") %>%
-  mutate(txQPV=round(100*popQPV/pop,1), partvol=1000*tot20/pop, txvol=round( 100*tot20/pop1625,2), 
-         txvolqpv=1000*qpv/popQPV, tx= round(100*qpv/tot20,1) ) %>%
-  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) %>% rename(INSEE_DEP=DEP,`Volontaires 2020`=tot20,`Taux de volontaires parmi les 16-25 ans`=txvol)
+cartedep <- basebfcsig %>%
+              filter(depvol %in% depbfc) %>%
+              group_by(DEP=depvol) %>%
+              summarise(tot=n(),
+                        tot20=sum(debut==2020),
+                        qpv=sum(!(CODE_QUARTIER=="") & debut==2020),
+                        mage=mean(age),
+                        mage20=round(mean(age[debut==2020]),1),
+                        femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
+                        femmes20=round( 100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,1),
+                        peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
+                        peudipl20=round( 100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,1),
+                        sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
+                        sitfam20=round( 100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,1),
+                        chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
+                        chomage20=round( 100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,1),
+                        rupture=sum(MRC_MOTIF_RUPTURE != " - "),
+                        txrupture=round( 100*rupture/tot,1),
+                        embauche=round( 100*sum(MRC_MOTIF_RUPTURE %in% c(
+                          "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
+                          "05 - Embauche en CDD moins de 6 mois")/rupture ),1)  ) %>%
+  left_join(.,basecomQPV %>% 
+              filter(DEP %in% depbfc) %>% 
+              group_by(DEP) %>% 
+              summarise(pop=sum(pop),
+                        popQPV=sum(popMuniQPV,na.rm=T),
+                        pop1625=sum(p1625)) %>% 
+              adorn_totals(name="BFC"),
+            by="DEP") %>%
+  mutate(txQPV=round(100*popQPV/pop,1), 
+         partvol=1000*tot20/pop, 
+         txvol=round( 100*tot20/pop1625,2), 
+         txvolqpv=1000*qpv/popQPV, 
+         tx= round(100*qpv/tot20,1) ) %>%
+  left_join(.,appartenance %>% 
+              filter(NIVGEO=="DEP") %>% 
+              select(CODGEO,département=LIBGEO),
+            by=c("DEP"="CODGEO") ) %>%
+  rename(INSEE_DEP=DEP,`Volontaires 2020`=tot20,`Taux de volontaires parmi les 16-25 ans`=txvol)
      
 
 cartedep <- sp::merge(depwgs,cartedep,by="INSEE_DEP")
 
-leaflet(cartedep) %>% addProviderTiles(providers$CartoDB.Positron) %>% 
+leaflet(cartedep) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
-  addCircles(centroid(cartedep)[,1],centroid(cartedep)[,2],
-             group = "region", radius=~500*`Volontaires 2020`^(1/2),
-             fillColor = ~pal2(`Taux de volontaires parmi les 16-25 ans`),
-             weight=4, color = "#4169E1", opacity = 0.8,
-             fillOpacity = 0.8,
-             highlight = highlightOptions (fillOpacity =  0.1,
-             weight = 5,   color = "#00FFFF"),
+  addPolygons( color = "#2F4F4F", weight=2, opacity = 0.6,
+               fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5, opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addCircles(centroid(cartedep)[,1],centroid(cartedep)[,2], group = "region",
+             radius=~500*`Volontaires 2020`^(1/2),
+             fillColor = ~pal2(`Taux de volontaires parmi les 16-25 ans`), fillOpacity = 0.8,
+             color = "#4169E1", weight=4,  opacity = 0.8,
+             highlight = highlightOptions (
+                          color = "#00FFFF", weight = 5,fillOpacity =  0.1),
              popup = popupTable(cartedep@data %>%
                                   select(INSEE_DEP,département,`Volontaires depuis création`=tot,
                                          `Volontaires 2020`, `Taux de volontaires parmi les 16-25 ans`,
@@ -258,8 +333,9 @@ leaflet(cartedep) %>% addProviderTiles(providers$CartoDB.Positron) %>%
                                   `Part de chômeurs`=chomage20,`Taux de rupture`=txrupture,
                                   `Rupture pour embauche`=embauche,`Volontaires issus de QPV`=tx,
                                   `Pop en QPV`=txQPV),
-                                 feature.id=F,row.numbers = F)) %>%
-addLegend( position = "bottomright",pal = pal2 ,title = "taux de volontaires",values = cartedep$`Taux de volontaires parmi les 16-25 ans` )
+                                feature.id=F,row.numbers = F)) %>%
+  addLegend( pal = pal2 , values = cartedep$`Taux de volontaires parmi les 16-25 ans`,
+             position = "bottomright", title = "taux de volontaires")
 
 
 ```
@@ -282,48 +358,63 @@ pal <- colorFactor(brewer.pal(4, 'Set2'), flows$origine)
 
 
 leaflet() %>%
- addProviderTiles(providers$CartoDB.Positron) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
+  addPolygons(data=dep27carto, 
+              color = "#2F4F4F", weight=2,opacity = 0.6,
+              fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5, opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
   addCircles(data=oursinxy, ~destination.x, ~destination.y,
-             weight =~oursinxy%>% group_by(destination)%>% mutate(sum(nombre)^(1/2))%>%pull, 
-             label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5) %>%
+             weight =~oursinxy %>% 
+                          group_by(destination) %>% 
+                          mutate(sum(nombre)^(1/2)) %>% pull, 
+             label = ~as.character(destination),
+             color="#ffa500", stroke = TRUE, 
+             fillOpacity = 0.5) %>%
   addPolylines(data = flows, 
                weight = ~ifelse(nombre>3,nombre^(1/2), 0),
                label = hover,
-              stroke = T, 
-              fill = F, fillOpacity = 0.8, dashArray = NULL,
-              smoothFactor = 1,
-              fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
-              color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")(seq(0, 1, length.out = 25))
-                             ) 
+               stroke = T,   smoothFactor = 1,
+               fill = F, fillOpacity = 0.8, dashArray = NULL,
+               fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
+               color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")
+                               (seq(0, 1, length.out = 25)) )
+
 ```
+
 ### Flux 2
 
 
 ```{r}
 
 leaflet() %>%
- addProviderTiles(providers$CartoDB.Positron) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto, weight=2,opacity = 0.6,color = "#2F4F4F", fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",fill = F,color="#9370DB",weight = 5, opacity = 1, smoothFactor = 5) %>%
- addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
+  addPolygons(data=dep27carto, 
+              color = "#2F4F4F", weight=2,opacity = 0.6,
+              fill=F, smoothFactor = 2 ) %>%
+  addPolygons(data=reg27carto,group  = "BFC",
+              color="#9370DB",weight = 5, opacity = 1, 
+              fill = F, smoothFactor = 5) %>%
+  addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.y),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.x),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.y),
             flow = oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(nombre),
-               opacity = 0.6, 
-               color = "lightgreen"  ) %>%
+            color = "lightgreen", opacity = 0.6  ) %>%
   addMinicharts( oursinxy %>% filter(destination==origine) %>% pull(destination.x),
                  oursinxy %>% filter(destination==origine) %>% pull(destination.y),
-                 chartdata =  oursinxy %>% filter(destination==origine) %>%ungroup() %>% mutate(entrant=missions-nombre) %>%
-                   select(stable=nombre,entrant),
-                  opacity = 0.7,              
+                 chartdata =  oursinxy %>% 
+                                  filter(destination==origine) %>%
+                                  ungroup() %>% 
+                                  mutate(entrant=missions-nombre) %>%
+                                  select(stable=nombre,entrant),
+                 opacity = 0.7,              
                  type = "pie",
                  colorPalette = c("#ffa500", "lightgreen"),
-                width = oursinxy %>% 
+                 width = oursinxy %>% 
                           filter(destination==origine) %>%
                           mutate(2*missions^(1/2)) %>% pull(12)             )
 ```
@@ -338,23 +429,21 @@ library(mapdeck)
 
 mapdeck( style = mapdeck_style("dark"), pitch = 45 ) %>%
    add_animated_arc(
-    data = oursinxy[oursinxy$nombre>4,]
-    , layer_id = "arc_layer"
-    , origin = c("origine.x", "origine.y")
-    , destination = c("destination.x", "destination.y")
-    , stroke_from = "origine"
-    , stroke_to = "destination"
-    , stroke_width = ifelse("nombre"> 10,"nombre", 0)
-    , animation_speed = 1
-  ) %>%
+    data = oursinxy[oursinxy$nombre>4,] ,
+       layer_id = "arc_layer",
+       origin = c("origine.x", "origine.y"),
+       destination = c("destination.x", "destination.y"),
+       stroke_from = "origine",
+       stroke_to = "destination",
+       stroke_width = ifelse("nombre"> 10,"nombre", 0),
+       animation_speed = 1  ) %>%
   add_scatterplot(
-    data = oursinxy[oursinxy$nombre>0,]
-                  , layer_id = "arc_point"
-                  , lon = "destination.x"
-                  , lat = "destination.y"
-                  , radius = "missions"
-                  , fill_colour = "country"
-                  )
+    data = oursinxy[oursinxy$nombre>0,]  ,
+                   layer_id = "arc_point",
+                   lon = "destination.x",
+                   lat = "destination.y",
+                   radius = "missions",
+                   fill_colour = "country" )
 
 ```
 
@@ -374,17 +463,23 @@ Row {data-height="800"}
 
 
 ```{r}
-basebfc %>%filter(depmis=="ETRANGER") %>%
+basebfc %>%
+  filter(depmis=="ETRANGER") %>%
   group_by(`Pays de la mission`=PAYS_MISSION1) %>%
-  summarise(tot=n(),tot20=sum(debut==2020)) %>% 
-  arrange(desc(tot)) %>% adorn_totals(name="Total") %>%
-             kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrrrr",
-      escape = F) %>% 
+  summarise(tot=n(),
+            tot20=sum(debut==2020)) %>% 
+  arrange(desc(tot)) %>% 
+  adorn_totals(name="Total") %>%
+  
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+      align="rcrrrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
-  footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", general_title = "Source : ",
-            footnote_as_chunk = T) 
+  column_spec(3, 
+              bold=T) %>%
+  footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", 
+           general_title = "Source : ",
+           footnote_as_chunk = T) 
+
 ```
 
 `r fa(name = "fas fa-city")` Quartier politique de la ville {data-orientation="rows"}
@@ -399,28 +494,50 @@ Row {data-height="600"}
 **Près de 1% des 16/25 ans s'engagent sur une mission de Service civique, y compris dans les QPV**
 
 ```{r}
-basebfcsig %>%filter(depvol %in% depbfc) %>%
+basebfcsig %>%
+  filter(depvol %in% depbfc) %>%
   group_by(DEP=depvol) %>%
-  summarise(tot=n(),tot20=sum(debut==2020),qpv=sum(!(CODE_QUARTIER=="") & debut==2020) ) %>%
+  summarise(tot=n(),
+            tot20=sum(debut==2020),
+            qpv=sum(!(CODE_QUARTIER=="") & debut==2020) ) %>%
   adorn_totals(name="BFC") %>%
-  left_join(.,basecomQPV %>% filter(DEP %in% depbfc) %>% group_by(DEP) %>% summarise(pop=sum(pop),popQPV=sum(popMuniQPV,na.rm=T),pop1625=sum(p1625)) %>% adorn_totals(name="BFC"),by="DEP") %>%
-  mutate(txQPV=100*popQPV/pop,partvol=1000*tot20/pop,txvol=100*tot20/pop1625,txvolqpv=1000*qpv/popQPV, tx= 100*qpv/tot20 ) %>%
-  left_join(.,appartenance %>% filter(NIVGEO=="DEP") %>% select(CODGEO,département=LIBGEO),by=c("DEP"="CODGEO") ) %>%  
-  select(DEP,département,`volontaires`=tot20,`volontaires issus de QPV`=tx,`Pop en QPV`=txQPV,`Taux de volontaires parmi les 16-25 ans`=txvol) %>%
+  left_join(.,basecomQPV %>% 
+              filter(DEP %in% depbfc) %>% 
+              group_by(DEP) %>% 
+              summarise(pop=sum(pop),
+                        popQPV=sum(popMuniQPV,na.rm=T),
+                        pop1625=sum(p1625)) %>% 
+              adorn_totals(name="BFC"),
+            by="DEP") %>%
+  mutate(txQPV=100*popQPV/pop,
+         partvol=1000*tot20/pop,
+         txvol=100*tot20/pop1625,
+         txvolqpv=1000*qpv/popQPV, 
+         tx= 100*qpv/tot20 ) %>%
+  left_join(.,appartenance %>% 
+              filter(NIVGEO=="DEP") %>% 
+              select(CODGEO,département=LIBGEO),
+            by=c("DEP"="CODGEO") ) %>%  
+  select(DEP,département,
+         `volontaires`=tot20,`volontaires issus de QPV`=tx,
+         `Pop en QPV`=txQPV,`Taux de volontaires parmi les 16-25 ans`=txvol) %>%
   mutate(`volontaires issus de QPV`=color_bar('gold')
-          (digits(`volontaires issus de QPV` ,1,decimal.mark=","))) %>% 
+        (digits(`volontaires issus de QPV` ,1,decimal.mark=","))) %>% 
   mutate(`Pop en QPV`=color_bar('gold')
-          (digits(`Pop en QPV` ,1,decimal.mark=","))) %>% 
+        (digits(`Pop en QPV` ,1,decimal.mark=","))) %>% 
   mutate(`Taux de volontaires parmi les 16-25 ans`=color_bar('lightgreen')
-          (digits(`Taux de volontaires parmi les 16-25 ans` ,2,decimal.mark=","))) %>%
+        (digits(`Taux de volontaires parmi les 16-25 ans` ,2,decimal.mark=","))) %>%
+  
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrlll",
-      escape = F) %>% 
+      align="rcrlll", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
-  row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  footnote(general = "Agence du Service Civique, Elisa; Insee, RP 2019. Traitements DRAJES", general_title = "Source : ",
-            footnote_as_chunk = T)
+  column_spec(3, 
+              bold=T) %>%
+  row_spec(9,
+           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  footnote(general = "Agence du Service Civique, Elisa; Insee, RP 2019. Traitements DRAJES", 
+           general_title = "Source : ",
+           footnote_as_chunk = T)
 
 ```
 

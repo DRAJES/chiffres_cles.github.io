@@ -50,15 +50,20 @@ options(knitr.table.format = "html")
 ```{r}
 diplreg %>% 
   rename(" "="...1") %>%
-  kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="crrrrrrrrrrrrrr")%>%
+  
+  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
+    align="crrrrrrrrrrrrrr", escape = F )%>%
   kable_styling("hover", full_width = F) %>%
-  column_spec(15, bold=T) %>%
-  column_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  column_spec(15, 
+              bold=T) %>%
+  column_spec(3,
+              background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  row_spec(c(1,3,5,8,10,12,14),bold = T) %>%
-  footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports", general_title = "Source : ",
-            footnote_as_chunk = T)  %>%
+  row_spec(c(1,3,5,8,10,12,14),
+           bold = T) %>%
+  footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports",
+           general_title = "Source : ",
+           footnote_as_chunk = T)  %>%
   scroll_box(height = "600px")
 
 
@@ -69,10 +74,16 @@ diplreg %>%
 **8e région de France en nombre de diplômes délivrés**
 
 ```{r}
-bar <- as.data.frame(t(diplreg %>% slice(14)) )%>% mutate(total=as.numeric(V1)) %>% slice(2:14) %>% arrange(desc(total))
-hchart(bar
-         ,"bar", hcaes(x=rownames(bar),y=total ,color=c(rep("#ffd700",7),"#6a5acd",rep("#ffd700",5))  ),
-       showInLegend = T, name = "diplômes sport et animation délivrés", pointWidth = 20) %>%
+bar <- as.data.frame(t(diplreg %>% slice(14)) ) %>% 
+                    mutate(total=as.numeric(V1)) %>% 
+                    slice(2:14) %>% 
+                    arrange(desc(total))
+
+hchart(bar,
+ "bar",hcaes(x=rownames(bar),y=total ,
+             color=c(rep("#ffd700",7),"#6a5acd",rep("#ffd700",5))  ),
+       showInLegend = T, pointWidth = 20,
+       name = "diplômes sport et animation délivrés" ) %>%
      hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de diplômes")) %>%
     hc_add_theme(thm) 
@@ -81,21 +92,20 @@ hchart(bar
 ### Répartition des diplômes
 
 ```{r}
-pie <- diplreg %>% slice(-14) %>% select(diplome=1,nombre=3, france=15) %>% filter(!is.na(nombre))
+pie <- diplreg %>% 
+            slice(-14) %>% 
+            select(diplome=1,nombre=3, france=15) %>% 
+            filter(!is.na(nombre))
 
 hchart(pie,
-"pie",
-hcaes(x=diplome,y=nombre,z=france),
-    name="Bourgogne-Franche-Comté",
-    showInLegend = T, 
-    size ='80%',innerSize='50%' ) %>%
+"pie", hcaes(x=diplome,y=nombre,z=france),
+       name="Bourgogne-Franche-Comté",
+       showInLegend = T, 
+       size ='80%',innerSize='50%' ) %>%
   hc_add_series(pie,
-                "pie",
-                hcaes(x=diplome,y=france),
-    name="France",
-    size='30%', dataLabels=F,
-    showInLegend = F
-    ) %>%  
+         "pie", hcaes(x=diplome,y=france),
+                name="France",
+                size='30%', dataLabels=F, showInLegend = F ) %>%  
   hc_legend(enabled=T)%>%
   hc_credits(enabled=T,text="Source") %>%
   hc_add_theme(thm) 
@@ -107,11 +117,16 @@ hcaes(x=diplome,y=nombre,z=france),
 
 ```{r}
 
-hchart(forome %>% group_by (Type.de.diplôme)%>% summarise(hommes=sum(Sexe=="Homme"),
-                                                          femmes=sum(Sexe=="Femme")) %>%
-        arrange(desc(hommes+femmes)) %>% pivot_longer(-1,"stat","valeur"),
-       "bar",hcaes(x = Type.de.diplôme,y=value,group=stat), color=c("#da70d6",'#87ceeb'),
-       stacking="normal", pointWidth = 20)
+hchart(forome %>% 
+         group_by (Type.de.diplôme) %>% 
+         summarise(hommes=sum(Sexe=="Homme"),
+                   femmes=sum(Sexe=="Femme")) %>%
+         arrange(desc(hommes+femmes)) %>% 
+         pivot_longer(-1,"stat","valeur"),
+ "bar",hcaes(x = Type.de.diplôme,y=value,group=stat), 
+       color=c("#da70d6",'#87ceeb'),
+       stacking="normal", 
+       pointWidth = 20)
         
   
 ```
@@ -122,12 +137,19 @@ hchart(forome %>% group_by (Type.de.diplôme)%>% summarise(hommes=sum(Sexe=="Hom
 
 ```{r}
 hchart(density(forome$age ),    
-  "area", color="#b71c1c",
-     showInLegend = T,name="âge du diplômé") %>%
-   hc_add_series(data=density(forome$age[forome$Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')] ),type= "area",  color = "#4682b460" , 
-       showInLegend = T, name = "Animation", pointWidth = 50 ) %>%
-   hc_add_series(data=density(forome$age[!forome$Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')] ),type= "area",  color = "#00FF0060" , 
-       showInLegend = T, name = "Sport", pointWidth = 50 ) %>%
+       "area", 
+       color="#b71c1c", showInLegend = T,
+       name="âge du diplômé") %>%
+   hc_add_series(data=density(forome$age[forome$Spécialité %in% 
+                                           c('Animateur','Animation socio-éducative ou culturelle')] ),
+                 type= "area",  
+                 color = "#4682b460" ,  pointWidth = 50, showInLegend = T, 
+                 name = "Animation" ) %>%
+   hc_add_series(data=density(forome$age[!forome$Spécialité %in% 
+                                           c('Animateur','Animation socio-éducative ou culturelle')] ),
+                 type= "area",  
+                 color = "#00FF0060", pointWidth = 50 , showInLegend = T, 
+                 name = "Sport" ) %>%
   hc_add_theme(thm) 
 
 ```
@@ -135,9 +157,11 @@ hchart(density(forome$age ),
 ### âge moyen par diplôme (hors STAPS)
 
 ```{r}
-hchart(forome %>% group_by(Type.de.diplôme,Spécialité)%>% summarise(mage=mean(age)) ,    
-  "column",hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
-     showInLegend = T) %>%
+hchart(forome %>% 
+         group_by(Type.de.diplôme,Spécialité) %>% 
+         summarise(mage=mean(age)) ,    
+"column",hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
+       showInLegend = T) %>%
   hc_add_theme(thm) 
 
 ```
@@ -161,76 +185,89 @@ Les recrutements baissent fortement dans les départements de la région, comme 
 ### Tableau des diplômes non professionnels
 
 ```{r}
-bafaregm %>% filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
-  bind_cols (bafdregm %>% filter (année %in% 2019:2021 & sexe =='Ensemble') %>% pull(`BAFD`)) %>%
+bafaregm %>% 
+  filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
+  bind_cols (bafdregm %>% 
+               filter (année %in% 2019:2021 & sexe =='Ensemble') %>% 
+               pull(`BAFD`)) %>%
   pivot_wider(names_from = année,values_from = c(BAFA,...6) ) %>%
   rename(BAFD19=...6_2019,BAFD20=...6_2020,BAFD21=...6_2021) %>%
-
-               bind_cols(bafdregm %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`BAFD`) ) %>%
+  bind_cols(bafdregm %>% 
+              filter (année==2021 & sexe =='Ensemble') %>% 
+              pull(`BAFD`) ) %>%
   rename(BAFD=...10) %>% 
-  bind_cols(bafaregagem %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`age BAFA`) ) %>%
+  bind_cols(bafaregagem %>% 
+              filter (année==2021 & sexe =='Ensemble') %>% 
+              pull(`age BAFA`) ) %>%
    mutate(`age BAFA`=color_bar('lightblue',na.rm=T)
-          (digits(as.numeric(...11),1,decimal.mark=",")))  %>%
-  
-  bind_cols(bafdregagem %>% filter (année==2021 & sexe =='Ensemble') %>% pull(`age BAFD`) ) %>%
-  
-     mutate(`age BAFD`=color_bar('lightblue',na.rm=T)
-          (digits(as.numeric(...13),1,decimal.mark=",")))  %>% 
-  
+         (digits(as.numeric(...11),1,decimal.mark=",")))  %>%
+  bind_cols(bafdregagem %>% 
+              filter (année==2021 & sexe =='Ensemble') %>% 
+              pull(`age BAFD`) ) %>%
+  mutate(`age BAFD`=color_bar('lightblue',na.rm=T)
+        (digits(as.numeric(...13),1,decimal.mark=",")))  %>% 
   bind_cols(  bafaregm %>% filter(année==2021) %>%
-  mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
-           filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
-  
+                mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
+                filter(sexe=="Ensemble") %>% 
+                pull(txfem)  ) %>%
   mutate(`femmes BAFA`=color_bar('pink',na.rm=T)
-          (digits(as.numeric(...15),1,decimal.mark=",")))  %>% 
+        (digits(as.numeric(...15),1,decimal.mark=",")))  %>% 
+  bind_cols(  bafdregm %>% 
+                filter(année==2021) %>%
+                mutate (txfem=100*BAFD[sexe=="Femmes"]/BAFD) %>%
+                filter(sexe=="Ensemble") %>% 
+                pull(txfem)  ) %>%
+  mutate(`femmes BAFD`=color_bar('pink',na.rm=T)
+        (digits(as.numeric(...17),1,decimal.mark=",")))  %>% 
+  bind_cols(  bafaregm %>% 
+                filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
+                pivot_wider(names_from = année,values_from = BAFA) %>%
+                mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% 
+                pull (evo) ) %>%
+  mutate(`BAFA %`= ifelse(...19 < 0,
+                         normalize_bar("#ff000050")(digits(...19,1,decimal.mark=",")),
+                         normalize_bar("#00800050")(digits(...19,1,decimal.mark=",")) ) ) %>%
+  bind_cols(  bafdregm %>% 
+                filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
+                pivot_wider(names_from = année,values_from = BAFD) %>%
+                mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% 
+                pull (evo) ) %>%
+  mutate(`BAFD %`= ifelse(...21 < 0,
+                          normalize_bar("#ff000050")(digits(...21,1,decimal.mark=",")),
+                          normalize_bar("#00800050")(digits(...21,1,decimal.mark=",")) ) ) %>%
+  arrange(CODGEO) %>%
+  bind_cols( bafaregm %>%
+               filter(sexe=="Ensemble")  %>% # sparkine
+               group_by(CODGEO) %>%  
+               summarise(`évo`=spk_chr(BAFA)) ) %>%
+  bind_cols( bafaregm %>%
+               filter(sexe=="Femmes")  %>% # sparkine
+               group_by(CODGEO) %>%  
+               summarise(`évo Femmes`=spk_chr(BAFA)) ) %>%
+  bind_cols( bafaregm %>%
+               filter(sexe=="Hommes")  %>% # sparkine 
+               group_by(CODGEO) %>%  
+               summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
+  select(CODGEO=CODGEO...2,region,
+         BAFA19=BAFA_2019,BAFD19,BAFA20=BAFA_2020,BAFD20,
+         BAFA21=BAFA_2021,BAFD21,`age BAFA`, `age BAFD`,
+         `femmes BAFA`,`femmes BAFD`, `BAFA %`, `BAFD %`,
+         Ensemble=`évo`,Femmes=`évo Femmes`, Hommes=`évo Hommes`) %>%
   
- bind_cols(  bafdregm %>% filter(année==2021) %>%
-  mutate (txfem=100*BAFD[sexe=="Femmes"]/BAFD) %>%
-           filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
-
-   mutate(`femmes BAFD`=color_bar('pink',na.rm=T)
-          (digits(as.numeric(...17),1,decimal.mark=",")))  %>% 
-  
-   bind_cols(  bafaregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
-                 pivot_wider(names_from = année,values_from = BAFA) %>%
-  mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
-  
-    mutate(`BAFA %`=
-             ifelse(...19 < 0,
-                    normalize_bar("#ff000050")(digits(...19,1,decimal.mark=",")),
-                    normalize_bar("#00800050")(digits(...19,1,decimal.mark=",")) ) ) %>%
-  
-bind_cols(  bafdregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
-                 pivot_wider(names_from = année,values_from = BAFD) %>%
-  mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
-  
-      mutate(`BAFD %`=
-                ifelse(...21 < 0,
-                    normalize_bar("#ff000050")(digits(...21,1,decimal.mark=",")),
-                    normalize_bar("#00800050")(digits(...21,1,decimal.mark=",")) ) ) %>%
-   arrange(CODGEO) %>%
-   bind_cols( bafaregm %>%filter(sexe=="Ensemble")  %>% # sparkine
-                group_by(CODGEO) %>%  
-                summarise(`évo`=spk_chr(BAFA)) ) %>%
-   bind_cols( bafaregm %>%filter(sexe=="Femmes")  %>% # sparkine
-                group_by(CODGEO) %>%  
-                summarise(`évo Femmes`=spk_chr(BAFA)) ) %>%
-   bind_cols( bafaregm %>%filter(sexe=="Hommes")  %>% # sparkine 
-                group_by(CODGEO) %>%  
-                summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
-  select(CODGEO=CODGEO...2,region,BAFA19=BAFA_2019,BAFD19,BAFA20=BAFA_2020,BAFD20,
-         BAFA21=BAFA_2021,BAFD21,`age BAFA`, `age BAFD`,`femmes BAFA`,`femmes BAFD`, `BAFA %`, `BAFD %`,Ensemble=`évo`,Femmes=`évo Femmes`, Hommes=`évo Hommes`) %>%
-  
-    
- kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="clrrrrrrllllllccc")%>%
+  kable(format.args = list(decimal.mark = ",", big.mark = " "),
+        align="clrrrrrrllllllccc", escape = F ) %>%
   kable_styling("hover", full_width = F) %>%
-  add_header_above(c( " "=2,"2019"=2,"2020"=2, "2021"=2, "âge médian 2021 (années)"=2,"Taux de femmes 2021 (%)"=2,"évolution 2011-2021 (%)"=2,"Effectifs annuels"=3) ) %>%
-  row_spec(15, bold=T) %>%
-  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  add_header_above(c( " "=2,"2019"=2,"2020"=2, "2021"=2, 
+                      "âge médian 2021 (années)"=2,"Taux de femmes 2021 (%)"=2,
+                      "évolution 2011-2021 (%)"=2,"Effectifs annuels"=3) ) %>%
+  row_spec(15, 
+           bold=T) %>%
+  row_spec(3,
+           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
 #  row_spec(c(1,4),bold = T) %>%
-  footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022", general_title = "Source : ",
-            footnote_as_chunk = T) 
+  footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022",
+           general_title = "Source : ",
+           footnote_as_chunk = T) 
 
 
 ```
@@ -241,16 +278,21 @@ bind_cols(  bafdregm %>% filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>%
 
 ```{r}
 
-hchart(bafaregm %>% filter (année==2021 & sexe =='Ensemble') %>%
-                           filter(!(CODGEO %in% c("France", "METRO"))) %>%
-mutate(année="BAFA") %>%
-  bind_rows(bafdregm %>% filter (année==2021 & sexe =='Ensemble') %>%
-                                filter(!(CODGEO %in% c("France", "METRO"))) %>%
-rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
-  "bar",hcaes(x=reorder(region,BAFA ),y=BAFA, group=année),
-    stacking = "normal" ,name=c("BAFA","BAFD"), showInLegend = T) %>%
-     hc_xAxis(title=list(text="Région")) %>%
-    hc_yAxis(title=list(text="Nombre de Brevets d'Aptitude")) %>%
+hchart(bafaregm %>% 
+         filter (année==2021 & sexe =='Ensemble') %>%
+         filter(!(CODGEO %in% c("France", "METRO"))) %>%
+         mutate(année="BAFA") %>%
+         bind_rows(bafdregm %>% 
+                     filter (année==2021 & sexe =='Ensemble') %>%
+                     filter(!(CODGEO %in% c("France", "METRO"))) %>%
+                     rename(BAFA=BAFD) %>%  
+                     mutate(année="BAFD") ) %>% 
+         arrange(desc(BAFA))  ,
+ "bar",hcaes(x=reorder(region,BAFA ),y=BAFA, group=année),
+       stacking = "normal" , showInLegend = T,
+       name=c("BAFA","BAFD")) %>%
+  hc_xAxis(title=list(text="Région")) %>%
+  hc_yAxis(title=list(text="Nombre de Brevets d'Aptitude")) %>%
   hc_add_theme(thm) 
 ```
 
@@ -259,11 +301,11 @@ rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
 ```{r}
 
   hchart( bafaregm %>%
-                  filter(sexe %in% "Ensemble") %>%
-                  filter(!(CODGEO %in% c("France", "METRO"))),
-  hcaes(x = année, y = BAFA, group = CODGEO),
-  type= "areaspline", stacking = "normal",
-  showInLegend =T,  pointWidth = 20)
+            filter(sexe %in% "Ensemble") %>%
+            filter(!(CODGEO %in% c("France", "METRO"))),
+"areaspline", hcaes(x = année, y = BAFA, group = CODGEO),
+          stacking = "normal",
+          showInLegend =T,  pointWidth = 20)
 
 ```
 
@@ -273,54 +315,58 @@ rename(BAFA=BAFD) %>%  mutate(année="BAFD") ) %>% arrange(desc(BAFA))  ,
 ### Diplômes non professionnels délivrés par département
 
 ```{r}
-bafadepm %>% filter(dep %in% depbfc) %>%
+bafadepm %>% 
+  filter(dep %in% depbfc) %>%
   filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
   pivot_wider(names_from = année,values_from = BAFA ) %>%
-
-  bind_cols(bafadepagem %>% filter (dep %in% depbfc & année==2021 & sexe =='Ensemble') %>% pull(`age BAFA`) ) %>%
+  bind_cols(bafadepagem %>% 
+              filter (dep %in% depbfc & année==2021 & sexe =='Ensemble') %>%
+              pull(`age BAFA`) ) %>%
    mutate(`age BAFA`=color_bar('lightblue',na.rm=T)
-          (digits(as.numeric(...7),1,decimal.mark=",")))  %>%
-  
-  bind_cols(  bafadepm %>% filter(dep %in% depbfc & année==2021) %>%
+         (digits(as.numeric(...7),1,decimal.mark=",")))  %>%
+  bind_cols(  bafadepm %>% 
+                filter(dep %in% depbfc & année==2021) %>%
   mutate (txfem=100*BAFA[sexe=="Femmes"]/BAFA) %>%
            filter(sexe=="Ensemble") %>% pull(txfem)  ) %>%
-  
   mutate(`femmes BAFA`=color_bar('pink',na.rm=T)
-          (digits(as.numeric(...9),1,decimal.mark=",")))  %>% 
-  
-
-   bind_cols(  bafadepm %>% filter(dep %in% depbfc & sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
-                 pivot_wider(names_from = année,values_from = BAFA) %>%
-  mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% pull (evo) ) %>%
-  
-    mutate(`evo BAFA`=
-             ifelse(...11 < 0,
-                    normalize_bar("#ff000050")(digits(...11,1,decimal.mark=",")),
-                    normalize_bar("#00800050")(digits(...11,1,decimal.mark=",")) ) ) %>%
-  
-
-   bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Ensemble")  %>% # sparkine 
-                group_by(dep) %>%
-                summarise(`évo`=spk_chr(BAFA)) ) %>%
-   bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Femmes")  %>% # sparkine 
-                group_by(dep) %>%
-                summarise(`évo Femmes`=spk_chr(BAFA)) ) %>%
-   bind_cols( bafadepm %>%filter(dep %in% depbfc & sexe=="Hommes")  %>% # sparkine
-                group_by(dep) %>%
-                summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
-  select(dep=dep...2,département=deplib,`2019`,`2020`,`2021`,`age médian (ans)`=`age BAFA`, `Taux de femmes (%)`=`femmes BAFA`,`évolution 2011-2021 (%)`=`evo BAFA`, Ensemble=`évo`,Femmes=`évo Femmes`, Hommes=`évo Hommes`) %>%
-  
-     arrange(dep) %>%
+        (digits(as.numeric(...9),1,decimal.mark=",")))  %>% 
+  bind_cols(  bafadepm %>% 
+                filter(dep %in% depbfc & sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
+                pivot_wider(names_from = année,values_from = BAFA) %>%
+                mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% 
+                pull (evo) ) %>%
+  mutate(`evo BAFA`= ifelse(...11 < 0,
+                            normalize_bar("#ff000050")(digits(...11,1,decimal.mark=",")),
+                            normalize_bar("#00800050")(digits(...11,1,decimal.mark=",")) ) ) %>%
+  bind_cols( bafadepm %>%
+               filter(dep %in% depbfc & sexe=="Ensemble")  %>% # sparkine 
+               group_by(dep) %>%
+               summarise(`évo`=spk_chr(BAFA)) ) %>%
+  bind_cols( bafadepm %>%
+               filter(dep %in% depbfc & sexe=="Femmes")  %>% # sparkine 
+               group_by(dep) %>%
+               summarise(`évo Femmes`=spk_chr(BAFA)) ) %>%
+  bind_cols( bafadepm %>%
+               filter(dep %in% depbfc & sexe=="Hommes")  %>% # sparkine
+               group_by(dep) %>%
+               summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
+  select(dep=dep...2,département=deplib,
+         `2019`,`2020`,`2021`,
+         `age médian (ans)`=`age BAFA`, `Taux de femmes (%)`=`femmes BAFA`,
+         `évolution 2011-2021 (%)`=`evo BAFA`, Ensemble=`évo`,Femmes=`évo Femmes`, Hommes=`évo Hommes`) %>%
+  arrange(dep) %>%
      
- kable(format.args = list(decimal.mark = ",", big.mark = " "), escape = F,
-    align="clrrrlllccc")%>%
+ kable(format.args = list(decimal.mark = ",", big.mark = " "), 
+       align="clrrrlllccc", escape = F) %>%
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=2,"BAFA"=6,"effectifs annuels 2011-2021"=3) ) %>%
 #  row_spec(15, bold=T) %>%
 #  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  column_spec(5,bold = T) %>%
-  footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022", general_title = "Source : ",
-            footnote_as_chunk = T) 
+  column_spec(5,
+              bold = T) %>%
+  footnote(general =  "MENJS-DJEPVA, base de données BAFA-BAFD ; traitements INJEP-MEDES ; situation au 31 mai 2022", 
+           general_title = "Source : ",
+           footnote_as_chunk = T) 
 
 ```
 
@@ -335,17 +381,20 @@ list_of_plots <- map(depbfc, function(x) {
     filter(dep == x)
 
   highchart() %>%
-    hc_add_series(data = filtered %>% filter (sexe=='Ensemble' ),
+    hc_add_series(data = filtered %>% 
+                    filter (sexe=='Ensemble' ),
                   hcaes(x = année, y = BAFA, group = dep),
                   type = "spline",
                   #title = deplib,
                   name = "Ensemble",  pointWidth = 20,
                   ) %>%
-    hc_add_series(data = filtered %>% filter (sexe=='Femmes' ),
+    hc_add_series(data = filtered %>% 
+                    filter (sexe=='Femmes' ),
                   hcaes(x = année, y = BAFA, group = dep),
                   type = "spline", 
                    name = "Femmes",  pointWidth = 10, dashStyle=  'Dash') %>%
-    hc_add_series(data = filtered %>% filter (sexe=='Hommes' ),
+    hc_add_series(data = filtered %>% 
+                    filter (sexe=='Hommes' ),
                   hcaes(x = année, y = BAFA, group = dep),
                   type = "spline",
                   name = "Hommes",  pointWidth = 10, dashStyle=  'ShortDot') %>%

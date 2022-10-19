@@ -79,12 +79,15 @@ equip %>%
          `grands jeux`=gdsjeux, proximité=proxi,`tous bassins`= bassins, 
          `taux d'équipements`= txequi) %>%
   
- kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrrrrrl", escape = F) %>% 
+  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
+       align="rcrrrrrrrrl", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
-  row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  row_spec(14,bold = T ) %>%
+  column_spec(3, 
+              bold=T) %>%
+  row_spec(3,
+           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  row_spec(14,
+           bold = T ) %>%
   add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1, " ")) %>%
 #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
@@ -153,7 +156,8 @@ equip %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
+  column_spec(3, 
+              bold=T) %>%
   add_header_above(c(" "=3,"dont"=2)) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
@@ -285,8 +289,8 @@ leaflet(res) %>%
                                    "taux bassins/400 000hab"),
                     overlayGroups = c("minicharts"),
                     options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%  
-  addLegend("bottomright", pal = pal, values = ~txequi,   
-            title = "taux d'équipements") 
+  addLegend( pal = pal, values = ~txequi,   
+            "bottomright",title = "taux d'équipements") 
 ```
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows"}
@@ -337,11 +341,13 @@ equip %>%
          `tous bassins`= bassins, `taux d'équipements`= txequi) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrrrrrl", escape = F) %>% 
+        align="rcrrrrrrrrl", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
+  column_spec(3, 
+              bold=T) %>%
  # row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  row_spec(9,bold = T ) %>%
+  row_spec(9,
+           bold = T ) %>%
   add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1, " ")) %>%
 #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
@@ -383,12 +389,11 @@ hchart( equip %>%
           mutate(txequi=round(10000*equ/pop,1) ) %>%
           mutate(département=ifelse(DEP=="France","France",département) ) %>%
           arrange(desc(txequi)) ,
-  "bar",  hcaes(x=reorder(département,txequi),y=txequi,
+  "bar",hcaes(x=reorder(département,txequi),y=txequi,
                 color=ifelse(DEP %in% depbfc,"#6a5acd",
-                             ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
-          name = "Taux d'équipements<br/> pour 10 000 habitants" ,
-          showInLegend = T, pointWidth =1) %>%
-  
+                      ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
+        name = "Taux d'équipements<br/> pour 10 000 habitants" ,
+        showInLegend = T, pointWidth =1) %>%
   hc_add_series( equip %>% 
                    filter(DEP %in% depbfc) %>% 
                    group_by(DEP) %>% 
@@ -405,11 +410,10 @@ hchart( equip %>%
                                select(CODGEO,département=LIBGEO),
                              by=c("DEP"="CODGEO") ) %>%
                    arrange(desc(txequi))  ,
-            "bar", hcaes(x=reorder(département,txequi),y=txequi, 
-                         color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50") ) ,
-                   name = "Taux d'équipements<br/> pour 10 000 habitants" ,
-                   showInLegend = F, pointWidth =3) %>%
-  
+          "bar", hcaes(x=reorder(département,txequi),y=txequi, 
+                       color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50") ) ,
+                 name = "Taux d'équipements<br/> pour 10 000 habitants" ,
+                 showInLegend = F, pointWidth =3) %>%
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Taux d'équipements")) %>%
@@ -449,9 +453,9 @@ hchart( equip %>%
                     by=c("DEP"="CODGEO") ) %>%
           select(16,10:15) %>%
           pivot_longer(-1,'type')  ,
-   "bar", hcaes(x=département,y=value, group=type ) ,
-          stacking= 'normal' , 
-          shadow=F,  showInLegend = T,  pointWidth =20) %>%
+  "bar", hcaes(x=département,y=value, group=type ) ,
+        stacking= 'normal' , 
+        shadow=F,  showInLegend = T,  pointWidth =20) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Taux d'équipements")) %>%
   hc_add_theme(thm) 
@@ -505,14 +509,18 @@ equip %>%
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
         align="lrrrrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(10, bold=T) %>%
+  column_spec(10, 
+              bold=T) %>%
   #row_spec(3,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   add_indent(c(3,8),level_of_indent = 1 ) %>%
-  row_spec(c(3,8), italic = T)%>%
+  row_spec(c(3,8), 
+           italic = T)%>%
 #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
-  footnote(general = " MEDES recensement des équipements sportifs 2020", general_title = "Source : ",
-              footnote_as_chunk = T) %>%
+  footnote(general = " MEDES recensement des équipements sportifs 2020", 
+           general_title = "Source : ",
+           footnote_as_chunk = T) %>%
   scroll_box(height="800px")
+
 ```
 
 ### Carte départementale
@@ -636,8 +644,8 @@ leaflet(res) %>%
                                    "taux grands jeux/50 000hab","taux proxi/50 000hab", 
                                    "taux bassins/400 000hab"),
                     options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
-  addLegend("bottomright", pal = pal, values = ~txequi,   
-            title = "taux d'équipements") 
+  addLegend( pal = pal, values = ~txequi,   
+             "bottomright", title = "taux d'équipements") 
 ```
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows"}
@@ -682,9 +690,10 @@ equip %>%
   arrange(desc(équipements)) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrrrrrr", escape = F) %>% 
+        align="rcrrrrrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
+  column_spec(3, 
+              bold=T) %>%
   add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1)) %>%
 #  row_spec(9,bold = T ) %>%
 #  row_spec(which(region$REG=='27'),background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
@@ -748,9 +757,10 @@ equip %>%
   arrange(desc(équipements)) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrllrlrllr", escape = F) %>% 
+        align="rcrllrlrllr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
+  column_spec(3, 
+              bold=T) %>%
   add_header_above(c(" "=4,"taux structurant"=2,"taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
@@ -882,8 +892,8 @@ leaflet(res) %>%
                                   "taux grands jeux/50 000hab","taux proxi/50 000hab", 
                                   "taux bassins/400 000hab"),
                    options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%
-  addLegend("bottomright", pal = pal, values = ~txequi,   
-            title = "taux d'équipements") 
+  addLegend( pal = pal, values = ~txequi,   
+            "bottomright", title = "taux d'équipements") 
 ```
 
 # ![](images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows"}
@@ -926,9 +936,10 @@ equip %>%
   arrange(desc(équipements)) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrrrrrr", escape = F) %>% 
+       align="rcrrrrrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
+  column_spec(3, 
+              bold=T) %>%
   add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1)) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
@@ -989,9 +1000,10 @@ equip %>%
   arrange(desc(équipements)) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrllrlrllr", escape = F) %>% 
+       align="rcrllrlrllr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, bold=T) %>%
+  column_spec(3, 
+              bold=T) %>%
   add_header_above(c(" "=4,"taux structurant"=2,"taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
@@ -1122,8 +1134,8 @@ leaflet(res) %>%
                                   "taux grands jeux/50 000hab","taux proxi/50 000hab", 
                                   "taux bassins/400 000hab"),
                    options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
-  addLegend("bottomright", pal = pal, values = ~txequi,   
-            title = "taux d'équipements") 
+  addLegend( pal = pal, values = ~txequi,   
+            "bottomright",title = "taux d'équipements") 
 ```
 
 Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
