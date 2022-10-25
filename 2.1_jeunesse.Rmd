@@ -70,14 +70,10 @@ region_tab %>%
 #pal3 <- colorQuantile("RdYlBu", domain =region$evol1529 ,probs = seq(0, 1, 0.2) , reverse = T)
 
 leaflet(regwgs) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(fillColor = ~pal2(prop1529), fillOpacity = 0.6, 
               color = "#2F4F4F",weight = 2,opacity = 0.6, 
               smoothFactor = 2 ) %>% 
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_bfc() %>%
   addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],
              radius = ~50*p1529^(1/2), 
              color = "#4169E1", weight=4, opacity = 0.8,
@@ -145,17 +141,10 @@ as.data.frame(dep27_tab) %>%
 
 ```{r}
 leaflet(depwgs) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(fillColor = ~pal2(prop1529), fillOpacity = 0.6,
               color = "#2F4F4F",weight = 2,opacity = 0.6,
               smoothFactor = 2 ) %>%  
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3 ,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc(zoom = 6) %>%
   addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],
              radius = ~50*p1529^(1/2),
              color = "#4169E1", weight=4, opacity = 0.8,
@@ -220,16 +209,9 @@ epci27_tab %>%
 ```{r,echo=F}
 
 leaflet(epcicarto) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fillColor = ~pal2(prop1529), fillOpacity = 0.6,
               color = "#2F4F4F",weight = 2,opacity = 0.6 ) %>% 
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],
              radius = ~50*p1529^(1/2),
              color = "#4169E1", weight=4, opacity = 0.8,
@@ -290,16 +272,9 @@ bv27_tab %>%
 
 ```{r,echo=F}
 leaflet(bvcarto) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(fillColor = ~pal2(prop1529), fillOpacity = 0.6,
               color = "#2F4F4F",weight = 2,opacity = 0.6 ) %>% 
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],
              radius = ~50*p1529^(1/2), weight=4,
              color = "#4169E1", opacity = 0.8,

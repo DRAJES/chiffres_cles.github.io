@@ -131,18 +131,13 @@ RNAcarto <- RNApop %>%
 RNAcarto <- merge(regwgs,RNAcarto,by="INSEE_REG")
   
 leaflet(RNAcarto) %>%  
-  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(data=RNAcarto,group  = "régions",
               color = "#2F4F4F", weight = 2, smoothFactor = 2,
               fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
               popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
                                Taux d'association :<b>%.2f</b> </center> ",  
                               RNAcarto$Région ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_bfc() %>%
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
@@ -399,18 +394,13 @@ RNAcarto <- RNApop %>%
 RNAcarto <- merge(depwgs,RNAcarto,by="INSEE_DEP")
   
 leaflet(RNAcarto) %>%  
-  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(data=RNAcarto,group  = "départements",
               color = "#2F4F4F", weight = 2, smoothFactor = 2,
               fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop), fillOpacity  = 0.8,
               popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
                                Taux d'association :<b>%.2f</b> </center> ",  
                               RNAcarto$Département ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc(zoom = 6) %>%
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
@@ -614,18 +604,13 @@ RNAcarto <- RNApop %>%
 RNAcarto <- merge(epcicarto,RNAcarto,by="CODE_EPCI")
   
 leaflet(RNAcarto) %>%  
-  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=RNAcarto,group  = "régions",
               color = "#2F4F4F", weight = 2,
              fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop), fillOpacity  = 0.8,
               popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
                                Taux d'association :<b>%.2f</b> </center> ",  
                               RNAcarto$EPCIlib ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )  %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",
@@ -721,18 +706,13 @@ RNAcarto <- RNApop %>%
 RNAcarto <- merge(bvcarto,RNAcarto,by="BV2012")
   
 leaflet(RNAcarto) %>%  
-  addTiles(group = "OSM",options = providerTileOptions(opacity = 0.6)) %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=RNAcarto,group  = "régions",
               weight = 2,color = "#2F4F4F",
               fillColor = ~pal2(100*RNAcarto$total/RNAcarto$pop), fillOpacity  = 0.8,
               popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
                                Taux d'association :<b>%.2f</b> </center> ",  
                               RNAcarto$BV2012lib ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )  %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
                        #maxValues = 100,
                        type = "pie",

@@ -312,13 +312,7 @@ cartedep <- basebfcsig %>%
 cartedep <- sp::merge(depwgs,cartedep,by="INSEE_DEP")
 
 leaflet(cartedep) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons( color = "#2F4F4F", weight=2, opacity = 0.6,
-               fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addCircles(centroid(cartedep)[,1],centroid(cartedep)[,2], group = "region",
              radius=~500*`Volontaires 2020`^(1/2),
              fillColor = ~pal2(`Taux de volontaires parmi les 16-25 ans`), fillOpacity = 0.8,
@@ -358,14 +352,7 @@ pal <- colorFactor(brewer.pal(4, 'Set2'), flows$origine)
 
 
 leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto, 
-              color = "#2F4F4F", weight=2,opacity = 0.6,
-              fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addCircles(data=oursinxy, ~destination.x, ~destination.y,
              weight =~oursinxy %>% 
                           group_by(destination) %>% 
@@ -390,14 +377,7 @@ leaflet() %>%
 ```{r}
 
 leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=dep27carto, 
-              color = "#2F4F4F", weight=2,opacity = 0.6,
-              fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.y),
             oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.x),

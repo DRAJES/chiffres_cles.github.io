@@ -48,14 +48,8 @@ thm <- hc_theme_merge(
   ) 
 )
 
-
-
-contour_reg <-  function(){ addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) }
-contour_dep <-   leaflet() %>% addPolygons(data=dep27carto,group  = "BFC",
-              color="#9370DB",weight = 3, opacity = 1, 
-              fill = F, smoothFactor = 5) 
+source("R/data/fonctions_carto.R")
+source("R/data/fonctions_merge.R")
 
 # Option de chunk
 knitr::opts_chunk$set(

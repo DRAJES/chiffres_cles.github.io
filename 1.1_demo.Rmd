@@ -78,16 +78,12 @@ region_tab %>%
 
 ```{r}
 leaflet(regwgs) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6, 
               fill=F, smoothFactor = 2) %>%
   addPolygons(data=ZRR, group  = "ZRR",
               fillColor = "#6B8E23", fillOpacity = 0.4,  
               fill = T, stroke=F, smoothFactor = 2) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB", weight = 5, opacity = 1,
-              fill = F,smoothFactor = 5) %>%
+    contour_bfc() %>%
   addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],
              group = "region", radius = 50*regwgs$pop^(1/2), 
              color = "#4169E1",weight=4, opacity = 0.8,
@@ -156,19 +152,12 @@ dep27_tab %>%
 
 ```{r}
 leaflet(depwgs) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6, 
               fill=F, smoothFactor = 2 ) %>%
   addPolygons(data=densitewgs,
               fillColor = ~pal(Typdgrd), fillOpacity = 0.5,
               stroke = F, group = "densite" ) %>%  
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc(zoom= 6) %>%
   addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],group = "BV",
              radius = 50*depwgs$pop^(1/2), 
              color = "#4169E1", opacity = 0.8,weight=4,
@@ -233,19 +222,12 @@ epci27_tab %>%
 
 ```{r}
 leaflet(epcicarto) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=densiteBFC,
               fillColor = ~pal(Typdgrd),  fillOpacity = 0.5,
               stroke = F, group = "densite", ) %>%  
   addPolygons(color = "#2F4F4F", weight=2,opacity = 1,
               fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],group = "BV",
              radius = 50*epcicarto$pop^(1/2), 
              color = "#4169E1", opacity = 0.8,weight=4,
@@ -315,19 +297,12 @@ bv27_tab %>%
 
 ```{r}
 leaflet(bvcarto) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(data=ZRR, group  = "ZRR",
               fillColor = "#6B8E23", fill = T, fillOpacity = 0.4, 
               stroke=F, smoothFactor = 2) %>%
   addPolygons(color = "#2F4F4F", weight=2,opacity = 1,
               fill=F ) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc () %>%
   addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],group = "BV",
              radius = 50*bvcarto$pop^(1/2), 
              color = "#4169E1", weight=4, opacity = 0.8,
@@ -394,12 +369,7 @@ leaflet() %>%
   addProviderTiles(providers$SafeCast, group="safecast") %>%
   addProviderTiles(providers$WaymarkedTrails.slopes, group="slopes") %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
+    contour_depbfc() %>%
   addLayersControl( baseGroups = c("OSM","OSM France", "Topographie","Geoportail",
                                  "Geoportail.ortho","Geoportail.plan","vélo","NASA", "hydro"),
                   overlayGroups = c("rando","cycle","routes","safecast","slopes"),

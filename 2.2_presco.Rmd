@@ -166,11 +166,6 @@ cartereg <- ACM_PMI %>%
 cartereg <- merge(regwgs,cartereg,by="INSEE_REG")
 
 leaflet(cartereg) %>%   
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.9,  smoothFactor = 2,
               fillColor = ~pal(accueil),
               popup = popupTable(cartereg@data %>% 
@@ -183,7 +178,8 @@ leaflet(cartereg) %>%
                                    select(Région=LIBGEO,pop,txscolarisation=scolarisation),
                                  feature.id=F,row.numbers = F),
               group="taux de scolarisation") %>%   
-  addLegend("bottomright", pal = pal, values = 0:100,   
+      contour_bfc() %>%
+addLegend("bottomright", pal = pal, values = 0:100,   
            title = "taux") %>%
   addLayersControl( baseGroups =  c("taux d'accueils collectifs","taux de scolarisation"),
                     options = layersControlOptions(collapsed = F,autoZIndex = F))  
@@ -352,11 +348,6 @@ cartedep <- ACM_PMI_dep %>%
 cartedep <- merge(depwgs,cartedep,by="INSEE_DEP")
 
 leaflet(cartedep) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, smoothFactor = 2,
                 fillColor = ~pal(accueil),
               popup = popupTable(cartedep@data %>% 
@@ -369,6 +360,7 @@ leaflet(cartedep) %>%
                                    select(Région=LIBGEO,pop,txscolarisation=scolarisation),
                                   feature.id=F,row.numbers = F),  
                    group="taux de scolarisation") %>%   
+    contour_depbfc() %>%
   addLegend("bottomright", pal = pal, values = 0:100,   
            title = "taux") %>%
   addLayersControl( baseGroups =  c("taux d'accueils collectifs","taux de scolarisation"),
