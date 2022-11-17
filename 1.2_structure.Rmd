@@ -44,15 +44,9 @@ region_tab %>%
          `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrlcrlcc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(5,width = "3cm") %>% 
-  column_spec(7,width = "3cm") %>%
-  row_spec(which(region_tab$Région=='27'),
-           background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-  row_spec(nrow(region_tab),
-           bold = T,color = "navy") %>%  
+  cc_kable(aligne = "clrrlcrlcc") %>%
+ # column_spec(5,width = "3cm") %>% 
+#  column_spec(8,width = "3cm") %>%
   add_header_above(c(" " = 3, "Jeunes" =3, "Population âgée" = 3," ")) %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
@@ -92,7 +86,7 @@ leaflet(regwgs) %>%
              highlight = highlightOptions (
                              color = "#00FFFF", weight = 5,fillOpacity =  0.4 ),
              popup = popupTable(regwgs@data %>%
-                                  select(Région=INSEE_REG) %>%
+                                  select(Région=REG) %>%
                                   left_join(.,region_tab %>%
                                               select(Région,Nom,Population,`15-29 ans`,
                                                      `Taux<br>15/29`,`65 ans et +`,
@@ -128,16 +122,9 @@ dep27_tab %>%
          `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="cclrrlcrlcc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(5,width = "3cm") %>% 
-  column_spec(7,width = "3cm") %>%
-  row_spec(nrow(dep27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(dep27_tab),
-           bold = T,color = "navy") %>%
-  add_header_above(c(" " = 4, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
+  cc_kable(aligne = "cclrrlcrlcc") %>%
+ # column_spec(5,width = "3cm") %>% 
+#  column_spec(7,width = "3cm") %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
            number = "Nombre de -20 ans / nombre de + 60 ans",
@@ -177,7 +164,7 @@ leaflet(depwgs) %>%
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
              popup = popupTable(depwgs@data %>% 
-                                  select(Département=INSEE_DEP) %>%
+                                  select(Département=DEP) %>%
                                   left_join(.,dep_tab %>%
                                               select(Région,Département,Nom,Population,`15-29 ans`,
                                                      `Taux<br>15/29`,`65 ans et +`,
@@ -206,15 +193,9 @@ epci27_tab %>%
          `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrlcrlcc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(5,width = "3cm") %>% 
-  column_spec(7,width = "3cm") %>%
-  row_spec(nrow(epci27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(epci27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "clrrlcrlcc") %>%
+ # column_spec(5,width = "3cm") %>% 
+#  column_spec(7,width = "3cm") %>%
   add_header_above(c(" " = 3, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
@@ -237,7 +218,7 @@ leaflet(epcicarto) %>%
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
             popup = popupTable(epcicarto@data %>% 
-                                 select(EPCI=CODE_EPCI) %>%
+                                 select(EPCI) %>%
                                  left_join(.,epci27_tab %>%
                                              select(EPCI,Nom,Population,`15-29 ans`,
                                                     `Taux<br>15/29`,`65 ans et +`,
@@ -267,15 +248,9 @@ bv27_tab %>%
          `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
   rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = "'"),
-      align="clrrlcrlcc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(5,width = "3cm") %>% 
-  column_spec(7,width = "3cm") %>%
-  row_spec(nrow(bv27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(bv27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "clrrlcrlcc") %>%
+#  column_spec(5,width = "3cm") %>% 
+#  column_spec(7,width = "3cm") %>%
   add_header_above(c(" " = 3, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",

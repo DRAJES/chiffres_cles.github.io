@@ -12,7 +12,6 @@ output:
  
  
 ```{r setup, include=FALSE ,echo=F, cache=F} 
-library(sparkline)
 
 pal3 <- colorBin("RdYlBu", domain =-5:5 ,bins=c(-Inf, -1, -0.5,0,0.5, 1 , Inf), reverse = T)
 
@@ -53,13 +52,7 @@ region_tab %>%
   left_join(.,serie_reg,
             by=c("Région" = "REG") ) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrrlllc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(which(region$REG=='27'),
-           background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-  row_spec(nrow(region_tab),
-           bold = T,color = "navy") %>%  
+  cc_kable(aligne = "clrrrrlllc") %>%
   add_header_above(c(" " = 5, "Evolution 2013-2019" = 4," ")) %>%
   footnote(general = " Insee RP2013, RP2019", 
            general_title = "Source : ", 
@@ -83,7 +76,7 @@ leaflet(regwgs) %>%
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
              popup = popupTable(regwgs@data %>%
-                                  select(Région=INSEE_REG) %>%
+                                  select(Région=REG) %>%
                                   left_join(.,region_tab %>%
                                               select(Région,Nom,Population,`15-29 ans`,`65 ans et +`,
                                                      `évolution annuelle`, `evo15/29`,`evo>65`)
@@ -122,13 +115,7 @@ as.data.frame(dep27_tab) %>%
   left_join(.,serie_dep[,2:3],
             by=c("Département" = "DEP") ) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="cclrrrrlllc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(dep27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(dep27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "cclrrrrlllc") %>%
   add_header_above(c(" " = 6, "Evolution 2013-2019" =4," ")) %>%
   footnote(general = " Insee RP2013, RP2019", 
            general_title = "Source : ", 
@@ -152,7 +139,7 @@ leaflet(depwgs) %>%
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
              popup = popupTable(depwgs@data %>%
-                                  select(Département=INSEE_DEP) %>%
+                                  select(Département=DEP) %>%
                                   left_join(.,dep_tab %>%
                                               select(Région,Département,Nom,Population,`15-29 ans`,
                                                      `65 ans et +`,`évolution annuelle`, `evo15/29`,`evo>65`)
@@ -186,13 +173,7 @@ epci27_tab %>%
   left_join(.,serie_epci,
             by= "EPCI" ) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrrlllc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(epci27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(epci27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "clrrrrlllc") %>%
   add_header_above(c(" " = 5, "Evolution 2013-2019" =4," ")) %>%
   footnote(general = " Insee RP2013, RP2019", 
            general_title = "Source : ", 
@@ -216,7 +197,7 @@ leaflet(epcicarto) %>%
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
              popup = popupTable(epcicarto@data %>% 
-                                  select(EPCI=CODE_EPCI) %>%
+                                  select(EPCI) %>%
                                   left_join(.,epci27_tab %>%
                                               select(EPCI,Nom,Population,`15-29 ans`,`65 ans et +`,
                                                      `évolution annuelle`, `evo15/29`,`evo>65`)
@@ -248,13 +229,7 @@ bv27_tab %>%
     left_join(.,serie_bv,
               by="BV2012" ) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrrlllc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(bv27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(bv27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "clrrrrlllc") %>%
   add_header_above(c(" " = 5, "Evolution 2013-2019" =4," ")) %>%
   footnote(general = " Insee RP2013, RP2019", 
            general_title = "Source : ", 

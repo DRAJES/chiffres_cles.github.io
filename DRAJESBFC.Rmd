@@ -235,3 +235,13 @@ $Région, Département, EPCI, BV$
 
 -   [Analyse des carences par
     territoire](5.5_RES.html#analyse-des-territoires)
+    
+### 5.6 [Jeux Olympiques](5.6_JO.html)
+
+$Région$
+
+-   Territoires Terres de Jeux
+
+-   Centres de préparations aux Jeux Olympiques
+
+

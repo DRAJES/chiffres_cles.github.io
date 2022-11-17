@@ -6,6 +6,11 @@ output: html_document
 ---
 ```{r setup, include=F ,echo=FALSE, cache=F}
 library(BAMMtools)
+library(glue)
+library(HatchedPolygons)
+library(shiny)
+library(shinyWidgets)
+library(shinydashboard)
 library(kableExtra)
 library(flexdashboard)
 library(gghighlight)
@@ -14,6 +19,7 @@ library(janitor)
 library(DT)
 library(fontawesome)
 library(formattable)
+library(sparkline)
 library(rgdal)
 library(osrm)
 library(fontawesome)
@@ -28,6 +34,8 @@ library(tidyverse)
 source("librairies.R")
 
 #rmarkdown::render_site(encoding = 'UTF-8')
+
+use_providers(get_providers())
 
 depbfc <- c('21','25','39','58','70','71','89','90')
 
@@ -47,6 +55,9 @@ thm <- hc_theme_merge(
     )
   ) 
 )
+
+load("data/demo/basecom.RData")
+load("data/demo/cartes.RData")
 
 source("R/data/fonctions_carto.R")
 source("R/data/fonctions_merge.R")

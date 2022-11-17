@@ -1,0 +1,69 @@
+---
+title: "Jeux Olympiques"
+output: 
+  flexdashboard::flex_dashboard:
+    self_contained : FALSE
+    orientation: rows
+    social: menu
+   #source_code: embed
+    navbar:
+      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+    theme: simplex
+---
+
+```{r setup, include=FALSE}
+load("data/sport/JO.RData")
+```
+
+
+Territoires et communes labellisés Terres de Jeux et Centres de préparation aux Jeux Olympiques (possibilité de superposer les deux)
+
+```{r, echo=F}
+
+leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% 
+              setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
+              addPolygons(data=dep27carto,
+                          color = "#2F4F4F",weight=4,opacity = 0.6,
+                          fill=F,smoothFactor = 2) %>%
+              addPolygons(data=TDJepci,
+                          weight=3,opacity = 1,color = "#87ceeb",
+                          fillColor = "transparent",
+                          popup=~popupTable(TDJepci@data %>% select(CODE_EPCI,LIBGEO,P19_POP),
+                                row.numbers = F,feature.id = F),
+                          group = "TDJ") %>% 
+              addPolylines(data=TDJepcih,
+                           color = "#87ceeb",group = "TDJ") %>%
+              addPolygons(data=TDJcom,
+                          weight=3,opacity = 1,color = "#4682b4",
+                          fillColor = "transparent",
+                          popup=~popupTable(TDJcom@data %>% select(INSEE_COM,NOM,POPULATION),
+                                            row.numbers = F,feature.id = F),
+                          group = "TDJ") %>% 
+              addPolylines(data=TDJcomh,
+                           color = "#4682b4",group = "TDJ") %>%
+              addLegend(colors = c("#4682b4","#87ceeb"),
+                        title = "Label Terres de Jeux",
+                        labels = c("Communes","EPCI"),
+                        position = "bottomright",
+                        group = "TDJ") %>%
+              addMarkers(data=CPJcarto,~x,~y,
+                         popup=~popupTable(CPJcarto %>%
+                                            select(INSEE_COM,LIBGEO,P19_POP,structure, sport, perimetre, label=enveloppe),
+                                           row.numbers = F,feature.id = F),
+                         clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
+                         labelOptions = labelOptions(noHide = F,direction = 'auto'),
+                         group = "CPJ") %>%
+              addLegendImage(images = makeSymbol(shape = "circle",width = 30,strokeWidth = 10,
+                                     fillColor  = "lightgreen", color = "#adff2f", text="XX")  ,
+                             labels = "Centres de Préparation aux Jeux" ,
+                             position ="bottomright",
+                             group = "CPJ")  %>%
+              addLayersControl(baseGroups = c("TDJ","CPJ"),
+                               overlayGroups = c("TDJ","CPJ"),
+                               options= layersControlOptions( collapsed=F, autoZIndex=T) )
+
+```
+
+
+
+

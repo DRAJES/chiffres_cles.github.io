@@ -112,12 +112,7 @@ nature %>%
             by=c("REG"="CODGEO")) %>%
   relocate(région=LIBGEO,.after=REG) %>%
   
- kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrrrrrrrrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-#  column_spec(11, bold=T) %>%
-  row_spec(9,
-           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+ cc_kable("lcrrrrrrrrr") %>%
 #  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
   footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
            general_title = "Source : ",
@@ -125,7 +120,7 @@ nature %>%
 ```
 ### Comparaisons départementales
 
-La Côte-d'Or, la Saône et Loire, l'Yonne et le Terrtoire de Belfort peu dotées en sites de sport de nature.
+La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
 
 ```{r}
 
@@ -164,11 +159,7 @@ nature %>%
             by=c("DEP"="CODGEO")) %>%
   relocate(département=LIBGEO,.after=DEP) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="lcrrrrrrrrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-#  column_spec(11, bold=T) %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  cc_kable("lcrrrrrrrrr") %>%
   footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T)
@@ -185,11 +176,7 @@ nature27 %>%
   summarise(`nombre de sites`=n()) %>% 
   arrange(desc(`nombre de sites`),.by_group = T) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="crrrrrrrrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-#  column_spec(11, bold=T) %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
+  cc_kable("crrrrrrrrr") %>%
   footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
@@ -208,7 +195,7 @@ nature27.df <- split(nature27,nature27$EquipementFamille)
 depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
 depnature27 <- as.data.frame(addmargins(depnature27))
 depnature27 <- spread(depnature27,Var2,Freq)
-dep27carto <- merge(dep27carto,depnature27,by.x="INSEE_DEP",by.y="Var1")
+dep27carto <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
 
 l <- leaflet() %>% 
         setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
@@ -251,7 +238,7 @@ nature27.df <- split(nature27,nature27$EquipementFamille)
 depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
 depnature27 <- as.data.frame(addmargins(depnature27))
 depnature27 <- spread(depnature27,Var2,Freq)
-dep27carto <- merge(dep27carto,depnature27,by.x="INSEE_DEP",by.y="Var1")
+dep27carto <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
 
 l <- leaflet() %>% 
         setView(lng = 5.1, lat = 47.27, zoom = 8) %>%

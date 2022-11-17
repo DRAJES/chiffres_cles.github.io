@@ -44,16 +44,18 @@ rm(comm84)
 com27wgs <- ms_simplify(comm27, keep=0.05,keep_shapes = T)
 rm(comm27)
 
-EPCI <- EPCI %>%  rename(CODE_EPCI=EPCI) %>% filter(CODE_EPCI %in% epci27_tab$EPCI) 
-epciwgs@data <- epciwgs@data %>% rename(CODE_EPCI=CODE_SIREN)
-epcicarto <- merge(epciwgs,EPCI,by= "CODE_EPCI",all.x=F, all.y=T)
+EPCI <- EPCI %>%  filter(EPCI %in% epci27_tab$EPCI) 
+epciwgs@data <- epciwgs@data %>% rename(EPCI=CODE_SIREN)
+epcicarto <- merge(epciwgs,EPCI,by= "EPCI",all.x=F, all.y=T)
 
 BV <- BV %>% filter(BV2012 %in% bv27_tab$BV2012) 
 bvwgs@data <- bvwgs@data %>% rename(BV2012=bv2012)
 bvcarto <- merge(bvwgs,BV,by= "BV2012",all.x=F, all.y=T)
 
-regwgs <- merge(regwgs,region %>% rename(INSEE_REG=REG),by="INSEE_REG")
-depwgs <- merge(depwgs,departement %>% rename(INSEE_DEP=DEP),by="INSEE_DEP")
+regwgs@data <- regwgs@data %>% rename(REG=INSEE_REG)
+regwgs <- merge(regwgs,region %>% rename(INSEE_REG=REG),by="REG")
+depwgs@data <- depwgs@data %>% rename(DEP=INSEE_DEP)
+depwgs <- merge(depwgs,departement %>% rename(INSEE_DEP=DEP),by="DEP")
 
 
 #QPV et ZRR
@@ -77,11 +79,11 @@ epcicarto <- epcicarto[order(epcicarto$pop,decreasing = T),]
 bvcarto <- bvcarto[order(bvcarto$pop,decreasing = T),]
 
 ZRR <- subset(ZRR,ZRR_2018 != "Non classée")
-regwgs <- subset(regwgs,INSEE_REG > "10")
+regwgs <- subset(regwgs,REG > "10")
 depwgs <- subset(depwgs,INSEE_REG > "10")
 
-reg27carto <- subset(regwgs ,INSEE_REG=="27")
-dep27carto <- subset(depwgs, INSEE_REG=="27")
+reg27carto <- subset(regwgs ,REG=="27")
+dep27carto <- subset(depwgs, REG=="27")
 
 
 

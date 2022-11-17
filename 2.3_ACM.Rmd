@@ -301,8 +301,8 @@ hcaes(x=REG,y=value,group=age),
 Nombre de journées enfant par département
 
 ```{r}
-ACMcarte <- ACM_colo_dep %>% slice(10) %>% pivot_longer(-1) %>% bind_cols(INSEE_DEP=c('BFC','21','25','39','58','70','71','89','90','FR'))
-ACMcarte <- sp::merge(depwgs,ACMcarte,by="INSEE_DEP")
+ACMcarte <- ACM_colo_dep %>% slice(10) %>% pivot_longer(-1) %>% bind_cols(DEP=c('BFC','21','25','39','58','70','71','89','90','FR'))
+ACMcarte <- sp::merge(depwgs,ACMcarte,by="DEP")
 
 leaflet(ACMcarte) %>% 
     contour_depbfc() %>%
@@ -312,7 +312,7 @@ leaflet(ACMcarte) %>%
              highlight = highlightOptions (fillOpacity =  0.1,
              weight = 5,   color = "#00FFFF"),
              popup = popupTable(ACMcarte@data %>% 
-                                   select(Département=INSEE_DEP,`Nombre de journées enfants`=value) ,
+                                   select(Département=DEP,`Nombre de journées enfants`=value) ,
                                  feature.id=F,row.numbers = F)) 
 ```
 

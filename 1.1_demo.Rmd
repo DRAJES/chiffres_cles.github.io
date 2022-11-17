@@ -9,18 +9,15 @@ output:
     navbar:
       - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
     theme: simplex
+runtime: shiny
+
 ---
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F}
 
 flexdashboard::flex_dashboard(self_contained = F)
 
-use_providers(get_providers())
-
-
-load("data/demo/basecom.RData")
 load("data/demo/tab_demo.RData")
-load("data/demo/cartes.RData")
 load("data/demo/CRTE.RData")
 
 pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c","#e98e8b","#bfef94","#a0d27b","#006a49"), domain = NULL)
@@ -59,13 +56,7 @@ region_tab %>%
                  "Nombre de communes" = comm) %>%
   dplyr::relocate("Nombre de communes",.after="Population")  %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="clrrrccll", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(which(region$REG=='27'),
-           background = "#E0FFFF75",  bold = T , color = "steelblue")%>%
-  row_spec(nrow(region_tab),
-           bold = T,color = "navy") %>%
+    cc_kable(aligne = "clrrrccll") %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
            number = c("Zone de Revitalisation Rurale 2018 \n",
@@ -91,7 +82,7 @@ leaflet(regwgs) %>%
              highlight = highlightOptions (
                             color = "#00FFFF", weight = 5, fillOpacity =  0.1 ),
              popup = popupTable(regwgs@data %>% 
-                                  dplyr::select(Région=INSEE_REG) %>%
+                                  dplyr::select(Région=REG) %>%
                                   left_join(.,region_tab %>% 
                                               dplyr::select(Région,Nom,Population,Densité,rang,
                                                              `Taux femmes`,partZRR,partQPV),
@@ -132,13 +123,7 @@ dep27_tab %>%
                  "Nombre de communes" = comm) %>%
   dplyr::relocate("Nombre de communes",.after="Population")  %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="cclrrrcccll", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(dep27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(dep27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "cclrrrcccll") %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
            number = c("Zone de Revitalisation Rurale 2018 \n",
@@ -165,7 +150,7 @@ leaflet(depwgs) %>%
              highlight = highlightOptions (
                           color = "#00FFFF" , fillOpacity =  0.1,weight = 5 ),
              popup = popupTable(depwgs@data %>% 
-                                  dplyr::select(Département=INSEE_DEP) %>%
+                                  dplyr::select(Département=DEP) %>%
                                   left_join(.,dep_tab %>%
                                               dplyr::select(Région,Département,Nom,Population,Densité,
                                                             rang,`Taux femmes`,partZRR,partQPV)
@@ -203,18 +188,12 @@ epci27_tab %>%
                  "Nombre de communes" = comm) %>%
   dplyr::relocate("Nombre de communes",.after="Population")  %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="clrrrccll", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(epci27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(epci27_tab),
-           bold = T,color = "navy") %>%
+    cc_kable(aligne = "clrrrccll") %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
            number = c("Zone de Revitalisation Rurale 2018 \n",
                       "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
-           footnote_as_chunk = T)
+           footnote_as_chunk = T) 
 ```
 
 ### Carte ECPI
@@ -235,7 +214,7 @@ leaflet(epcicarto) %>%
              highlight = highlightOptions (
                               color = "#00FFFF", weight = 5, fillOpacity =  0.1),
              popup = popupTable(epcicarto@data %>%
-                                  dplyr::select(EPCI=CODE_EPCI) %>%
+                                  dplyr::select(EPCI) %>%
                                   left_join(.,epci27_tab %>% 
                                               dplyr::select(EPCI,Nom,Population,Densité,rang,
                                                            `Taux femmes`,partZRR,partQPV)
@@ -279,20 +258,72 @@ bv27_tab %>%
                  "Nombre de communes" = comm) %>%
   dplyr::relocate("Nombre de communes",.after="Population") %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="clrrrccll", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(nrow(bv27_tab)-1,
-           bold = T,color = "steelblue") %>%
-  row_spec(nrow(bv27_tab),
-           bold = T,color = "navy") %>%
+  cc_kable(aligne = "clrrrccll") %>%
   footnote(general = " Insee RP2019", 
            general_title = "Source : ",
            number = c("Zone de Revitalisation Rurale 2018 \n",
                       "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
            footnote_as_chunk = T)
+
 ```
 
+
+### Shiny
+```{r,echo=F}
+shinyApp(
+ui <- fluidPage(
+  tags$h1("Département"),
+  pickerInput(
+    inputId = "DEP",
+    label = "Choix département",
+    choices = depbfc,
+    selected = depbfc,
+   options = list(`actions-box` = TRUE),multiple = T
+  ),
+#table
+  tags$h2("BV 2012"),
+  htmlOutput("kable")  %>% htmltools::browsable()
+
+),
+
+server <- function(input, output) {
+
+output$kable <- function(){ 
+                        req(input$DEP)
+bv27_tab %>%  
+  filter(substr(BV2012,1,2) %in% input$DEP) %>%
+  dplyr::select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
+  left_join(.,basecom %>% 
+              group_by(BV2012) %>% 
+              summarise(comm=n())  %>%
+              bind_rows(.,basecom %>% 
+                          filter (DEP %in% depbfc) %>% 
+                          group_by () %>% 
+                          summarise(BV2012="BFC", comm=n())) %>%
+              bind_rows(.,basecom %>% 
+                          group_by () %>% 
+                          summarise(BV2012="METRO", comm=n())),
+            by="BV2012") %>%
+  dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
+                 "partQPV<sup>2</sup>" = partQPV ,
+                 "Nombre de communes" = comm) %>%
+  dplyr::relocate("Nombre de communes",.after="Population") %>%
+  adorn_totals("row",name = "total") %>%
+
+  
+  cc_kable(aligne = "clrrrccll") %>%
+  footnote(general = " Insee RP2019", 
+           general_title = "Source : ",
+           number = c("Zone de Revitalisation Rurale 2018 \n",
+                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
+           footnote_as_chunk = T)
+    
+  }
+},
+  options = list(height = 600)
+)
+
+```
 ### Carte BV
 
 ```{r}
@@ -307,9 +338,9 @@ leaflet(bvcarto) %>%
              radius = 50*bvcarto$pop^(1/2), 
              color = "#4169E1", weight=4, opacity = 0.8,
              fillColor = "#FFFFFF", fillOpacity = 0.3,
-               highlight = highlightOptions (
+             highlight = highlightOptions (
                              color = "#00FFFF", fillOpacity =  0.1, weight = 5 ),
-               popup = popupTable(bvcarto@data %>% 
+             popup = popupTable(bvcarto@data %>% 
                                     dplyr::select(BV2012) %>%
                                     left_join(.,bv27_tab %>% 
                                                 dplyr::select(BV2012,Nom,Population,Densité,

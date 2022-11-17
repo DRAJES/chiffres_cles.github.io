@@ -17,7 +17,42 @@ sparkline(0)
 load("data/formation/diplome.RData")
 load("data/formation/bafa.RData")
 
-forome <- forome %>% mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté), "years")) %>% mutate(age=ifelse(age<0,100+age,age))
+forome <- forome %>% 
+  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté), "years")) %>% 
+  mutate(age=ifelse(age<0,100+age,age))
+
+idjeps <- function(.tbl){
+  .tbl %>%
+    filter(SituationPrincipale_r != "Etudes ou formation") %>%
+    summarise(SportAnimation = sum(n),
+    Sport= sum(n[SPECIALITE_D1 %in% sport]),
+    Animation = sum(n[!SPECIALITE_D1 %in% sport]),
+    emploi= sum(n[SituationPrincipale_r == "Emploi rémunéré" ],na.rm=T),
+    emplsport = sum(n[SPECIALITE_D1 %in% sport & 
+                        SituationPrincipale_r == "Emploi rémunéré" ],na.rm=T),
+    emplanim = sum(n[!(SPECIALITE_D1 %in% sport) & 
+                       SituationPrincipale_r == "Emploi rémunéré" ],na.rm=T),
+    insertion = sum(n[LienEmploiDiplome_r == "En relation directe"],na.rm=T),
+    insersport = sum(n[SPECIALITE_D1 %in% sport & 
+                         LienEmploiDiplome_r == "En relation directe"],na.rm = T),
+    inseranim= sum(n[!(SPECIALITE_D1 %in% sport) & 
+                       LienEmploiDiplome_r == "En relation directe" ],na.rm = T),
+    apprentis = sum(n[FormApp_r == "Oui"],na.rm=T),
+    emplappr = sum(n[FormApp_r == "Oui" & 
+                       SituationPrincipale_r == "Emploi rémunéré"],na.rm=T),
+    inserapp = sum(n[FormApp_r == "Oui" &  
+                       LienEmploiDiplome_r == "En relation directe"],na.rm=T),) %>%
+  adorn_totals("row",name="France") %>%
+  mutate(txemploi= round(100*emploi/SportAnimation,1),
+         txemplsport=round(100*emplsport/Sport,1),
+         txemplanim=round(100*emplanim/Animation,1),
+         txinsertion=round(100*insertion/emploi,1),
+         txinsersport=round(100*insersport/emplsport,1),
+         txinseranim=round(100*inseranim/emplanim,1),
+         txapprentis=round(100*apprentis/SportAnimation,1),
+         txempappr=round(100*emplappr/apprentis,1),
+         txinserappr=round(100*inserapp/emplappr,1) ) }
+
 
 
 # Option de chunk
@@ -414,12 +449,52 @@ hw_grid(list_of_plots, rowheight = 300) %>%
 
 ## Row {data-height="20"}
 
-## Row {data-height="60"}
+## Row {data-height="600"}
 
 Le ministère des Sports et l'Injep réalisent chaque année une enquête sur l'insertion professionnelle des diplômés Jeunesse et Sports sept mois après l'obtention de leur diplôme. Les résultats peuvent être consultés sur les fiches régionales réalisées chaque année :
 
 [![](images/IDJEPS.PNG) </br>\
 Insertion Professionnelle des diplômés de l'animation et du sport](https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf)
+
+En raison des effectifs assez faibles, les profils sont établis sur la base de plusieurs années consécutives
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
+
+### Taux d'emploi et Taux d'insertion par régions
+
+```{r}
+sport <- c("Educateur sportif","Perfectionnement sportif","Performance sportive")
+
+IDJEPSg %>% 
+  group_by(Région=REGION) %>%
+  idjeps() %>%
+  cc_kable(aligne = "ccccc")
+  
+  
+
+```
+
+### Détail par diplôme
+
+```{r}
+IDJEPSg %>% 
+  filter(REGION == "Bourgogne-Franche-Comté") %>%
+  group_by(Diplome=DIPLOME1_rec) %>%
+  idjeps() %>%
+  cc_kable(aligne = "ccccc")
+  
+  
+```
+
+
+### Profils d'emploi des diplômés de BFC
+
+```{r}
+
+```
+
+
+
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 

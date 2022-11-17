@@ -306,10 +306,10 @@ cartedep <- basebfcsig %>%
               filter(NIVGEO=="DEP") %>% 
               select(CODGEO,département=LIBGEO),
             by=c("DEP"="CODGEO") ) %>%
-  rename(INSEE_DEP=DEP,`Volontaires 2020`=tot20,`Taux de volontaires parmi les 16-25 ans`=txvol)
+  rename(`Volontaires 2020`=tot20,`Taux de volontaires parmi les 16-25 ans`=txvol)
      
 
-cartedep <- sp::merge(depwgs,cartedep,by="INSEE_DEP")
+cartedep <- sp::merge(depwgs,cartedep,by="DEP")
 
 leaflet(cartedep) %>% 
     contour_depbfc() %>%
@@ -320,7 +320,7 @@ leaflet(cartedep) %>%
              highlight = highlightOptions (
                           color = "#00FFFF", weight = 5,fillOpacity =  0.1),
              popup = popupTable(cartedep@data %>%
-                                  select(INSEE_DEP,département,`Volontaires depuis création`=tot,
+                                  select(DEP,département,`Volontaires depuis création`=tot,
                                          `Volontaires 2020`, `Taux de volontaires parmi les 16-25 ans`,
                                          `Moyenne d'âge`=mage20,`Part de femmes`=femmes20,
                                   `Part de célibataires`=sitfam20,`Part de peu diplômés`=peudipl20,

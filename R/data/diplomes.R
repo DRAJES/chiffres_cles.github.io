@@ -21,5 +21,20 @@ bafa <- diplomes %>% select(1,15:23,111) %>% slice(2,3) %>% mutate(2,as.numeric)
 
 forome <- read.csv2("I:/SUPPORT/04_STATS/Formation/2020/EditionsNominatives - Diplomes.csv",as.is = T)
 
-  save(diplreg,bafa,bafareg,forome,file="data/formation/diplome.RData")
+IDJEPS <- import("I:/SUPPORT/04_STATS/Droef/IDJEPS/2022/résultat enquête/Base_nationale_recodee_redressee pour envoi déf/Base_nationale_recodee_redressee pour envoi revu PN BD V3.xlsx")
+
+## Recodage de IDJEPS$DIPLOME1 en IDJEPS$DIPLOME1_rec
+IDJEPS$DIPLOME1_rec <- IDJEPS$DIPLOME1 %>%
+  fct_recode(
+    "BPJEPS" = "BPJEPS 10 UC",
+    "BPJEPS" = "BPJEPS 4 UC"
+  )
+
+IDJEPSg <- IDJEPS %>%
+  group_by(REGION, SPECIALITE_D1,DIPLOME1_rec, FormApp_r,LienEmploiDiplome_r,SituationPrincipale_r) %>%
+  count()
+
+
+  save(diplreg,bafa,bafareg,forome,IDJEPS,IDJEPSg, file="data/formation/diplome.RData")
+
   

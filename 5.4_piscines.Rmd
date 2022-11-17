@@ -81,16 +81,9 @@ piscines %>%
                  `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
                  Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrlrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(7, 
-              bold=T) %>%
-  row_spec(3,
-           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  row_spec(14,
-           bold = T ) %>%
-  footnote(general = " MEDES recensement des équipements sportifs 2020", 
+  cc_kable("rcrrrrlrr") %>%
+  column_spec(7, bold=T) %>%
+   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T)
 ```
@@ -163,11 +156,8 @@ piscines %>%
           `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrlrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(6, 
-              bold=T) %>%
+  cc_kable("rcrrrrlrr") %>%
+  column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T)
@@ -230,7 +220,7 @@ hchart(piscines %>%
 ```{r}
 
 piscinesdep <- sp::merge(depwgs,piscines %>% 
-                           group_by(INSEE_DEP=DEP) %>%  
+                           group_by(DEP) %>%  
                            summarise_if(is.numeric,sum) %>%
                            mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>%
                            mutate(surfnat=round(10000*surfpiscines/pop,1),
@@ -247,7 +237,7 @@ piscinesdep <- sp::merge(depwgs,piscines %>%
                                                            "200 à 250 m² / 10 000",
                                                            "250 à 350 m² / 10 000",
                                                            "> 350 m² / 10 000"  )  )) ,
-                         by="INSEE_DEP")
+                         by="DEP")
 
 leaflet(piscinesdep) %>%
   addPolygons(color = "#2F4F4F", weight=2,opacity = 0.6, smoothFactor = 2,
@@ -310,11 +300,8 @@ piscines %>%
           `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrlrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(6, 
-              bold=T) %>%
+  cc_kable("rcrrrrlrr") %>%
+  column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
@@ -326,8 +313,8 @@ piscines %>%
 ```{r}
 
 piscinesepci <- sp::merge(epciwgs,piscines %>% 
-                            group_by(CODE_EPCI=EPCI) %>%
-                            filter (CODE_EPCI %in% basecom$EPCI[basecom$REG=="27"] ) %>%
+                            group_by(EPCI) %>%
+                            filter (EPCI %in% basecom$EPCI[basecom$REG=="27"] ) %>%
                             summarise_if(is.numeric,sum) %>%
                             mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>%
                             mutate(surfnat=round(10000*surfpiscines/pop,1),
@@ -344,7 +331,7 @@ piscinesepci <- sp::merge(epciwgs,piscines %>%
                                                             "200 à 250 m² / 10 000",
                                                             "250 à 350 m² / 10 000",
                                                             "> 350 m² / 10 000"  )  )) ,
-                          by="CODE_EPCI")
+                          by="EPCI")
 
 leaflet(piscinesepci) %>%
   addAwesomeMarkers(data=bassins,icon=icons,
@@ -414,11 +401,8 @@ piscines %>%
           `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
           Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrrrrlrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  column_spec(6, 
-              bold=T) %>%
+  cc_kable("rcrrrrlrr") %>%
+  column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%

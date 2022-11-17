@@ -50,21 +50,20 @@ Row {.tabset .tabset-fade .tabset-pills data-height="900"}
 
 ```{r}
 ACM_PMI %>% 
-  pivot_longer(-1,names_to = "reg") %>% 
+  pivot_longer(-1,names_to = "reg") %>% rename(Nom=reg) %>%
   pivot_wider(names_from = ...1) %>% 
   select(-8,-12) %>%
   rename("Taux déquipement en accueil collectif<sup>1</sup>" = "pour 100 enfants nés au cours des 3 dernières années",
          "Taux de scolarisation des enfants de 2 ans<sup>2</sup>" = "Taux de scolarisation des enfants de 2 ans (Rentrée 2019-2020 pour 100 enfants de 2 ans) (2)") %>%
   mutate(`Taux déquipement en accueil collectif<sup>1</sup>`=round(`Taux déquipement en accueil collectif<sup>1</sup>`, 1),
-         `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`=round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`, 1) )%>%
+         `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`=round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`, 1),
+         Nom=str_to_title(Nom)  ) %>%
   
-  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
-    align="crrrrrrcrcrrrr", escape = F )%>%
-  kable_styling("hover", full_width = F) %>%
+    cc_kable(aligne = "crrrrrrcrcrrrr") %>%
   column_spec(c(2,8,10), 
               bold=T) %>%
-  row_spec(2,
-           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+ # row_spec(2,
+#           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   add_header_above(c( " "=2,"détail des accueils collectifs"=5," "=3,"Particuliers employeurs"=2) ) %>%
   footnote(general = "DREES, enquête aide sociale", 
            general_title = "Source : ",
@@ -161,9 +160,9 @@ cartereg <- ACM_PMI %>%
                 mutate(accueil=round(accueil,1),scolarisation=round(scolarisation,1) ) %>%
                 mutate(INSEE_REG=regwgs@data %>%
                                     arrange(LIBGEO) %>% 
-                                    dplyr::select(INSEE_REG) %>% pull() )
+                                    dplyr::select(REG) %>% pull() )
 
-cartereg <- merge(regwgs,cartereg,by="INSEE_REG")
+cartereg <- merge(regwgs,cartereg,by="REG")
 
 leaflet(cartereg) %>%   
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.9,  smoothFactor = 2,
@@ -179,7 +178,7 @@ leaflet(cartereg) %>%
                                  feature.id=F,row.numbers = F),
               group="taux de scolarisation") %>%   
       contour_bfc() %>%
-addLegend("bottomright", pal = pal, values = 0:100,   
+  addLegend("bottomright", pal = pal, values = 0:100,   
            title = "taux") %>%
   addLayersControl( baseGroups =  c("taux d'accueils collectifs","taux de scolarisation"),
                     options = layersControlOptions(collapsed = F,autoZIndex = F))  
@@ -214,21 +213,18 @@ Row {.tabset .tabset-fade .tabset-pills data-height="900"}
 ACM_PMI_dep %>% 
   relocate(`BOURGOGNE-
 FRANCHE-COMTE`,.before = `France métropolitaine`) %>%
-  pivot_longer(-1,names_to = "dep") %>%
+  pivot_longer(-1,names_to = "dep") %>% rename(Nom=dep) %>%
   pivot_wider(names_from = ...1) %>%
   select(-8,-12) %>%
   rename("Taux déquipement en accueil collectif<sup>1</sup>" = "pour 100 enfants nés au cours des 3 dernières années",
          "Taux de scolarisation des enfants de 2 ans<sup>2</sup>" = "Taux de scolarisation des enfants de 2 ans (Rentrée 2019-2020 pour 100 enfants de 2 ans) (2)") %>%
   mutate(`Taux déquipement en accueil collectif<sup>1</sup>`= round(`Taux déquipement en accueil collectif<sup>1</sup>`,1),
-          `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`= round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`,1) ) %>%
+          `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`= round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`,1),
+         Nom=str_to_title(Nom) ) %>%
   
-  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
-    align="crrrrrrcrcrrrr", escape = F )%>%
-  kable_styling("hover", full_width = F) %>%
+  cc_kable(aligne = "crrrrrrcrcrrrr") %>%
   column_spec(c(2,8,10), 
               bold=T) %>%
-  row_spec(9,
-           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   add_header_above(c( " "=2,"détail des accueils collectifs"=5," "=3,"Particuliers employeurs"=2) ) %>%
   footnote(general = "DREES, enquête aide sociale", 
            general_title = "Source : ",
@@ -262,18 +258,13 @@ hchart(bar,
 
 ```{r}
 ACM_PMI_dep %>% 
-  slice(1:6) %>%
-  rename(" "="...1") %>%
-  relocate(2,.before = 11) %>%
-  
-  kable(format.args = list(decimal.mark = ",", big.mark = " "),
-    align="crrrrrrrrrrrrrr", escape = F)%>%
-  kable_styling("hover", full_width = F) %>%
-  column_spec(1,width = "10cm")%>%
-  column_spec(11, 
-              bold=T) %>%
-  column_spec(10,
-              background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  slice(1:6) %>% 
+  relocate("Bourgogne-Franche-Comté"=2,.before = 11) %>%
+  pivot_longer(-1,names_to = "dep") %>%
+  pivot_wider(names_from = "...1") %>%
+
+  cc_kable(align="crrrrrrrrrrrrrr")%>%
+  column_spec(2, bold=T)%>%
   footnote(general = "DREES, enquête aide sociale", 
            general_title = "Source : ",
             footnote_as_chunk = T)  %>%
@@ -343,15 +334,15 @@ cartedep <- ACM_PMI_dep %>%
               rename("accueil"=2,"scolarisation"=3) %>%
               mutate(accueil=round(accueil,1),
                      scolarisation=round(scolarisation,1), 
-                     INSEE_DEP=depbfc ) 
+                     DEP=depbfc ) 
 
-cartedep <- merge(depwgs,cartedep,by="INSEE_DEP")
+cartedep <- merge(depwgs,cartedep,by="DEP")
 
 leaflet(cartedep) %>% 
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, smoothFactor = 2,
                 fillColor = ~pal(accueil),
               popup = popupTable(cartedep@data %>% 
-                                   select(Région=LIBGEO,pop,txaccueils=accueil),
+                                   select(Département=LIBGEO,pop,txaccueils=accueil),
                                  feature.id=F,row.numbers = F),
              group="taux d'accueils collectifs" ) %>%
   addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, smoothFactor = 2,
