@@ -31,6 +31,7 @@ IDJEPS$DIPLOME1_rec <- IDJEPS$DIPLOME1 %>%
   )
 
 IDJEPSg <- IDJEPS %>%
+  filter(!REGION %in% c("Guadeloupe","Martinique")) %>%
   group_by(REGION, SPECIALITE_D1,DIPLOME1_rec, FormApp_r,LienEmploiDiplome_r,SituationPrincipale_r) %>%
   count()
 

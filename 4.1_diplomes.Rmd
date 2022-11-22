@@ -29,20 +29,25 @@ idjeps <- function(.tbl){
     Animation = sum(n[!SPECIALITE_D1 %in% sport]),
     emploi= sum(n[SituationPrincipale_r == "Emploi rémunéré" ],na.rm=T),
     emplsport = sum(n[SPECIALITE_D1 %in% sport & 
-                        SituationPrincipale_r == "Emploi rémunéré" ],na.rm=T),
+                        SituationPrincipale_r == "Emploi rémunéré" ],
+                    na.rm=T),
     emplanim = sum(n[!(SPECIALITE_D1 %in% sport) & 
-                       SituationPrincipale_r == "Emploi rémunéré" ],na.rm=T),
-    insertion = sum(n[LienEmploiDiplome_r == "En relation directe"],na.rm=T),
+                       SituationPrincipale_r == "Emploi rémunéré" ],
+                   na.rm=T),
+    insertion = sum(n[LienEmploiDiplome_r == "En relation directe"],
+                    na.rm=T),
     insersport = sum(n[SPECIALITE_D1 %in% sport & 
-                         LienEmploiDiplome_r == "En relation directe"],na.rm = T),
+                         LienEmploiDiplome_r == "En relation directe"],
+                     na.rm = T),
     inseranim= sum(n[!(SPECIALITE_D1 %in% sport) & 
-                       LienEmploiDiplome_r == "En relation directe" ],na.rm = T),
+                       LienEmploiDiplome_r == "En relation directe" ],
+                   na.rm = T),
     apprentis = sum(n[FormApp_r == "Oui"],na.rm=T),
     emplappr = sum(n[FormApp_r == "Oui" & 
                        SituationPrincipale_r == "Emploi rémunéré"],na.rm=T),
     inserapp = sum(n[FormApp_r == "Oui" &  
                        LienEmploiDiplome_r == "En relation directe"],na.rm=T),) %>%
-  adorn_totals("row",name="France") %>%
+  adorn_totals("row",name="Total") %>%
   mutate(txemploi= round(100*emploi/SportAnimation,1),
          txemplsport=round(100*emplsport/Sport,1),
          txemplanim=round(100*emplanim/Animation,1),
@@ -272,7 +277,7 @@ bafaregm %>%
                           normalize_bar("#00800050")(digits(...21,1,decimal.mark=",")) ) ) %>%
   arrange(CODGEO) %>%
   bind_cols( bafaregm %>%
-               filter(sexe=="Ensemble")  %>% # sparkine
+               filter(sexe=="Ensemble")  %>% # sparkline
                group_by(CODGEO) %>%  
                summarise(`évo`=spk_chr(BAFA)) ) %>%
   bind_cols( bafaregm %>%
@@ -467,9 +472,23 @@ sport <- c("Educateur sportif","Perfectionnement sportif","Performance sportive"
 
 IDJEPSg %>% 
   group_by(Région=REGION) %>%
-  idjeps() %>%
-  cc_kable(aligne = "ccccc")
-  
+  idjeps() %>% 
+  select(Région,"Sport & Animation" = SportAnimation, 
+         "Ensemble" = txemploi,"Sport" = txemplsport, "Animation" = txemplanim, 
+         " Ensemble" =  txinsertion," Sport" = txinsersport, " Animation" = txinseranim,
+         "Apprentis" = txapprentis, "Emploi" = txempappr, "Insertion" = txinserappr) %>%
+  mutate_at(vars(Ensemble:Animation),color_tile("transparent","#d2b48c")  ) %>%  
+  mutate_at(vars(` Ensemble`:` Animation`), color_tile("transparent","#ffe4c4")  ) %>%
+
+  cc_kable(aligne = "crccccccccc") %>%
+  add_header_above(c(  " "=1,"Diplômés"=1, "d'emploi"=3, "d'insertion"=3, "apprentissage"=3 )) %>%
+  add_header_above(c( " "=2,"Taux"=9 )) %>%
+    footnote(general =  "Diplômés BPJEPS Educateur sportif ou Animateur entre mai 2020 et avril 2021, hors Corse, Guyane, La Réunion et Mayotte", 
+           general_title = "Champ : ",
+           footnote_as_chunk = T) %>% 
+  footnote(general =  "Enquête IDJEPS 2022 INJEP-MEDES, Direction des Sports, DRAJES (ex-DRJSCS) - Collecte par les DRAJES (ex-DRJSCS), traitements INJEP-MEDES", 
+           general_title = "Source : ",
+           footnote_as_chunk = T)  
   
 
 ```
@@ -481,7 +500,18 @@ IDJEPSg %>%
   filter(REGION == "Bourgogne-Franche-Comté") %>%
   group_by(Diplome=DIPLOME1_rec) %>%
   idjeps() %>%
-  cc_kable(aligne = "ccccc")
+  select(Diplome,"Sport & Animation" = SportAnimation, 
+         "Ensemble" = txemploi,"Sport" = txemplsport, "Animation" = txemplanim, 
+         " Ensemble" =  txinsertion," Sport" = txinsersport, " Animation" = txinseranim) %>%
+  cc_kable(aligne = "crcccccc") %>%
+  add_header_above(c( " "=1,"Diplômés"=1,"d'emploi"=3,"d'insertion"=3 )) %>%
+  add_header_above(c( " "=2,"Taux"=6 )) %>%
+    footnote(general =  "Diplômés BPJEPS Educateur sportif ou Animateur entre mai 2020 et avril 2021, hors Corse, Guyane, La Réunion et Mayotte", 
+           general_title = "Champ : ",
+           footnote_as_chunk = T) %>% 
+  footnote(general =  "Enquête IDJEPS 2022 INJEP-MEDES, Direction des Sports, DRAJES (ex-DRJSCS) - Collecte par les DRAJES (ex-DRJSCS), traitements INJEP-MEDES", 
+           general_title = "Source : ",
+           footnote_as_chunk = T) 
   
   
 ```

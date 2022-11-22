@@ -51,6 +51,8 @@ navbar:
           href: 5.4_piscines.html
         - text: "équipements sportifs"
           href: 5.5_RES.html
+        - text: "Jeux Olympiques"
+          href: 5.5_JO.html
           
   right:
     - icon: fa-question fa-lg
