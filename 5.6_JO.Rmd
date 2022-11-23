@@ -7,7 +7,7 @@ output:
     social: menu
    #source_code: embed
     navbar:
-      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+      - { title: "Accueil", href: index.html, align: right, icon: fa-home }
     theme: simplex
 ---
 

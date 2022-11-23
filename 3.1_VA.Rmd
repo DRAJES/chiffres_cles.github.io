@@ -6,7 +6,7 @@ output:
     social: menu
     #source_code: embed
     navbar:
-      - { title: "Accueil", href: DRAJESBFC.html, align: right, icon: fa-home }
+      - { title: "Accueil", href: index.html, align: right, icon: fa-home }
     theme: simplex
 ---
 
@@ -337,7 +337,8 @@ hchart(RNApop %>%
 ### Evolutions départementales
 Créations d'associations par année
 
-```{r}
+```{r, figures-side, fig.show="hold", out.width="50%"}
+
 hchart(RNA %>%
          filter (!is.na(DEP) & !is.na(objr)) %>% 
          filter(année > 2010) %>%
