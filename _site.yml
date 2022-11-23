@@ -5,7 +5,7 @@ navbar:
   left:
     - text: "Home"
       icon: fa-home
-      href: DRAJESBFC.html
+      href: index.html
     - text: "A propos"
       icon: fa-info
       href: Lisez-moi.html

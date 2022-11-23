@@ -2,44 +2,17 @@
 title: "Chiffres clés Jeunesse Engagement Sports Bourgogne-Franche-Comté"
 output:
   html_document:
+    self_contained : false
     toc: true
     toc_depth: 3
     toc_float: true
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
+
 ```{r setup, include=F ,echo=FALSE, cache=F}
-library(flexdashboard)
-library(gghighlight)
-library(highcharter)
-library(janitor)
-library(DT)
-library(formattable)
-library(rgdal)
-library(osrm)
-library(fontawesome)
-library(leafpop)
-library(leaflet.providers) 
-library(readxl)
-library(leaflet.minicharts)
-library(leaflet)
-library(leaflet.extras2)
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
 
-
-depbfc <- c('21','25','39','58','70','71','89','90')
-
-thm <- hc_theme_merge(
-  hc_theme_gridlight(),
-  hc_theme(
-#    colors = c("#1a6ecc", "#434348", "#90ed7d"),
-    chart = list(
-      backgroundColor = "transparent",
-      style = list(fontFamily = "Source Sans Pro")
-    ),
-    xAxis = list(
-      gridLineWidth = 1
-    )
-  )
-)
 
 # Option de chunk
 knitr::opts_chunk$set(
@@ -49,44 +22,194 @@ knitr::opts_chunk$set(
 )
 ```
 
+La Délégation Régionale Académique à la Jeunesse, à l'Engagement et aux
+Sports (**DRAJES**) anime et coordonne les politiques publiques **du
+sport**, de **la jeunesse**, de **la vie associative**, de
+**l'engagement civique** et de **l'éducation populaire**.
+
+Elle s'appuie pour cela sur les données de la
+[**MEDES**](https://injep.fr/linstitut/missions/mission-enquetes-donnees-et-etudes-statistiques-medes/)
+(Missions Enquêtes, Données et Etudes Statistiques) de
+[**l'Injep**](https://injep.fr/) (Institut national de la Jeunesse et de
+l'éducation Populaire). Ce Service Statistique Ministériel (**SSM**)
+fait partie du Service Statistique Public
+([**SSP**](https://www.insee.fr/fr/information/1302192)) chargé
+d'outiller les ministères sur leurs besoins d'études, d'enquêtes et de
+données. Porté par l'Insee, le SSP assure **l'indépendance**, la
+**fiabilité**, la **neutralité** et la **qualité** des données publiées.
+
+------------------------------------------------------------------------
+
+## 1. **Généralités**
+
+### 1.1 [Territoire(s)](1.1_demo.html)
+
+$Région, Département, EPCI, BV$
+
+-   Population, communes, densité, pop QPV, carte
+
+-   [Découpages administratifs (ZRR,EPCI...) &
+    carte](1.1_demo.html#découpages-administratifs)
+
+-   [Contrats de relance et transition écologique &
+    carte](1.1_demo.html#crte)
+
+### 1.2 [Structure de la population](1.2_structure.html)
+
+$Région, Département, EPCI, BV$
+
+-   15-29 ans / + de 65 ans
+
+-   Indice de jeunesse, carte
+
+### 1.3 [Évolution de la population](1.3_evol.html)
+
+$Région, Département, EPCI, BV$
+
+-   Sur 5 ans par tranche d'âge, carte
+
+-   Tendance longue ($Sparkline$)
+
+------------------------------------------------------------------------
+
+## 2. **Jeunesse**
+
+### 2.1 [Jeunesse](2.1_jeunesse.html)
+
+$Région, Département, EPCI, BV$
+
+-   15-29 ans / 16-25 ans
+
+-   évolution sur 5 ans, carte
+
+### 2.2 [Préscolaire](2.2_presco.html)
+
+$Région, Département$
+
+-   Accueil collectif / familial, carte
+
+-   Taux de scolarisation
+
+-   Assistantes maternelles et garde d'enfants à domicile
+
+### 2.3 [Accueils collectifs de mineurs](2.3_ACM.html)
+
+$Région, Département$
+
+-   Lieux d'accueil et places par groupe d'âge sans hébergement
+
+-   [Avec hébergement, carte](2.3_ACM.html#avec-hébergement)
+
+-   [Scoutisme](2.3_ACM.html#scoutisme)
+
+-   [Cartographie interactive](2.3_ACM.html#cartographie-interactive)
+
+------------------------------------------------------------------------
+
+## 3. **Engagement**
+
+### 3.1 [Vie associative](3.1_VA.html)
+
+$Région, Département, EPCI, BV$
+
+-   Nombre d'associations et taux
+
+-   Domaine d'intervention, carte
+
+### 3.2 [Service civique](3.2_SC.html)
+
+$Région, Département$
+
+-   Nombre et évolution, domaine de mission, agrément
+
+-   [âge, sexe, diplôme, emploi, carte et
+    flux](3.2_SC.html#départements)
+
+-   [Missions à l'étranger](3.2_SC.html#engagement-international)
+
+-   [Volontaires issus de
+    QPV](3.2_SC.html#quartier-politique-de-la-ville)
+
+------------------------------------------------------------------------
+
+## 4. **Formation**
+
+### 4.1 [Diplômes](4.1_diplomes.html)
+
+$Région$
+
+-   Diplômes délivrés par sexe et âge
+
+-   [BAFA /
+    BAFD](4.1_diplomes.html#diplômes-non-professionnels-bafabafd)
+    $Région, Département, Sparkline$
+
+-   [Insertion des diplômés](4.1_diplomes.html#insertion-des-diplômés)
+
+### 4.2 [Organismes de formation](4.2_OF3.html)
+
+-   Carte interactive des OF de la région
+
+------------------------------------------------------------------------
+
+## 5. **Sport**
+
+### 5.1 [Clubs sportifs](5.1_clubs.html)
+
+$Région, Département, EPCI, BV$
+
+-   Nombre et taux de clubs par fédération, carte et structure
+
+-   Poids des fédération et détail
+
+-   Licences par club
+
+### 5.2 [Licences sportives](5.2_licences.html)
+
+$Région, Département, EPCI, BV$
+
+-   Nombre et taux par fédération et par sexe, carte, structure et
+    évolution $Sparkline$
+
+-   Poids des fédération et détail
+
+-   Taux de licences féminines et sports sexués
+
+### 5.3 [Sport de nature](5.3_nature.html)
+
+$Région, Département$
+
+-   Sites de sport nature par famille et détail
+
+-   Cartographie détaillée et par cluster
+
+### 5.4 [Piscines](5.4_piscines.html)
+
+$Région, Département, EPCI, BV$
+
+-   Bassins publics, couverts, saisonniers
+
+-   Surface natatoire, carte
+
+-   [Temps d'accès aux bassins](5.4_piscines.html#temps-daccès)
+
+### 5.5 [Équipements sportifs](5.5_RES.html)
+
+$Région, Département, EPCI, BV$
+
+-   Nombre et taux d'équipements par grande famille
+
+-   Détail des équipements (couverts, proximité), carte
+
+-   [Analyse des carences par
+    territoire](5.5_RES.html#analyse-des-territoires)
+    
+### 5.6 [Jeux Olympiques](5.6_JO.html)
+
+$Région$
+
+-   Territoires Terres de Jeux
+
+-   Centres de préparations aux Jeux Olympiques
 
 
-La Délégation Régionale Académique à la Jeunesse, à l'Engagement et aux Sports (**DRAJES**) anime et coordonne les politiques publiques **du sport**, de **la jeunesse**, de **la vie associative**, de **l'engagement civique** et de **l'éducation populaire**.
-
-Elle s'appuie pour cela sur les données de la **[MEDES](https://injep.fr/linstitut/missions/mission-enquetes-donnees-et-etudes-statistiques-medes/)** (Missions Enquêtes, Données et Etudes Statistiques) de **[l'Injep](https://injep.fr/)** (Institut national de la Jeunesse et de l'éducation Populaire). Ce Service Statistique Ministériel (**SSM**) fait partie du Service Statistique Public (**[SSP](https://www.insee.fr/fr/information/1302192)**) chargé d'outiller les ministères sur leurs besoins d'études, d'enquêtes et de données. Porté par l'Insee, le SSP assure **l'indépendance**, la **fiabilité**, la **neutralité** et la **qualité** des données publiées.
-
-
----------------
-
-## 1. **Généralités**  
-###  1.1 [Territoire(s)](1.1_demo.html)  
-###  1.2 [Structure de la population](1.2_structure.html)  
-###  1.3 [Évolution de la population](1.3_evol.html)  
-
----------------
-
-## 2. **Jeunesse**   
-###  2.1 [Jeunesse](2.1_jeunesse.html)   
-###  2.2 [Préscolaire](2.2_presco.html)  
-###  2.3 [Accueils collectifs de mineurs](2.3_ACM.html)    
-
---------------- 
-
-## 3. **Engagement**   
-###  3.1 [Vie associative](3.1_VA.html)   
-###  3.2 [Service civique](3.2_SC.html)   
-
----------------
-
-## 4. **Formation**   
-###  4.1 [Diplômes](4.1_diplomes.html)   
-###  4.2 [Organismes de formation](4.2_OF3.html)
-  
----------------
-
-## 5. **Sport**    
-###  5.1 [Clubs sportifs](5.1_clubs.html)  
-###  5.2 [Licences sportives](5.2_licences.html)  
-###  5.3 [Sport de nature](5.3_nature.html)  
-###  5.4 [Piscines](5.4_piscines.html)  
-###  5.5 [Équipements sportifs](5.5_RES.html)  

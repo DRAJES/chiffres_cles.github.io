@@ -97,26 +97,36 @@ hchart(RNApop %>%
 
 
 
+
 ```{r}
-hchart(RNA %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         filter(année > 2010 ) %>%
-         group_by(année) %>% count() ,
-       "spline",hcaes(x=année,y=n) ) %>%
-    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) 
+### Evolution nationale
+# hchart(RNA %>% 
+#          filter (!is.na(REG) & !is.na(objr)) %>% 
+#          filter(année > 2010 ) %>%
+#          group_by(année) %>% 
+#        count(name="nb associations") %>%
+#        "spline",hcaes(x=année,y=n) ) %>%
+#     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) 
 
 ```
 
 
 
-### Evolution
-Créations d'entreprises par année
+### Evolutions régionales
+Créations d'associations par année
 ```{r}
 hchart(RNA %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          filter(année > 2010 ) %>%
-         group_by(REG, année) %>% count() ,
-       "spline",hcaes(x=année,y=n,group=REG) ) %>%
+         group_by(REG, année) %>% 
+         count(name="nb associations") %>%
+         left_join(.,appartenance %>%
+                     filter(NIVGEO=="REG") %>%
+                     select(CODGEO,LIBGEO),
+                   by=c("REG"="CODGEO")),
+       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
+        stacking = "normal", 
+       marker = FALSE) %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) 
 
 ```
@@ -309,17 +319,53 @@ hchart(RNApop %>%
     hc_add_theme(thm) 
 ```
 
-### Evolution
-Créations d'entreprises par année
+
+
+```{r}
+# ### Evolution régionale
+# Créations d'associations par année
+# hchart(RNA %>%
+#          filter (!is.na(DEP) & !is.na(objr)) %>% 
+#          filter(année > 2010 ) %>%
+#          filter(DEP %in% depbfc) %>%
+#          group_by(année) %>% count(),
+#        "spline",hcaes(x=année,y=n),
+#        marker = FALSE)
+```
+
+
+### Evolutions départementales
+Créations d'associations par année
 
 ```{r}
 hchart(RNA %>%
          filter (!is.na(DEP) & !is.na(objr)) %>% 
-         mutate(année=as.numeric( substr(date_creat,1,4) ) )%>%
-         filter(année > 2010 & année <2023) %>%
+         filter(année > 2010) %>%
          filter(DEP %in% depbfc) %>%
-         group_by(DEP, année) %>% count(),
-       "spline",hcaes(x=année,y=n,group=DEP) )
+         group_by(DEP, année) %>% 
+         count(name="nb associations") %>%
+         left_join(.,appartenance %>%
+                     filter(NIVGEO=="DEP") %>%
+                     select(CODGEO,LIBGEO),
+                   by=c("DEP"="CODGEO")),
+       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
+       stacking = "normal", 
+       marker = FALSE )
+
+
+hchart(RNA %>%
+         filter (!is.na(DEP) & !is.na(objr)) %>% 
+         filter(année > 2010) %>%
+         filter(DEP %in% depbfc) %>%
+         group_by(DEP, année) %>% 
+         count(name="nb associations") %>%
+         left_join(.,appartenance %>%
+                     filter(NIVGEO=="DEP") %>%
+                     select(CODGEO,LIBGEO),
+                   by=c("DEP"="CODGEO")),
+       "spline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
+      # stacking = "normal", 
+       marker = FALSE )
 ```
 
 ### Carte départementale
