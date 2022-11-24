@@ -115,7 +115,18 @@ hchart(RNApop %>%
 ### Evolutions régionales
 Créations d'associations par année
 ```{r}
-hchart(RNA %>% 
+
+hw_grid(
+
+  hchart(RNA %>% 
+         filter (!is.na(REG) & !is.na(objr)) %>% 
+         filter(année > 2010 ) %>%
+         group_by(année) %>% 
+         count(name="nb associations"), 
+      "spline",hcaes(x=année,y=`nb associations`) ) %>%
+     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
+  
+  hchart(RNA %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          filter(année > 2010 ) %>%
          group_by(REG, année) %>% 
@@ -126,9 +137,11 @@ hchart(RNA %>%
                    by=c("REG"="CODGEO")),
        "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
         stacking = "normal", 
-       marker = FALSE) %>%
-    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) 
+       marker = FALSE) ,
+#    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
 
+ rowheight = 600 ) 
+#htmltools::browsable()
 ```
 
 
@@ -337,24 +350,12 @@ hchart(RNApop %>%
 ### Evolutions départementales
 Créations d'associations par année
 
-```{r, figures-side, fig.show="hold", out.width="50%"}
+```{r}
+#```{r, figures-side, fig.show="hold", out.width="50%"}
 
-hchart(RNA %>%
-         filter (!is.na(DEP) & !is.na(objr)) %>% 
-         filter(année > 2010) %>%
-         filter(DEP %in% depbfc) %>%
-         group_by(DEP, année) %>% 
-         count(name="nb associations") %>%
-         left_join(.,appartenance %>%
-                     filter(NIVGEO=="DEP") %>%
-                     select(CODGEO,LIBGEO),
-                   by=c("DEP"="CODGEO")),
-       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
-       stacking = "normal", 
-       marker = FALSE )
+hw_grid(
 
-
-hchart(RNA %>%
+  hchart(RNA %>%
          filter (!is.na(DEP) & !is.na(objr)) %>% 
          filter(année > 2010) %>%
          filter(DEP %in% depbfc) %>%
@@ -366,7 +367,25 @@ hchart(RNA %>%
                    by=c("DEP"="CODGEO")),
        "spline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
       # stacking = "normal", 
-       marker = FALSE )
+       marker = FALSE ),
+  
+  hchart(RNA %>%
+         filter (!is.na(DEP) & !is.na(objr)) %>% 
+         filter(année > 2010) %>%
+         filter(DEP %in% depbfc) %>%
+         group_by(DEP, année) %>% 
+         count(name="nb associations") %>%
+         left_join(.,appartenance %>%
+                     filter(NIVGEO=="DEP") %>%
+                     select(CODGEO,LIBGEO),
+                   by=c("DEP"="CODGEO")),
+       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
+       stacking = "normal", 
+       marker = FALSE ),
+
+ rowheight = 600) 
+#htmltools::browsable()
+
 ```
 
 ### Carte départementale
