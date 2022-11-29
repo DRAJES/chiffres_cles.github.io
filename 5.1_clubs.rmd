@@ -49,7 +49,7 @@ Row {data-height="100"}
 La région Bourgogne-Franche-Comté compte **`r prettyNum(round(as.numeric(club_reg[118,5])/100,0)*100,big.mark = " ")`** clubs en 2021.
 La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
 
-Row {.tabset .tabset-fade .tabset-pills data-height="650"}
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Comparaisons 
@@ -92,7 +92,7 @@ hchart(clubreg %>%
     hc_yAxis(title=list(text="Taux de clubs (/10 000 hab.)")) %>%
     hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 550)
 ```
 
 ### Clubs par fédérations
@@ -127,7 +127,7 @@ club_reg %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 
 
@@ -174,7 +174,7 @@ hchart( club_reg %>%
    hc_yAxis(title=list(text="Pourcentage de clubs")) %>%
    hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 550)
 
 ```
 
@@ -251,7 +251,7 @@ club_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -290,7 +290,7 @@ club_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -329,7 +329,7 @@ club_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -378,7 +378,7 @@ hchart(club_reg  %>%
     hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
     hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 500)
 ```
 
 
@@ -395,7 +395,7 @@ Row {data-height="100"}
 
 La Nièvre et le Jura comptent plus de **10 clubs sportifs** pour 10 000 habitants. La Saône et Loire, 2 fois moins... En contre partie, la taille des clubs y est bien plus grande , comme dans le Territoire de Belfort, la Côte d'Or et le Doubs.
 
- Row {.tabset .tabset-fade .tabset-pills data-height="650"}
+ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Comparaisons 
@@ -455,7 +455,7 @@ hchart(clubdep %>%
   hc_yAxis(title=list(text="Taux de clubs sportifs (/ 10 000)")) %>%
   hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 550)
 
 ```
 
@@ -500,7 +500,7 @@ club_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -546,7 +546,7 @@ hchart( club_dep %>%
   hc_yAxis(title=list(text="Proportion de clubs")) %>%
   hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 550)
 
 
 ```
@@ -621,7 +621,7 @@ club_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -657,7 +657,7 @@ club_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -691,7 +691,7 @@ club_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -724,7 +724,7 @@ lic27epci %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "800px") 
+  scroll_box(height = "780px") 
 ```
 
 ### Carte ECPI taux de clubs pour 10 000 habitants {data-height="800"}
@@ -816,7 +816,7 @@ lic27bv %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "800px") 
+  scroll_box(height = "780px") 
 ```
 
 ### Carte BV taux de clubs pour 10 000 habitants {data-height="800"}

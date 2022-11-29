@@ -42,7 +42,7 @@ Mais la pratique féminine est plus fréquente : **39,7 %** des licences sont d�
 Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
 à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
 
-Row {.tabset .tabset-fade .tabset-pills data-height="650"}
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Comparaisons
@@ -83,7 +83,7 @@ hchart(licreg %>%
     hc_yAxis(title=list(text="Taux de licences (%)")) %>%
     hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 550)
 
 ```
 
@@ -123,7 +123,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-   scroll_box(height = "500px") 
+   scroll_box(height = "550px") 
 
 ```
 
@@ -166,7 +166,7 @@ hchart ( lic_reg %>%
     hc_yAxis(title=list(text="Proportion de licences")) %>%
     hc_add_theme(thm) ,
 
-rowheight = 600)
+rowheight = 550)
 
 ```
 
@@ -250,7 +250,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -299,7 +299,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -347,7 +347,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -399,7 +399,7 @@ hchart(lic_reg  %>%
   hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
   hc_add_theme(thm) ,
   
-  rowheight=600)
+  rowheight=500)
 
 
 ```
@@ -450,7 +450,7 @@ Row {data-height="100"}
 
 La pratique sportive est diverse en Bourgogne-Franche-Comté. Le Jura est le département où la pratique licenciées est la plus développée avec **`r prettyNum(round(as.numeric(lic_reg[117,5])/1000,0)*1000,big.mark = " ")`** licenciés en 2020, en partie par l'importance de site de sport de nature dont les massifs montagneux. à l'inverse, l'Yonne est un des départements français où la pratique sportive est la plus faible. Cela ne signifie pas que les habitants ne pratiquent pas (cyclisme, randonnée...) mais ils sont moins souvent dans une structure.
 
- Row {.tabset .tabset-fade .tabset-pills data-height="650"}
+ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Comparaisons
@@ -511,7 +511,7 @@ hchart(licdep %>%
   hc_yAxis(title=list(text="Taux de licences")) %>%
   hc_add_theme(thm),
 
-rowheight = 600)
+rowheight = 550)
 ```
 
 
@@ -562,7 +562,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-   scroll_box(height = "500px") 
+   scroll_box(height = "550px") 
 
 ```
 
@@ -609,7 +609,7 @@ hchart ( lic_dep %>%
    hc_yAxis(title=list(text="Proportion de licences")) %>%
    hc_add_theme(thm),
 
-rowheight = 600)
+rowheight = 550)
 
 
 ```
@@ -693,7 +693,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -733,7 +733,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -773,7 +773,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "500px") 
 
 ```
 
@@ -816,7 +816,7 @@ lic27epci %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "800px") 
+  scroll_box(height = "780px") 
 ```
 
 ### Carte ECPI {data-height="800"}
@@ -898,7 +898,7 @@ lic27bv %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T)   %>%
- scroll_box(height = "800px") 
+ scroll_box(height = "780px") 
 ```
 
 ### Carte BV {data-height="800"}

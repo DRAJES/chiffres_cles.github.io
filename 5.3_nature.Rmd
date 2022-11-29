@@ -96,7 +96,7 @@ La présence de sites de nature est fortement liée au relief. Les massifs monta
 Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 -----------------------------------------------------------------------
 
-### Comparaisons régionales
+### Régions
 
 **9e** région de France en nombre de sites de sport de nature.
 
@@ -118,7 +118,7 @@ nature %>%
            general_title = "Source : ",
            footnote_as_chunk = T)
 ```
-### Comparaisons départementales
+### Départements
 
 La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
 
@@ -145,7 +145,7 @@ hchart(nature %>%
 
 ```
 
-### Comparaisons infra régionales
+### Dép BFC
 ```{r}
 nature %>% 
   filter(REG=='27') %>% 
@@ -165,7 +165,7 @@ nature %>%
            footnote_as_chunk = T)
 ```
 
-### Sites de sport de nature en Bourgogne-Franche-Comté
+### Sites de sport de nature
 
 Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
 
@@ -187,7 +187,7 @@ nature27 %>%
 
 
 
-### Carte régionale des sites de sport nature
+### Carte 
 
 ```{r}
 nature27.df <- split(nature27,nature27$EquipementFamille)
@@ -231,7 +231,7 @@ l %>%
 
 
 
-### carte des sites de sport nature cluster
+### Carte (cluster)
 ```{r}
 nature27.df <- split(nature27,nature27$EquipementFamille)
 
