@@ -49,7 +49,7 @@ En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations se
 C'est la troisième région de France en nombre d'association par habitant derrière la Corse et l'Occitanie.
 Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 -----------------------------------------------------------------------
 
 ### Comparaisons
@@ -117,7 +117,7 @@ RNApop %>%
 footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP2019", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "600px") 
 ```
 
 ### Thématiques
@@ -240,7 +240,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="100"}
 
 Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux où les associations sont les plus fréquentes
 
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 -----------------------------------------------------------------------
 
 ### Comparaisons
@@ -356,7 +356,7 @@ RNApop %>%
   footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
+  scroll_box(height = "600px") 
 
 ```
 
@@ -455,7 +455,7 @@ carte_asso() %>% contour_bfc()
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
-Row {.tabset .tabset-fade .tabset-pills data-height="900"}
+Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 -----------------------------------------------------------------------
 
 
@@ -481,7 +481,7 @@ RNApop %>%
   footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
-  scroll_box(height = "800px") 
+  scroll_box(height = "700px") 
 
 ```
 
@@ -500,7 +500,7 @@ carte_asso() %>% contour_depbfc()
 =======================================================================
 Row {data-height="20"}
 -----------------------------------------------------------------------
-Row {.tabset .tabset-fade .tabset-pills data-height="900"}
+Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 -----------------------------------------------------------------------
 
 
@@ -526,7 +526,7 @@ RNApop %>%
   footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
-  scroll_box(height = "800px") 
+  scroll_box(height = "700px") 
 
 ```
 

@@ -343,7 +343,7 @@ hchart(bafaregm %>%
   hchart( bafaregm %>%
             filter(sexe %in% "Ensemble") %>%
             filter(!(CODGEO %in% c("France", "METRO"))),
-"areaspline", hcaes(x = année, y = BAFA, group = CODGEO),
+"areaspline", hcaes(x = année, y = BAFA, group = region),
           stacking = "normal",
           marker=FALSE,
           showInLegend =T,  pointWidth = 20)
@@ -439,7 +439,7 @@ list_of_plots <- map(depbfc, function(x) {
                   hcaes(x = année, y = BAFA, group = dep),
                   type = "spline",
                   name = "Hommes",  pointWidth = 10, dashStyle=  'ShortDot') %>%
-    hc_title(text = x) %>%
+    hc_title(text = str_to_title(filtered$deplib[1])) %>%
     hc_add_theme(thm) 
   
   })

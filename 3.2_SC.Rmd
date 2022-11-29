@@ -163,7 +163,8 @@ hchart( basebfc %>%
                       select(CODGEO,département=LIBGEO),
                     by=c("depvol"="CODGEO") ) ,
 "spline",hcaes(x=debut,y=volresid,group=département),
-        showInLegend = T,  pointWidth = 20) %>%
+        showInLegend = T,  pointWidth = 20,
+        marker = FALSE) %>%
   hc_xAxis(title=list(text="Année")) %>%
   hc_yAxis(title=list(text="Nombre de volontaires")) %>%
   hc_add_theme(thm) 
