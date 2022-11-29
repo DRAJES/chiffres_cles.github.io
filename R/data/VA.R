@@ -5,6 +5,7 @@ library(rvest)
 library(httr)
 library(purrr)
 library(stringr)
+library(glue)
 library(curl)
 library(tidyverse)
 
@@ -100,14 +101,14 @@ RNAwaldec <- RNAwaldecfr %>%
 
 RNA <- RNAimport %>% 
   select(id,siret,gestion,date_creat,date_publi,
-         nature,groupement,titre,obj,objr,
+         nature,groupement,titre,obj,objr,dir_civilite,
          adrs_codepostal,adrs_codeinsee,observation,position,
          rup_mi,maj_time,CODGEO_2022) %>%
   bind_rows(
     RNAwaldec %>%
   #    filter(position=="A") %>%
       select(id,siret,gestion,date_creat,date_publi,
-             nature,groupement,titre,obj,objr,
+             nature,groupement,titre,obj,objr,dir_civilite,
              adrs_codepostal,adrs_codeinsee,observation,position,
              rup_mi,maj_time,CODGEO_2022)
   ) %>%

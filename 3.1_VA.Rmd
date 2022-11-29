@@ -45,18 +45,19 @@ Row {data-height="100"}
 
 ### Données générales
 
-En novembre 2022, la Bourgogne-Franche-Comté compte **118 000** associations selon le Répertoire national des Associations.
+En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire national des Associations.
 C'est la troisième région de France en nombre d'association par habitant derrière la Corse et l'Occitanie.
 Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
-### Comparaisons régionales
+### Comparaisons
 
-**9e** région française en nombre d'associations
+**9e** région française en nombre d'associations, **3e** en taux par habitant
 
 ```{r}
+hw_grid(
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG) %>% 
@@ -70,13 +71,8 @@ hchart(RNApop %>%
   hc_xAxis(title=list(text="Régions")) %>%
   hc_yAxis(title=list(text="Nombre d'associations")) %>%
   hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) 
-```
-### Taux d'associations
+  hc_add_theme(thm) ,
 
-**3e** région française en taux d'associations 
-
-```{r}
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG) %>% 
@@ -91,73 +87,10 @@ hchart(RNApop %>%
          name="Taux d'association pour 100 habitants", showInlegend=T, pointWidth = 20  )%>%
   hc_xAxis(title=list(text="Régions")) %>%
   hc_yAxis(title=list(text="Taux d'associations")) %>%
-  hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) 
-```
-
-
-
-
-```{r}
-### Evolution nationale
-# hchart(RNA %>% 
-#          filter (!is.na(REG) & !is.na(objr)) %>% 
-#          filter(année > 2010 ) %>%
-#          group_by(année) %>% 
-#        count(name="nb associations") %>%
-#        "spline",hcaes(x=année,y=n) ) %>%
-#     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) 
-
-```
-
-
-
-### Evolutions régionales
-Créations d'associations par année
-```{r}
-
-hw_grid(
-
-  hchart(RNA %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         filter(année > 2010 ) %>%
-         group_by(année) %>% 
-         count(name="nb associations"), 
-      "spline",hcaes(x=année,y=`nb associations`) ) %>%
-     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
-  
-  hchart(RNA %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         filter(année > 2010 ) %>%
-         group_by(REG, année) %>% 
-         count(name="nb associations") %>%
-         left_join(.,appartenance %>%
-                     filter(NIVGEO=="REG") %>%
-                     select(CODGEO,LIBGEO),
-                   by=c("REG"="CODGEO")),
-       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
-        stacking = "normal", 
-       marker = FALSE) ,
-#    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
-
+  hc_add_theme(thm),
  rowheight = 600 ) 
-#htmltools::browsable()
+
 ```
-
-
-
-
-### Carte régionale
-Hors Alsace-Moselle
-```{r}
-
-RNAcarto <- merge(regwgs,RNAcarto(REG),by="REG")
-
-carte_asso() %>% contour_bfc()
-```
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
 
 ### Tableau 
 
@@ -187,10 +120,12 @@ footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP2
   scroll_box(height = "400px") 
 ```
 
-### Domaines d'intervention des associations
+### Thématiques
 
 
 ```{r}
+hw_grid(
+  
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG,objr) %>% 
@@ -203,14 +138,8 @@ hchart(RNApop %>%
          stacking = "normal",
          showInlegend=T, pointWidth = 20)  %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) 
-```
+  hc_add_theme(thm) ,
 
-
-### Structure régionale des domaines d'intervention des associations
-
-
-```{r}
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>%
          group_by(REG,objr) %>% 
@@ -223,8 +152,79 @@ hchart(RNApop %>%
          stacking = "percent",
          showInlegend=T, pointWidth = 20)  %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) ,
+
+rowheight = 600)
+
+
+
 ```
+
+```{r}
+### Nombre de femmes
+
+```
+
+
+
+```{r, include=FALSE}
+hchart(RNA %>%
+         filter(position=="A") %>% 
+         filter(observation!="DISSOUTE")%>%
+         filter (!is.na(REG) & !is.na(objr)) %>%
+         group_by(dir_civilite) %>%
+         count(name="nb associations") ,
+         "spline",hcaes(x=dir_civilite, y=`nb associations` ) ) %>%
+  hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  )
+
+```
+
+
+### Evolution
+Créations d'associations par année
+```{r}
+
+hw_grid(
+
+  hchart(RNA %>% 
+         filter (!is.na(REG) & !is.na(objr)) %>% 
+         filter(année > 2010 ) %>%
+         group_by(année) %>% 
+         count(name="nb associations"), 
+      "spline",hcaes(x=année,y=`nb associations`),
+       marker = FALSE) %>%
+     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
+  
+  hchart(RNA %>% 
+         filter (!is.na(REG) & !is.na(objr)) %>% 
+         filter(année > 2010 ) %>%
+         group_by(REG, année) %>% 
+         count(name="nb associations") %>%
+         left_join(.,appartenance %>%
+                     filter(NIVGEO=="REG") %>%
+                     select(CODGEO,LIBGEO),
+                   by=c("REG"="CODGEO")),
+       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
+        stacking = "normal", 
+       marker = FALSE) ,
+#    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
+
+ rowheight = 600 ) 
+#htmltools::browsable()
+```
+
+
+
+
+### Carte 
+Hors Alsace-Moselle
+```{r}
+
+RNAcarto <- merge(regwgs,RNAcarto(REG),by="REG")
+
+carte_asso() %>% contour_bfc()
+```
+
 
 
 
@@ -243,9 +243,10 @@ Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux o
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
-### Comparaisons départementales
+### Comparaisons
 
 ```{r}
+hw_grid(
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG,DEP) %>% 
@@ -277,12 +278,8 @@ hchart(RNApop %>%
     hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-    hc_add_theme(thm) 
-```
+    hc_add_theme(thm) ,
 
-### Taux d'associations
-
-```{r}
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>%
          group_by(DEP) %>% 
@@ -329,25 +326,78 @@ hchart(RNApop %>%
     hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Taux d'associations")) %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm) ,
+rowheight = 600)
+
+
 ```
 
+### Tableau 
 
+Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
 
 ```{r}
-# ### Evolution régionale
-# Créations d'associations par année
-# hchart(RNA %>%
-#          filter (!is.na(DEP) & !is.na(objr)) %>% 
-#          filter(année > 2010 ) %>%
-#          filter(DEP %in% depbfc) %>%
-#          group_by(année) %>% count(),
-#        "spline",hcaes(x=année,y=n),
-#        marker = FALSE)
+RNApop %>% 
+  filter (!is.na(REG) & !is.na(objr)) %>% 
+  group_by(REG,DEP, objr) %>% 
+  filter (DEP %in% depbfc) %>%  
+  summarise(asso=sum(total,na.rm = T)) %>%
+  pivot_wider(DEP,names_from = objr , values_from = asso) %>%
+  adorn_totals("col", name = "total" ) %>%
+  left_join(.,pop_basecom(DEP),
+            by="DEP") %>%
+  adorn_totals("row", name = "BFC" , fill = "Bourgogne-Franche-Comté") %>%
+  mutate(txasso=total*100/pop) %>%
+  tableau_asso() %>%
+  
+  cc_kable("crlrrrrrr") %>%
+  column_spec(2, bold=T) %>%
+  column_spec(3, italic=T) %>%
+  footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
+           general_title = "Source : ",
+           footnote_as_chunk = T) %>%
+  scroll_box(height = "400px") 
+
 ```
 
+### Thématiques
+de nombreuses associations sportives
 
-### Evolutions départementales
+```{r}
+hw_grid(
+hchart(RNApop %>% 
+         filter (!is.na(REG) & !is.na(objr)) %>% 
+         group_by(REG,DEP,objr) %>% 
+         filter (DEP %in% depbfc) %>% 
+         summarise(asso=sum(total,na.rm = T)) %>%
+         left_join(.,pop_basecom(DEP),
+                   by="DEP") %>%
+        #adorn_totals(name = "FR")%>%
+         mutate(txasso=round(asso*100/pop,2)),
+  "bar", hcaes(x=Libellé,y=asso,group=objr),
+         stacking = "normal",
+         showInlegend=T, pointWidth = 20)  %>%
+  hc_add_theme(thm) ,
+
+hchart(RNApop %>% 
+         filter (!is.na(REG) & !is.na(objr)) %>% 
+         group_by(REG,DEP,objr) %>% 
+         filter (DEP %in% depbfc) %>% 
+         summarise(asso=sum(total,na.rm = T)) %>%
+         left_join(.,pop_basecom(DEP),
+                   by="DEP") %>%
+         #adorn_totals(name = "FR")%>%
+         mutate(txasso=round(asso*100/sum(asso),2)),
+  "bar", hcaes(x=Libellé,y=txasso,group=objr),
+         stacking = "percent",
+         showInlegend=T, pointWidth = 20)  %>%
+  hc_add_theme(thm) ,
+
+rowheight = 600)
+
+```
+
+### Evolution
 Créations d'associations par année
 
 ```{r}
@@ -388,7 +438,7 @@ hw_grid(
 
 ```
 
-### Carte départementale
+### Carte 
 Hors Alsace-Moselle
 ```{r}
 source("R/data/asso.R")
@@ -398,77 +448,6 @@ RNAcarto <- merge(depwgs,RNAcarto(DEP),by="DEP")
 carte_asso() %>% contour_bfc()
 
 
-```
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Tableau 
-
-Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
-
-```{r}
-RNApop %>% 
-  filter (!is.na(REG) & !is.na(objr)) %>% 
-  group_by(REG,DEP, objr) %>% 
-  filter (DEP %in% depbfc) %>%  
-  summarise(asso=sum(total,na.rm = T)) %>%
-  pivot_wider(DEP,names_from = objr , values_from = asso) %>%
-  adorn_totals("col", name = "total" ) %>%
-  left_join(.,pop_basecom(DEP),
-            by="DEP") %>%
-  adorn_totals("row", name = "BFC" , fill = "Bourgogne-Franche-Comté") %>%
-  mutate(txasso=total*100/pop) %>%
-  tableau_asso() %>%
-  
-  cc_kable("crlrrrrrr") %>%
-  column_spec(2, bold=T) %>%
-  column_spec(3, italic=T) %>%
-  footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-  scroll_box(height = "400px") 
-
-```
-
-### Domaines d'intervention des associations
-
-
-```{r}
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         group_by(REG,DEP,objr) %>% 
-         filter (DEP %in% depbfc) %>% 
-         summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,pop_basecom(DEP),
-                   by="DEP") %>%
-        #adorn_totals(name = "FR")%>%
-         mutate(txasso=round(asso*100/pop,2)),
-  "bar", hcaes(x=Libellé,y=asso,group=objr),
-         stacking = "normal",
-         showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) 
-```
-
-
-### Structure régionale des domaines d'intervention des associations
-
-De nombreuses associations sportives
-
-```{r}
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         group_by(REG,DEP,objr) %>% 
-         filter (DEP %in% depbfc) %>% 
-         summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,pop_basecom(DEP),
-                   by="DEP") %>%
-         #adorn_totals(name = "FR")%>%
-         mutate(txasso=round(asso*100/sum(asso),2)),
-  "bar", hcaes(x=Libellé,y=txasso,group=objr),
-         stacking = "percent",
-         showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) 
 ```
 
 

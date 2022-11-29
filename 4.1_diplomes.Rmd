@@ -345,6 +345,7 @@ hchart(bafaregm %>%
             filter(!(CODGEO %in% c("France", "METRO"))),
 "areaspline", hcaes(x = année, y = BAFA, group = CODGEO),
           stacking = "normal",
+          marker=FALSE,
           showInLegend =T,  pointWidth = 20)
 
 ```

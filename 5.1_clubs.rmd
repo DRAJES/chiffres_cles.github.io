@@ -49,12 +49,12 @@ Row {data-height="100"}
 La région Bourgogne-Franche-Comté compte **`r prettyNum(round(as.numeric(club_reg[118,5])/100,0)*100,big.mark = " ")`** clubs en 2021.
 La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
 
-Row {.tabset .tabset-fade .tabset-pills data-height="400"}
+Row {.tabset .tabset-fade .tabset-pills data-height="650"}
 -----------------------------------------------------------------------
 
-### Comparaisons régionales
+### Comparaisons 
 
-**11e** région de France en nombre de clubs.
+**11e** région de France en nombre de clubs, **6e** en clubs par habitant.
 
 ```{r}
 clubreg <- as.data.frame(t(club_reg[119,3:15]))
@@ -68,6 +68,8 @@ clubreg <- clubreg %>%
 
 clubreg[14,3] <- "France"
 
+hw_grid(
+  
 hchart(clubreg %>% 
          slice(-14) %>% 
          arrange(desc(V1)),
@@ -77,14 +79,7 @@ hchart(clubreg %>%
        name = "Clubs" ) %>%
    hc_xAxis(title=list(text="Région")) %>%
    hc_yAxis(title=list(text="Nombre de clubs")) %>%
-   hc_add_theme(thm) 
-```
-
-### Taux de clubs sportifs pour 10 000 habitants
-
-**6e** région de France en taux de clubs par habitant.
-
-```{r}
+   hc_add_theme(thm) ,
 
 hchart(clubreg %>% 
          arrange(desc(txclub)),
@@ -94,46 +89,13 @@ hchart(clubreg %>%
        showInLegend = F,  pointWidth = 10,
        name = "Taux de clubs") %>%
     hc_xAxis(title=list(text="Région")) %>%
-    hc_yAxis(title=list(text="Taux de clubs (/10 000)")) %>%
-    hc_add_theme(thm) 
+    hc_yAxis(title=list(text="Taux de clubs (/10 000 hab.)")) %>%
+    hc_add_theme(thm) ,
 
+rowheight = 600)
 ```
 
-### Carte régionale
-
-```{r}
-sportreg <- as.data.frame(t(club_reg)) %>%
-              select(clubs_tot=V119) %>% 
-              mutate(clubs_tot=as.numeric(clubs_tot)) %>%
-              rownames_to_column("REG") %>% 
-              slice (3:15)
-
-cartosportreg <- sp::merge(regwgs,sportreg,by="REG")
-
-leaflet(cartosportreg) %>% 
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6,
-              fill=F, smoothFactor = 2 ) %>%
-    contour_bfc() %>%
-  addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
-             group = "region", 
-             radius=~500*clubs_tot^(1/2),
-             fillColor = ~pal2(10000*cartosportreg$clubs_tot/cartosportreg$pop), fillOpacity = 0.8,
-             color = "#4169E1", weight=4,  opacity = 0.8,
-             highlight = highlightOptions (
-                         color = "#00FFFF", weight = 5,fillOpacity =  0.1),
-             popup = popupTable(cartosportreg@data %>% 
-                                  select(Région=LIBGEO,pop,clubs_tot) %>%
-                                  mutate(`Taux de clubs`=10000*clubs_tot/pop),
-                                feature.id=F,row.numbers = F)) %>%
-  addLegend( pal = pal2 , values = 10000*(cartosportreg$clubs_tot/cartosportreg$pop),
-             position = "bottomright", title = "taux de clubs sportifs" )
-
-```
-
-Row {.tabset .tabset-fade .tabset-pills data-height="400"}
------------------------------------------------------------------------
-
-### Clubs par type de fédération
+### Clubs par fédérations
 
 **La moitié des clubs sont affiliés à une fédération unisport olympique.**
 
@@ -165,7 +127,7 @@ club_reg %>%
   footnote(general = " MEDES recensement des licences sportives et des clubs 2021", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
-  scroll_box(height = "350px") 
+  scroll_box(height = "500px") 
 
 
 
@@ -173,9 +135,11 @@ club_reg %>%
 
 ```
 
-### Répartition des clubs par type de fédération
+### Répartition 
 
-```{r, plotly=T}
+```{r}
+
+hw_grid(
 hchart( club_reg %>%  
           dplyr::select(2,"11":"94") %>% #,France="...22") 
           slice(39,91,118,119) %>%
@@ -191,14 +155,8 @@ hchart( club_reg %>%
         showInLegend = T,  pointWidth =20) %>%
    hc_xAxis(title=list(text="Région")) %>%
    hc_yAxis(title=list(text="Nombre de clubs")) %>%
-   hc_add_theme(thm) 
+   hc_add_theme(thm) ,
 
-
-```
-
-### Structure des clubs par type de fédération
-
-```{r, plotly=T}
 hchart( club_reg %>%  
           dplyr::select(2,"11":"94" ) %>% #,France="...22"
           slice(39,91,118,119) %>%
@@ -214,15 +172,50 @@ hchart( club_reg %>%
       showInLegend = T,  pointWidth =20) %>%
    hc_xAxis(title=list(text="Région")) %>%
    hc_yAxis(title=list(text="Pourcentage de clubs")) %>%
-   hc_add_theme(thm) 
+   hc_add_theme(thm) ,
 
+rowheight = 600)
 
 ```
 
-Column {.tabset .tabset-fade .tabset-pills}
+### Carte 
+
+```{r}
+sportreg <- as.data.frame(t(club_reg)) %>%
+              select(clubs_tot=V119) %>% 
+              mutate(clubs_tot=as.numeric(clubs_tot)) %>%
+              rownames_to_column("REG") %>% 
+              slice (3:15)
+
+cartosportreg <- sp::merge(regwgs,sportreg,by="REG")
+
+leaflet(cartosportreg) %>% 
+  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6,
+              fill=F, smoothFactor = 2 ) %>%
+    contour_bfc() %>%
+  addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
+             group = "region", 
+             radius=~500*clubs_tot^(1/2),
+             fillColor = ~pal2(10000*cartosportreg$clubs_tot/cartosportreg$pop), fillOpacity = 0.8,
+             color = "#4169E1", weight=4,  opacity = 0.8,
+             highlight = highlightOptions (
+                         color = "#00FFFF", weight = 5,fillOpacity =  0.1),
+             popup = popupTable(cartosportreg@data %>% 
+                                  select(Région=LIBGEO,pop,clubs_tot) %>%
+                                  mutate(`Taux de clubs`=10000*clubs_tot/pop),
+                                feature.id=F,row.numbers = F)) %>%
+  addLegend( pal = pal2 , values = 10000*(cartosportreg$clubs_tot/cartosportreg$pop),
+             position = "bottomright", title = "taux de clubs sportifs" )
+
+```
+
+
+
+
+Row {.tabset .tabset-fade .tabset-pills}
 -----------------------------------------------------------------------
 
-### Détail fédération unisport olympique
+### Détail unisport olympique
 
 **Des clubs de grande taille en football, handball, golf, gymnastique ou encore en natation.**
 
@@ -262,25 +255,7 @@ club_reg %>%
 
 ```
 
-### Poids unisport olympique 
-```{r}
-hchart(club_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(2:38) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% 
-         arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG") ,
-"treemap", hcaes(x=fede, group = REG, value=round(value,1)  ),
-        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) 
-
-```
-
-
-### Détail fédération unisport non olympique
+### Détail unisport non olympique
 
 **Des clubs de plus petite taille pour les fédérations unisport non olympiques.**
 
@@ -319,24 +294,7 @@ club_reg %>%
 
 ```
 
-### Poids unisport non olympique 
-```{r}
-hchart(club_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(41:90) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG")  ,
-"treemap",  hcaes(x=fede, group = REG, value=round(value,1)  ),
-        color = c("#1a6ecc70", "#90ed7d60" ) ) %>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) 
-
-
-```
-
-### Détail fédération multisport
+### Détail multisport
 
 **Une part importante du sport scolaire dans les fédérations multisports.**
 
@@ -375,8 +333,37 @@ club_reg %>%
 
 ```
 
-### Poids multisport 
+### Poids des fédérations 
 ```{r}
+hw_grid(
+  
+  hchart(club_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(2:38) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
+                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>% 
+         arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG") ,
+"treemap", hcaes(x=fede, group = REG, value=round(value,1)  ),
+        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_subtitle(text="Fédérations unisport olympiques") %>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+  hc_add_theme(thm) ,
+
+  hchart(club_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(41:90) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
+                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>% arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG")  ,
+"treemap",  hcaes(x=fede, group = REG, value=round(value,1)  ),
+        color = c("#1a6ecc70", "#90ed7d60" ) ) %>%
+  hc_subtitle(text="Fédérations unisport non olympiques") %>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+  hc_add_theme(thm) ,
+  
 hchart(club_reg  %>% 
          select(fede=2,bfc="27",FR="...22") %>% 
          slice(93:117) %>%
@@ -387,8 +374,11 @@ hchart(club_reg  %>%
          pivot_longer(!fede ,names_to = "REG")  ,
 "treemap",  hcaes(x=fede, group = REG, value=round(value,1)  ),
         color = c("#1a6ecc70", "#90ed7d60" ) ) %>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) 
+    hc_subtitle(text="Fédérations multisport") %>%
+    hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+    hc_add_theme(thm) ,
+
+rowheight = 600)
 ```
 
 
@@ -405,10 +395,11 @@ Row {data-height="100"}
 
 La Nièvre et le Jura comptent plus de **10 clubs sportifs** pour 10 000 habitants. La Saône et Loire, 2 fois moins... En contre partie, la taille des clubs y est bien plus grande , comme dans le Territoire de Belfort, la Côte d'Or et le Doubs.
 
- Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+ Row {.tabset .tabset-fade .tabset-pills data-height="650"}
 -----------------------------------------------------------------------
 
-### Comparaisons départementales
+### Comparaisons 
+**La Nièvre et le Jura fortement dotées en clubs par habitant.**
 
 ```{r}
 clubdep <- as.data.frame(t(club_dep[120,4:99]))
@@ -425,6 +416,7 @@ clubdep <- clubdep %>%
 
 clubdep[97,3] <- "France"
 
+hw_grid(
 hchart(clubdep %>% 
          slice(-97) %>% 
          arrange(desc(V1)),
@@ -442,15 +434,7 @@ hchart(clubdep %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de clubs sportifs")) %>%
-  hc_add_theme(thm) 
-
-```
-
-### Taux de clubs sportifs pour 10 000 habitants
-
-**La Nièvre et le Jura fortement dotées en clubs par habitant.**
-
-```{r}
+  hc_add_theme(thm) ,
 
 hchart(clubdep %>% 
          arrange(desc(txclub)),
@@ -469,50 +453,13 @@ hchart(clubdep %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Taux de clubs sportifs (/ 10 000)")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) ,
+
+rowheight = 600)
 
 ```
 
-
-
-### Carte départementale
-
-```{r}
-sportdep <- as.data.frame(t(club_dep)) %>%
-                select(clubs_tot=V119) %>% 
-                mutate(clubs_tot=as.numeric(clubs_tot)) %>%
-                rownames_to_column("DEP") 
-
-sportdep$DEP <- ifelse(nchar(sportdep$DEP)==1,
-                             paste0("0",sportdep$DEP),
-                             sportdep$DEP ) 
-
-cartosportdep <- sp::merge(depwgs,sportdep,by="DEP")
-
-leaflet(cartosportdep) %>% 
-  addPolygons(color = "#2F4F4F",weight=2,opacity = 0.6,
-              fill=F, smoothFactor = 2 ) %>%
-    contour_depbfc(zoom = 6) %>%
-  addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
-             group = "region", radius=~500*clubs_tot^(1/2),
-             fillColor = ~pal2(10000*cartosportdep$clubs_tot/cartosportdep$pop),
-             weight=4, color = "#4169E1", opacity = 0.8,
-             fillOpacity = 0.8,
-             highlight = highlightOptions (
-                          color = "#00FFFF",  weight = 5, fillOpacity =  0.1 ),
-             popup = popupTable(cartosportdep@data %>% 
-                                  select(Département=LIBGEO,pop,clubs_tot) %>%
-                                  mutate(`Taux de clubs`=10000*clubs_tot/pop),
-                                feature.id=F,row.numbers = F)) %>%
-  addLegend( pal = pal2 , values = 10000*(cartosportdep$clubs_tot/cartosportdep$pop),
-             position = "bottomright", title = "taux de clubs sportifs" )
-
-```
-
-Row {.tabset .tabset-fade .tabset-pills data-height="400"}
------------------------------------------------------------------------
-
-### Clubs sportifs par type de fédération
+### Clubs par fédération
 
 **Des clubs plus petits dans le Nièvre et dans l'Yonne.**
 
@@ -553,13 +500,14 @@ club_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "350px") 
+  scroll_box(height = "500px") 
 
 ```
 
-### Répartition des clubs par type de fédération
+### Répartition
 
 ```{r}
+hw_grid(
 hchart( club_dep %>%  
           dplyr::select(2,depbfc) %>%
           slice(40,92,119,120) %>%
@@ -577,14 +525,8 @@ hchart( club_dep %>%
          showInLegend = T,  pointWidth =20) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de clubs")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) ,
 
-
-```
-
-### Structure des clubs par type de fédération
-
-```{r}
 hchart( club_dep %>%
           dplyr::select(2,depbfc) %>%
           slice(40,92,119,120) %>%
@@ -602,11 +544,50 @@ hchart( club_dep %>%
          showInLegend = T,  pointWidth =20) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Proportion de clubs")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) ,
+
+rowheight = 600)
+
 
 ```
 
-Column {.tabset .tabset-fade .tabset-pills}
+### Carte 
+
+```{r}
+sportdep <- as.data.frame(t(club_dep)) %>%
+                select(clubs_tot=V119) %>% 
+                mutate(clubs_tot=as.numeric(clubs_tot)) %>%
+                rownames_to_column("DEP") 
+
+sportdep$DEP <- ifelse(nchar(sportdep$DEP)==1,
+                             paste0("0",sportdep$DEP),
+                             sportdep$DEP ) 
+
+cartosportdep <- sp::merge(depwgs,sportdep,by="DEP")
+
+leaflet(cartosportdep) %>% 
+  addPolygons(color = "#2F4F4F",weight=2,opacity = 0.6,
+              fill=F, smoothFactor = 2 ) %>%
+    contour_depbfc(zoom = 6) %>%
+  addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
+             group = "region", radius=~500*clubs_tot^(1/2),
+             fillColor = ~pal2(10000*cartosportdep$clubs_tot/cartosportdep$pop),
+             weight=4, color = "#4169E1", opacity = 0.8,
+             fillOpacity = 0.8,
+             highlight = highlightOptions (
+                          color = "#00FFFF",  weight = 5, fillOpacity =  0.1 ),
+             popup = popupTable(cartosportdep@data %>% 
+                                  select(Département=LIBGEO,pop,clubs_tot) %>%
+                                  mutate(`Taux de clubs`=10000*clubs_tot/pop),
+                                feature.id=F,row.numbers = F)) %>%
+  addLegend( pal = pal2 , values = 10000*(cartosportdep$clubs_tot/cartosportdep$pop),
+             position = "bottomright", title = "taux de clubs sportifs" )
+
+```
+
+
+
+Row {.tabset .tabset-fade .tabset-pills}
 -----------------------------------------------------------------------
 
 ### Détail fédération unisport olympique

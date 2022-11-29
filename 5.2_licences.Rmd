@@ -42,12 +42,12 @@ Mais la pratique féminine est plus fréquente : **39,7 %** des licences sont d�
 Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
 à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
 
-Row {.tabset .tabset-fade .tabset-pills data-height="450"}
+Row {.tabset .tabset-fade .tabset-pills data-height="650"}
 -----------------------------------------------------------------------
 
-### Comparaisons régionales
+### Comparaisons
 
-**11e** région de France en nombre de licenciés.
+**11e** région de France en nombre de licenciés. **9e** région en licences par habitant (**0,8 points** de moins que la moyenne nationale)
 
 ```{r}
 licreg <- as.data.frame(t(lic_reg[117,3:15]))
@@ -61,6 +61,7 @@ licreg <- licreg %>%
 
 licreg[14,3] <- "France"
 
+hw_grid(
 hchart(licreg %>% slice(-14) %>% 
          arrange(desc(V1)),
 "bar", hcaes(x=reorder(region,V1),y=V1,
@@ -69,15 +70,7 @@ hchart(licreg %>% slice(-14) %>%
        name = "Licences") %>%
     hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de licences")) %>%
-    hc_add_theme(thm) 
-```
-
-### Taux de licences
-
-**9e** région de France en taux de licences par habitant.  
-**0,8 points** de moins que la moyenne nationale.
-
-```{r}
+    hc_add_theme(thm) ,
 
 hchart(licreg %>% 
          arrange(desc(txlic)),
@@ -88,47 +81,15 @@ hchart(licreg %>%
        name = "Taux de licences" ) %>%
     hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Taux de licences (%)")) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm) ,
+
+rowheight = 600)
 
 ```
 
-### Carte régionale
+### Licences par fédérations
 
-```{r}
-sportreg <- as.data.frame(t(lic_reg)) %>%
-            select(licences_tot=V117) %>%
-            mutate(licences_tot=as.numeric(licences_tot)) %>%
-            rownames_to_column("REG") %>% 
-            slice (3:15)
-
-cartosportreg <- sp::merge(regwgs,sportreg,by="REG")
-
-leaflet(cartosportreg) %>% 
-  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F",
-              fill=F, smoothFactor = 2 ) %>%
-    contour_bfc() %>%
-  addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
-             group = "region", radius=~50*licences_tot^(1/2),
-             fillColor = ~pal2(100*cartosportreg$licences_tot/cartosportreg$pop),
-             weight=4, color = "#4169E1", opacity = 0.8,
-             fillOpacity = 0.8,
-             highlight = highlightOptions (fillOpacity =  0.1,
-             weight = 5,   color = "#00FFFF"),
-             popup = popupTable(cartosportreg@data %>% 
-                                   select(Région=LIBGEO,pop,licences_tot) %>%
-                                  mutate(`Taux de licences`=100*licences_tot/pop),
-                                 feature.id=F,row.numbers = F)) %>%
-addLegend(pal = pal2 , values = 100*(cartosportreg$licences_tot/cartosportreg$pop),
-            position = "bottomright", title = "taux de pénétration sportive")
-
-```
-
-Row {.tabset .tabset-fade .tabset-pills data-height="400"}
------------------------------------------------------------------------
-
-### Licences par type de fédération
-
-Environ **40 % ** de licences féminines.
+Environ **40 % ** de licences féminines. 
 
 ```{r}
 lic_reg %>%  
@@ -162,13 +123,15 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-   scroll_box(height = "350px") 
+   scroll_box(height = "500px") 
 
 ```
 
-### Répartition des licences par type de fédération
+### Répartition 
+Plus de la **moitié** des licences dans les fédérations unisport olympiques.
 
-```{r, plotly=T}
+```{r}
+hw_grid(
 hchart ( lic_reg %>%  
            dplyr::select(2,"11":"94") %>% #,France="...22"
            slice(39,91,116,117) %>%
@@ -184,15 +147,8 @@ hchart ( lic_reg %>%
          showInLegend = T,  pointWidth =20) %>%
     hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de licences")) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm) ,
 
-```
-
-### Structure des licences par type de fédération
-
-**Plus de la moitié des licences dans les fédérations unisport olympiques.**
-
-```{r, plotly=T}
 hchart ( lic_reg %>%  
            dplyr::select(2,"11":"94",`METRO`="...22") %>%
            slice(39,91,116,117) %>%
@@ -208,11 +164,44 @@ hchart ( lic_reg %>%
          showInLegend = T,  pointWidth =20) %>%
     hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Proportion de licences")) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm) ,
+
+rowheight = 600)
 
 ```
 
-Column {.tabset .tabset-fade .tabset-pills}
+### Carte
+
+```{r}
+sportreg <- as.data.frame(t(lic_reg)) %>%
+            select(licences_tot=V117) %>%
+            mutate(licences_tot=as.numeric(licences_tot)) %>%
+            rownames_to_column("REG") %>% 
+            slice (3:15)
+
+cartosportreg <- sp::merge(regwgs,sportreg,by="REG")
+
+leaflet(cartosportreg) %>% 
+  addPolygons(weight=2,opacity = 0.6,color = "#2F4F4F",
+              fill=F, smoothFactor = 2 ) %>%
+    contour_bfc() %>%
+  addCircles(centroid(cartosportreg)[,1],centroid(cartosportreg)[,2],
+             group = "region", radius=~50*licences_tot^(1/2),
+             fillColor = ~pal2(100*cartosportreg$licences_tot/cartosportreg$pop),
+             weight=4, color = "#4169E1", opacity = 0.8,
+             fillOpacity = 0.8,
+             highlight = highlightOptions (fillOpacity =  0.1,
+             weight = 5,   color = "#00FFFF"),
+             popup = popupTable(cartosportreg@data %>% 
+                                   select(Région=LIBGEO,pop,licences_tot) %>%
+                                  mutate(`Taux de licences`=100*licences_tot/pop),
+                                 feature.id=F,row.numbers = F)) %>%
+addLegend(pal = pal2 , values = 100*(cartosportreg$licences_tot/cartosportreg$pop),
+            position = "bottomright", title = "taux de pénétration sportive")
+
+```
+
+Row {.tabset .tabset-fade .tabset-pills}
 -----------------------------------------------------------------------
 
 ### Détail unisport olympique
@@ -265,28 +254,6 @@ lic_reg %>%
 
 ```
 
-### Poids unisport olympique
-
-Le football représente près du **quart** des licences unisport olympiques.
-
-```{r}
-hchart(lic_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(2:38) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>%
-         arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG") ,
-"treemap", hcaes(x=fede, group = REG, value=round(value,1) ),
-       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) 
-
-
-```
-
-
 ### Détail unisport non olympique
 
 ```{r}
@@ -333,26 +300,6 @@ lic_reg %>%
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
   scroll_box(height = "400px") 
-
-```
-
-### Poids unisport non olympique
-
-**1/5e** des  unisport non olympique en pétanque, **1/6e** en randonnée.
-
-```{r}
-hchart(lic_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(41:90) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% 
-         arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG") ,
-"treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
-       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) 
 
 ```
 
@@ -404,11 +351,40 @@ lic_reg %>%
 
 ```
 
-### Poids multisport
+### Poids des fédérations
 
-Près d'un **quart** des licences multisport en UNSS.
 
 ```{r}
+hw_grid(
+  
+  hchart(lic_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(2:38) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
+                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>%
+         arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG") ,
+"treemap", hcaes(x=fede, group = REG, value=round(value,1) ),
+       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_subtitle(text="Le football représente près du <b>quart</b> des licences unisport olympiques") %>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+  hc_add_theme(thm) ,
+
+hchart(lic_reg  %>% 
+         select(fede=2,bfc="27",FR="...22") %>% 
+         slice(41:90) %>%
+         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
+                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
+         select(-2,-3) %>% 
+         arrange(desc(txBFC))  %>%
+         pivot_longer(!fede ,names_to = "REG") ,
+"treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
+       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+  hc_subtitle(text="<b>1/5e</b> des  unisport non olympique en pétanque, <b>1/6e</b> en randonnée") %>%
+  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+  hc_add_theme(thm) ,
+
 hchart(lic_reg  %>% 
          select(fede=2,bfc="27",FR="...22") %>% 
          slice(93:115) %>%
@@ -419,8 +395,11 @@ hchart(lic_reg  %>%
          pivot_longer(!fede ,names_to = "REG") ,
 "treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
        color = c("#1a6ecc70", "#90ed7d60" )  )%>%
+    hc_subtitle(text="Près d'un <b>quart</b> des licences multisport en UNSS") %>%
   hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) ,
+  
+  rowheight=600)
 
 
 ```
@@ -471,10 +450,11 @@ Row {data-height="100"}
 
 La pratique sportive est diverse en Bourgogne-Franche-Comté. Le Jura est le département où la pratique licenciées est la plus développée avec **`r prettyNum(round(as.numeric(lic_reg[117,5])/1000,0)*1000,big.mark = " ")`** licenciés en 2020, en partie par l'importance de site de sport de nature dont les massifs montagneux. à l'inverse, l'Yonne est un des départements français où la pratique sportive est la plus faible. Cela ne signifie pas que les habitants ne pratiquent pas (cyclisme, randonnée...) mais ils sont moins souvent dans une structure.
 
- Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+ Row {.tabset .tabset-fade .tabset-pills data-height="650"}
 -----------------------------------------------------------------------
 
-### Comparaisons départementales
+### Comparaisons
+**Le Jura et le Doubs au dessus de la moyenne nationale, les autres département de BFC en dessous.**
 
 ```{r}
 licdep <- as.data.frame(t(lic_dep[118,4:99]))
@@ -492,6 +472,7 @@ licdep <- licdep %>%
 
 licdep[97,3] <- "France"
 
+hw_grid(
 hchart(licdep %>% 
          slice(-97) %>% 
          arrange(desc(V1)),
@@ -509,14 +490,7 @@ hchart(licdep %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de licences")) %>%
-  hc_add_theme(thm) 
-```
-
-### Taux de licences
-
-**Le Jura et le Doubs au dessus de la moyenne nationale, les autres département de BFC en dessous.**
-
-```{r}
+  hc_add_theme(thm) ,
 
 hchart(licdep %>% 
          arrange(desc(txlic)),
@@ -535,51 +509,13 @@ hchart(licdep %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Taux de licences")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm),
 
+rowheight = 600)
 ```
 
 
-### Carte départementale
-
-```{r}
-sportdep <- as.data.frame(t(lic_dep)) %>%
-                select(licences_tot=V118) %>%
-                mutate(licences_tot=as.numeric(licences_tot)) %>%
-                rownames_to_column("DEP") 
-
-sportdep$DEP <- ifelse(nchar(sportdep$DEP)==1,
-                             paste0("0",sportdep$DEP),
-                             sportdep$DEP ) 
-
-cartosportdep <- sp::merge(depwgs,sportdep,by="DEP")
-
-leaflet(cartosportdep) %>% 
-  addPolygons(color = "#2F4F4F",weight=2,opacity = 0.6, 
-              fill=F, smoothFactor = 2 ) %>%
-    contour_depbfc(zoom = 6) %>%
-  addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
-             group = "region", radius=~50*licences_tot^(1/2),
-             fillColor = ~pal2(100*cartosportdep$licences_tot/cartosportdep$pop),
-             weight=4, color = "#4169E1", opacity = 0.8,
-             fillOpacity = 0.8,
-             highlight = highlightOptions (
-                          color = "#00FFFF", weight = 5,  fillOpacity =  0.1 ),
-             popup = popupTable(cartosportdep@data %>% 
-                                  select(Département=LIBGEO,pop,licences_tot) %>%
-                                  mutate(`Taux de licences`=100*licences_tot/pop),
-                                feature.id=F,row.numbers = F)) %>%
-addLegend( pal = pal2 , values = 100*(cartosportdep$licences_tot/cartosportdep$pop),
-           position = "bottomright", title = "taux de pénétration sportive")
-
-```
-
-
-
-Row {.tabset .tabset-fade .tabset-pills data-height="400"}
------------------------------------------------------------------------
-
-### Licences par type de fédération
+### Licences par fédération
 
 **La pratique féminine plus développée dans le Jura.**
 
@@ -626,13 +562,15 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-   scroll_box(height = "350px") 
+   scroll_box(height = "500px") 
 
 ```
 
-### Répartition des licences par type de fédération
+### Répartition
+Plus de la moitié des licences dans les fédérations unisport olympiques.
 
 ```{r}
+hw_grid(
 hchart ( lic_dep %>%  
            dplyr::select(2,depbfc) %>%
            slice(40,92,117,118) %>%
@@ -650,15 +588,8 @@ hchart ( lic_dep %>%
          showInLegend = T,  pointWidth =20) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de licences")) %>%
-  hc_add_theme(thm)
+  hc_add_theme(thm),
 
-```
-
-### Structure des licences par type de fédération
-
-Plus de la moitié des licences dans les fédérations unisport olympiques.
-
-```{r}
 hchart ( lic_dep %>%  
            dplyr::select(2,depbfc) %>%
            slice(40,92,117,118) %>%
@@ -676,11 +607,52 @@ hchart ( lic_dep %>%
          showInLegend = T,  pointWidth =20) %>%
    hc_xAxis(title=list(text="Départements")) %>%
    hc_yAxis(title=list(text="Proportion de licences")) %>%
-   hc_add_theme(thm)
+   hc_add_theme(thm),
+
+rowheight = 600)
+
 
 ```
 
-Column {.tabset .tabset-fade .tabset-pills}
+### Carte 
+
+```{r}
+sportdep <- as.data.frame(t(lic_dep)) %>%
+                select(licences_tot=V118) %>%
+                mutate(licences_tot=as.numeric(licences_tot)) %>%
+                rownames_to_column("DEP") 
+
+sportdep$DEP <- ifelse(nchar(sportdep$DEP)==1,
+                             paste0("0",sportdep$DEP),
+                             sportdep$DEP ) 
+
+cartosportdep <- sp::merge(depwgs,sportdep,by="DEP")
+
+leaflet(cartosportdep) %>% 
+  addPolygons(color = "#2F4F4F",weight=2,opacity = 0.6, 
+              fill=F, smoothFactor = 2 ) %>%
+    contour_depbfc(zoom = 6) %>%
+  addCircles(centroid(cartosportdep)[,1],centroid(cartosportdep)[,2],
+             group = "region", radius=~50*licences_tot^(1/2),
+             fillColor = ~pal2(100*cartosportdep$licences_tot/cartosportdep$pop),
+             weight=4, color = "#4169E1", opacity = 0.8,
+             fillOpacity = 0.8,
+             highlight = highlightOptions (
+                          color = "#00FFFF", weight = 5,  fillOpacity =  0.1 ),
+             popup = popupTable(cartosportdep@data %>% 
+                                  select(Département=LIBGEO,pop,licences_tot) %>%
+                                  mutate(`Taux de licences`=100*licences_tot/pop),
+                                feature.id=F,row.numbers = F)) %>%
+addLegend( pal = pal2 , values = 100*(cartosportdep$licences_tot/cartosportdep$pop),
+           position = "bottomright", title = "taux de pénétration sportive")
+
+```
+
+
+
+
+
+Row {.tabset .tabset-fade .tabset-pills}
 -----------------------------------------------------------------------
 
 ### Détail unisport olympique
