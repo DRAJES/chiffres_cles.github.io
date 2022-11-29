@@ -212,7 +212,7 @@ leaflet(cartosportreg) %>%
 
 
 
-Row {.tabset .tabset-fade .tabset-pills}
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Détail unisport olympique
@@ -251,7 +251,7 @@ club_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -290,7 +290,7 @@ club_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -329,7 +329,7 @@ club_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -378,7 +378,7 @@ hchart(club_reg  %>%
     hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
     hc_add_theme(thm) ,
 
-rowheight = 500)
+rowheight = 550)
 ```
 
 
@@ -587,7 +587,7 @@ leaflet(cartosportdep) %>%
 
 
 
-Row {.tabset .tabset-fade .tabset-pills}
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Détail fédération unisport olympique

@@ -151,7 +151,6 @@ hchart(RNApop %>%
   "bar", hcaes(x=Libellé,y=txasso,group=objr),
          stacking = "percent",
          showInlegend=T, pointWidth = 20)  %>%
-    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
   hc_add_theme(thm) ,
 
 rowheight = 600)
@@ -325,7 +324,6 @@ hchart(RNApop %>%
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Taux d'associations")) %>%
-    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
     hc_add_theme(thm) ,
 rowheight = 600)
 

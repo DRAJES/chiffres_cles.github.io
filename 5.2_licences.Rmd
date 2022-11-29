@@ -201,7 +201,7 @@ addLegend(pal = pal2 , values = 100*(cartosportreg$licences_tot/cartosportreg$po
 
 ```
 
-Row {.tabset .tabset-fade .tabset-pills}
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Détail unisport olympique
@@ -250,7 +250,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -299,7 +299,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -347,7 +347,7 @@ lic_reg %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -399,7 +399,7 @@ hchart(lic_reg  %>%
   hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
   hc_add_theme(thm) ,
   
-  rowheight=500)
+  rowheight=550)
 
 
 ```
@@ -652,7 +652,7 @@ addLegend( pal = pal2 , values = 100*(cartosportdep$licences_tot/cartosportdep$p
 
 
 
-Row {.tabset .tabset-fade .tabset-pills}
+Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
 ### Détail unisport olympique
@@ -693,7 +693,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -733,7 +733,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
@@ -773,7 +773,7 @@ lic_dep %>%
            general_title = "Source : ",
            number = c("F= Fédération \n","FF = Fédération Française"), 
            footnote_as_chunk = T) %>%
-  scroll_box(height = "500px") 
+  scroll_box(height = "550px") 
 
 ```
 
