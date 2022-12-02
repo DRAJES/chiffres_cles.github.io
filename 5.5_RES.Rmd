@@ -444,11 +444,20 @@ equip %>%
 res <- carto_res(DEP) %>%
   left_join(.,appartenance %>% 
               filter(NIVGEO=="DEP") %>% 
-              select(CODGEO,region=LIBGEO),
+              select(CODGEO,departement=LIBGEO),
             by=c("DEP"="CODGEO") ) 
 
 res <- sp::merge(depwgs,res,by="DEP")
   
+popup_res <- res@data %>% 
+                  select(NOM,`nb équipements`=equ,Population=pop.y,
+                         `Tx équipements`=txequi,
+                         `Tx bassins`=txbassins,
+                         `Tx grands jeux`=txgdsjeux,
+                         `Tx structurant`=txstructurant,
+                         `Tx tennis`=txtennis,
+                         `Tx proximité`=txproxi)
+
 leaflet(res) %>%  
   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
               fillColor = ~pal(txequi),fillOpacity = 0.6,
