@@ -48,6 +48,95 @@ coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" , "#00
                  autres=round(10000*(equ-bassins-gdsjeux-structurant-proxi-tennis)/pop,1 ) )
  }
 
+ 
+ carto_res <- function(geo=REG) {
+  equip %>% 
+  filter(!is.na({{geo}})) %>% 
+  group_by({{geo}}) %>% 
+  summarise(equ=n(),
+            bassins=sum(EquipementTypeCode %in% 101:106),
+            gdsjeux=sum(EquipementCateg == "Terrains de grands jeux" ),
+            structurant=sum(EquipementCateg == "Salles de pratiques collectives" ),
+            tennis_couv=sum(EquipementCateg == "Courts de tennis" & 
+                              NatureLibelle %in% c('Extérieur couvert','Découvrable', 'Intérieur'),
+                            na.rm = T ),
+            tennis_ext=sum(EquipementCateg == "Courts de tennis" & 
+                             !NatureLibelle %in% c('Extérieur couvert','Découvrable', 'Intérieur'),
+                           na.rm = T ),
+            proxi=sum (EquipementCateg == "Equipements Ext."
+                       & EquProximite== 1,na.rm = T) ,
+            autres=equ-bassins-gdsjeux-structurant-tennis_couv-tennis_ext-proxi) %>%
+  left_join(.,pop_basecom({{geo}}),
+            by=names(select(., {{geo}}) ) ) %>%      ###########jointure dans function
+  mutate(txequi=round(10000*equ/pop,1),
+         txbassins=round(10000*bassins/pop,1),
+         txgdsjeux=round(10000*gdsjeux/pop,1),
+         txstructurant=round(10000*structurant/pop,1),
+         txtennis=round(10000*(tennis_couv+tennis_ext)/pop,1),
+         txproxi=round(10000*proxi/pop,1) )  }
+ 
+ 
+leafRES <- function(x=1) {popup_res <- res@data %>% 
+                  select(LIBGEO,
+                         Population=pop.y,
+                         `nb équipements`=equ,
+                         `Tx équipements`=txequi,
+                         `Tx bassins`=txbassins,
+                         `Tx grands jeux`=txgdsjeux,
+                         `Tx structurant`=txstructurant,
+                         `Tx tennis`=txtennis,
+                         `Tx proximité`=txproxi)
+
+leaflet(res) %>%   
+  addPolygons(color = "#2F4F4F",  weight = 2, opacity = 0.6,
+              fillColor = ~pal(txequi),  fillOpacity = 0.6,
+              fill = TRUE ,smoothFactor = 2,
+              popup = popupTable(popup_res,
+                                 feature.id=F,row.numbers = F),
+              group = "taux équi/10 000 hab") %>%
+   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+               fillColor = ~pal(50000*structurant/pop.y), fillOpacity = 0.6,
+               fill = TRUE, smoothFactor = 2,
+               popup = popupTable(popup_res,
+                                 feature.id=F,row.numbers = F),
+              group = "taux structurant/50 000hab") %>%
+   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+               fillColor = ~pal(50000*gdsjeux/pop.y), fillOpacity = 0.6,
+               fill = TRUE, smoothFactor = 2,
+               popup = popupTable(popup_res,
+                                 feature.id=F,row.numbers = F),
+              group = "taux grands jeux/50 000hab") %>%
+    addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+                fillColor = ~pal(50000*proxi/pop.y), fillOpacity = 0.6, 
+                fill = TRUE,  smoothFactor = 2,
+                popup = popupTable(popup_res,
+                                 feature.id=F,row.numbers = F),
+              group = "taux proxi/50 000hab") %>%
+   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+               fillColor = ~pal(400000*bassins/pop.y), fillOpacity = 0.6, 
+               fill = TRUE,  smoothFactor = 2,
+               popup = popupTable(popup_res,
+                                 feature.id=F,row.numbers = F),
+              group = "taux bassins/400 000hab") %>%
+
+  addMinicharts(centroid(res)[,1],centroid(res)[,2] ,
+                       #maxValues = 100,
+                       type = "pie",
+                       chartdata = res@data %>% select("bassins":"autres"),
+                       colorPalette = coul,
+                       width = sqrt(x*res$equ) ,  #paramètre d'échelle des charts
+                       opacity = 0.6) %>% syncWith("minicharts") %>%
+    contour_bfc() %>%
+  addLayersControl( baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab",
+                                   "taux grands jeux/50 000hab","taux proxi/50 000hab", 
+                                   "taux bassins/400 000hab"),
+                    overlayGroups = c("minicharts"),
+                    options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%  
+  addLegend( pal = pal, values = ~txequi,   
+            "bottomright",title = "taux d'équipements") }
+ 
+ 
+ 
 # Option de chunk
 knitr::opts_chunk$set(
  fig.width = 6,
@@ -155,34 +244,10 @@ equip %>%
   scroll_box(height="800px")
 ```
 
-### Carte régionale
+### Carte
 
 ```{r}
-carto_res <- function(geo=REG) {
-  equip %>% 
-  filter(!is.na({{geo}})) %>% 
-  group_by({{geo}}) %>% 
-  summarise(equ=n(),
-            bassins=sum(EquipementTypeCode %in% 101:106),
-            gdsjeux=sum(EquipementCateg == "Terrains de grands jeux" ),
-            structurant=sum(EquipementCateg == "Salles de pratiques collectives" ),
-            tennis_couv=sum(EquipementCateg == "Courts de tennis" & 
-                              NatureLibelle %in% c('Extérieur couvert','Découvrable', 'Intérieur'),
-                            na.rm = T ),
-            tennis_ext=sum(EquipementCateg == "Courts de tennis" & 
-                             !NatureLibelle %in% c('Extérieur couvert','Découvrable', 'Intérieur'),
-                           na.rm = T ),
-            proxi=sum (EquipementCateg == "Equipements Ext."
-                       & EquProximite== 1,na.rm = T) ,
-            autres=equ-bassins-gdsjeux-structurant-tennis_couv-tennis_ext-proxi) %>%
-  left_join(.,pop_basecom({{geo}}),
-            by=names(select(., {{geo}}) ) ) %>%      ###########jointure dans function
-  mutate(txequi=round(10000*equ/pop,1),
-         txbassins=round(10000*bassins/pop,1),
-         txgdsjeux=round(10000*gdsjeux/pop,1),
-         txstructurant=round(10000*structurant/pop,1),
-         txtennis=round(10000*(tennis_couv+tennis_ext)/pop,1),
-         txproxi=round(10000*proxi/pop,1) )  }
+
 
 res <-   carto_res() %>%
   left_join(.,appartenance %>% 
@@ -192,62 +257,7 @@ res <-   carto_res() %>%
 
 res <- sp::merge(regwgs,res,by="REG")
   
-popup_res <- res@data %>% 
-                  select(NOM,`nb équipements`=equ,Population=pop.y,
-                         `Tx équipements`=txequi,
-                         `Tx bassins`=txbassins,
-                         `Tx grands jeux`=txgdsjeux,
-                         `Tx structurant`=txstructurant,
-                         `Tx tennis`=txtennis,
-                         `Tx proximité`=txproxi)
-
-leaflet(res) %>%   
-  addPolygons(color = "#2F4F4F",  weight = 2, opacity = 0.6,
-              fillColor = ~pal(txequi),  fillOpacity = 0.6,
-              fill = TRUE ,smoothFactor = 2,
-              popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux équi/10 000 hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(50000*structurant/pop.y), fillOpacity = 0.6,
-               fill = TRUE, smoothFactor = 2,
-               popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux structurant/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(50000*gdsjeux/pop.y), fillOpacity = 0.6,
-               fill = TRUE, smoothFactor = 2,
-               popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux grands jeux/50 000hab") %>%
-    addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-                fillColor = ~pal(50000*proxi/pop.y), fillOpacity = 0.6, 
-                fill = TRUE,  smoothFactor = 2,
-                popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux proxi/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(400000*bassins/pop.y), fillOpacity = 0.6, 
-               fill = TRUE,  smoothFactor = 2,
-               popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux bassins/400 000hab") %>%
-
-  addMinicharts(centroid(res)[,1],centroid(res)[,2] ,
-                       #maxValues = 100,
-                       type = "pie",
-                       chartdata = res@data %>% select("bassins":"autres"),
-                       colorPalette = coul,
-                       width = sqrt(res$equ) ,
-                       opacity = 0.6) %>% syncWith("minicharts") %>%
-    contour_bfc() %>%
-  addLayersControl( baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab",
-                                   "taux grands jeux/50 000hab","taux proxi/50 000hab", 
-                                   "taux bassins/400 000hab"),
-                    overlayGroups = c("minicharts"),
-                    options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%  
-  addLegend( pal = pal, values = ~txequi,   
-            "bottomright",title = "taux d'équipements") 
+leafRES()
 ```
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows"}
@@ -438,7 +448,7 @@ equip %>%
 
 ```
 
-### Carte départementale
+### Carte
 
 ```{r}
 res <- carto_res(DEP) %>%
@@ -449,61 +459,7 @@ res <- carto_res(DEP) %>%
 
 res <- sp::merge(depwgs,res,by="DEP")
   
-popup_res <- res@data %>% 
-                  select(NOM,`nb équipements`=equ,Population=pop.y,
-                         `Tx équipements`=txequi,
-                         `Tx bassins`=txbassins,
-                         `Tx grands jeux`=txgdsjeux,
-                         `Tx structurant`=txstructurant,
-                         `Tx tennis`=txtennis,
-                         `Tx proximité`=txproxi)
-
-leaflet(res) %>%  
-  addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-              fillColor = ~pal(txequi),fillOpacity = 0.6,
-              fill = TRUE,   smoothFactor = 2,
-              popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux équi/10 000 hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(50000*structurant/pop.y), fillOpacity = 0.6,
-               fill = TRUE,  smoothFactor = 2,
-               popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux structurant/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-              fillColor = ~pal(50000*gdsjeux/pop.y), fillOpacity = 0.6,
-               fill = TRUE,  smoothFactor = 2,
-               popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux grands jeux/50 000hab") %>%
-    addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-                fillColor = ~pal(50000*proxi/pop.y), fillOpacity = 0.6,
-                fill = TRUE, smoothFactor = 2,
-                popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux proxi/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(400000*bassins/pop.y), fillOpacity = 0.6,
-               fill = TRUE,   smoothFactor = 2,
-               popup = popupTable(popup_res,
-                                 feature.id=F,row.numbers = F),
-              group = "taux bassins/400 000hab") %>%
-
-  addMinicharts(centroid(res)[,1],centroid(res)[,2] ,
-                       #maxValues = 100,
-                       type = "pie",
-                       chartdata = res@data %>% select("bassins":"autres"),
-                       colorPalette = coul,
-                       width = sqrt(res$equ) ,
-                       opacity = 0.6 ) %>%
-    contour_depbfc(zoom = 6) %>%
-  addLayersControl( baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab",
-                                   "taux grands jeux/50 000hab","taux proxi/50 000hab", 
-                                   "taux bassins/400 000hab"),
-                    options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
-  addLegend( pal = pal, values = ~txequi,   
-             "bottomright", title = "taux d'équipements") 
+leafRES()
 ```
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows"}
@@ -616,122 +572,18 @@ equip %>%
   scroll_box(height="780px")
 ```
 
-### Carte de équipements par EPCI {data-height="800"}
+### Carte  {data-height="800"}
 
 ```{r}
-res <- equip %>% 
-          filter(!is.na(EPCI)) %>% 
-          filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
-          group_by(EPCI) %>% 
-          summarise(equ=n(),
-                    bassins=sum(EquipementTypeCode %in% 101:106),
-                    gdsjeux=sum(EquipementCateg == "Terrains de grands jeux" ),
-                    structurant=sum(EquipementCateg == "Salles de pratiques collectives" ),
-                    tennis_couv=sum(EquipementCateg == "Courts de tennis" & 
-                                      NatureLibelle %in% c('Extérieur couvert','Découvrable','Intérieur'),
-                                    na.rm = T ),
-                    tennis_ext=sum(EquipementCateg == "Courts de tennis" & 
-                                     !NatureLibelle %in% c('Extérieur couvert','Découvrable','Intérieur'),
-                                   na.rm = T ),
-                    proxi=sum (EquipementCateg == "Equipements Ext." & EquProximite== 1,
-                               na.rm = T) ,
-                    autres=equ-bassins-gdsjeux-structurant-tennis_couv-tennis_ext-proxi) %>%
-  left_join(.,pop_basecom(EPCI),
-            by="EPCI") %>%
-  mutate(txequi=round(10000*equ/pop,1),
-         txbassins=round(10000*bassins/pop,1),
-         txgdsjeux=round(10000*gdsjeux/pop,1),
-         txstructurant=round(10000*structurant/pop,1),
-         txtennis=round(10000*(tennis_couv+tennis_ext)/pop,1),
-         txproxi=round(10000*proxi/pop,1) )%>%
+res <- carto_res(EPCI) %>%
   left_join(.,appartenance %>% 
               filter(NIVGEO=="EPCI") %>% 
-              select(CODGEO,region=LIBGEO),
+              select(CODGEO,EPCI=LIBGEO),
             by=c("EPCI"="CODGEO") ) 
 
 res <- sp::merge(epcicarto,res,by="EPCI")
   
-leaflet(res) %>%   
-  addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6,
-              fillColor = ~pal(txequi),fillOpacity = 0.6,
-              fill = TRUE,  smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(NOM,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux équi/10 000 hab") %>%
-  addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6,
-              fillColor = ~pal(50000*structurant/pop.y), fillOpacity = 0.6, 
-              fill = TRUE,  smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(NOM,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux structurant/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6,
-              fillColor = ~pal(50000*gdsjeux/pop.y), fillOpacity = 0.6, 
-              fill = TRUE,  smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(NOM,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux grands jeux/50 000hab") %>%
-    addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6,
-              fillColor = ~pal(50000*proxi/pop.y), fillOpacity = 0.6, 
-              fill = TRUE,  smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(NOM,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux proxi/50 000hab") %>%
-    addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6,
-                fillColor = ~pal(400000*bassins/pop.y), fillOpacity = 0.6, 
-              fill = TRUE,  smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(NOM,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux bassins/400 000hab") %>%
-
-  addMinicharts(centroid(res)[,1],centroid(res)[,2] ,
-                       #maxValues = 100,
-                       type = "pie",
-                       chartdata = res@data %>% select("bassins":"autres"),
-                       colorPalette = coul,
-                       width = sqrt(10*res$equ) ,
-                       opacity = 0.7 ) %>%
-    contour_depbfc() %>%
-  addLayersControl(baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab",
-                                  "taux grands jeux/50 000hab","taux proxi/50 000hab", 
-                                  "taux bassins/400 000hab"),
-                   options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%
-  addLegend( pal = pal, values = ~txequi,   
-            "bottomright", title = "taux d'équipements") 
+leafRES(x=10) %>% contour_depbfc()
 ```
 
 # ![](images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows"}
@@ -851,125 +703,18 @@ equip %>%
   scroll_box(height="780px") 
 ```
 
-### Carte des équipements par bassin de vie {data-height="800"}
+### Carte {data-height="800"}
 
 ```{r}
-res <- equip %>% 
-          filter(!is.na(BV2012)) %>% 
-          filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
-          group_by(BV2012) %>% 
-          summarise(equ=n(),
-                    bassins=sum(EquipementTypeCode %in% 101:106),
-                    gdsjeux=sum(EquipementCateg == "Terrains de grands jeux" ),
-                    structurant=sum(EquipementCateg == "Salles de pratiques collectives" ),
-                    tennis_couv=sum(EquipementCateg == "Courts de tennis" & 
-                                      NatureLibelle %in% c('Extérieur couvert','Découvrable','Intérieur'),
-                                    na.rm = T ),
-                    tennis_ext=sum(EquipementCateg == "Courts de tennis" & 
-                                     !NatureLibelle %in% c('Extérieur couvert','Découvrable','Intérieur'),
-                                   na.rm = T ),
-                    proxi=sum (EquipementCateg == "Equipements Ext." & EquProximite== 1,
-                               na.rm = T) ,
-                    autres=equ-bassins-gdsjeux-structurant-tennis_couv-tennis_ext-proxi) %>%
-  left_join(.,basecom %>% 
-              select(BV2012,pop) %>% 
-              group_by(BV2012) %>% 
-              summarise(pop=sum(pop,na.rm=T)),
-            by="BV2012") %>%
-  mutate(txequi=round(10000*equ/pop,1),
-         txbassins=round(10000*bassins/pop,1),
-         txgdsjeux=round(10000*gdsjeux/pop,1),
-         txstructurant=round(10000*structurant/pop,1),
-         txtennis=round(10000*(tennis_couv+tennis_ext)/pop,1),
-         txproxi=round(10000*proxi/pop,1) )%>%
+res <- carto_res(BV2012) %>%
   left_join(.,appartenance %>% 
               filter(NIVGEO=="BV2012") %>% 
-              select(CODGEO,region=LIBGEO),
+              select(CODGEO,BV2012=LIBGEO),
             by=c("BV2012"="CODGEO") ) 
 
-res <- sp::merge(bvcarto,res,by="BV2012")
+res <- sp::merge(bvcarto ,res,by="BV2012")
   
-leaflet(res) %>% 
-  addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-              fillColor = ~pal(txequi),fillOpacity = 0.6,
-              fill = TRUE,  smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(LIBGEO,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux équi/10 000 hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(50000*structurant/pop.y), fillOpacity = 0.6, 
-               fill = TRUE, smoothFactor = 2,
-               popup = popupTable(res@data %>% 
-                                   select(LIBGEO,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux structurant/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(50000*gdsjeux/pop.y), fillOpacity = 0.6,
-               fill = TRUE, smoothFactor = 2,
-               popup = popupTable(res@data %>% 
-                                   select(LIBGEO,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux grands jeux/50 000hab") %>%
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-               fillColor = ~pal(50000*proxi/pop.y), fillOpacity = 0.6,
-               fill = TRUE, smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(LIBGEO,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux proxi/50 000hab") %>%
-  addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
-              fillColor = ~pal(400000*bassins/pop.y), fillOpacity = 0.6,
-              fill = TRUE, smoothFactor = 2,
-              popup = popupTable(res@data %>% 
-                                   select(LIBGEO,`nb équipements`=equ,Population=pop.y,
-                                          `Tx équipements`=txequi,
-                                          `Tx bassins`=txbassins,
-                                          `Tx grands jeux`=txgdsjeux,
-                                          `Tx structurant`=txstructurant,
-                                          `Tx tennis`=txtennis,
-                                          `Tx proximité`=txproxi),
-                                 feature.id=F,row.numbers = F),
-              group = "taux bassins/400 000hab") %>%
-
-  addMinicharts(centroid(res)[,1],centroid(res)[,2] ,
-                       #maxValues = 100,
-                       type = "pie",
-                       chartdata = res@data %>% select("bassins":"autres"),
-                       colorPalette = coul,
-                       width = sqrt(10*res$equ) ,
-                       opacity = 0.7 ) %>%
-    contour_depbfc() %>%
-  addLayersControl(baseGroups = c("taux équi/10 000 hab","taux structurant/50 000hab",
-                                  "taux grands jeux/50 000hab","taux proxi/50 000hab", 
-                                  "taux bassins/400 000hab"),
-                   options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
-  addLegend( pal = pal, values = ~txequi,   
-            "bottomright",title = "taux d'équipements") 
+leafRES(x=10) %>% contour_depbfc()
 ```
 
 Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
