@@ -1,34 +1,56 @@
 library(rio)
-library(data.table)
-library(rgdal)
-library(readxl)
-library(janitor)
 library(tidyverse)
 
-ACM_SH <- read_excel("data/PanoFrance2020.xlsx",range = ("A748:DO796") )
-ACM_colo <- read_excel("data/PanoFrance2020.xlsx",range = ("A802:DO834") )
-ACM_scout <- read_excel("data/PanoFrance2020.xlsx",range = ("A840:DO849") )
+ACMHreg_ensemble <- import_list(
+                            "C:/Users/plebre/Documents/ACM/2021/ACMH_regional20211103.xlsx",
+                            rbind = TRUE, rbind_label = "année",range = "A4:K31") %>% 
+                    mutate(année=année+2009,
+                           `Libellé de la région de destination`=str_to_title(`Libellé de la région de destination`) )%>%
+                    mutate(`6-13 ans` = ifelse(is.na(`6-13 ans`),`6-11 ans`,`6-13 ans`),
+                           `14-17 ans` = ifelse(is.na(`14-17 ans`),`12-17 ans`,`14-17 ans`)) %>% 
+                    select(-`6-11 ans`,-`12-17 ans`) %>%
+                    relocate(c(`6-13 ans`,`14-17 ans`),.after = `Moins de 6 ans`)
+ACMHreg_vacances <- ACMHreg_ensemble %>% select(1:2) %>% 
+                    bind_cols( import_list(
+                                    "C:/Users/plebre/Documents/ACM/2021/ACMH_regional20211103.xlsx",
+                                    rbind = TRUE, rbind_label = "année",range = "L4:T31") ) %>% 
+                    mutate(année=année+2009,
+                          `Libellé de la région de destination`=str_to_title(`Libellé de la région de destination`) )%>%
+                    mutate(`6-13 ans` = ifelse(is.na(`6-13 ans`),`6-11 ans`,`6-13 ans`),
+                          `14-17 ans` = ifelse(is.na(`14-17 ans`),`12-17 ans`,`14-17 ans`)) %>% 
+                    select(-`6-11 ans`,-`12-17 ans`) %>%
+                    relocate(c(`6-13 ans`,`14-17 ans`),.after = `Moins de 6 ans`)
+ACMHreg_courts <- ACMHreg_ensemble %>% select(1:2) %>% 
+                    bind_cols( import_list(
+                                      "C:/Users/plebre/Documents/ACM/2021/ACMH_regional20211103.xlsx",
+                                      rbind = TRUE, rbind_label = "année",range = "U4:AC31") ) %>% 
+                    mutate(année=année+2009,
+                          `Libellé de la région de destination`=str_to_title(`Libellé de la région de destination`) )%>%
+                    mutate(`6-13 ans` = ifelse(is.na(`6-13 ans`),`6-11 ans`,`6-13 ans`),
+                          `14-17 ans` = ifelse(is.na(`14-17 ans`),`12-17 ans`,`14-17 ans`)) %>% 
+                    select(-`6-11 ans`,-`12-17 ans`) %>%
+                    relocate(c(`6-13 ans`,`14-17 ans`),.after = `Moins de 6 ans`)
+ACMHreg_specifiques <- ACMHreg_ensemble %>% select(1:2) %>% 
+                        bind_cols( import_list(
+                                        "C:/Users/plebre/Documents/ACM/2021/ACMH_regional20211103.xlsx",
+                                        rbind = TRUE, rbind_label = "année",range = "AD4:AL31") ) %>% 
+                        mutate(année=année+2009,
+                              `Libellé de la région de destination`=str_to_title(`Libellé de la région de destination`) )%>%
+                        mutate(`6-13 ans` = ifelse(is.na(`6-13 ans`),`6-11 ans`,`6-13 ans`),
+                               `14-17 ans` = ifelse(is.na(`14-17 ans`),`12-17 ans`,`14-17 ans`)) %>% 
+                        select(-`6-11 ans`,-`12-17 ans`) %>%
+                        relocate(c(`6-13 ans`,`14-17 ans`),.after = `Moins de 6 ans`)
+ACMHreg_accessoires <- ACMHreg_ensemble %>% select(1:2) %>% 
+                        bind_cols( import_list(
+                                        "C:/Users/plebre/Documents/ACM/2021/ACMH_regional20211103.xlsx",
+                                        rbind = TRUE, rbind_label = "année",range = "AM4:AU31") ) %>% 
+                        mutate(année=année+2009,
+                              `Libellé de la région de destination`=str_to_title(`Libellé de la région de destination`) )%>%
+                        mutate(`6-13 ans` = ifelse(is.na(`6-13 ans`),`6-11 ans`,`6-13 ans`),
+                               `14-17 ans` = ifelse(is.na(`14-17 ans`),`12-17 ans`,`14-17 ans`)) %>% 
+                        select(-`6-11 ans`,-`12-17 ans`) %>%
+                        relocate(c(`6-13 ans`,`14-17 ans`),.after = `Moins de 6 ans`) %>%
+                        rename(`dont séjours de cinq jours ou plus`=`dont séjours de cinq jours`)
 
-ACM_SH_dep <- ACM_SH %>% select(1,15:23,111) %>% mutate_at(vars(2:11),as.numeric) 
-
-ACM_SH <- ACM_SH %>% select(1,2,15,24,29,36,39,50,56,65,71,84,98,104,111) %>%
-  mutate_at(vars(2:15), as.numeric) 
- # adorn_totals("row",name="total") 
-#diplreg <-  mutate_all(diplreg,~replace(.,is.na(.),"") )
-
-ACM_colo_dep <- ACM_colo %>% select(1,15:23,111) %>% mutate_at(vars(2:9),as.numeric) 
-
-ACM_colo <- ACM_colo %>% select(1,2,15,24,29,36,39,50,56,65,71,84,98,104,111) %>%
-mutate_at(vars(2:15), as.numeric) 
-#  adorn_totals("row",name="total") 
-
-ACM_scout_dep <- ACM_scout %>% select(1,15:23,111) %>% mutate_at(vars(2:9),as.numeric) 
-
-ACM_scout <- ACM_scout %>% select(1,2,15,24,29,36,39,50,56,65,71,84,98,104,111) %>%
-mutate_at(vars(2:15), as.numeric) 
- # adorn_totals("row",name="total") 
-
-
-
-save(ACM_colo,ACM_SH,ACM_scout,ACM_colo_dep,ACM_SH_dep,ACM_scout_dep,
-     file="data/jeunesse/ACM.RData")
+save(ACMHreg_accessoires,ACMHreg_specifiques,ACMHreg_courts,ACMHreg_vacances,ACMHreg_ensemble,
+     file = "data/jeunesse/ACM.RData")

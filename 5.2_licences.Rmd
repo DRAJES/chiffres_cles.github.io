@@ -13,6 +13,7 @@ output:
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=F}
 
 sparkline(0)
+load("data/sport/spark.RData")
 
 regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
 

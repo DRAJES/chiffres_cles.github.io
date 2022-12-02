@@ -1,0 +1,118 @@
+---
+title: "Accueils collectifs de mineurs"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+    social: menu
+    #source_code: embed
+    navbar:
+      - { title: "Accueil", href: index.html, align: right, icon: fa-home }
+    theme: simplex
+---
+
+```{r setup, include=FALSE ,echo=FALSE, cache=F}
+
+library(tidyverse)#
+library(sparkline)#
+library(kableExtra)#
+load("data/demo/basecom.RData")#
+load("data/demo/cartes.RData")#
+source("R/data/fonctions_carto.R")#
+source("R/data/fonctions_merge.R")#
+
+load("data/jeunesse/ACM.RData")
+sparkline(0)
+
+ACMH <- function(data) {
+  data %>% 
+  filter(année==2021) %>%
+  select(-année) %>%
+  slice(5:17,4,1) %>%
+  left_join(data %>% 
+              group_by(`Code de la région de destination`) %>%
+              summarise(`séjours 2010-2021`=spk_chr(`Nombre de séjours`),
+                        `séjours >5j 2010-2021`=spk_chr(`dont séjours de cinq jours ou plus`),
+                        `mineurs 2010-2021`=spk_chr(`Effectifs de départs de mineurs`),
+                        `<6 ans 2010-2021`=spk_chr(`Moins de 6 ans`),
+                        `6-13 ans 2018-2021 (1)*`=spk_chr(`6-13 ans`[année>2017]),
+                        `14-17 ans 2018-2021`=spk_chr(`14-17 ans`[année>2017]),
+                        `handicap 2016-2021`=spk_chr(`Mineurs déclarés en situation de handicap`[année>2015]),
+                        `journées 2010-2021`=spk_chr(`Nombre de journées`),
+                        `journées enfants 2010-2021`=spk_chr(`Nombre de journées enfants`)
+                        ),
+            by="Code de la région de destination") %>%
+  cc_kable(aligne = "clrrrrrrrrr") %>%
+  add_header_above(c( " "=11,"évolutions"=9) ) %>%
+  footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
+            footnote_as_chunk = T)  %>%
+  scroll_box(height = "500px")
+}
+
+
+
+# Option de chunk
+knitr::opts_chunk$set(
+ fig.width = 6,
+ fig.asp = 0.8,
+ out.width = "80%"
+)
+
+options(knitr.kable.NA = '')
+options(knitr.table.format = "html")
+```
+
+
+# Avec hébergement {data-orientation="rows" height="30" data-icon="fa-bed" font-size="25px"}
+
+## Row {data-height="20"}
+
+## Row {data-height="100"}
+
+### Données générales des ACM avec hébergement selon la région de destination
+
+Les Accueils collectifs de mineurs avec hébergement regroupent les centres de vacances, les colonies de vacances...\
+**1 100** séjours avec hébergement en BFC
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
+
+### Détail des accueils collectifs de mineurs avec hébergement
+
+```{r}
+
+ACMH(data = ACMHreg_ensemble)
+
+```
+
+### ACM vacances
+séjours non spécifiques d'au moins cinq jours
+```{r}
+
+ACMH(data = ACMHreg_vacances)
+
+```
+
+### ACM séjours courts
+séjours non spécifiques de moins de cinq jours
+```{r}
+
+ACMH(data = ACMHreg_courts)
+
+```
+
+### ACM séjours spécifiques 
+sportifs, linguistiques, artistiques ou culturels, rencontres européennes de jeunes, chantiers de bénévoles
+```{r}
+
+ACMH(data = ACMHreg_specifiques)
+
+```
+
+### ACM séjours activités accessoires
+aux accueils de loisirs ou aux accueils de jeunes (mini-séjours)
+```{r}
+
+ACMH(data = ACMHreg_accessoires)
+
+```

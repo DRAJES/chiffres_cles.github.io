@@ -12,7 +12,7 @@ output:
 
 ```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
 
-load("data/jeunesse/ACM.RData")
+load("data/jeunesse/ACM_pano.RData")
 
 # Option de chunk
 knitr::opts_chunk$set(
