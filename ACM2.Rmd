@@ -71,10 +71,13 @@ Les Accueils collectifs de mineurs avec hébergement regroupent les centres de v
 **1 100** séjours avec hébergement en BFC
 
 **(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+## Row {data-height="20"}
+
+### Données régionales
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
 
-### Détail des accueils collectifs de mineurs avec hébergement
+### Ensemble des ACMH
 
 ```{r}
 
@@ -115,12 +118,13 @@ ACMH(data = ACMHreg_accessoires,lignes = c(5:17,4,1))
 ```
 
 
-## Row {data-height="20"} Données départementales
+## Row {data-height="20"} 
+
+### Données départementales
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
 
-
-### Détail par département
+### Ensemble des ACM
 
 ```{r}
 

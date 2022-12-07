@@ -36,3 +36,7 @@ _site/
 _site.old/
 _site2018/
 _site2019/
+docs/data/
+docs/dev/
+docs/images/
+docs/R/
