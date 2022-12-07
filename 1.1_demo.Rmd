@@ -13,7 +13,7 @@ runtime: shiny
 
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F}
+```{r, include=FALSE ,echo=FALSE, cache=F}
 
 flexdashboard::flex_dashboard(self_contained = F)
 

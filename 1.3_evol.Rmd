@@ -11,7 +11,7 @@ output:
 ---
  
  
-```{r setup, include=FALSE ,echo=F, cache=F} 
+```{r, include=FALSE ,echo=F, cache=F} 
 
 pal3 <- colorBin("RdYlBu", domain =-5:5 ,bins=c(-Inf, -1, -0.5,0,0.5, 1 , Inf), reverse = T)
 

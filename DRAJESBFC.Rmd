@@ -11,7 +11,7 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=F ,echo=FALSE, cache=F}
+```{r, include=F ,echo=FALSE, cache=F}
 library(flexdashboard)
 library(gghighlight)
 library(highcharter)

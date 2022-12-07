@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F}
+```{r, include=FALSE ,echo=FALSE, cache=F}
 
 load("data/sport/RES.RData")
 
@@ -74,12 +74,7 @@ pal1 <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins
 depbfc <- c('21','25','39','58','70','71','89','90')
 
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
+
 ```
 
 Données {data-orientation="rows" data-icon="fa-signal"}

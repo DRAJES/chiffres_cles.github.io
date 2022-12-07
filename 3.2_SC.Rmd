@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
+```{r, include=FALSE ,echo=FALSE, cache=F, plotly=T}
 
 load("data/engagement/SC.RData")
 
@@ -26,12 +26,7 @@ dipl <- c("Sortie en cours de terminale ou Bac non validé (IV)",
           "Sortie en 3ème (Vbis)",
           "CAP-BEP validé (V)")
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
+
 ```
 
 ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}

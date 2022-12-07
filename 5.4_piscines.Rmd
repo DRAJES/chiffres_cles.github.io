@@ -11,7 +11,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F}
+```{r, include=FALSE ,echo=FALSE, cache=F}
 
 load("data/sport/piscines.RData")
 load("data/sport/bassins.RData")
@@ -28,12 +28,6 @@ pal <- colorFactor(c("#006400","#228B22","#F5F5F5","#FF7F50","#B22222","#8000006
 
 
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
 ```
 
 # ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30"}

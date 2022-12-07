@@ -11,7 +11,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
+```{r, include=FALSE ,echo=FALSE, cache=F}
 sparkline(0)
 
 load("data/formation/diplome.RData")
@@ -58,14 +58,6 @@ idjeps <- function(.tbl){
          txempappr=round(100*emplappr/apprentis,1),
          txinserappr=round(100*inserapp/emplappr,1) ) }
 
-
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
 
 options(knitr.kable.NA = '')
 options(knitr.table.format = "html")

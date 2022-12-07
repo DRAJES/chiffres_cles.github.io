@@ -11,7 +11,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 load("data/sport/JO.RData")
 ```
 

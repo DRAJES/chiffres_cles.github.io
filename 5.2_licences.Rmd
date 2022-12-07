@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=F}
+```{r, include=FALSE ,echo=FALSE, cache=F}
 
 sparkline(0)
 load("data/sport/spark.RData")
@@ -20,12 +20,6 @@ regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1
 pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
 
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
 ```
 
 ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}

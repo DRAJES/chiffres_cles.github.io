@@ -9,17 +9,11 @@ output:
 editor_options: 
   markdown: 
     wrap: 72
+
 ---
 
-```{r setup, include=F ,echo=FALSE, cache=F}
+```{r, include=F ,echo=FALSE, cache=F}
 
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
 ```
 
 La Délégation Régionale Académique à la Jeunesse, à l'Engagement et aux

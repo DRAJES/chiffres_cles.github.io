@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F}
+```{r, include=FALSE ,echo=FALSE, cache=F}
 
 library(tidyverse)#
 library(sparkline)#
@@ -19,17 +19,18 @@ load("data/demo/basecom.RData")#
 load("data/demo/cartes.RData")#
 source("R/data/fonctions_carto.R")#
 source("R/data/fonctions_merge.R")#
+depbfc <- c('21','25','39','58','70','71','89','90')#
 
-load("data/jeunesse/ACM.RData")
+load("data/jeunesse/ACMH.RData")
 sparkline(0)
 
-ACMH <- function(data) {
+ACMH <- function(data,lignes) {
   data %>% 
   filter(année==2021) %>%
   select(-année) %>%
-  slice(5:17,4,1) %>%
+  slice(lignes) %>%
   left_join(data %>% 
-              group_by(`Code de la région de destination`) %>%
+              group_by(`Destination`) %>%
               summarise(`séjours 2010-2021`=spk_chr(`Nombre de séjours`),
                         `séjours >5j 2010-2021`=spk_chr(`dont séjours de cinq jours ou plus`),
                         `mineurs 2010-2021`=spk_chr(`Effectifs de départs de mineurs`),
@@ -40,7 +41,7 @@ ACMH <- function(data) {
                         `journées 2010-2021`=spk_chr(`Nombre de journées`),
                         `journées enfants 2010-2021`=spk_chr(`Nombre de journées enfants`)
                         ),
-            by="Code de la région de destination") %>%
+            by="Destination") %>%
   cc_kable(aligne = "clrrrrrrrrr") %>%
   add_header_above(c( " "=11,"évolutions"=9) ) %>%
   footnote(general = "MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES", general_title = "Source : ",
@@ -50,12 +51,8 @@ ACMH <- function(data) {
 
 
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
+#ACMSH
+
 
 options(knitr.kable.NA = '')
 options(knitr.table.format = "html")
@@ -81,7 +78,7 @@ Les Accueils collectifs de mineurs avec hébergement regroupent les centres de v
 
 ```{r}
 
-ACMH(data = ACMHreg_ensemble)
+ACMH(data = ACMHreg_ensemble, lignes = c(5:17,4,1) )
 
 ```
 
@@ -89,7 +86,7 @@ ACMH(data = ACMHreg_ensemble)
 séjours non spécifiques d'au moins cinq jours
 ```{r}
 
-ACMH(data = ACMHreg_vacances)
+ACMH(data = ACMHreg_vacances,lignes = c(5:17,4,1))
 
 ```
 
@@ -97,7 +94,7 @@ ACMH(data = ACMHreg_vacances)
 séjours non spécifiques de moins de cinq jours
 ```{r}
 
-ACMH(data = ACMHreg_courts)
+ACMH(data = ACMHreg_courts,lignes = c(5:17,4,1))
 
 ```
 
@@ -105,7 +102,7 @@ ACMH(data = ACMHreg_courts)
 sportifs, linguistiques, artistiques ou culturels, rencontres européennes de jeunes, chantiers de bénévoles
 ```{r}
 
-ACMH(data = ACMHreg_specifiques)
+ACMH(data = ACMHreg_specifiques,lignes = c(5:17,4,1))
 
 ```
 
@@ -113,6 +110,52 @@ ACMH(data = ACMHreg_specifiques)
 aux accueils de loisirs ou aux accueils de jeunes (mini-séjours)
 ```{r}
 
-ACMH(data = ACMHreg_accessoires)
+ACMH(data = ACMHreg_accessoires,lignes = c(5:17,4,1))
+
+```
+
+
+## Row {data-height="20"} Données départementales
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
+
+
+### Détail par département
+
+```{r}
+
+ACMH(data = ACMHdep_ensemble,lignes = as.numeric(depbfc)+5 )
+
+```
+
+### ACM vacances
+séjours non spécifiques d'au moins cinq jours
+```{r}
+
+ACMH(data = ACMHreg_vacances,lignes = as.numeric(depbfc)+5)
+
+```
+
+### ACM séjours courts
+séjours non spécifiques de moins de cinq jours
+```{r}
+
+ACMH(data = ACMHreg_courts,lignes = as.numeric(depbfc)+5)
+
+```
+
+### ACM séjours spécifiques 
+sportifs, linguistiques, artistiques ou culturels, rencontres européennes de jeunes, chantiers de bénévoles
+```{r}
+
+ACMH(data = ACMHreg_specifiques,lignes = as.numeric(depbfc)+5)
+
+```
+
+### ACM séjours activités accessoires
+aux accueils de loisirs ou aux accueils de jeunes (mini-séjours)
+```{r}
+
+ACMH(data = ACMHreg_accessoires,lignes = as.numeric(depbfc)+5)
 
 ```
