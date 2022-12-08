@@ -136,7 +136,7 @@ ACMH(data = ACMHdep_ensemble,lignes = as.numeric(depbfc)+5 )
 séjours non spécifiques d'au moins cinq jours
 ```{r}
 
-ACMH(data = ACMHreg_vacances,lignes = as.numeric(depbfc)+5)
+ACMH(data = ACMHdep_vacances,lignes = as.numeric(depbfc)+5)
 
 ```
 
@@ -144,7 +144,7 @@ ACMH(data = ACMHreg_vacances,lignes = as.numeric(depbfc)+5)
 séjours non spécifiques de moins de cinq jours
 ```{r}
 
-ACMH(data = ACMHreg_courts,lignes = as.numeric(depbfc)+5)
+ACMH(data = ACMHdep_courts,lignes = as.numeric(depbfc)+5)
 
 ```
 
@@ -152,7 +152,7 @@ ACMH(data = ACMHreg_courts,lignes = as.numeric(depbfc)+5)
 sportifs, linguistiques, artistiques ou culturels, rencontres européennes de jeunes, chantiers de bénévoles
 ```{r}
 
-ACMH(data = ACMHreg_specifiques,lignes = as.numeric(depbfc)+5)
+ACMH(data = ACMHdep_specifiques,lignes = as.numeric(depbfc)+5)
 
 ```
 
@@ -160,6 +160,6 @@ ACMH(data = ACMHreg_specifiques,lignes = as.numeric(depbfc)+5)
 aux accueils de loisirs ou aux accueils de jeunes (mini-séjours)
 ```{r}
 
-ACMH(data = ACMHreg_accessoires,lignes = as.numeric(depbfc)+5)
+ACMH(data = ACMHdep_accessoires,lignes = as.numeric(depbfc)+5)
 
 ```
