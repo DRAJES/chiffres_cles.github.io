@@ -65,7 +65,8 @@ hchart(RNApop %>%
   hc_xAxis(title=list(text="Régions")) %>%
   hc_yAxis(title=list(text="Nombre d'associations")) %>%
   hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) ,
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
@@ -81,7 +82,8 @@ hchart(RNApop %>%
          name="Taux d'association pour 100 habitants", showInlegend=T, pointWidth = 20  )%>%
   hc_xAxis(title=list(text="Régions")) %>%
   hc_yAxis(title=list(text="Taux d'associations")) %>%
-  hc_add_theme(thm),
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
  rowheight = 600 ) 
 
 ```
@@ -132,7 +134,8 @@ hchart(RNApop %>%
          stacking = "normal",
          showInlegend=T, pointWidth = 20)  %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) ,
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>%
@@ -145,7 +148,8 @@ hchart(RNApop %>%
   "bar", hcaes(x=Libellé,y=txasso,group=objr),
          stacking = "percent",
          showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) ,
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 rowheight = 600)
 
@@ -186,7 +190,8 @@ hw_grid(
          count(name="nb associations"), 
       "spline",hcaes(x=année,y=`nb associations`),
        marker = FALSE) %>%
-     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
+     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
   hchart(RNA %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
@@ -199,8 +204,9 @@ hw_grid(
                    by=c("REG"="CODGEO")),
        "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
         stacking = "normal", 
-       marker = FALSE) ,
-#    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) ,
+       marker = FALSE) %>%
+     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+
 
  rowheight = 600 ) 
 #htmltools::browsable()
@@ -271,7 +277,8 @@ hchart(RNApop %>%
     hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-    hc_add_theme(thm) ,
+   hc_add_theme(thm) %>%
+   hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>%
@@ -318,7 +325,8 @@ hchart(RNApop %>%
     hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_xAxis(title=list(text="Départements")) %>%
     hc_yAxis(title=list(text="Taux d'associations")) %>%
-    hc_add_theme(thm) ,
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 rowheight = 600)
 
 
@@ -369,7 +377,8 @@ hchart(RNApop %>%
   "bar", hcaes(x=Libellé,y=asso,group=objr),
          stacking = "normal",
          showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) ,
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 hchart(RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
@@ -383,7 +392,8 @@ hchart(RNApop %>%
   "bar", hcaes(x=Libellé,y=txasso,group=objr),
          stacking = "percent",
          showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) ,
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 rowheight = 600)
 
@@ -409,7 +419,8 @@ hw_grid(
                    by=c("DEP"="CODGEO")),
        "spline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
       # stacking = "normal", 
-       marker = FALSE ),
+       marker = FALSE ) %>%
+     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
   hchart(RNA %>%
          filter (!is.na(DEP) & !is.na(objr)) %>% 
@@ -423,7 +434,8 @@ hw_grid(
                    by=c("DEP"="CODGEO")),
        "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
        stacking = "normal", 
-       marker = FALSE ),
+       marker = FALSE ) %>%
+     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
  rowheight = 600) 
 #htmltools::browsable()

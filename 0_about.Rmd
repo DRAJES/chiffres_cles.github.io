@@ -23,23 +23,23 @@ library(sparkline)
 library(rgdal)
 library(osrm)
 library(fontawesome)
+library(geosphere)
 library(leafpop)
 library(leaflet.providers) 
-library(readxl)
+library(downloadthis)
 library(leaflet.minicharts)
 library(leaflet)
 library(leaflegend)
 library(leaflet.extras2)
 library(tidyverse)
-source("librairies.R")
-
-#rmarkdown::render_site(encoding = 'UTF-8')
 
 #gitlabr::use_gitlab_ci(type = "bookdown")
 #usethis::use_github_action()
 
 
 use_providers(get_providers())
+flexdashboard::flex_dashboard(self_contained = F)
+
 
 depbfc <- c('21','25','39','58','70','71','89','90')
 

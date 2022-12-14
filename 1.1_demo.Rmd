@@ -15,13 +15,88 @@ runtime: shiny
 
 ```{r, include=FALSE ,echo=FALSE, cache=F}
 
-flexdashboard::flex_dashboard(self_contained = F)
-
 load("data/demo/tab_demo.RData")
 load("data/demo/CRTE.RData")
 
-pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c","#e98e8b","#bfef94","#a0d27b","#006a49"), domain = NULL)
-palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a","#43a047","#2e7d32"), domain =0:100 ,bins= c(0, 50, 60, 70,80, 100) )
+#définition des variables des tableaux
+demo <- function(.tbl,geo) {.tbl %>%
+    dplyr::select({{geo}},Nom,Population,
+                  Densité,rang,`Taux femmes`,
+                  partZRR,partQPV,comm) %>%
+    dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
+                   "partQPV<sup>2</sup>" = partQPV,
+                   "Nombre de communes" = comm)  %>%
+    dplyr::relocate("Nombre de communes",.after="Population") 
+
+}
+
+#définition des sources
+credits <- function(.tbl){
+  .tbl %>% 
+    column_spec(3,bold = T) %>%
+    footnote(general = " Insee RP2019", 
+             general_title = "Source : ",
+             number = c("Zone de Revitalisation Rurale 2018 \n",
+                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
+             footnote_as_chunk = T)   }
+
+
+#définition des ronds proportionnels
+carto <- function(.map) {
+  .map %>%
+  addPolygons(data = carte,
+              color = "#2F4F4F", weight=2, opacity = 0.6, 
+              fill=F, smoothFactor = 2 ) %>%
+  addCircles(centroid(carte)[,1],centroid(carte)[,2],group = "carte",
+             radius = 50*carte$pop^(1/2), 
+             color = "#4169E1", opacity = 0.8,weight=4,
+             fillColor = "#FFFFFF", fillOpacity = 0.3,
+             highlight = highlightOptions (
+                          color = "#00FFFF", weight = 5,
+                          fillOpacity =  0.1 ),
+             popup = popupTable(carte@data,
+                                 feature.id=F,row.numbers = F))
+}
+
+#définition de la couche QPV
+QPV <- function(.map){
+  .map %>%
+    addPolygons(data=QPV27, group  = "QPV",
+              color="#2F4F4F",weight = 2, fill = T,
+              highlight = highlightOptions (
+                              color = "#000080", weight = 5, 
+                              fillOpacity =  0.4 ),
+              popup = glue("QP : {QPV27$LIBGEO} <br> 
+                           Population : {QPV27$POP_MUN}") ) 
+}
+
+#définition de la couche ZRR
+carto_ZRR <- function(.map){
+  .map %>%
+    addPolygons(data=ZRR, group  = "ZRR",
+              fillColor = "#6B8E23", fillOpacity = 0.4,  
+              fill = T, stroke=F, smoothFactor = 2) %>%
+    addLegend(colors = "#6B8E23",
+              labels = "ZRR",
+              title = "Zones de Revitalisation Rurale",
+              position = "bottomright")
+}
+
+#définition de la couche densité    
+pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c",
+                     "#e98e8b","#bfef94","#a0d27b","#006a49"),
+                   domain = NULL)
+
+densite <- function(.map){
+  .map %>%
+      addPolygons(data=densitewgs,
+              fillColor = ~pal(Typdgrd), fillOpacity = 0.5,
+              stroke = F, group = "densite" ) %>% 
+      addLegend(pal = pal, values = unique(densitewgs$Lblldgr), 
+                opacity = 0.7, 
+                title = "grille densité 7 niveaux", 
+                position = "bottomright") 
+}
 
 ```
 
@@ -45,50 +120,31 @@ La région est très rurale : **`r prettyNum(round(region$partZRR,1)[3],decimal.
 
 ```{r,echo=F}
 
-region_tab %>%  
-  dplyr::select(Région,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
-  left_join(.,basecom %>% 
-              group_by(REG) %>%
-              summarise(comm=n()) %>% adorn_totals("row",name="METRO"),
-            by=c("Région"="REG")) %>%
-  dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
-                 "partQPV<sup>2</sup>" = partQPV ,
-                 "Nombre de communes" = comm) %>%
-  dplyr::relocate("Nombre de communes",.after="Population")  %>%
-  
-    cc_kable(aligne = "clrrrccll") %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n",
-                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
-           footnote_as_chunk = T) 
+tab <-  region_tab %>%   
+   left_join(.,pop_basecom(REG) %>% 
+               adorn_totals("row",name="METRO"),
+             by=c("Région"="REG")) %>%   
+   demo(geo=Région) 
 
+tab %>%
+  cc_kable(aligne = "clrrrccll") %>%
+  credits()
+
+  
 ```
 
 ### Carte régionale
 
 ```{r}
-leaflet(regwgs) %>% 
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6, 
-              fill=F, smoothFactor = 2) %>%
-  addPolygons(data=ZRR, group  = "ZRR",
-              fillColor = "#6B8E23", fillOpacity = 0.4,  
-              fill = T, stroke=F, smoothFactor = 2) %>%
-    contour_bfc() %>%
-  addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],
-             group = "region", radius = 50*regwgs$pop^(1/2), 
-             color = "#4169E1",weight=4, opacity = 0.8,
-             fillColor = "#FFFFFF", fillOpacity = 0.3,
-             highlight = highlightOptions (
-                            color = "#00FFFF", weight = 5, fillOpacity =  0.1 ),
-             popup = popupTable(regwgs@data %>% 
-                                  dplyr::select(Région=REG) %>%
-                                  left_join(.,region_tab %>% 
-                                              dplyr::select(Région,Nom,Population,Densité,rang,
-                                                             `Taux femmes`,partZRR,partQPV),
-                                            by="Région"),
-                                feature.id=F,row.numbers = F)) %>%
-  addLegend( position = "bottomright",colors = "#6B8E23",labels = "Zones de Revitalisation Rurale")
+carte <- regwgs
+carte@data <- carte@data %>% select(Région=REG,pop)
+carte <- merge(carte,tab,by="Région")
+
+leaflet() %>%
+ carto_ZRR() %>%
+ carto() %>%
+ contour_bfc() 
+ 
 ```
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20"}
@@ -99,7 +155,7 @@ leaflet(regwgs) %>%
 
 ### Données générales
 
-La densité dépasse 230 habitants par km² dans le Territoire de Belfort et atteint difficilement 30 habitants par km² dans le Nièvre. La Bourgogne-Franche-Comté est une terre de contrastes dont la composante essentiellement rurale apparaît dans la forte part de communes classées en ZRR, et le faible taux de population en QPV. Le territoire de Belfort reste un département atypique.
+La densité dépasse 230 habitants par km² dans le Territoire de Belfort et seulement 30 habitants par km² dans le Nièvre. La Bourgogne-Franche-Comté est une terre de contrastes dont la composante essentiellement rurale apparaît dans la forte part de communes classées en ZRR, et le faible taux de population en QPV. Le territoire de Belfort reste un département atypique.
 
 ## Row {.tabset .tabset-fade}
 
@@ -107,28 +163,22 @@ La densité dépasse 230 habitants par km² dans le Territoire de Belfort et att
 
 ```{r,echo=F}
 
-dep27_tab %>%  
-  dplyr::select(Région,Département,Nom,Population,Densité,rang,rang_national,`Taux femmes`,partZRR,partQPV) %>%
-  left_join(.,basecom %>% 
-              filter (DEP %in% depbfc) %>% 
-              group_by(DEP) %>% 
-              summarise(comm=n()) %>% 
+tab <- dep27_tab %>%  
+  left_join(.,pop_basecom(DEP) %>% 
               adorn_totals("row",name="BFC") %>%
               bind_rows(.,basecom %>% 
                           group_by () %>% 
                           summarise(DEP="METRO", comm=n())),
             by=c("Département"="DEP")) %>%
-  dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
-                 "partQPV<sup>2</sup>" = partQPV ,
-                 "Nombre de communes" = comm) %>%
-  dplyr::relocate("Nombre de communes",.after="Population")  %>%
-  
+  demo(geo=Département) %>% 
+  bind_cols(rang_national=dep27_tab$rang_national) %>%
+  relocate(rang_national,.after = rang)  %>% 
+  ungroup() %>%  
+  select(-Région)
+
+tab  %>% 
   cc_kable(aligne = "cclrrrcccll") %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n",
-                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
-           footnote_as_chunk = T)
+  credits()
 
 
 ```
@@ -136,28 +186,23 @@ dep27_tab %>%
 ### Carte départementale
 
 ```{r}
-leaflet(depwgs) %>% 
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6, 
-              fill=F, smoothFactor = 2 ) %>%
-  addPolygons(data=densitewgs,
-              fillColor = ~pal(Typdgrd), fillOpacity = 0.5,
-              stroke = F, group = "densite" ) %>%  
-    contour_depbfc(zoom= 6) %>%
-  addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],group = "BV",
-             radius = 50*depwgs$pop^(1/2), 
-             color = "#4169E1", opacity = 0.8,weight=4,
-             fillColor = "#FFFFFF", fillOpacity = 0.3,
-             highlight = highlightOptions (
-                          color = "#00FFFF" , fillOpacity =  0.1,weight = 5 ),
-             popup = popupTable(depwgs@data %>% 
-                                  dplyr::select(Département=DEP) %>%
-                                  left_join(.,dep_tab %>%
-                                              dplyr::select(Région,Département,Nom,Population,Densité,
-                                                            rang,`Taux femmes`,partZRR,partQPV)
-                                            ,by="Département"),
-                                 feature.id=F,row.numbers = F)) %>%
-  addLegend(pal = pal, values = unique(densitewgs$Lblldgr), opacity = 0.7, 
-            title = "grille densité 7 niveaux", position = "bottomright") 
+carte <- depwgs
+carte@data <- carte@data %>% select(Département=DEP,pop)
+carte <- merge(carte,dep_tab %>% 
+                 left_join(.,pop_basecom(DEP),
+                           by=c("Département"="DEP")) %>%
+                 demo(geo=Département) %>% 
+                 bind_cols(rang_national=dep_tab$rang_national) %>%
+                 relocate(rang_national,.after = rang)  %>% 
+                 ungroup() %>%  
+                 select(-Région),
+               by="Département")
+
+
+leaflet() %>%
+  densite() %>%
+  carto() %>%
+  contour_depbfc(zoom= 6) 
 
 ```
 
@@ -170,11 +215,8 @@ leaflet(depwgs) %>%
 ### Comparaisons établissements publics de coopération intercommunale
 
 ```{r,echo=F}
-epci27_tab %>%  
-  dplyr::select(EPCI,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
-  left_join(.,basecom %>% 
-              group_by(EPCI) %>% 
-              summarise(comm=n())  %>%
+tab <- epci27_tab %>%
+  left_join(.,pop_basecom(EPCI)  %>%
               bind_rows(.,basecom %>% 
                           filter (DEP %in% depbfc) %>% 
                           group_by () %>% 
@@ -183,51 +225,27 @@ epci27_tab %>%
                           group_by () %>% 
                           summarise(EPCI="METRO", comm=n())),
             by="EPCI") %>%
-  dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
-                 "partQPV<sup>2</sup>" = partQPV ,
-                 "Nombre de communes" = comm) %>%
-  dplyr::relocate("Nombre de communes",.after="Population")  %>%
-  
-    cc_kable(aligne = "clrrrccll") %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n",
-                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
-           footnote_as_chunk = T) 
+demo(EPCI)    
+
+tab %>%
+  cc_kable(aligne = "clrrrccll") %>%
+  credits()
 ```
 
 ### Carte ECPI
 
 
 ```{r}
-leaflet(epcicarto) %>% 
-  addPolygons(data=densiteBFC,
-              fillColor = ~pal(Typdgrd),  fillOpacity = 0.5,
-              stroke = F, group = "densite", ) %>%  
-  addPolygons(color = "#2F4F4F", weight=2,opacity = 1,
-              fill=F ) %>%
-    contour_depbfc() %>%
-  addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],group = "BV",
-             radius = 50*epcicarto$pop^(1/2), 
-             color = "#4169E1", opacity = 0.8,weight=4,
-             fillColor = "#FFFFFF", fillOpacity = 0.3,
-             highlight = highlightOptions (
-                              color = "#00FFFF", weight = 5, fillOpacity =  0.1),
-             popup = popupTable(epcicarto@data %>%
-                                  dplyr::select(EPCI) %>%
-                                  left_join(.,epci27_tab %>% 
-                                              dplyr::select(EPCI,Nom,Population,Densité,rang,
-                                                           `Taux femmes`,partZRR,partQPV)
-                                            ,by="EPCI"),
-                                 feature.id=F,row.numbers = F)) %>% 
-  addPolygons(data=QPV27, group  = "QPV",
-              color="#2F4F4F", weight = 2,
-              fill = T,
-              highlight = highlightOptions (
-                          color = "#000080",  weight = 5, fillOpacity =  0.4 ),
-              popup = sprintf("QP : %s <br> pop : %.0f",QPV27$LIBGEO,QPV27$POP_MUN )) %>%
-  addLegend(pal = pal, values = unique(densiteBFC$Lblldgr), opacity = 0.7, 
-            title = "grille densité 7 niveaux", position = "bottomright")    
+carte <- epcicarto
+carte@data <- carte@data %>% select(EPCI,pop)
+carte <- merge(carte,tab,by="EPCI")
+
+
+leaflet() %>% 
+  densite() %>%
+  carto() %>%
+  contour_depbfc() %>%   
+  QPV()
 
 ```
 
@@ -240,11 +258,8 @@ leaflet(epcicarto) %>%
 ### Comparaisons bassins de vie
 
 ```{r,echo=F}
-bv27_tab %>%  
-  dplyr::select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
-  left_join(.,basecom %>% 
-              group_by(BV2012) %>% 
-              summarise(comm=n())  %>%
+tab <- bv27_tab %>%  
+  left_join(.,pop_basecom(BV2012) %>%
               bind_rows(.,basecom %>% 
                           filter (DEP %in% depbfc) %>% 
                           group_by () %>% 
@@ -253,17 +268,11 @@ bv27_tab %>%
                           group_by () %>% 
                           summarise(BV2012="METRO", comm=n())),
             by="BV2012") %>%
-  dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
-                 "partQPV<sup>2</sup>" = partQPV ,
-                 "Nombre de communes" = comm) %>%
-  dplyr::relocate("Nombre de communes",.after="Population") %>%
-  
+  demo(BV2012)    
+
+tab %>%  
   cc_kable(aligne = "clrrrccll") %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n",
-                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
-           footnote_as_chunk = T)
+  credits()
 
 ```
 
@@ -327,33 +336,15 @@ bv27_tab %>%
 ### Carte BV
 
 ```{r}
-leaflet(bvcarto) %>% 
-  addPolygons(data=ZRR, group  = "ZRR",
-              fillColor = "#6B8E23", fill = T, fillOpacity = 0.4, 
-              stroke=F, smoothFactor = 2) %>%
-  addPolygons(color = "#2F4F4F", weight=2,opacity = 1,
-              fill=F ) %>%
-    contour_depbfc () %>%
-  addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],group = "BV",
-             radius = 50*bvcarto$pop^(1/2), 
-             color = "#4169E1", weight=4, opacity = 0.8,
-             fillColor = "#FFFFFF", fillOpacity = 0.3,
-             highlight = highlightOptions (
-                             color = "#00FFFF", fillOpacity =  0.1, weight = 5 ),
-             popup = popupTable(bvcarto@data %>% 
-                                    dplyr::select(BV2012) %>%
-                                    left_join(.,bv27_tab %>% 
-                                                dplyr::select(BV2012,Nom,Population,Densité,
-                                                              rang,`Taux femmes`,partZRR,partQPV)
-                                              ,by="BV2012"),
-                                 feature.id=F,row.numbers = F)) %>%  
-  addPolygons(data=QPV27, group  = "QPV",
-              color="#2F4F4F",weight = 2, 
-              fill = T,
-              highlight = highlightOptions (
-                              color = "#000080", weight = 5, fillOpacity =  0.4 ),
-              popup = sprintf("QP : %s <br> pop : %.0f",QPV27$LIBGEO,QPV27$POP_MUN )) %>%
-  addLegend( position = "bottomright",colors = "#6B8E23",labels = "Zones de Revitalisation Rurale")
+carte <- bvcarto
+carte@data <- carte@data %>% select(BV2012,pop)
+carte <- merge(carte,tab,by="BV2012")
+
+leaflet() %>% 
+  carto_ZRR() %>%
+  carto() %>%
+  contour_depbfc () %>%
+  QPV()
 
 
 ```
@@ -371,9 +362,7 @@ basecom %>%
   filter(REG=='27') %>% 
   select(CODGEO:SUPERF) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="clrrrrrrrrrrrrrrrrrr", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
+  cc_kable("clrrrrrrrrrrrrrrrrrr") %>%
   footnote(general = "Insee, Code officiel géographique", 
            general_title = "Source : ",
            #number = c("Insee-grille de densité 2020, Insee-RP 2018, ANCT-CRTE au 19/01/2022"),
@@ -385,26 +374,43 @@ basecom %>%
 
 ```{r}
 leaflet() %>% 
-  addProviderTiles(providers$OpenStreetMap, group="OSM") %>%
-  addProviderTiles(providers$OpenStreetMap.France, group="OSM France") %>%
-  addProviderTiles(providers$OpenTopoMap, group="Topographie") %>%
-  addProviderTiles(providers$GeoportailFrance, group="Geoportail") %>%
-  addProviderTiles(providers$GeoportailFrance.orthos, group="Geoportail.ortho") %>%
-  addProviderTiles(providers$GeoportailFrance.plan, group="Geoportail.plan") %>%
-  addProviderTiles(providers$CyclOSM, group="vélo") %>%
-  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="NASA") %>%
-  addProviderTiles(providers$OpenSeaMap, group="hydro") %>%
-  addProviderTiles(providers$WaymarkedTrails.hiking , group="rando") %>%
-  addProviderTiles(providers$WaymarkedTrails.cycling, group="cycle") %>%
-  addProviderTiles(providers$OpenRailwayMap, group="routes") %>%
-  addProviderTiles(providers$SafeCast, group="safecast") %>%
-  addProviderTiles(providers$WaymarkedTrails.slopes, group="slopes") %>%
-  setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-    contour_depbfc() %>%
-  addLayersControl( baseGroups = c("OSM","OSM France", "Topographie","Geoportail",
-                                 "Geoportail.ortho","Geoportail.plan","vélo","NASA", "hydro"),
-                  overlayGroups = c("rando","cycle","routes","safecast","slopes"),
-                  options = layersControlOptions(collapsed = F,autoZIndex = F))
+  addProviderTiles(providers$OpenStreetMap, 
+                   group="OSM") %>%
+  addProviderTiles(providers$OpenStreetMap.France, 
+                   group="OSM France") %>%
+  addProviderTiles(providers$OpenTopoMap, 
+                   group="Topographie") %>%
+  addProviderTiles(providers$GeoportailFrance, 
+                   group="Geoportail") %>%
+  addProviderTiles(providers$GeoportailFrance.orthos,
+                   group="Geoportail.ortho") %>%
+  addProviderTiles(providers$GeoportailFrance.plan, 
+                   group="Geoportail.plan") %>%
+  addProviderTiles(providers$CyclOSM, 
+                   group="vélo") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, 
+                   group="NASA") %>%
+  addProviderTiles(providers$OpenSeaMap, 
+                   group="hydro") %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking , 
+                   group="rando") %>%
+  addProviderTiles(providers$WaymarkedTrails.cycling, 
+                   group="cycle") %>%
+  addProviderTiles(providers$OpenRailwayMap, 
+                   group="routes") %>%
+  addProviderTiles(providers$SafeCast, 
+                   group="safecast") %>%
+  addProviderTiles(providers$WaymarkedTrails.slopes, 
+                   group="slopes") %>%
+  contour_depbfc() %>%
+  addLayersControl( baseGroups = c("OSM","OSM France",
+                                   "Topographie","Geoportail",
+                                   "Geoportail.ortho","Geoportail.plan",
+                                   "vélo","NASA", "hydro"),
+                  overlayGroups = c("rando","cycle",
+                                    "routes","safecast","slopes"),
+                  options = layersControlOptions(collapsed = F,
+                                                 autoZIndex = F))
 ```
 
 # `r fa(name = "fas fa-tree")` CRTE {data-orientation="rows" height="20"}
@@ -422,19 +428,21 @@ crte %>%
   mutate(SH_RUR_CRTE=color_bar(ifelse(SH_RUR_CRTE<50,"#00bfff", "#90ee90"))
                               (digits(SH_RUR_CRTE,1,decimal.mark=",") ) ) %>%
   select("Identifiant CRTE"=id_crte,"Libellé CRTE"=lib_crte,
-                "Part de population rurale dans le CRTE d'appartenance (%)<sup>1</sup>" = SH_RUR_CRTE,
-                "Typologie urbain/rural du CRTE d'appartenance<sup>1</sup>" = TYPO_RURB_CRTE) %>%
+         "Part de population rurale dans le CRTE d'appartenance (%)<sup>1</sup>" = SH_RUR_CRTE,
+         "Typologie urbain/rural du CRTE d'appartenance<sup>1</sup>" = TYPO_RURB_CRTE) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="cllc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(which (crte%>%distinct(id_crte,TYPO_RURB_CRTE) %>%
+  cc_kable("cllc") %>%
+  row_spec(which (crte %>%
+                    distinct(id_crte,TYPO_RURB_CRTE) %>%
                     arrange(id_crte) %>% 
-                    select(TYPO_RURB_CRTE) %>% pull =="RURAL") , 
-           bold = F,color = "#006400") %>%
-  row_spec(which (crte%>%distinct(id_crte,TYPO_RURB_CRTE) %>%
+                    select(TYPO_RURB_CRTE) %>% 
+                    pull =="RURAL") , 
+           bold = F, color = "#006400") %>%
+  row_spec(which (crte %>%
+                    distinct(id_crte,TYPO_RURB_CRTE) %>%
                     arrange(id_crte) %>% 
-                    select(TYPO_RURB_CRTE)%>% pull !="RURAL") ,
+                    select(TYPO_RURB_CRTE) %>%
+                    pull !="RURAL") ,
            bold = T) %>%
   footnote(general = "ANCT - Observatoire des territoires 2022", 
            general_title = "Source : ",
@@ -456,17 +464,21 @@ crte %>%
 
 ```{r}
 crte %>% 
-  select("Code commune au 1er janvier 2021"=CODGEO,"Nom de la commune"=LIBGEO,
-         "Identifiant CRTE"=id_crte,"CRTE d'appartenance"=lib_crte,
+  select("Code commune au 1er janvier 2021"=CODGEO,
+         "Nom de la commune"=LIBGEO,
+         "Identifiant CRTE"=id_crte,
+         "CRTE d'appartenance"=lib_crte,
          "Typologie urbain/rural du CRTE d'appartenance<sup>1</sup>" = TYPO_RURB_CRTE,
          "Dans/Hors filtre ANS<sup>2</sup>"= FILTRE_ANS) %>%
   
-  kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-        align="cllc", escape = F) %>% 
-  kable_styling("hover", full_width = F) %>%
-  row_spec(which (crte %>% select(FILTRE_ANS) %>% pull == "IN") ,
-           bold = F,color = "#006400") %>%
-  row_spec(which (crte%>%select(FILTRE_ANS)%>% pull != "IN") ,
+  cc_kable("cllc") %>%
+  row_spec(which (crte %>% 
+                    select(FILTRE_ANS) %>% 
+                    pull == "IN") ,
+           bold = F, color = "#006400") %>%
+  row_spec(which (crte %>%
+                    select(FILTRE_ANS) %>% 
+                    pull != "IN") ,
            bold = T) %>%  
   footnote(general = "ANCT - Observatoire des territoires 2022", 
            general_title = "Source : ",
@@ -478,6 +490,10 @@ crte %>%
 ### carte CRTE
 
 ```{r}
+palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a",
+                      "#43a047","#2e7d32"), 
+                    domain =0:100 ,
+                    bins= c(0, 50, 60, 70,80, 100) )
 
 leaflet(zonage_crte) %>% 
   addProviderTiles(providers$OpenStreetMap) %>%
@@ -492,7 +508,8 @@ leaflet(zonage_crte) %>%
               color="#9370DB",weight = 2,opacity = 1,
               fill = F) %>%
   addPolygons(data=subset(crte_carto,FILTRE_ANS == "IN" &
-                            TYPO_RURB_CRTE == "URBAIN" ), group  = "CRTE",
+                            TYPO_RURB_CRTE == "URBAIN" ), 
+              group  = "CRTE",
               color="#ffd700",weight = 1,opacity = 1,
               fill = F) %>%
   addLegend("bottomright", 

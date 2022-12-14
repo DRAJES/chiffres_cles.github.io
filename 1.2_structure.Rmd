@@ -12,10 +12,65 @@ output:
  
  
 ```{r, include=FALSE ,echo=F, cache=F} 
+#défintion des variables des tableaux
+demo <- function(.tbl,geo) {.tbl %>%
+     select({{geo}},Nom,Population,
+            `15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
+         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, 
+         ind_jeun) %>%
+    rename("indice jeunesse <sup>1</sup>"=ind_jeun) 
+}
 
-pal <- colorBin("Purples", domain =0:200 ,bins=c(0, 50, 75, 100 , Inf), reverse = T)
 
-pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 12.5, 15, 17.5, 20, 100) )
+#définition des sources et headers
+credits <- function(.tbl){
+  .tbl %>% 
+    cc_kable(aligne = "clrrlcrlcc") %>%
+    # column_spec(5,width = "3cm") %>% 
+    #  column_spec(8,width = "3cm") %>%
+    add_header_above(c(" " = 3, 
+                       "Jeunes" =3, 
+                       "Population âgée" = 3,
+                       " ")) %>%
+    footnote(general = " Insee RP2019", 
+           general_title = "Source : ",
+           number = "Nombre de -20 ans / nombre de + 60 ans",
+           footnote_as_chunk = T)   }
+
+#définition des ronds proportionnels et choroplèthe
+pal <- colorBin("Purples", domain =0:200 ,
+                bins=c(0, 50, 75, 100 , Inf), 
+                reverse = T)
+
+pal2 <- colorBin("YlOrBr", domain =0:100 ,
+                 bins= c(0, 12.5, 15, 17.5, 20, 100) )
+
+
+carto <- function(.map) {
+  .map %>%
+  addPolygons(data = carte,
+              fillColor = ~pal(ind_jeun), fillOpacity = 0.7,
+              color = "#2F4F4F", weight = 2,opacity = 0.6, 
+              smoothFactor = 2 ) %>%
+  addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, 
+            title = "indice de jeunesse", position = "bottomright") %>%
+  
+  addCircles(centroid(carte)[,1],centroid(carte)[,2],
+             radius = ~100*p1529^(1/2), 
+             color = "#4169E1", weight=4,
+             fillColor = ~pal2(100*p1529/pop), fillOpacity = 0.7,
+             highlight = highlightOptions (
+                             color = "#00FFFF", weight = 5,
+                             fillOpacity =  0.4 ),
+             popup = popupTable(carte@data %>%
+                                  select(-p1529,-pop,-ind_jeun),
+                                feature.id=F,row.numbers = F) ) %>%
+  addLegend(pal = pal2,values = regwgs$prop1529,
+            opacity = 0.7,
+            title = "taux de 15/29 ans",
+            labFormat = labelFormat(suffix =  " %"),
+            position = "bottomright")
+}
 
 ```
 
@@ -39,19 +94,11 @@ Row {.tabset .tabset-fade}
 ### Comparaisons régionales
   
 ```{r,echo=F}
-region_tab %>%
-  select(Région,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
-         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
-  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
-  
-  cc_kable(aligne = "clrrlcrlcc") %>%
- # column_spec(5,width = "3cm") %>% 
-#  column_spec(8,width = "3cm") %>%
-  add_header_above(c(" " = 3, "Jeunes" =3, "Population âgée" = 3," ")) %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = "Nombre de -20 ans / nombre de + 60 ans",
-           footnote_as_chunk = T) 
+tab <- region_tab %>%
+  demo(geo=Région)
+
+tab %>%  
+  credits()
 
 ```   
 
@@ -69,33 +116,22 @@ hchart( region %>%
   "bar",  hcaes(x = région, y = part, group = âge) ,
           stacking = "percent" , reverse = T, showInLegend = T,  pointWidth =20) %>%
   #hc_yAxis(categories = lvls) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 ```
 
 ### Carte régionale
 ```{r}
-leaflet(regwgs) %>%  
-  addPolygons(fillColor = ~pal(ind_jeun), fillOpacity = 0.7,
-              color = "#2F4F4F", weight = 2,opacity = 0.6, 
-              smoothFactor = 2 ) %>% 
-    contour_bfc() %>%
-   addCircles(centroid(regwgs)[,1],centroid(regwgs)[,2],
-             radius = ~100*p1529^(1/2), 
-             color = "#4169E1", weight=4,
-             fillColor = ~pal2(100*p1529/pop), fillOpacity = 0.7,
-             highlight = highlightOptions (
-                             color = "#00FFFF", weight = 5,fillOpacity =  0.4 ),
-             popup = popupTable(regwgs@data %>%
-                                  select(Région=REG) %>%
-                                  left_join(.,region_tab %>%
-                                              select(Région,Nom,Population,`15-29 ans`,
-                                                     `Taux<br>15/29`,`65 ans et +`,
-                                                     `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
-                                            ,by="Région"),
-                                feature.id=F,row.numbers = F) ) %>%
-  addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, 
-            title = "indice de jeunesse", position = "bottomright") %>%
-  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+carte <- regwgs
+carte@data <- carte@data %>% select(Région=REG,pop,p1529,ind_jeun)
+carte <- merge(carte,tab,by="Région")
+
+
+leaflet(carte) %>%  
+  carto() %>%
+  contour_bfc() 
+   
 ```
 
 
@@ -117,18 +153,13 @@ La Côte d'Or est de département où les 15/29 ans sont les plus nombreux tandi
 ### Comparaisons départementales 
 
 ```{r,echo=F}
-dep27_tab %>%  
- select(Région, Département,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
-         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
-  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
-  
-  cc_kable(aligne = "cclrrlcrlcc") %>%
- # column_spec(5,width = "3cm") %>% 
-#  column_spec(7,width = "3cm") %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = "Nombre de -20 ans / nombre de + 60 ans",
-           footnote_as_chunk = T) 
+tab <- dep27_tab %>%  
+    demo(geo=Département) %>% 
+  ungroup() %>%
+  select(-Région)
+
+tab %>%  
+  credits()
 ```
 
 ### Structure départementale
@@ -146,35 +177,22 @@ hchart( departement %>%
   "bar",  hcaes(x = Département, y = part, group = âge) ,
           stacking = "percent" , reverse = T, showInLegend = T,  pointWidth =20) %>%
   #hc_yAxis(categories = lvls) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 ```
 
 
 ### Carte départementale
 ```{r}
-leaflet(depwgs) %>% 
-  addPolygons(fillColor = ~pal(ind_jeun), fillOpacity = 0.7,
-              color = "#2F4F4F",weight = 2,opacity = 0.6, 
-              smoothFactor = 2 ) %>%
-    contour_depbfc(zoom = 6) %>%
-   addCircles(centroid(depwgs)[,1],centroid(depwgs)[,2],
-             radius = ~100*p1529^(1/2), 
-             color = "#4169E1",weight=4,
-             fillColor = ~pal2(prop1529), fillOpacity = 0.7,
-             highlight = highlightOptions (
-                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
-             popup = popupTable(depwgs@data %>% 
-                                  select(Département=DEP) %>%
-                                  left_join(.,dep_tab %>%
-                                              select(Région,Département,Nom,Population,`15-29 ans`,
-                                                     `Taux<br>15/29`,`65 ans et +`,
-                                                     `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
-                                            ,by="Département"),
-                                feature.id=F,row.numbers = F))%>%
-  addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, 
-            title = "indice de jeunesse", position = "bottomright") %>%
-  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,
-            title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+carte <- depwgs
+carte@data <- carte@data %>% select(Département=DEP,pop,p1529,ind_jeun)
+carte <- merge(carte,tab,by="Département")
+
+
+leaflet(carte) %>%  
+  carto() %>%
+  contour_bfc() 
 ```
 
 ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
@@ -188,47 +206,25 @@ Row {data-height="20"}
 ### Comparaisons établissements publics de coopération intercommunale
   
 ```{r,echo=F}
-epci27_tab %>% 
-  select(EPCI,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
-         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
-  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
-  
-  cc_kable(aligne = "clrrlcrlcc") %>%
- # column_spec(5,width = "3cm") %>% 
-#  column_spec(7,width = "3cm") %>%
-  add_header_above(c(" " = 3, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = "Nombre de -20 ans / nombre de + 60 ans",
-           footnote_as_chunk = T) 
+tab <- epci27_tab %>%
+  demo(geo=EPCI)
+
+tab %>%  
+  credits()
 ```
 
 
 
 ### Carte ECPI
 ```{r}
-leaflet(epcicarto) %>% 
-  addPolygons(fillColor = ~pal(ind_jeun),  fillOpacity = 0.7,
-               color = "#2F4F4F", weight = 2,opacity = 0.6 ) %>%
-    contour_depbfc() %>%
-  addCircles(centroid(epcicarto)[,1],centroid(epcicarto)[,2],
-             radius = ~100*p1529^(1/2), 
-             color = "#4169E1",weight=4,
-             fillColor = ~pal2(prop1529), fillOpacity = 0.7,
-             highlight = highlightOptions (
-                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
-            popup = popupTable(epcicarto@data %>% 
-                                 select(EPCI) %>%
-                                 left_join(.,epci27_tab %>%
-                                             select(EPCI,Nom,Population,`15-29 ans`,
-                                                    `Taux<br>15/29`,`65 ans et +`,
-                                                    `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
-                                           ,by="EPCI"),
-                               feature.id=F,row.numbers = F) ) %>%
- addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, 
-           title = "indice de jeunesse", position = "bottomright") %>%
-  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,
-            title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+carte <- epcicarto
+carte@data <- carte@data %>% select(EPCI,pop,p1529,ind_jeun)
+carte <- merge(carte,tab,by="EPCI")
+
+
+leaflet(carte) %>%  
+  carto() %>%
+  contour_depbfc() 
 ```
   
   
@@ -243,47 +239,25 @@ Row {data-height="20"}
   
 ### Comparaisons bassins de vie
 ```{r,echo=F}
-bv27_tab %>%  
-  select(BV2012,Nom,Population,`15-29 ans`,`Taux<br>15/29`, `Taux femmes<br>15/29`,
-         `65 ans et +`,`Taux<br>>65 ans`,`Taux femmes<br>>65 ans`, ind_jeun) %>%
-  rename("indice jeunesse <sup>1</sup>"=ind_jeun) %>%
-  
-  cc_kable(aligne = "clrrlcrlcc") %>%
-#  column_spec(5,width = "3cm") %>% 
-#  column_spec(7,width = "3cm") %>%
-  add_header_above(c(" " = 3, "Jeunes" =3, "Pop âgée" = 3," ")) %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = "Nombre de -20 ans / nombre de + 60 ans",
-           footnote_as_chunk = T) 
+tab <- bv27_tab %>%
+  demo(geo=BV2012)
+
+tab %>%  
+  credits()
 ```  
   
   
   
 ### Carte BV
 ```{r}
-leaflet(bvcarto) %>% 
-  addPolygons(fillColor = ~pal(ind_jeun), fillOpacity = 0.7 ,
-              color = "#2F4F4F",weight = 2,opacity = 0.6 ) %>%
-    contour_depbfc() %>%
-  addCircles(centroid(bvcarto)[,1],centroid(bvcarto)[,2],
-             radius = 100*bvcarto$p1529^(1/2), 
-             color = "#4169E1", opacity = 0.8, weight=4,
-             fillColor = ~pal2(prop1529), fillOpacity = 0.7,
-             highlight = highlightOptions (
-                          color = "#00FFFF",  weight = 5, fillOpacity =  0.4 ),
-             popup = popupTable(bvcarto@data %>% 
-                                  select(BV2012) %>%
-                                  left_join(.,bv27_tab %>%
-                                              select(BV2012,Nom,Population,`15-29 ans`,
-                                                     `Taux<br>15/29`,`65 ans et +`,
-                                                     `Taux<br>>65 ans`,"indice jeunesse"=ind_jeun)
-                                            ,by="BV2012"),
-                                feature.id=F,row.numbers = F))%>%
-  addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, 
-            title = "indice de jeunesse", position = "bottomright") %>%
-  addLegend(pal = pal2,values = regwgs$prop1529,opacity = 0.7,
-            title = "taux de 15/29 ans",labFormat = labelFormat(suffix =  " %"),position = "bottomright")
+carte <- bvcarto
+carte@data <- carte@data %>% select(BV2012,pop,p1529,ind_jeun)
+carte <- merge(carte,tab,by="BV2012")
+
+
+leaflet(carte) %>%  
+  carto() %>%
+  contour_depbfc() 
 ```
 
 

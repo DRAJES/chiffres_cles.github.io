@@ -1,4 +1,4 @@
-pop_basecom <-   function(geo=REG){ 
+pop_basecom <-   function(geo){ 
    basecom %>% 
       group_by({{geo}} ) %>%
      summarise(comm=n(),
