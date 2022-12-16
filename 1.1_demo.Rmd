@@ -54,7 +54,8 @@ carto <- function(.map) {
              highlight = highlightOptions (
                           color = "#00FFFF", weight = 5,
                           fillOpacity =  0.1 ),
-             popup = popupTable(carte@data,
+             popup = popupTable(carte@data %>% 
+                                  select(-pop),
                                  feature.id=F,row.numbers = F))
 }
 

@@ -45,6 +45,9 @@ pal <- colorBin("RdYlBu", domain =-5:5 ,
                 bins=c(-Inf, -1, -0.5,0,0.5, 1 , Inf), 
                 reverse = T)
 
+var <- c("pop","evol") #définition des variables de la carte
+
+
 carto <- function(.map) {
   .map %>%
     addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
@@ -57,7 +60,7 @@ carto <- function(.map) {
                           color = "#00FFFF",  weight = 5, 
                           fillOpacity =  0.4 ),
              popup = popupTable(carte@data %>%
-                                  select(-pop,-evol) ,
+                                  select(-var) ,
                                 feature.id=F,row.numbers = F) )%>%
     addLegend(pal = pal, values =  regwgs$evol, 
               opacity = 0.7, 
@@ -102,7 +105,7 @@ tab %>%
 
 ```{r,echo=F}
 carte <- regwgs
-carte@data <- carte@data %>% select(Région=REG,pop,evol)
+carte@data <- carte@data %>% select(Région=REG,var)
 carte <- merge(carte,tab,by="Région")
 
 leaflet(regwgs) %>%  
@@ -143,7 +146,7 @@ tab %>%
 
 ```{r,echo=F}
 carte <- depwgs
-carte@data <- carte@data %>% select(Département=DEP,pop,evol)
+carte@data <- carte@data %>% select(Département=DEP,var)
 carte <- merge(carte,tab,by="Département")
 
 leaflet(depwgs) %>%  
@@ -178,7 +181,7 @@ tab %>%
   
 ```{r,echo=F}
 carte <- epcicarto
-carte@data <- carte@data %>% select(EPCI,pop,evol)
+carte@data <- carte@data %>% select(EPCI,var)
 carte <- merge(carte,tab,by="EPCI")
 
 
@@ -212,7 +215,7 @@ tab %>%
 
 ```{r,echo=F}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012,pop,evol)
+carte@data <- carte@data %>% select(BV2012,var)
 carte <- merge(carte,tab,by="BV2012")
 
 

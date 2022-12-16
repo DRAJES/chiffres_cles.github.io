@@ -14,11 +14,109 @@ output:
 
 load("data/jeunesse/PMI.RData")
 
+#définition des variables des tableaux
+PMI <- function(.tbl,geo) {.tbl %>%
+    pivot_wider(names_from = ...1) %>% 
+    select(-8,-12) %>%
+    rename("Taux déquipement en accueil collectif<sup>1</sup>" = 
+             "pour 100 enfants nés au cours des 3 dernières années",
+           "Taux de scolarisation des enfants de 2 ans<sup>2</sup>" = 
+             "Taux de scolarisation des enfants de 2 ans (Rentrée 2019-2020 pour 100 enfants de 2 ans) (2)") %>%
+    mutate(`Taux déquipement en accueil collectif<sup>1</sup>`=
+             round(`Taux déquipement en accueil collectif<sup>1</sup>`, 1),
+           `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`=
+             round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`, 1),
+           Nom=str_to_title(Nom)  )
+}
+
+#définition des sources et headers
+credits <- function(.tbl){
+  .tbl %>% 
+    cc_kable(aligne = "crrrrrrcrcrrrr") %>%
+    column_spec(c(2,8,10), bold=T) %>%
+    add_header_above(c( " "=2,
+                        "détail des accueils collectifs"=5,
+                        " "=3,
+                        "Particuliers employeurs"=2) ) %>%
+    footnote(general = "DREES, enquête aide sociale", 
+             general_title = "Source : ",
+             number = c("pour 100 enfants nés au cours des 3 dernières années \n","Rentrée 2019-2020 pour 100 enfants de 2 ans"),
+             footnote_as_chunk = T)  %>%
+    scroll_box(height = "800px")
+}
+
+#comparaisons (nombre taux et structure)
+hPMI <- function(){
+  hw_grid(
+  tab %>%
+    arrange(desc(`Nombre de places en accueil collectif`)) %>%
+    hchart("bar", 
+           hcaes(x=Nom,y=`Nombre de places en accueil collectif`,
+                 color=ifelse(str_detect(Nom,"Bourgogne"),"#6a5acd","#ffd700")),
+           showInLegend = T, 
+           name = "Ensemble des lieux d'accueil", 
+           pointWidth = 20) %>%
+    hc_xAxis(title=list(text="")) %>%
+    hc_yAxis(title=list(text="Nombre de places en accueil collectif")) %>%
+    hc_add_theme(thm),
+  
+  tab %>%
+    arrange(desc(`Taux déquipement en accueil collectif<sup>1</sup>`)) %>%
+    hchart("bar",
+           hcaes(x=Nom,y=`Taux déquipement en accueil collectif<sup>1</sup>`,
+                 color=ifelse(str_detect(Nom,"Bourgogne"),"#6a5acd","#ffd700")),
+           name="Taux d'accueils collectifs pour 100 enfants", 
+           showInLegend = T) %>%
+    hc_xAxis(title=list(text="")) %>%
+    hc_credits(enabled=T,text="Source") %>%
+    hc_add_theme(thm),
+  
+  tab %>%
+    arrange(desc(`Taux déquipement en accueil collectif<sup>1</sup>`)) %>%
+    select(Nom,`Crèches collectives (y compris parentales)`:`Multi-accueil` ) %>%
+    pivot_longer(-Nom,names_to = "type") %>%
+    hchart("bar",
+           hcaes(x=Nom,y=value,group=type),
+           showInLegend = T, 
+           stacking="percent") %>%
+    hc_xAxis(title=list(text="")) %>%
+    hc_yAxis(title=list(text="Taux des différentes types d'accueils collectifs")) %>%
+    hc_credits(enabled=T,text="Source") %>%
+    hc_add_theme(thm),
+ncol = 3
+    )  
+}
+
+#définition des cartes choroplèthes
+
 pal <- colorBin("YlOrBr", domain =0:100 ,bins= c(0,5, 7.5,10, 12.5, 15, 17.5, 20,25, 100) )
 
+carto <- function(.map) {
+  .map %>%
+    addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, 
+                smoothFactor = 2,
+                fillColor = ~pal(`Taux d'accueils collectifs`),
+              popup = popupTable(carte@data ,
+                                 feature.id=F,row.numbers = F),
+             group="taux d'accueils collectifs" ) %>%
+  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, 
+              smoothFactor = 2,
+              fillColor = ~pal(`Taux de scolarisation`),
+              popup = popupTable(carte@data ,
+                                 feature.id=F,row.numbers = F),  
+                   group="taux de scolarisation") %>%
+  addLegend(pal = pal, values = 0:100,
+            position = "bottomright", 
+            title = "taux") %>%
+  addLayersControl( baseGroups =  c("taux d'accueils collectifs",
+                                    "taux de scolarisation"),
+                    options = layersControlOptions(collapsed = F,
+                                                   autoZIndex = F))  
+}
 
-options(knitr.kable.NA = '')
-options(knitr.table.format = "html")
+
+# options(knitr.kable.NA = '')
+# options(knitr.table.format = "html")
 ```
 
 
@@ -43,85 +141,24 @@ Row {.tabset .tabset-fade .tabset-pills data-height="900"}
 ### Accueils d'enfants d'âge préscolaire
 
 ```{r}
-ACM_PMI %>% 
-  pivot_longer(-1,names_to = "reg") %>% rename(Nom=reg) %>%
-  pivot_wider(names_from = ...1) %>% 
-  select(-8,-12) %>%
-  rename("Taux déquipement en accueil collectif<sup>1</sup>" = "pour 100 enfants nés au cours des 3 dernières années",
-         "Taux de scolarisation des enfants de 2 ans<sup>2</sup>" = "Taux de scolarisation des enfants de 2 ans (Rentrée 2019-2020 pour 100 enfants de 2 ans) (2)") %>%
-  mutate(`Taux déquipement en accueil collectif<sup>1</sup>`=round(`Taux déquipement en accueil collectif<sup>1</sup>`, 1),
-         `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`=round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`, 1),
-         Nom=str_to_title(Nom)  ) %>%
-  
-    cc_kable(aligne = "crrrrrrcrcrrrr") %>%
-  column_spec(c(2,8,10), 
-              bold=T) %>%
- # row_spec(2,
-#           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  add_header_above(c( " "=2,"détail des accueils collectifs"=5," "=3,"Particuliers employeurs"=2) ) %>%
-  footnote(general = "DREES, enquête aide sociale", 
-           general_title = "Source : ",
-           number = c("pour 100 enfants nés au cours des 3 dernières années \n","Rentrée 2019-2020 pour 100 enfants de 2 ans"),
-           footnote_as_chunk = T)  %>%
-  scroll_box(height = "800px")
+tab <- ACM_PMI %>% 
+  pivot_longer(-1,names_to = "reg") %>% 
+  rename(Nom=reg) %>%
+  PMI()
 
+tab %>%
+  credits()
 
 ```
 
-### Comparaisons régionales
-
+### Comparaisons
+7e région en taux d'accueils pour 100 enfants nés au cours des 3 dernières années, une très large majorité de multi-accueils en Bourgogne-Franche-Comté
 ```{r}
-bar <- as.data.frame(t(ACM_PMI %>% 
-                         slice(1)) ) %>%
-                      mutate(total=as.numeric(V1)) %>% 
-                      slice(2:14) %>% 
-                      arrange(desc(total))
+tab <- tab %>% slice(-14) 
 
-hchart(bar,
-"bar", hcaes(x=rownames(bar),y=total ,
-             color=c(rep("#ffd700",10),"#6a5acd",rep("#ffd700",2))  ),
-       showInLegend = T, name = "Ensemble des lieux d'accueil", pointWidth = 20) %>%
-    hc_xAxis(title=list(text="Régions")) %>%
-    hc_yAxis(title=list(text="Nombre de places en accueil collectif")) %>%
-    hc_add_theme(thm) 
+hPMI()
+
 ```
-
-
-
-
-### Structure des places ouvertes
-Une très large majorité de multi-accueils en Bourgogne-Franche-Comté
-```{r}
-bar <- ACM_PMI %>% 
-        slice(2:6) %>%
-        select(1:14) %>% 
-        pivot_longer(-1,names_to = "REG") 
-
-hchart(bar,
-"bar", hcaes(x=REG,y=value,group=...1),
-      showInLegend = T, stacking="percent") %>%
-    hc_credits(enabled=T,text="Source") %>%
-    hc_add_theme(thm) 
-```
-
-
-### Taux d'équipements en accueil collectif pour 100 enfants
-7e région en taux d'accueils pour 100 enfants nés au cours des 3 dernières années
-
-```{r}
-hchart(ACM_PMI %>% 
-          slice(8) %>%
-          select(1:14) %>% 
-          pivot_longer(-1,names_to = "REG") %>%
-          mutate(value=round(value,2)) %>% 
-          arrange(desc(value)) ,
-"bar", hcaes(x=REG,y=value,
-             color=c(rep("#ffd700",6),"#6a5acd",rep("#ffd700",6)) ) ,
-             name="Taux d'accueils collectifs pour 100 enfants", showInLegend = T) %>%
-  hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
-```
-
 
 
 ### Taux de scolarisation des enfants de 2 ans
@@ -129,15 +166,15 @@ hchart(ACM_PMI %>%
 4e région pour le taux de scolarisation des enfants de 2 ans
 
 ```{r}
-hchart(ACM_PMI %>% 
-          slice(10) %>%
-          select(1:14) %>%
-          pivot_longer(-1,names_to = "REG") %>%
-          mutate(value=round(value,2)) %>% 
-          arrange(desc(value)),
-"bar", hcaes(x=REG,y=value,
-             color=c(rep("#ffd700",3),"#6a5acd",rep("#ffd700",9)) ) ,
-             name="Taux de scolarisation des enfants de 2 ans", showInLegend = T) %>%
+tab %>%
+  select(Nom,`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`) %>%
+  arrange(desc(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`)) %>%
+  hchart("bar", 
+         hcaes(x=Nom,
+               y=`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`,
+               color=ifelse(str_detect(Nom,"Bourgogne"),"#6a5acd","#ffd700")),
+         name="Taux de scolarisation des enfants de 2 ans", 
+         showInLegend = T) %>%
   hc_credits(enabled=T,text="Source") %>%
   hc_add_theme(thm) 
 ```
@@ -145,38 +182,22 @@ hchart(ACM_PMI %>%
 
 ### Carte
 ```{r}
-cartereg <- ACM_PMI %>%
-                slice(8,10) %>%
-                dplyr::select(1:14) %>%
-                pivot_longer(!...1,names_to = "REG") %>%
-                pivot_wider(names_from = ...1,values_from = value) %>%
-                rename("accueil"=2,"scolarisation"=3) %>% 
-                mutate(accueil=round(accueil,1),scolarisation=round(scolarisation,1) ) %>%
-                mutate(INSEE_REG=regwgs@data %>%
-                                    arrange(LIBGEO) %>% 
-                                    dplyr::select(REG) %>% pull() )
+tab <- tab %>%  
+  select(Nom,
+         `Taux d'accueils collectifs` = 
+         `Taux déquipement en accueil collectif<sup>1</sup>`,
+         `Taux de scolarisation` = 
+         `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`) %>%
+  bind_cols(REG=regwgs@data %>% arrange(NOM) %>% pull(REG) )
+             
 
-cartereg <- merge(regwgs,cartereg,by="REG")
+carte <- regwgs
+carte@data <- carte@data %>% select(REG,pop)
+carte <- merge(carte,tab,by="REG")
 
-leaflet(cartereg) %>%   
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.9,  smoothFactor = 2,
-              fillColor = ~pal(accueil),
-              popup = popupTable(cartereg@data %>% 
-                                   select(Région=LIBGEO,pop,txaccueils=accueil),
-                                 feature.id=F,row.numbers = F),
-            group="taux d'accueils collectifs") %>% 
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.9,  smoothFactor = 2,
-              fillColor = ~pal(scolarisation),
-              popup = popupTable(cartereg@data %>% 
-                                   select(Région=LIBGEO,pop,txscolarisation=scolarisation),
-                                 feature.id=F,row.numbers = F),
-              group="taux de scolarisation") %>%   
-      contour_bfc() %>%
-  addLegend("bottomright", pal = pal, values = 0:100,   
-           title = "taux") %>%
-  addLayersControl( baseGroups =  c("taux d'accueils collectifs","taux de scolarisation"),
-                    options = layersControlOptions(collapsed = F,autoZIndex = F))  
-
+leaflet(carte) %>%  
+  carto() %>%
+  contour_bfc()
  
 ```
 
@@ -204,114 +225,44 @@ Row {.tabset .tabset-fade .tabset-pills data-height="900"}
 ### Accueils d'enfants d'âge préscolaire
 
 ```{r}
-ACM_PMI_dep %>% 
+tab <- ACM_PMI_dep %>% 
   relocate(`BOURGOGNE-
 FRANCHE-COMTE`,.before = `France métropolitaine`) %>%
-  pivot_longer(-1,names_to = "dep") %>% rename(Nom=dep) %>%
-  pivot_wider(names_from = ...1) %>%
-  select(-8,-12) %>%
-  rename("Taux déquipement en accueil collectif<sup>1</sup>" = "pour 100 enfants nés au cours des 3 dernières années",
-         "Taux de scolarisation des enfants de 2 ans<sup>2</sup>" = "Taux de scolarisation des enfants de 2 ans (Rentrée 2019-2020 pour 100 enfants de 2 ans) (2)") %>%
-  mutate(`Taux déquipement en accueil collectif<sup>1</sup>`= round(`Taux déquipement en accueil collectif<sup>1</sup>`,1),
-          `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`= round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`,1),
-         Nom=str_to_title(Nom) ) %>%
+  pivot_longer(-1,names_to = "dep") %>% 
+  rename(Nom=dep) %>%
+  PMI()
+
+tab %>%
+  credits()
   
-  cc_kable(aligne = "crrrrrrcrcrrrr") %>%
-  column_spec(c(2,8,10), 
-              bold=T) %>%
-  add_header_above(c( " "=2,"détail des accueils collectifs"=5," "=3,"Particuliers employeurs"=2) ) %>%
-  footnote(general = "DREES, enquête aide sociale", 
-           general_title = "Source : ",
-           number = c("pour 100 enfants nés au cours des 3 dernières années \n","Rentrée 2019-2020 pour 100 enfants de 2 ans"),
-           footnote_as_chunk = T)  %>%
-  scroll_box(height = "800px")
 
 
 ```
 
 
-### Comparaisons départementales
+### Comparaisons
+Les crèches collectives bien plus représentées dans le Doubs. La Côte d'Or mieux équipée pour les accueils collectifs.
 
 ```{r}
-bar <- as.data.frame(t(ACM_PMI_dep %>% slice(1)) ) %>% 
-                      mutate(total=as.numeric(V1)) %>% 
-                      slice(3:10) %>% 
-                      arrange(desc(total))
-hchart(bar,
-"bar", hcaes(x=rownames(bar),y=total   ),
-       showInLegend = T, name = "Nombre de places en accueil collectif", pointWidth = 20) %>%
-    hc_xAxis(title=list(text="Départements")) %>%
-    hc_yAxis(title=list(text="Nombre de places en accueil collectif")) %>%
-    hc_add_theme(thm) 
-```
+tab <- tab %>% slice(1:8) 
 
+hPMI()
 
-### Détail des accueils collectifs
-
-
-
-```{r}
-ACM_PMI_dep %>% 
-  slice(1:6) %>% 
-  relocate("Bourgogne-Franche-Comté"=2,.before = 11) %>%
-  pivot_longer(-1,names_to = "dep") %>%
-  pivot_wider(names_from = "...1") %>%
-
-  cc_kable(align="crrrrrrrrrrrrrr")%>%
-  column_spec(2, bold=T)%>%
-  footnote(general = "DREES, enquête aide sociale", 
-           general_title = "Source : ",
-            footnote_as_chunk = T)  %>%
-  scroll_box(height = "600px")
-
-
-```
-
-
-### Structure des places ouvertes
-Les crèches collectives bien plus représentées dans le Doubs.
-```{r}
-bar <- ACM_PMI_dep %>% 
-              slice(2:6)%>% 
-              select(1,3:10) %>% 
-              pivot_longer(-1,names_to = "DEP") 
-
- 
-
-hchart(bar,
-"bar", hcaes(x=DEP,y=value,group=...1),
-       showInLegend = T, stacking="percent") %>%
-  hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
-```
-
-
-### Taux d'équipements en accueil collectif pour 100 enfants
-La Côte d'Or mieux équipée pour les accueils collectifs
-```{r}
-hchart(ACM_PMI_dep %>% 
-         slice(8) %>%
-         select(1,3:10) %>%
-         pivot_longer(-1,names_to = "DEP") %>%
-         mutate(value=round(value,2)) %>% 
-         arrange(desc(value)),
-"bar", hcaes(x=DEP,y=value), 
-       name="Taux d'accueils collectifs pour 100 enfants", showInLegend = T) %>%
-  hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
 ```
 
 
 ### Taux de scolarisation des enfants de 2 ans
 D'avantage d'enfants de 2 ans scolarisés dans la Nièvre et la Saône et Loire. Moins dans l'Yonne et le Doubs.
 ```{r}
-hchart(ACM_PMI_dep %>% 
-         slice(10) %>%
-         select(1,3:10) %>%
-         pivot_longer(-1,names_to = "DEP") %>%
-         arrange(desc(value)),
-"bar", hcaes(x=DEP,y=value), 
-        name="Taux de scolarisation des enfants de 2 ans", showInLegend = T) %>%
+tab %>%
+  select(Nom,`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`) %>%
+  arrange(desc(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`)) %>%
+  hchart("bar", 
+         hcaes(x=Nom,
+               y=`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`,
+               color=ifelse(str_detect(Nom,"Bourgogne"),"#6a5acd","#ffd700")),
+         name="Taux de scolarisation des enfants de 2 ans", 
+         showInLegend = T) %>%
   hc_credits(enabled=T,text="Source") %>%
   hc_add_theme(thm) 
 ```
@@ -320,36 +271,21 @@ hchart(ACM_PMI_dep %>%
 ### Carte
 ```{r}
 
-cartedep <- ACM_PMI_dep %>% 
-              slice(8,10) %>%
-              dplyr::select(1,3:10) %>%
-              pivot_longer(!...1,names_to = "DEP") %>% 
-              pivot_wider(names_from = ...1,values_from = value) %>%
-              rename("accueil"=2,"scolarisation"=3) %>%
-              mutate(accueil=round(accueil,1),
-                     scolarisation=round(scolarisation,1), 
-                     DEP=depbfc ) 
+tab <- tab %>%  
+  select(Nom,
+         `Taux d'accueils collectifs` = 
+         `Taux déquipement en accueil collectif<sup>1</sup>`,
+         `Taux de scolarisation` = 
+         `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`) %>%
+    bind_cols(DEP=dep27carto@data %>% arrange(NOM) %>% pull(DEP) )
 
-cartedep <- merge(depwgs,cartedep,by="DEP")
+carte <- depwgs
+carte@data <- carte@data %>% select(DEP,pop)
+carte <- merge(carte,tab,by="DEP")
 
-leaflet(cartedep) %>% 
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, smoothFactor = 2,
-                fillColor = ~pal(accueil),
-              popup = popupTable(cartedep@data %>% 
-                                   select(Département=LIBGEO,pop,txaccueils=accueil),
-                                 feature.id=F,row.numbers = F),
-             group="taux d'accueils collectifs" ) %>%
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.8, smoothFactor = 2,
-              fillColor = ~pal(scolarisation),
-              popup = popupTable(cartedep@data %>% 
-                                   select(Région=LIBGEO,pop,txscolarisation=scolarisation),
-                                  feature.id=F,row.numbers = F),  
-                   group="taux de scolarisation") %>%   
-    contour_depbfc() %>%
-  addLegend("bottomright", pal = pal, values = 0:100,   
-           title = "taux") %>%
-  addLayersControl( baseGroups =  c("taux d'accueils collectifs","taux de scolarisation"),
-                    options = layersControlOptions(collapsed = F,autoZIndex = F))  
+leaflet(carte) %>%  
+  carto() %>%
+  contour_depbfc()
 ```
 
 

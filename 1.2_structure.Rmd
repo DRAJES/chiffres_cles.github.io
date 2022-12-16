@@ -37,6 +37,21 @@ credits <- function(.tbl){
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T)   }
 
+
+#Structure
+hstructure <- function(.tbl,geo) {
+  .tbl %>%
+    hchart( "bar",  
+            hcaes(x = .data[[geo]], y = part, group = âge) ,
+            stacking = "percent" , 
+            reverse = T, 
+            showInLegend = T,  
+            pointWidth =20) %>%
+    hc_xAxis(title = list(text = "")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
+}
+
 #définition des ronds proportionnels et choroplèthe
 pal <- colorBin("Purples", domain =0:200 ,
                 bins=c(0, 50, 75, 100 , Inf), 
@@ -45,6 +60,7 @@ pal <- colorBin("Purples", domain =0:200 ,
 pal2 <- colorBin("YlOrBr", domain =0:100 ,
                  bins= c(0, 12.5, 15, 17.5, 20, 100) )
 
+var <- c("pop","ind_jeun","p1529") #définition des variables de la carte
 
 carto <- function(.map) {
   .map %>%
@@ -63,7 +79,7 @@ carto <- function(.map) {
                              color = "#00FFFF", weight = 5,
                              fillOpacity =  0.4 ),
              popup = popupTable(carte@data %>%
-                                  select(-p1529,-pop,-ind_jeun),
+                                  select(-var),
                                 feature.id=F,row.numbers = F) ) %>%
   addLegend(pal = pal2,values = regwgs$prop1529,
             opacity = 0.7,
@@ -104,27 +120,22 @@ tab %>%
 
 ### Structure régionale
 ```{r}
-hchart( region %>%  
-          dplyr::select(REG,LIBGEO,p20,p60,pop) %>%
-          transmute(REG,LIBGEO,
-                    `1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
-                    `2_Moins de 20 ans`=round(100*p20/pop,2),
-                    `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
-          pivot_longer(-c('REG','LIBGEO'),'âge') %>% 
-          rename(région=LIBGEO,part=value) %>%
-          arrange(REG,région,âge) , 
-  "bar",  hcaes(x = région, y = part, group = âge) ,
-          stacking = "percent" , reverse = T, showInLegend = T,  pointWidth =20) %>%
-  #hc_yAxis(categories = lvls) %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name")
-
+region %>%
+  dplyr::select(REG,LIBGEO,p20,p60,pop) %>%
+  transmute(REG,LIBGEO,
+            `1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
+            `2_Moins de 20 ans`=round(100*p20/pop,2),
+            `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
+  pivot_longer(-c('REG','LIBGEO'),'âge') %>% 
+  rename(Région=LIBGEO,part=value) %>%
+  arrange(REG,Région,âge)  %>%
+hstructure("Région")
 ```
 
 ### Carte régionale
 ```{r}
 carte <- regwgs
-carte@data <- carte@data %>% select(Région=REG,pop,p1529,ind_jeun)
+carte@data <- carte@data %>% select(Région=REG,var)
 carte <- merge(carte,tab,by="Région")
 
 
@@ -164,21 +175,18 @@ tab %>%
 
 ### Structure départementale
 ```{r}
-hchart( departement %>% 
-          filter(DEP %in% depbfc) %>%
-          dplyr::select(DEP,LIBGEO,p20,p60,pop) %>%
-          transmute(DEP,LIBGEO,
-                    `1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
-                    `2_Moins de 20 ans`=round(100*p20/pop,2),
-                    `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
-          pivot_longer(-c('DEP','LIBGEO'),'âge') %>% 
-          rename(Département=LIBGEO,part=value) %>%
-          arrange(DEP,Département,âge) , 
-  "bar",  hcaes(x = Département, y = part, group = âge) ,
-          stacking = "percent" , reverse = T, showInLegend = T,  pointWidth =20) %>%
-  #hc_yAxis(categories = lvls) %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+departement %>% 
+  filter(DEP %in% depbfc) %>%
+  dplyr::select(DEP,LIBGEO,p20,p60,pop) %>%
+  transmute(DEP,LIBGEO,
+            `1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
+            `2_Moins de 20 ans`=round(100*p20/pop,2),
+            `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
+  pivot_longer(-c('DEP','LIBGEO'),'âge') %>% 
+  rename(Département=LIBGEO,part=value) %>%
+  arrange(DEP,Département,âge) %>%
+  hstructure("Département")
+
 
 ```
 
@@ -186,7 +194,7 @@ hchart( departement %>%
 ### Carte départementale
 ```{r}
 carte <- depwgs
-carte@data <- carte@data %>% select(Département=DEP,pop,p1529,ind_jeun)
+carte@data <- carte@data %>% select(Département=DEP,var)
 carte <- merge(carte,tab,by="Département")
 
 
@@ -218,7 +226,7 @@ tab %>%
 ### Carte ECPI
 ```{r}
 carte <- epcicarto
-carte@data <- carte@data %>% select(EPCI,pop,p1529,ind_jeun)
+carte@data <- carte@data %>% select(EPCI,var)
 carte <- merge(carte,tab,by="EPCI")
 
 
@@ -251,7 +259,7 @@ tab %>%
 ### Carte BV
 ```{r}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012,pop,p1529,ind_jeun)
+carte@data <- carte@data %>% select(BV2012,var)
 carte <- merge(carte,tab,by="BV2012")
 
 
