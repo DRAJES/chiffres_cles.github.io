@@ -201,7 +201,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 
 ### Détail unisport olympique
 
-Une baisse des licences unisport olympique observée pour la première fois en 2020.
+Le football représente près du **quart** des licences unisport olympiques. Celles-ci baissent pour la première fois en 2020.
 
 ```{r}
 lic_reg[39,1] <- "Total"
@@ -250,7 +250,7 @@ lic_reg %>%
 ```
 
 ### Détail unisport non olympique
-
+**1/5e** des  licences unisport non olympique en pétanque, <b>1/6e</b> en randonnée
 ```{r}
 lic_reg[91,1] <- "Total"
 fedsexe[91,1] <- "Total"
@@ -299,7 +299,7 @@ lic_reg %>%
 ```
 
 ### Détail multisport
-
+Près d'un **quart** des licences multisport en UNSS
 ```{r}
 lic_reg[116,1] <- "Total"
 fedsexe[116,1] <- "Total"
@@ -346,57 +346,47 @@ lic_reg %>%
 
 ```
 
+
 ### Poids des fédérations
 
 
 ```{r}
 hw_grid(
+  lic_reg  %>% 
+         select(codefed=1,fede=2,bfc="27") %>% 
+         mutate(type_fede = 
+                  case_when(codefed > '100' & codefed < '200' ~ "unisport olympique",
+                            codefed > '200' & codefed < '300' ~ "unisport non olympique",
+                            codefed > '400' & codefed < '700' ~ "multisport",
+                            TRUE ~ "autres") ) %>%
+    filter(type_fede != "autres") %>%
+    mutate(txBFC=round(100*bfc/sum(bfc,na.rm=T),1) ) %>% 
+    arrange(desc(txBFC))  %>%
+    
+    data_to_hierarchical(c(type_fede,fede),txBFC) %>%
+    
+    hchart(type="treemap")%>%
+    hc_subtitle(text="<b>Bourgogne-Franche-Comté</b>") %>%
+    hc_add_theme(thm) ,
   
-  hchart(lic_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(2:38) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>%
-         arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG") ,
-"treemap", hcaes(x=fede, group = REG, value=round(value,1) ),
-       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-  hc_subtitle(text="Le football représente près du <b>quart</b> des licences unisport olympiques") %>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) ,
+   lic_reg  %>% 
+         select(codefed=1,fede=2,FR="...22") %>% 
+         mutate(type_fede = 
+                  case_when(codefed > '100' & codefed < '200' ~ "unisport olympique",
+                            codefed > '200' & codefed < '300' ~ "unisport non olympique",
+                            codefed > '400' & codefed < '700' ~ "multisport",
+                            TRUE ~ "autres") ) %>%
+    filter(type_fede != "autres") %>%
+    mutate(txFrance=round(100*FR/sum(FR,na.rm=T) ,1) ) %>% 
+    arrange(desc(txFrance))  %>%
+    
+    data_to_hierarchical(c(type_fede,fede),txFrance) %>%
+    
+    hchart(type="treemap") %>%
+    hc_subtitle(text="<b>France</b>") %>%
+    hc_add_theme(thm) ,
 
-hchart(lic_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(41:90) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% 
-         arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG") ,
-"treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
-       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-  hc_subtitle(text="<b>1/5e</b> des  unisport non olympique en pétanque, <b>1/6e</b> en randonnée") %>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) ,
-
-hchart(lic_reg  %>% 
-         select(fede=2,bfc="27",FR="...22") %>% 
-         slice(93:115) %>%
-         mutate(txBFC=100*bfc/sum(bfc,na.rm=T), 
-                txFrance=100*FR/sum(FR,na.rm=T) ) %>% 
-         select(-2,-3) %>% 
-         arrange(desc(txBFC))  %>%
-         pivot_longer(!fede ,names_to = "REG") ,
-"treemap",hcaes(x=fede, group = REG, value=round(value,1) ),
-       color = c("#1a6ecc70", "#90ed7d60" )  )%>%
-    hc_subtitle(text="Près d'un <b>quart</b> des licences multisport en UNSS") %>%
-  hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
-  hc_add_theme(thm) ,
-  
-  rowheight=550)
-
-
+  ncol = 2, rowheight=550)
 ```
 
 

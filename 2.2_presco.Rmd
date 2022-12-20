@@ -18,12 +18,12 @@ load("data/jeunesse/PMI.RData")
 PMI <- function(.tbl,geo) {.tbl %>%
     pivot_wider(names_from = ...1) %>% 
     select(-8,-12) %>%
-    rename("Taux déquipement en accueil collectif<sup>1</sup>" = 
+    rename("Taux d'équipement en accueil collectif<sup>1</sup>" = 
              "pour 100 enfants nés au cours des 3 dernières années",
            "Taux de scolarisation des enfants de 2 ans<sup>2</sup>" = 
              "Taux de scolarisation des enfants de 2 ans (Rentrée 2019-2020 pour 100 enfants de 2 ans) (2)") %>%
-    mutate(`Taux déquipement en accueil collectif<sup>1</sup>`=
-             round(`Taux déquipement en accueil collectif<sup>1</sup>`, 1),
+    mutate(`Taux d'équipement en accueil collectif<sup>1</sup>`=
+             round(`Taux d'équipement en accueil collectif<sup>1</sup>`, 1),
            `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`=
              round(`Taux de scolarisation des enfants de 2 ans<sup>2</sup>`, 1),
            Nom=str_to_title(Nom)  )
@@ -61,9 +61,9 @@ hPMI <- function(){
     hc_add_theme(thm),
   
   tab %>%
-    arrange(desc(`Taux déquipement en accueil collectif<sup>1</sup>`)) %>%
+    arrange(desc(`Taux d'équipement en accueil collectif<sup>1</sup>`)) %>%
     hchart("bar",
-           hcaes(x=Nom,y=`Taux déquipement en accueil collectif<sup>1</sup>`,
+           hcaes(x=Nom,y=`Taux d'équipement en accueil collectif<sup>1</sup>`,
                  color=ifelse(str_detect(Nom,"Bourgogne"),"#6a5acd","#ffd700")),
            name="Taux d'accueils collectifs pour 100 enfants", 
            showInLegend = T) %>%
@@ -72,7 +72,7 @@ hPMI <- function(){
     hc_add_theme(thm),
   
   tab %>%
-    arrange(desc(`Taux déquipement en accueil collectif<sup>1</sup>`)) %>%
+    arrange(desc(`Taux d'équipement en accueil collectif<sup>1</sup>`)) %>%
     select(Nom,`Crèches collectives (y compris parentales)`:`Multi-accueil` ) %>%
     pivot_longer(-Nom,names_to = "type") %>%
     hchart("bar",
@@ -185,7 +185,7 @@ tab %>%
 tab <- tab %>%  
   select(Nom,
          `Taux d'accueils collectifs` = 
-         `Taux déquipement en accueil collectif<sup>1</sup>`,
+         `Taux d'équipement en accueil collectif<sup>1</sup>`,
          `Taux de scolarisation` = 
          `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`) %>%
   bind_cols(REG=regwgs@data %>% arrange(NOM) %>% pull(REG) )
@@ -274,7 +274,7 @@ tab %>%
 tab <- tab %>%  
   select(Nom,
          `Taux d'accueils collectifs` = 
-         `Taux déquipement en accueil collectif<sup>1</sup>`,
+         `Taux d'équipement en accueil collectif<sup>1</sup>`,
          `Taux de scolarisation` = 
          `Taux de scolarisation des enfants de 2 ans<sup>2</sup>`) %>%
     bind_cols(DEP=dep27carto@data %>% arrange(NOM) %>% pull(DEP) )

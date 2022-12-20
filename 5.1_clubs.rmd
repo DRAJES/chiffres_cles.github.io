@@ -18,13 +18,19 @@ sparkline(0)
 load("data/sport/licences.RData")
 load("data/sport/clubs.RData")
 
-regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
+regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  
+  rownames_to_column() %>% 
+  select(1,17,18) %>% 
+  mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% 
+  slice(3:16)
 
 fede_sexe_dep[c(38,89,113),1] <- "Total"
 
-pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30,35, 100) )
+pal2 <- colorBin("YlOrBr", domain =0:100 ,
+                 bins= c(0, 15, 20, 25, 30,35, 100) )
 
-pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins= c(0, 19, 22, 25, 100) )
+pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,
+                   bins= c(0, 19, 22, 25, 100) )
 
 
 ```
@@ -48,42 +54,45 @@ Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 **11e** région de France en nombre de clubs, **6e** en clubs par habitant.
 
 ```{r}
-clubreg <- as.data.frame(t(club_reg[119,3:15]))
-clubreg$region <- t(as.data.frame(levels(lic_reg)[4:16]))
-clubreg <- clubreg %>% 
-              rownames_to_column(var="REG") %>%
-              left_join(.,pop_basecom(REG),
-                        by="REG" )  %>%
-              adorn_totals("row",name = "FR") %>%
-              mutate(txclub=round(10000*V1/pop,1)) 
+clubreg <- club_reg %>% 
+  select(-2) %>%
+  rename("FR"=...22) %>%
+  filter(...1 == "TOTAL (hors groupements sportifs)") %>%
+  pivot_longer(-1,names_to = "REG",values_to = "clubs") %>%
+  left_join(.,pop_basecom(REG) %>%
+              adorn_totals("row",name = "FR",fill="France"),
+            by="REG" )  %>%
+  mutate(txclub=round(10000*clubs/pop,1)) 
 
-clubreg[14,3] <- "France"
 
 hw_grid(
+  clubreg %>% 
+    slice(-14) %>% 
+    arrange(desc(clubs)) %>%
+    hchart("bar", 
+           hcaes(x=reorder(Libellé,clubs),y=clubs,
+                 color=ifelse(REG=="27","#6a5acd","#ffd700") ), 
+           showInLegend = F, pointWidth = 20,
+           name = "Clubs" ) %>%
+    hc_xAxis(title=list(text="Région")) %>%
+    hc_yAxis(title=list(text="Nombre de clubs")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
-hchart(clubreg %>% 
-         slice(-14) %>% 
-         arrange(desc(V1)),
-"bar", hcaes(x=reorder(region,V1),y=V1,
-             color=ifelse(REG=="27","#6a5acd","#ffd700") ), 
-       showInLegend = F, pointWidth = 20,
-       name = "Clubs" ) %>%
-   hc_xAxis(title=list(text="Région")) %>%
-   hc_yAxis(title=list(text="Nombre de clubs")) %>%
-   hc_add_theme(thm) ,
-
-hchart(clubreg %>% 
-         arrange(desc(txclub)),
-"bar",hcaes(x=reorder(region,txclub),y=txclub,
-            color=ifelse(REG=="27","#6a5acd",
-                  ifelse(REG=="FR","#ff7f50","#ffd700") ) ) , 
-       showInLegend = F,  pointWidth = 10,
-       name = "Taux de clubs") %>%
+  clubreg %>% 
+    arrange(desc(txclub)) %>%
+    hchart("bar",
+           hcaes(x=reorder(Libellé,txclub),y=txclub,
+                 color=ifelse(REG=="27","#6a5acd",
+                              ifelse(REG=="FR","#ff7f50","#ffd700") ) ) , 
+           showInLegend = F,  pointWidth = 10,
+           name = "Taux de clubs") %>%
     hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Taux de clubs (/10 000 hab.)")) %>%
-    hc_add_theme(thm) ,
-
-rowheight = 550)
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  rowheight = 550)
 ```
 
 ### Clubs par fédérations

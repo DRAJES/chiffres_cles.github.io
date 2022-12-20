@@ -13,19 +13,92 @@ output:
 ```{r, include=FALSE ,echo=FALSE, cache=F}
 
 load("data/engagement/asso.RData")
-source("R/data/asso.R")
-
-pal2 <- colorBin("YlOrBr", domain =0:10 ,bins= c(0, 3, 3.5, 4, 4.5, 5,5.5,6,10) )
-
-pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins= c(0, 19, 22, 25, 100) )
-
 
 appartenance <- rbind(appartenance,c("REG","FR","France","-"))
 
 RNApop <- RNAcom %>%
-      left_join(.,basecom %>% select(CODGEO,LIBGEO,EPCI,BV2012),by=c("CODGEO_2022"="CODGEO"))
+      left_join(.,basecom %>% 
+                  select(CODGEO,LIBGEO,EPCI,BV2012),
+                by=c("CODGEO_2022"="CODGEO"))
 
+#tableau des asso
+asso_tab <- function(geo){
+RNApop %>% 
+  filter (!is.na({{geo}}) & !is.na(objr)) %>% 
+  group_by({{geo}},objr) %>% 
+  summarise(asso=sum(total,na.rm = T)) %>%
+  pivot_wider({{geo}} ,names_from = objr , values_from = asso) %>%
+  adorn_totals("col", name = "total" ) %>%
+  left_join(.,pop_basecom({{geo}}),
+            by=names(select(., {{geo}})) ) 
+}
+
+#crédits et mise en forme
+tableau_asso <- function(.tbl){
+  .tbl %>% 
+    select(1,Libellé,total,txasso,Culture,Sports,Loisirs,
+           Social,Santé,`Amicales-Entraide`,Enseignement,
+           Economie,Environnement,Autres,NR) %>%
+    mutate_at(vars(Culture:NR),~round(.*100/total,1) ) %>%
+    mutate_at(vars(Culture:Environnement),~color_tile('transparent','lightgreen')
+              (digits(.,1,decimal.mark=",") ) ) %>%
+    mutate(txasso=color_bar('gold')
+           (digits(txasso ,2,decimal.mark=",")), 
+           Autres=color_tile('transparent','lightblue')
+           (digits(Autres,1,decimal.mark=",") ),
+           NR=color_tile('transparent','lightgrey')
+           (digits(NR,1,decimal.mark=",") ) ) %>%
+    cc_kable("crlrrrrrr") %>%
+    column_spec(3, bold=T) %>%
+    column_spec(4, italic=T) %>%
+    footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP2019", 
+             general_title = "Source : ",
+             footnote_as_chunk = T) %>%
+    scroll_box(height = "600px") 
+}
+
+
+#carto
+
+RNAcarto <- function(geo=REG){
+  RNApop %>% 
+    filter (!is.na({{geo}}) & !is.na(objr)) %>% 
+    group_by({{geo}},objr) %>% 
+    summarise(asso=sum(total,na.rm = T)) %>%
+    left_join(.,pop_basecom({{geo}}),
+              by=names(select(., {{geo}})) ) %>%
+    mutate(txasso=round(asso*100/pop,2)) %>%
+    pivot_wider(c({{geo}},Libellé),names_from = objr , values_from = asso) %>%
+    adorn_totals("col", name = "total" ) %>%
+    select({{geo}},Libellé,total,Culture,Sports,Loisirs,
+           Social,Santé,`Amicales-Entraide`,Enseignement,
+           Economie,Environnement,Autres,NR)
+}
+
+pal <- colorBin("YlOrBr", domain =0:10 ,
+                bins= c(0, 3, 3.5, 4, 4.5, 5,5.5,6,10) )
 coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" , "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")
+
+carte_asso <- function(){
+carte <-   leaflet(RNAcarto) %>%  
+    addPolygons(data=RNAcarto,group  = "régions",
+                color = "#2F4F4F", weight = 2, smoothFactor = 2,
+                fillColor = ~pal(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
+                popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
+                               Taux d'association :<b>%.2f</b> </center> ",  
+                                RNAcarto$Libellé ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
+    addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
+                  #maxValues = 100,
+                  type = "pie",
+                  chartdata = RNAcarto@data %>% select("Culture":"NR"),
+                  colorPalette = coul,
+                  width = 30 *  sqrt(RNAcarto$total / sd(RNAcarto$total)),
+                  opacity = 0.7) %>%
+    addLegend( pal = pal ,values = 100*(RNAcarto$total/RNAcarto$pop),
+               position = "bottomright", title = "taux d'associations" )
+return(carte)
+}
+
 
 
 ```
@@ -51,40 +124,45 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 **9e** région française en nombre d'associations, **3e** en taux par habitant
 
 ```{r}
-hw_grid(
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         group_by(REG) %>% 
-         summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,pop_basecom(),
-                   by="REG") %>%
-         arrange(desc(asso)) ,
-  "bar", hcaes(x=reorder(Libellé,asso),y=asso, 
-               color=ifelse(REG=="27","#6a5acd","#ffd700") ),
-         name="nombre d'associations",showInlegend=T, pointWidth = 20 ) %>%
-  hc_xAxis(title=list(text="Régions")) %>%
-  hc_yAxis(title=list(text="Nombre d'associations")) %>%
-  hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
-
-hchart(RNApop %>% 
+tab <- RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG) %>% 
          summarise(asso=sum(total,na.rm = T)) %>%
          left_join(.,pop_basecom(REG),
-                   by="REG") %>%
-         adorn_totals(name = "FR", fill = "France") %>%
-         mutate(txasso=round(asso*100/pop,2 )) %>%
-         arrange(desc(txasso)),
-  "bar", hcaes(x=reorder(Libellé,txasso),y=txasso,
-               color=ifelse(REG=="27","#6a5acd",ifelse(REG=="FR","#ff7f50","#ffd700") ) ) ,
-         name="Taux d'association pour 100 habitants", showInlegend=T, pointWidth = 20  )%>%
-  hc_xAxis(title=list(text="Régions")) %>%
-  hc_yAxis(title=list(text="Taux d'associations")) %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
- rowheight = 600 ) 
+                   by="REG") 
+
+
+hw_grid(
+  tab %>% 
+    arrange(desc(asso)) %>%
+    
+    hchart("bar", 
+           hcaes(x=reorder(Libellé,asso),y=asso, 
+                 color=ifelse(REG=="27","#6a5acd","#ffd700") ),
+           name="nombre d'associations",
+           showInlegend=T, 
+           pointWidth = 20 ) %>%
+    hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
+    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  tab %>%
+    adorn_totals(name = "FR", fill = "France") %>%
+    mutate(txasso=round(asso*100/pop,2 )) %>%
+    arrange(desc(txasso)) %>%
+    hchart("bar", 
+           hcaes(x=reorder(Libellé,txasso),y=txasso,
+                 color=ifelse(REG=="27","#6a5acd",ifelse(REG=="FR","#ff7f50","#ffd700") ) ) ,
+           name="Taux d'association pour 100 habitants", 
+           showInlegend=T, 
+           pointWidth = 20  )%>%
+    hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Taux d'associations")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  rowheight = 600 ) 
 
 ```
 
@@ -93,63 +171,43 @@ hchart(RNApop %>%
 **Les domaines du sport, des loisirs et de l'économie fortement représentés**
 
 ```{r}
-RNApop %>% 
-  filter (!is.na(REG) & !is.na(objr)) %>% 
-  group_by(REG,objr) %>% 
-  summarise(asso=sum(total,na.rm = T)) %>%
-  pivot_wider(REG,names_from = objr , values_from = asso) %>%
-  adorn_totals("col", name = "total" ) %>%
-  left_join(.,pop_basecom(REG),
-            by="REG") %>%
+asso_tab(REG) %>%
   adorn_totals("row", name = "FR" ,fill = "France") %>%
   mutate(txasso=total*100/pop) %>%
   
   tableau_asso() %>%
-  
-  cc_kable("crlrrrrrr") %>%
-  column_spec(2, bold=T) %>%
-  column_spec(3, italic=T) %>%
-    footnote(general = "ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA"  ) %>%
-footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP2019", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-  scroll_box(height = "600px") 
+  footnote(general = "ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA"  ) 
 ```
 
 ### Thématiques
 
 
 ```{r}
-hw_grid(
-  
-hchart(RNApop %>% 
+tab <- RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG,objr) %>% 
          summarise(asso=sum(total,na.rm = T)) %>%
          left_join(.,pop_basecom(REG),
-                   by="REG") %>%
-         #adorn_totals(name = "FR")%>%
-         mutate(txasso=round(asso*100/pop,2)),
-  "bar", hcaes(x=Libellé,y=asso,group=objr),
-         stacking = "normal",
-         showInlegend=T, pointWidth = 20)  %>%
+                   by="REG")
+
+hw_grid(
+  tab %>%
+    hchart("bar", 
+           hcaes(x=Libellé,y=asso,group=objr),
+           stacking = "normal",
+           showInlegend=T, pointWidth = 20)  %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
   hc_add_theme(thm) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>%
-         group_by(REG,objr) %>% 
-         summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,pop_basecom(REG),
-                   by="REG") %>%
-         #adorn_totals(name = "FR")%>%
-         mutate(txasso=round(asso*100/sum(asso),2)),
-  "bar", hcaes(x=Libellé,y=txasso,group=objr),
-         stacking = "percent",
-         showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  tab %>%
+    mutate(txasso=round(asso*100/sum(asso),2)) %>%
+    hchart("bar", 
+           hcaes(x=Libellé,y=txasso,group=objr),
+           stacking = "percent",
+           showInlegend=T, pointWidth = 20)  %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 rowheight = 600)
 
@@ -180,35 +238,31 @@ hchart(RNA %>%
 ### Evolution
 Créations d'associations par année
 ```{r}
-
 hw_grid(
-
-  hchart(RNA %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         filter(année > 2010 ) %>%
-         group_by(année) %>% 
-         count(name="nb associations"), 
-      "spline",hcaes(x=année,y=`nb associations`),
-       marker = FALSE) %>%
-     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  RNA %>% 
+    filter (!is.na(REG) & !is.na(objr)) %>% 
+    filter(année > 2010 ) %>%
+    group_by(année) %>% 
+    count(name="nb associations") %>%
+    hchart("spline",
+           hcaes(x=année,y=`nb associations`),
+           marker = FALSE) %>%
+    hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
-  hchart(RNA %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         filter(année > 2010 ) %>%
-         group_by(REG, année) %>% 
-         count(name="nb associations") %>%
-         left_join(.,appartenance %>%
-                     filter(NIVGEO=="REG") %>%
-                     select(CODGEO,LIBGEO),
-                   by=c("REG"="CODGEO")),
-       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
-        stacking = "normal", 
-       marker = FALSE) %>%
-     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
-
-
- rowheight = 600 ) 
+  RNA %>% 
+    filter (!is.na(REG) & !is.na(objr)) %>% 
+    filter(année > 2010 ) %>%
+    group_by(REG, année) %>% 
+    count(name="nb associations") %>%
+    left_join(.,pop_basecom(REG),
+              by="REG") %>%
+  hchart("areaspline",
+         hcaes(x=année,y=`nb associations`,group=Libellé),
+         stacking = "normal", 
+         marker = FALSE) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  rowheight = 600 ) 
 #htmltools::browsable()
 ```
 
@@ -245,31 +299,25 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 ### Comparaisons
 
 ```{r}
-hw_grid(
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         group_by(REG,DEP) %>% 
+tab <- RNApop %>% 
+         filter (!is.na(DEP) & !is.na(objr)) %>% 
+         group_by(DEP) %>% 
          summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,appartenance %>% 
-                     filter(NIVGEO=="DEP") %>%
-                     select(CODGEO,département=LIBGEO),
-                   by=c("DEP"="CODGEO") )%>%
-         arrange(desc(asso)) ,  
-  "bar", hcaes(x=reorder(département,asso),y=asso, 
-               color=ifelse(REG=="27","#6a5acd","#ffd700") ),
-          name="Nombre d'associations",
+         left_join(.,pop_basecom(DEP),
+                   by="DEP") 
+
+hw_grid(
+  tab %>%
+    arrange(desc(asso)) %>%
+    hchart("bar", 
+           hcaes(x=reorder(Libellé,asso),y=asso, 
+                 color=ifelse(DEP %in% depbfc,"#6a5acd","#ffd700") ),
+           name="Nombre d'associations",
           showInLegend=T, pointWidth = 1 ) %>%
-  
-  hc_add_series(RNApop %>% 
-                  filter (REG =="27" & !is.na(objr)) %>%
-                  group_by(REG,DEP) %>% 
-                  summarise(asso=sum(total,na.rm = T)) %>%
-                  left_join(.,appartenance %>% 
-                              filter(NIVGEO=="DEP") %>%
-                              select(CODGEO,département=LIBGEO),
-                            by=c("DEP"="CODGEO") )%>%
+   hc_add_series(tab %>% 
+                  filter (DEP %in% depbfc) %>%
                   arrange(desc(asso)),  
-          "bar",  hcaes(x=reorder(département,asso),y=asso),
+          "bar",  hcaes(x=reorder(Libellé,asso),y=asso),
                   color="#6a5acd",
                   name="Nombre d'associations",
                   showInLegend=F, pointWidth = 3 ) %>%
@@ -279,40 +327,29 @@ hchart(RNApop %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
    hc_add_theme(thm) %>%
    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
-
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>%
-         group_by(DEP) %>% 
-         summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,pop_basecom(DEP), 
-                   by="DEP") %>%
-         adorn_totals(name = "FR", fill = "France") %>%
-         
-         bind_rows( RNApop %>% 
-                      filter (REG=="27" & !is.na(objr)) %>% 
+  
+  tab %>%
+    adorn_totals(name = "FR", fill = "France") %>%
+    bind_rows( RNApop %>% 
+                 filter (REG=="27" & !is.na(objr)) %>% 
                       group_by(REG) %>%  
                       summarise(asso=sum(total,na.rm = T)) %>%
-                      left_join(.,basecom %>%
-                                  group_by(REG) %>% 
-                                  summarise(pop=sum(pop,na.rm=T)),
+                      left_join(.,pop_basecom(REG),
                                 by="REG") %>%
                       rename(DEP=REG) %>% 
                       mutate(Libellé="Bourgogne-Franche-Comté" )  ) %>%
          mutate(txasso=round(asso*100/pop,2 )) %>%
          mutate(Libellé=ifelse(DEP=="FR","France",Libellé) ) %>%
-         arrange(desc(txasso)),  
-  "bar", hcaes(x=reorder(Libellé,txasso),y=txasso,
-               color=ifelse(DEP %in% depbfc,"#6a5acd",
+         arrange(desc(txasso)) %>%
+    hchart("bar", 
+           hcaes(x=reorder(Libellé,txasso),y=txasso,
+                 color=ifelse(DEP %in% depbfc,"#6a5acd",
                      ifelse(DEP=="FR","#ff7f50","#ffd700"))),
          name="Taux d'association pour 100 habitants", 
          showInLegend=T, pointWidth = 1  ) %>%
  
-  hc_add_series(RNApop %>% 
-                  filter (REG=="27" & !is.na(objr)) %>% 
-                  group_by(DEP) %>%  
-                  summarise(asso=sum(total,na.rm = T)) %>%
-                  left_join(.,pop_basecom(DEP),
-                            by="DEP") %>%
+  hc_add_series(tab %>%
+                  filter(DEP %in% depbfc) %>%
                   adorn_totals(name = "BFC", fill = "Bourgogne-Franche-Comté" )%>%
                   mutate(txasso=round(asso*100/pop,2 )) %>%
                   arrange(desc(txasso)),  
@@ -337,35 +374,19 @@ rowheight = 600)
 Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
 
 ```{r}
-RNApop %>% 
-  filter (!is.na(REG) & !is.na(objr)) %>% 
-  group_by(REG,DEP, objr) %>% 
-  filter (DEP %in% depbfc) %>%  
-  summarise(asso=sum(total,na.rm = T)) %>%
-  pivot_wider(DEP,names_from = objr , values_from = asso) %>%
-  adorn_totals("col", name = "total" ) %>%
-  left_join(.,pop_basecom(DEP),
-            by="DEP") %>%
+asso_tab(DEP) %>%
+  filter(DEP %in% depbfc) %>%
   adorn_totals("row", name = "BFC" , fill = "Bourgogne-Franche-Comté") %>%
   mutate(txasso=total*100/pop) %>%
-  tableau_asso() %>%
+  tableau_asso() 
   
-  cc_kable("crlrrrrrr") %>%
-  column_spec(2, bold=T) %>%
-  column_spec(3, italic=T) %>%
-  footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-  scroll_box(height = "600px") 
-
 ```
 
 ### Thématiques
 de nombreuses associations sportives
 
 ```{r}
-hw_grid(
-hchart(RNApop %>% 
+tab <- RNApop %>% 
          filter (!is.na(REG) & !is.na(objr)) %>% 
          group_by(REG,DEP,objr) %>% 
          filter (DEP %in% depbfc) %>% 
@@ -373,27 +394,24 @@ hchart(RNApop %>%
          left_join(.,pop_basecom(DEP),
                    by="DEP") %>%
         #adorn_totals(name = "FR")%>%
-         mutate(txasso=round(asso*100/pop,2)),
-  "bar", hcaes(x=Libellé,y=asso,group=objr),
-         stacking = "normal",
-         showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+         mutate(txasso=round(asso*100/pop,2))
 
-hchart(RNApop %>% 
-         filter (!is.na(REG) & !is.na(objr)) %>% 
-         group_by(REG,DEP,objr) %>% 
-         filter (DEP %in% depbfc) %>% 
-         summarise(asso=sum(total,na.rm = T)) %>%
-         left_join(.,pop_basecom(DEP),
-                   by="DEP") %>%
-         #adorn_totals(name = "FR")%>%
-         mutate(txasso=round(asso*100/sum(asso),2)),
-  "bar", hcaes(x=Libellé,y=txasso,group=objr),
-         stacking = "percent",
-         showInlegend=T, pointWidth = 20)  %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+
+hw_grid(
+  tab %>%
+    hchart("bar", 
+           hcaes(x=Libellé,y=asso,group=objr),
+           stacking = "normal",
+           showInlegend=T, pointWidth = 20)  %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  tab %>%
+    hchart("bar", 
+           hcaes(x=Libellé,y=txasso,group=objr),
+           stacking = "percent",
+           showInlegend=T, pointWidth = 20)  %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
 rowheight = 600)
 
@@ -404,38 +422,30 @@ Créations d'associations par année
 
 ```{r}
 #```{r, figures-side, fig.show="hold", out.width="50%"}
+tab <- RNA %>%
+         filter (!is.na(DEP) & !is.na(objr)) %>% 
+         filter(année > 2010) %>%
+         filter(DEP %in% depbfc) %>%
+         group_by(DEP, année) %>% 
+         count(name="nb associations") %>%
+         left_join(.,appartenance %>%
+                     filter(NIVGEO=="DEP") %>%
+                     select(CODGEO,LIBGEO),
+                   by=c("DEP"="CODGEO"))
 
 hw_grid(
-
-  hchart(RNA %>%
-         filter (!is.na(DEP) & !is.na(objr)) %>% 
-         filter(année > 2010) %>%
-         filter(DEP %in% depbfc) %>%
-         group_by(DEP, année) %>% 
-         count(name="nb associations") %>%
-         left_join(.,appartenance %>%
-                     filter(NIVGEO=="DEP") %>%
-                     select(CODGEO,LIBGEO),
-                   by=c("DEP"="CODGEO")),
-       "spline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
-      # stacking = "normal", 
-       marker = FALSE ) %>%
-     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
-  
-  hchart(RNA %>%
-         filter (!is.na(DEP) & !is.na(objr)) %>% 
-         filter(année > 2010) %>%
-         filter(DEP %in% depbfc) %>%
-         group_by(DEP, année) %>% 
-         count(name="nb associations") %>%
-         left_join(.,appartenance %>%
-                     filter(NIVGEO=="DEP") %>%
-                     select(CODGEO,LIBGEO),
-                   by=c("DEP"="CODGEO")),
-       "areaspline",hcaes(x=année,y=`nb associations`,group=LIBGEO),
-       stacking = "normal", 
-       marker = FALSE ) %>%
-     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  tab %>%
+    hchart("spline",
+           hcaes(x=année,y=`nb associations`,group=LIBGEO),
+           # stacking = "normal", 
+           marker = FALSE ) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  tab %>%
+    hchart("areaspline",
+           hcaes(x=année,y=`nb associations`,group=LIBGEO),
+           stacking = "normal", 
+           marker = FALSE ) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
  rowheight = 600) 
 #htmltools::browsable()
@@ -445,8 +455,6 @@ hw_grid(
 ### Carte 
 Hors Alsace-Moselle
 ```{r}
-source("R/data/asso.R")
-
 RNAcarto <- merge(depwgs,RNAcarto(DEP),by="DEP")
 
 carte_asso() %>% contour_bfc()
@@ -465,35 +473,17 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Tableau des associations 
 ```{r}
-RNApop %>% 
-  filter (!is.na(REG) & !is.na(objr)) %>%  
+asso_tab(EPCI) %>% 
   filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
-  group_by(EPCI, objr)  %>%  
-  summarise(asso=sum(total,na.rm = T)) %>%
-  pivot_wider(EPCI,names_from = objr , values_from = asso) %>%
-  adorn_totals("col", name = "total" ) %>% 
-  left_join(.,pop_basecom(EPCI),
-            by="EPCI") %>%
   arrange(desc(total)) %>%
-  adorn_totals("row", name = "BFC" ,fill = "Bourgogne-Franche-Comté") %>% 
   mutate(txasso=total*100/pop) %>%
-  tableau_asso() %>%
-  
-  cc_kable("rcrlrrrrr") %>%
-  column_spec(3, bold=T) %>%
-  column_spec(4, italic=T) %>%
-  footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-  scroll_box(height = "700px") 
+  tableau_asso() 
 
 ```
 
 ### Carte EPCI
 
 ```{r}
-source("R/data/asso.R")
-
 RNAcarto <- merge(epcicarto,RNAcarto(EPCI),by="CODE_EPCI")
 
 carte_asso() %>% contour_depbfc()
@@ -510,35 +500,17 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Tableau des associations 
 ```{r}
-RNApop %>% 
-  filter (!is.na(REG) & !is.na(objr)) %>%  
+asso_tab(BV2012) %>%
   filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
-  group_by(BV2012, objr)  %>%  
-  summarise(asso=sum(total,na.rm = T)) %>%
-  pivot_wider(BV2012,names_from = objr , values_from = asso) %>%
-  adorn_totals("col", name = "total" ) %>% 
-  left_join(.,pop_basecom(BV2012),
-            by="BV2012") %>%
   arrange(desc(total)) %>%
-  adorn_totals("row", name = "BFC" ) %>% 
   mutate(txasso=total*100/pop) %>%
-  tableau_asso() %>%
-  
-  cc_kable("rcrlrrrrr") %>%
-  column_spec(3, bold=T) %>%
-  column_spec(4, italic=T) %>%
-  footnote(general = "Répertoire National des Associations (RNA 2022); Insee, RP 2019", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-  scroll_box(height = "700px") 
+  tableau_asso()
 
 ```
 
 ### carte BV
 
 ```{r}
-source("R/data/asso.R")
-
 RNAcarto <- merge(bvcarto,RNAcarto(BV2012),by="BV2012")
 
 carte_asso() %>% contour_depbfc()
