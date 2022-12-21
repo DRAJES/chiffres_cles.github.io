@@ -15,10 +15,16 @@ output:
 sparkline(0)
 load("data/sport/spark.RData")
 
-regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  rownames_to_column() %>% select(1,17,18) %>% mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% slice(3:16)
+regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  
+  rownames_to_column() %>% 
+  select(1,17,18) %>% 
+  mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% 
+  slice(3:16)
 
 pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
 
+pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,
+                   bins= c(0, 19, 22, 25, 100) )
 
 ```
 
@@ -351,15 +357,23 @@ lic_reg %>%
 
 
 ```{r}
+tab <- 
+  lic_reg %>% rename(codefed=1) %>%
+  mutate(type_fede = 
+           case_when(codefed > '100' & codefed < '200' ~ "unisport olympique",
+                     codefed > '200' & codefed < '300' ~ "unisport non olympique",
+                     codefed > '400' & codefed < '700' ~ "multisport",
+                     TRUE ~ "autres") ) %>%
+  filter(type_fede != "autres") 
+  
+  
+
+
+
+
 hw_grid(
-  lic_reg  %>% 
-         select(codefed=1,fede=2,bfc="27") %>% 
-         mutate(type_fede = 
-                  case_when(codefed > '100' & codefed < '200' ~ "unisport olympique",
-                            codefed > '200' & codefed < '300' ~ "unisport non olympique",
-                            codefed > '400' & codefed < '700' ~ "multisport",
-                            TRUE ~ "autres") ) %>%
-    filter(type_fede != "autres") %>%
+  tab  %>% 
+    select(codefed=1,fede=2,bfc="27",type_fede) %>% 
     mutate(txBFC=round(100*bfc/sum(bfc,na.rm=T),1) ) %>% 
     arrange(desc(txBFC))  %>%
     
@@ -369,14 +383,8 @@ hw_grid(
     hc_subtitle(text="<b>Bourgogne-Franche-Comté</b>") %>%
     hc_add_theme(thm) ,
   
-   lic_reg  %>% 
-         select(codefed=1,fede=2,FR="...22") %>% 
-         mutate(type_fede = 
-                  case_when(codefed > '100' & codefed < '200' ~ "unisport olympique",
-                            codefed > '200' & codefed < '300' ~ "unisport non olympique",
-                            codefed > '400' & codefed < '700' ~ "multisport",
-                            TRUE ~ "autres") ) %>%
-    filter(type_fede != "autres") %>%
+   tab  %>% 
+    select(codefed=1,fede=2,FR="...22",type_fede) %>%
     mutate(txFrance=round(100*FR/sum(FR,na.rm=T) ,1) ) %>% 
     arrange(desc(txFrance))  %>%
     

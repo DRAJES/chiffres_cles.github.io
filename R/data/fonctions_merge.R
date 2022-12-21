@@ -1,17 +1,21 @@
+
+libelle <- function(.tbl,geo){
+  .tbl %>%
+    left_join(.,appartenance %>% 
+                filter(NIVGEO==rlang::ensym(geo)) %>%
+                select("{{geo}}" := CODGEO, "Libellé" := LIBGEO),
+              by=names(select(., {{geo}}))  ) %>%
+    relocate(Libellé,.after = {{geo}} )
+}
+
 pop_basecom <-   function(geo){ 
    basecom %>% 
       group_by({{geo}} ) %>%
      summarise(comm=n(),
               pop=sum(pop,na.rm=T)) %>%
-    left_join(appartenance %>%
-                filter (NIVGEO == ensym(geo)  )  %>%
- #               select("{{geo}}" := CODGEO,"nom_{{geo}}" := LIBGEO),
-                 select("{{geo}}" := CODGEO, "Libellé" := LIBGEO),
-              by=names(select(., {{geo}}) )  )  %>%
-    relocate("Libellé",.after = 1)
+    libelle({{geo}})
 #        adorn_totals("row",name="METRO")
        }
-
 #pop_basecom(REG)
 
 cc_kable <-  function(.tbl,aligne ){ 

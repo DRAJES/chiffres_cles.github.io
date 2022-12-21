@@ -1,7 +1,9 @@
 
 subv <- read_ods("I:/SUPPORT/04_STATS/subventions/synthèse subv.ods")
 
-subvention <- subv %>% mutate(INSEE_COM=as.character(commune)) %>% select(INSEE_COM,perimetre=`echelon/structure`,montant,enveloppe,structure,sport,club,sigle,année) %>%
+subvention <- subv %>% 
+  mutate(INSEE_COM=as.character(commune)) %>% 
+  select(INSEE_COM,perimetre=`echelon/structure`,montant,enveloppe,structure,sport,club,sigle,année) %>%
   left_join(.,basecomQPV %>% select(INSEE_COM=CODGEO,LIBGEO,EPCI,BV2012,DEP,REG,P19_POP), by="INSEE_COM")
 
 library(rgdal)
