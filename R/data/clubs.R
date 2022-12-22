@@ -26,14 +26,18 @@ club_reg <- club_reg %>%
 
 
 club_dep[120,2] <- "Total (hors groupements sportifs)"
-club_dep_bfc <- club_dep %>% 
+
+club_dep <- club_dep %>%
   slice (2:120) %>%  
   filter(!is.na(`Codes départements`)) %>%
-  dplyr::select(1:2,"21","25","39","58","70","71","89","90",FM="...114") %>%
+  dplyr::select(-c(3,100:113,115:116)) %>% 
+  mutate_at(3:99,as.numeric) %>%
+  rename(code_fede=...1,fede=`Codes départements`,FM="...114")
+
+club_dep_bfc <- club_dep %>% 
+  dplyr::select(1:2,"21","25","39","58","70","71","89","90",FM) %>%
   bind_cols(BFC=club_reg$`27`) %>%
-  relocate(BFC,.before=FM) %>% 
-  mutate_at(3:12,as.numeric) %>%
-  rename(code_fede=...1,fede=`Codes départements`)
+  relocate(BFC,.before=FM) 
 
 
 save(club_dep_bfc, club_dep,club_reg,club_fede,

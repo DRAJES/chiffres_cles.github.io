@@ -23,9 +23,6 @@ regsexe <- as.data.frame(t(lic_reg_sexe)) %>%
 
 pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
 
-pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,
-                   bins= c(0, 19, 22, 25, 100) )
-
 ```
 
 ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
@@ -379,7 +376,9 @@ hw_grid(
     
     data_to_hierarchical(c(type_fede,fede),txBFC) %>%
     
-    hchart(type="treemap")%>%
+    hchart(type="treemap",
+           allowDrillToNode = TRUE
+           ) %>%
     hc_subtitle(text="<b>Bourgogne-Franche-Comté</b>") %>%
     hc_add_theme(thm) ,
   
@@ -390,7 +389,19 @@ hw_grid(
     
     data_to_hierarchical(c(type_fede,fede),txFrance) %>%
     
-    hchart(type="treemap") %>%
+    hchart(type="treemap",
+           allowDrillToNode = TRUE
+           # levels = list( list
+           #                (level = 1,
+           #                  borderWidth = 0,
+           #                  borderColor = "transparent",
+           #                  dataLabels = list(enabled = TRUE) ),
+           #                list(level = 2,
+           #                  borderWidth = 0,
+           #                  borderColor = "transparent",
+           #                  dataLabels = list(enabled = TRUE) )
+           #            ) 
+           ) %>%
     hc_subtitle(text="<b>France</b>") %>%
     hc_add_theme(thm) ,
 
