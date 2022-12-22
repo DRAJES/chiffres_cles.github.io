@@ -21,6 +21,16 @@ regsexe <- as.data.frame(t(lic_reg_sexe)) %>%
   mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% 
   slice(3:16)
 
+
+regsexe <- as.data.frame(t(lic_reg_sexe)) %>%  
+  rownames_to_column() %>% 
+  select(1,17,18) %>% 
+  mutate(txfem=100*as.numeric(V16)/as.numeric(V17)) %>% 
+  slice(3:16)
+
+fede_sexe_dep[c(38,89,113),1] <- "Total"
+
+
 pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
 
 ```
