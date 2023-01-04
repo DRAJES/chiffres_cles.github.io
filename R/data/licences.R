@@ -5,39 +5,40 @@ licences <- read.csv2("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licen
 load("data/demo/basecom.RData")
 
 lic_dep <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-departement-2021.xlsx",sheet = 2,skip=2)
-levels(lic_dep) <-  lic_dep[1,]
 
 lic_reg <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-région-2021.xlsx",sheet = 2,skip=2)
-levels(lic_reg) <-  lic_reg[1,]
 lic_reg_sexe <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-region-et-sexe-2021.xlsx",sheet = 5,skip = 2)
-levels(lic_reg_sexe) <-  lic_reg_sexe[1,]
 fedsexe <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-sexe-2021.xlsx",sheet = 2,skip = 2)
 
 fedsexeuni <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-departement-et-sexe-2021.xlsx",sheet = 2,skip = 2)
 fedsexenoly <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-departement-et-sexe-2021.xlsx",sheet = 3,skip = 2)
 fedsexemulti <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-departement-et-sexe-2021.xlsx",sheet = 4,skip = 2)
 feddepsexe <- read_excel("I:/SUPPORT/04_STATS/Sources/MEDES/sport/Recensement licences et clubs sportifs/1. Tableaux injep.fr/2021/licences-par-departement-et-sexe-2021.xlsx",sheet = 5,skip = 2)
-levels(feddepsexe) <-  feddepsexe[1,]
 
 lic_reg[118,2] <- "Total général (hors groupements nationaux)"
 lic_reg <- lic_reg %>% 
   slice(2:118) %>% 
   filter(!is.na(`Codes régions`)) %>%
   dplyr::select(-c(3,17:21,23:24)) %>% 
-  mutate_at(3:16,as.numeric)
+  mutate_at(3:16,as.numeric) %>%
+  rename(code_fede=...1,fede=`Codes régions`,FM=...22)
 
 lic_reg_sexe <- lic_reg_sexe %>% 
   slice (2:18) %>% 
   dplyr::select(-c(3,17:21,23:24)) %>% 
-  mutate_at(3:16,as.numeric)
+  mutate_at(3:16,as.numeric) %>%
+  rename(code_fede=...1,fede=`Codes régions`,FM=...22)
 
 lic_dep[118,2] <- "Total général (hors groupements nationaux)"
 lic_dep_bfc <- lic_dep %>% 
   slice (2:118) %>%
   filter(!is.na(`Codes départements`)) %>%
-  dplyr::select(1:2,depbfc,France="...114") %>%
+  dplyr::select(1:2,depbfc,FM="...114") %>%
   bind_cols(BFC=lic_reg$`27`) %>% 
-  relocate(BFC,.before=France) %>% mutate_at(3:12,as.numeric)
+  relocate(BFC,.before=FM) %>% 
+  mutate_at(3:12,as.numeric) %>%
+  rename(code_fede=...1,fede=`Codes départements`)
+
 
 feddepsexe <- feddepsexe %>%  
   slice (2:18) %>%
@@ -79,8 +80,10 @@ fede_sexe_dep  <- fede_sexe_dep %>%
 
 licences27 <- basecom %>% 
   dplyr::filter(CODGEO %in% (basecom %>% 
-                               dplyr::filter (EPCI %in% basecom$EPCI[basecom$REG=="27"] |
-                                                BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
+                               dplyr::filter (EPCI %in% 
+                                                basecom$EPCI[basecom$REG=="27"] |
+                                                BV2012 %in% 
+                                                basecom$BV2012[basecom$REG=="27"]) %>%
                                dplyr::select (CODGEO) %>% 
                                pull ) ) %>%
   dplyr::select(CODGEO,EPCI,BV2012,poph,popf,pop,p20) %>%
@@ -91,7 +94,8 @@ licences27 <- basecom %>%
               mutate (lic_jeunes=l_10_14_2019+l_5_9_2019+l_0_4_2019)
             ,by=c("CODGEO"="code_commune") ) %>% 
   left_join(.,clubs %>%
-              dplyr::select (code_commune, code_federation,clubs_sportifs_2019,etablissements_prof_2019,total_clubs_2019)
+              dplyr::select (code_commune, code_federation,clubs_sportifs_2019,
+                             etablissements_prof_2019,total_clubs_2019)
             ,by=c("CODGEO"="code_commune","fede"="code_federation")) 
 
 #rpivotTable(licences)

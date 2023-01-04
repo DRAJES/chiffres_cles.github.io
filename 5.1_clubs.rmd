@@ -45,8 +45,10 @@ tab_club <- function(.tbl,geo){
 pal <- colorBin("YlOrBr", domain =0:100 ,
                  bins= c(0, 15, 20, 25, 30,35, 100) )
 
-pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,
-                   bins= c(0, 19, 22, 25, 100) )
+# pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,
+#                    bins= c(0, 19, 22, 25, 100) )
+pallic <- colorBin("RdYlBu", domain =0:100 , reverse = TRUE,
+                    bins= c(0, 19, 22, 25, 100) )
 
 carto <- function(.map,var=NULL) {
 
@@ -159,8 +161,8 @@ tab <-
   pivot_longer(-fede,names_to = "REG",values_to = "clubs") %>%
   pivot_wider(names_from = fede, values_from = clubs) %>%
   libelle(geo=REG) %>%
-  rename(`unisport olympique`="Total fédérations unisport olympiques",
-         `unisport non olympique`="Total fédérations unisport non olympiques",
+  rename(`unisports olympiques`="Total fédérations unisport olympiques",
+         `unisports non olympiques`="Total fédérations unisport non olympiques",
          multisports=`Total fédérations multisports`,
          `Total clubs`=`Total (hors groupements sportifs)` ) 
 
@@ -255,8 +257,7 @@ tab <-
                      code_fede > '400' & code_fede < '700' ~ "multisport",
                      TRUE ~ "autres") ) %>%
   left_join(lic_reg %>% 
-              dplyr::select(1,Licences="...22") %>% 
-              rename(code_fede="...1")  ,
+              dplyr::select(1,Licences="FM") ,
             by="code_fede" )  
 
 
@@ -277,7 +278,7 @@ tab %>%
   column_spec(16, 
               bold=T) %>%
   credits() %>%
-   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
+  footnote(number = c("F= Fédération \n","FF = Fédération Française") )
  
 
 ```
@@ -299,10 +300,8 @@ tab %>%
   
   cc_kable(aligne = "clrrrrrrrrrrrrrrrl") %>%
   add_header_above(c(" "=2,"Code région"=13," "=3) )%>%
-  column_spec(5, 
-              bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
-  column_spec(16, 
-              bold=T) %>%
+  column_spec(5, bold=T, background = "#E0FFFF75",  color = "steelblue") %>%
+  column_spec(16, bold=T) %>%
   credits() %>%
    footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
