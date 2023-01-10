@@ -10,10 +10,17 @@ output:
     theme: simplex
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/sport/RES.RData")
 
+#crédits RES
+credits_res <- function(.tbl){
+  .tbl %>%
+    footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
+             general_title = "Source : ",
+             footnote_as_chunk = T)
+}
 
 icons <- awesomeIconList (
   "407" = makeAwesomeIcon(text = fa("truck-monster"),markerColor="darkred",iconColor="#FF0000",squareMarker=F),
@@ -66,15 +73,6 @@ icons <- awesomeIconList (
   "2305" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
   "2306" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple") )
 
-
-pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
-
-pal1 <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins= c(0, 19, 22, 25, 100) )
-
-depbfc <- c('21','25','39','58','70','71','89','90')
-
-
-
 ```
 
 Données {data-orientation="rows" data-icon="fa-signal"}
@@ -99,44 +97,35 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 nature %>% 
   group_by(REG) %>% 
   summarise(`sites de nature`=n() )  %>%
-  arrange(desc(`sites de nature`)) %>% 
-  adorn_totals("row") %>% 
-  left_join(.,appartenance %>% 
-              dplyr::filter (NIVGEO=="REG") %>% 
-              dplyr::select (2,3),
-            by=c("REG"="CODGEO")) %>%
-  relocate(région=LIBGEO,.after=REG) %>%
-  
- cc_kable("lcrrrrrrrrr") %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
-  footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
-           general_title = "Source : ",
-           footnote_as_chunk = T)
+  arrange(desc(`sites de nature`)) %>%  
+  libelle(geo = REG) %>%
+  adorn_totals("row",name = "FM", fill = "France métro") %>% 
+ 
+ cc_kable("lcr") %>%
+ credits_res()
+
 ```
 ### Départements
 
 La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
 
 ```{r}
-
-hchart(nature %>% 
-         group_by(DEP) %>% 
-         summarise(`sites de nature`=n() )  %>%  
-         arrange(desc(`sites de nature`)) %>%
-         left_join(.,appartenance %>% 
-                     dplyr::filter (NIVGEO=="DEP") %>% 
-                     dplyr::select (2,3),
-                   by=c("DEP"="CODGEO")) %>%
-         relocate(département=LIBGEO,.after=DEP) ,
-"bar", hcaes(x=reorder(département,`sites de nature`),
-                    y=`sites de nature`,
-                    color=ifelse(DEP %in% depbfc,"#6a5acd",
-                          ifelse(DEP=="FR","#ff7f50","#ffd700") ) ), 
-       showInLegend = F, pointWidth = 1, 
-       name = "Sites de nature") %>%
+nature %>% 
+  group_by(DEP) %>% 
+  summarise(`sites de nature`=n() )  %>%  
+  arrange(desc(`sites de nature`)) %>%
+  libelle(geo=DEP) %>%
+  hchart( "bar", 
+          hcaes(x=reorder(Libellé,`sites de nature`),
+                y=`sites de nature`,
+                color=ifelse(DEP %in% depbfc,"#6a5acd",
+                             ifelse(DEP=="FR","#ff7f50","#ffd700") ) ), 
+          showInLegend = F, pointWidth = 1, 
+          name = "Sites de nature") %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de sites de nature")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
@@ -147,17 +136,12 @@ nature %>%
   group_by(DEP) %>%  
   summarise(`sites de nature`=n() )  %>%
   arrange(desc(`sites de nature`)) %>% 
-  adorn_totals("row") %>%
-  left_join(.,appartenance %>% 
-              dplyr::filter (NIVGEO=="DEP") %>% 
-              dplyr::select (2,3),
-            by=c("DEP"="CODGEO")) %>%
-  relocate(département=LIBGEO,.after=DEP) %>%
+  adorn_totals("row",name = "BFC", fill = "Bourgogne-Franche-Comté") %>%
+  libelle(DEP) %>%
   
-  cc_kable("lcrrrrrrrrr") %>%
-  footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
-           general_title = "Source : ",
-           footnote_as_chunk = T)
+  cc_kable("lcr") %>%
+  credits_res()
+
 ```
 
 ### Sites de sport de nature
@@ -167,20 +151,16 @@ Une grande majorité de site de sport de nature de la région sont des boucles d
 ```{r}
 nature27 %>% 
   filter (REG=="27") %>% 
-  group_by(EquipementFamille,EquipementTypeLib) %>% 
+  group_by(`Famille d'équipements`= EquipementFamille,
+           `Type d'équipement`= EquipementTypeLib) %>% 
   summarise(`nombre de sites`=n()) %>% 
   arrange(desc(`nombre de sites`),.by_group = T) %>%
   
-  cc_kable("crrrrrrrrr") %>%
-  footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-   scroll_box(height = "800px") 
+  cc_kable("ccr") %>%
+  credits_res() %>%
+  scroll_box(height = "800px") 
 
 ```
-
-
-
 
 ### Carte 
 
@@ -192,10 +172,10 @@ depnature27 <- as.data.frame(addmargins(depnature27))
 depnature27 <- spread(depnature27,Var2,Freq)
 dep27carto <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
 
-l <- leaflet() %>% 
-        setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-        addProviderTiles(providers$OpenTopoMap) %>%
-        addProviderTiles(providers$WaymarkedTrails.hiking ) 
+l <- leaflet()  %>%
+  contour_depbfc() %>%
+  addProviderTiles(providers$OpenTopoMap) %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking )
 
 names(nature27.df) %>%
   purrr::walk( function(df) {
@@ -204,42 +184,26 @@ names(nature27.df) %>%
                         lng=~EquGPSX, lat=~EquGPSY,
                         label=~as.character(EquipementFamille),
                         icon = ~icons[(as.character(EquipementTypeCode) )],
-                        popup=~popupTable(nature27.df[[df]],row.numbers = F,feature.id = F),
+                        popup=~popupTable(nature27.df[[df]],
+                                          row.numbers = F,feature.id = F),
                         group = df,
-                        #clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
                         labelOptions = labelOptions(noHide = F,
                                                     direction = 'auto'))
   })
 
-
-l %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB", weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 2) %>%
+l  %>%
   addLayersControl(overlayGroups = names(nature27.df),
                    options = layersControlOptions(collapsed = FALSE)  )
-
 ```
 
 
 
 ### Carte (cluster)
 ```{r}
-nature27.df <- split(nature27,nature27$EquipementFamille)
-
-depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
-depnature27 <- as.data.frame(addmargins(depnature27))
-depnature27 <- spread(depnature27,Var2,Freq)
-dep27carto <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
-
-l <- leaflet() %>% 
-        setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-        addProviderTiles(providers$OpenTopoMap) %>%
-        addProviderTiles(providers$WaymarkedTrails.hiking) 
-
+l <- leaflet()  %>%
+  contour_depbfc() %>%
+  addProviderTiles(providers$OpenTopoMap) %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking )
 
 names(nature27.df) %>%
   purrr::walk( function(df) {
@@ -255,17 +219,9 @@ names(nature27.df) %>%
                                                     direction = 'auto'))
   })
 
-
 l %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 2) %>%
   addLayersControl(overlayGroups = names(nature27.df),
                    options = layersControlOptions(collapsed = FALSE) )
-
 ```
 
 *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }

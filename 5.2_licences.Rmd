@@ -40,7 +40,7 @@ detail <- function(.tbl,type) {
     filter(type_fede == type) %>%
     select(-type_fede) %>%  
     adorn_totals("row",name = "Total",
-                 fill = "Total fédérations unisports olympiques") %>% 
+                 fill = glue("Total fédérations {type}") ) %>% 
     mutate(`Licences féminines (%)`=color_bar('pink',na.rm=T)
            (digits(na_if(100*licf/lict,Inf), 1,decimal.mark=","))) %>% #correction de valeur infinie  
     select(-licf,-lict) %>% 
