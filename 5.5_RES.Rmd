@@ -84,7 +84,58 @@ creditsRES <- function(.tbl){
             (digits(`taux proximité`,1,big.mark = " ",decimal.mark=",") ) ) 
  }
 
- 
+ #Tableaux EPCI et BV
+
+res_infra <- function(geo) {
+
+  zone <- basecom %>%
+          filter(REG=="27") %>%
+          distinct({{geo}}) %>% 
+          pull 
+  
+    tab <- equip %>% 
+    filter({{geo}} %in% zone )%>%
+    sum_res({{geo}}) %>%
+    arrange(desc(équipements))
+
+  tab_nombre <- 
+    tab %>%
+    select(-pop) %>%
+    cc_kable("rcrrrrrrrrr") %>%
+    column_spec(3, bold=T) %>%
+    add_header_above(c(" "=3,"structurant"=2,
+                       "tennis"=2,"terrains"=2, "natation"=1)) %>%
+    credits_res() %>%
+    footnote(number = c("structurant : salles de sport collectifs \n",
+                        "proximité : terrains en accès libre"), 
+             footnote_as_chunk = T) %>%
+    scroll_box(height="780px") 
+  
+  tab_taux <- 
+    tab %>% 
+    taux_res() %>%
+    select(1:3,19:26) %>%
+    select(1:3,`Taux d'équipements`=4,
+           structurant=txstructurant,`dont gymnases`=txgymnases,
+           tennis=txtennis,`dont couverts`=txtennis_couv,
+           `grands jeux`=txgdsjeux,proximité=txproxi,
+           `tous bassins`=txbassins) %>%
+    arrange(desc(équipements)) %>%
+    cc_kable("rcrllrlrllr") %>%
+    column_spec(3, bold=T) %>%
+    add_header_above(c(" "=4,"taux structurant"=2,
+                       "taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
+    credits_res() %>%
+    footnote(number = c("structurant : salles de sport collectifs \n",
+                        "proximité : terrains en accès libre"), 
+             footnote_as_chunk = T) %>%
+    footnote(general_title = "Taux d'équipements :",
+           general = "pour 10 000 habitants",
+           footnote_as_chunk = T) %>%
+    scroll_box(height="780px")
+
+  return(list(tab_nombre=tab_nombre,tab_taux=tab_taux))
+}
 
 #carto
  paleq <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 20, 30, 40, 50, 60, 100) )
@@ -98,75 +149,79 @@ coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" ,
                    "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")
  
 carto <- function(.map,x=1) {
+groupes <- c("taux équipements","taux structurant","taux grands jeux","taux proximité", "taux bassins")
 
+popup <- carte@data %>% select(Libellé, Population = pop,
+                               `Nombre d'équipements`= équipements,`Taux d'équipements`=txequip,
+                               `Taux de bassins`=txbassins, `Taux de grands jeux`=txgdsjeux,
+                               `Taux de structurant`=txstructurant,`Taux de gymnases`=txgymnases,
+                               `Taux de tennis`=txtennis,`Taux de tennis couverts`=txtennis_couv,
+                               `Taux d'équipements de proximité`=txproxi)
+                
+  
 .map %>%
-  addPolygons(color = "#2F4F4F",  weight = 2, opacity = 0.6,
+  addPolygons(color = "#2F4F4F",  weight = 2, opacity = 0.7, 
+              fill = FALSE, smoothFactor = 2) %>%
+  addPolygons(stroke = FALSE,fill = TRUE ,smoothFactor = 2,
               fillColor = ~paleq(txequi),  fillOpacity = 0.6,
-              fill = TRUE ,smoothFactor = 2,
-              popup = popupTable(carte@data,
-                                 feature.id=F,row.numbers = F),
-              group = "taux équipements") %>%
+              popup = popupTable(popup, feature.id=F,row.numbers = F),
+              group = groupes[1]) %>%
     addLegend( pal = paleq, values = ~txequi,   
-               "bottomright",title = "taux d'équipements <br> pour 10 000 habitants",
-               group = "taux équipements") %>%
+               "bottomright",title = "taux d'équipements<br>pour 10 000 habitants",
+               group = groupes[1]) %>%
     
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+   addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
                fillColor = ~palstr(`taux structurant`), fillOpacity = 0.6,
-               fill = TRUE, smoothFactor = 2,
-               popup = popupTable(carte@data,
-                                 feature.id=F,row.numbers = F),
-              group = "taux structurant") %>%
+               popup = popupTable(popup, feature.id=F,row.numbers = F),
+              group = groupes[2]) %>%
     addLegend( pal = palstr, values = ~`taux structurant`,   
-               "bottomright",title = "taux d'équipements structurant  <br> pour 10 000 habitants",
-               group = "taux structurant") %>%
+               "bottomright",title = "taux d'équipements structurants<br>pour 10 000 habitants",
+               group = groupes[2]) %>%
     
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+   addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
                fillColor = ~paljx(`taux grands jeux`), fillOpacity = 0.6,
-               fill = TRUE, smoothFactor = 2,
-               popup = popupTable(carte@data,
-                                 feature.id=F,row.numbers = F),
-              group = "taux grands jeux") %>%
+               popup = popupTable(popup, feature.id=F,row.numbers = F),
+              group = groupes[3]) %>%
     addLegend( pal = paljx, values = ~`taux grands jeux`,   
-               "bottomright",title = "taux de terrains de grands jeux  <br> pour 10 000 habitants",
-               group = "taux grands jeux") %>% 
+               "bottomright",title = "taux de terrains de grands jeux<br>pour 10 000 habitants",
+               group = groupes[3]) %>% 
     
-    addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+    addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
                 fillColor = ~palpro(`taux proximité`), fillOpacity = 0.6, 
-                fill = TRUE,  smoothFactor = 2,
-                popup = popupTable(carte@data,
-                                 feature.id=F,row.numbers = F),
-              group = "taux proximité") %>%
+                popup = popupTable(popup, feature.id=F,row.numbers = F),
+              group = groupes[4]) %>%
     addLegend( pal = palpro, values = ~`taux proximité`,   
-               "bottomright",title = "taux d'équipements de proximité  <br> pour 10 000 habitants",
-               group = "taux proximité") %>% 
+               "bottomright",title = "taux d'équipements de proximité<br>pour 10 000 habitants",
+               group = groupes[4]) %>% 
     
-   addPolygons(color = "#2F4F4F", weight = 2, opacity = 0.6, 
+   addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
                fillColor = ~palb(`taux bassins`), fillOpacity = 0.6, 
-               fill = TRUE,  smoothFactor = 2,
-               popup = popupTable(carte@data,
-                                 feature.id=F,row.numbers = F),
-              group =  "taux bassins") %>%
+               popup = popupTable(popup, feature.id=F,row.numbers = F),
+              group =  groupes[5]) %>%
     addLegend( pal = palb, values = ~`taux bassins`,   
-               "bottomright",title = "taux de bassins <br> pour 10 000 habitants",
-               group =  "taux bassins") %>% 
+               "bottomright",title = "taux de bassins<br>pour 10 000 habitants",
+               group =  groupes[5]) %>% 
     
   addMinicharts(centroid(carte)[,1],centroid(carte)[,2] ,
                        #maxValues = 100,
                        type = "pie",
-                       chartdata = carte@data %>% select("structurant":"tous bassins"),
-                       colorPalette = coul,
-                       width = sqrt(x * carte$équipements) ,  #paramètre d'échelle 
-                       opacity = 0.6
+                       chartdata = carte@data %>% 
+                                        mutate(`tennis extérieurs`=tennis-`dont couverts`,
+                                               autres = équipements - structurant - tennis -
+                                                 `grands jeux` - proximité - `tous bassins`) %>%
+                                        select(structurant,`grands jeux`,
+                                               `tennis extérieurs`, `tennis couverts`=`dont couverts`,
+                                               `terrains de proximité`=proximité, `tous bassins`, autres),
+                colorPalette = coul,
+                width = sqrt(x * carte$équipements) ,  #paramètre d'échelle 
+                opacity = 0.6
                 #,group="minicharts"   #ne fonctionne pas
                 ) %>% 
     syncWith("minicharts") %>%
-    addLayersControl( overlayGroups = c("taux équipements",
-                                     "taux structurant",
-                                     "taux grands jeux",
-                                     "taux proximité", 
-                                     "taux bassins"),
+    addLayersControl( overlayGroups = groupes,
                       baseGroups = c("minicharts"),
-                      options = layersControlOptions(collapsed = F,autoZIndex = T)) 
+                      options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%
+  hideGroup(groupes[2:5])
   }
  
 ```
@@ -414,48 +469,14 @@ leaflet(carte) %>%
 ### Comparaisons établissements publics de coopération intercommunale {vertical_layout="scroll"}
 
 ```{r}
-tab <- equip %>% 
-  filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
-  sum_res(EPCI) %>%
-  arrange(desc(équipements)) 
-
-tab %>%
-  select(-pop) %>%
-  
-  cc_kable("rcrrrrrrrrr") %>%
-  column_spec(3, bold=T) %>%
-  add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1)) %>%
-  footnote(general = " MEDES recensement des équipements sportifs 2020", 
-           general_title = "Source : ",
-           number = c("structurant : salles de sport collectifs \n",
-                      "proximité : terrains en accès libre"), 
-           footnote_as_chunk = T) %>%
-  scroll_box(height="780px")
+res_infra(geo=EPCI)[[1]]
 ```
 
 ### Taux d'équipements
 
 ```{r}
-tab %>% 
-  taux_res() %>%
-  select(1:3,19:26) %>%
-  select(1:3,`Taux d'équipements`=4,structurant=txstructurant,
-         `dont gymnases`=txgymnases,tennis=txtennis,`dont couverts`=txtennis_couv,
-         `grands jeux`=txgdsjeux,proximité=txproxi,`tous bassins`=txbassins) %>%
-  arrange(desc(équipements)) %>%
-  
-  cc_kable("rcrllrlrllr") %>%
-  column_spec(3, bold=T) %>%
-  add_header_above(c(" "=4,"taux structurant"=2,"taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
-  footnote(general = " MEDES recensement des équipements sportifs 2020", 
-           general_title = "Source : ",
-           number = c("structurant : salles de sport collectifs \n",
-                      "proximité : terrains en accès libre"), 
-           footnote_as_chunk = T) %>%
-    footnote(general_title = "Taux d'équipements :",
-           general = "pour 10 000 habitants",
-           footnote_as_chunk = T) %>%
-  scroll_box(height="780px")
+res_infra(geo=EPCI)[[2]]
+
 ```
 
 ### Carte  {data-height="800"}
@@ -483,96 +504,29 @@ leaflet(carte) %>%
 ### Comparaisons bassins de vie {vertical_layout="scroll"}
 
 ```{r}
-equip %>% 
-  filter(!is.na(BV2012)) %>% 
-  filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
-  sum_res(BV2012) %>%
-  left_join(.,pop_basecom(BV2012),
-            by="BV2012") %>% 
-   arrange(desc(equ)) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="BV2012") %>% 
-              select(CODGEO,LIBGEO),
-            by=c("BV2012"="CODGEO") ) %>%
-  select(BV2012,`bassin de vie`=LIBGEO,équipements=equ,
-         structurant,`dont gymnases`=gymnases,`tennis`=tennis, `dont couverts`=tennis_couv,
-         `grands jeux`=gdsjeux, proximité=proxi,`tous bassins`= bassins) %>%
-  arrange(desc(équipements)) %>%
-  
-  cc_kable("rcrrrrrrrrr") %>%
-  column_spec(3, bold=T) %>%
-  add_header_above(c(" "=3,"structurant"=2,"tennis"=2,"terrains"=2, "natation"=1)) %>%
-  footnote(general = " MEDES recensement des équipements sportifs 2020", 
-           general_title = "Source : ",
-           number = c("structurant : salles de sport collectifs \n",
-                      "proximité : terrains en accès libre"), 
-           footnote_as_chunk = T) %>%
-  scroll_box(height="780px")
+res_infra(geo=BV2012)[[1]]
 ```
 
 ### Taux d'équipements 
 
 ```{r}
-equip %>% 
-  filter(!is.na(BV2012)) %>% 
-  filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
-  sum_res(BV2012) %>%
-  left_join(.,pop_basecom(BV2012),
-            by="BV2012") %>% 
-  mutate(txequi=color_bar('lightblue')
-        (digits(10000*equ/pop,1,decimal.mark=",") ) ,
-        txbassins=color_tile('white','lightblue',alpha=0.5)
-        (digits(10000*bassins/pop,1,decimal.mark=",") ) ,
-        txgdsjeux=color_bar('gold')
-        (digits(10000*gdsjeux/pop,1,decimal.mark=",") ) ,
-        txstructurant=color_bar('orange')
-        (digits(10000*structurant/pop,1,decimal.mark=",") ) ,
-        txgymnases=color_tile('white','orange',alpha=0.5)
-        (digits(10000*gymnases/pop,1,decimal.mark=",") ) ,
-        txtennis=color_bar('lightgreen')
-        (digits(10000*tennis/pop,1,decimal.mark=",") ) ,
-        txtennis_couv=color_tile('white','lightgreen',alpha=0.5)
-        (digits(10000*tennis_couv/pop,1,decimal.mark=",") ) ,
-        txproxi=color_bar('lightgray')
-        (digits(10000*proxi/pop,digits=1,big.mark = " ",decimal.mark=",") ) ) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="BV2012") %>% 
-              select(CODGEO,LIBGEO),
-            by=c("BV2012"="CODGEO") ) %>%
-  select(BV2012,`bassin de vie`=LIBGEO,équipements=equ,
-         `taux d'équipements`=txequi,
-         structurant=txstructurant,`dont gymnases`=txgymnases,
-         tennis=txtennis,`dont couverts`=txtennis_couv,
-         `grands jeux`=txgdsjeux,`proximité`=txproxi,
-         `tous bassins`=txbassins) %>%
-  arrange(desc(équipements)) %>%
-  
-  cc_kable("rcrllrlrllr") %>%
-  column_spec(3, bold=T) %>%
-  add_header_above(c(" "=4,"taux structurant"=2,"taux tennis"=2,"taux terrains"=2, "taux natation"=1)) %>%
-  footnote(general = " MEDES recensement des équipements sportifs 2020", 
-           general_title = "Source : ",
-           number = c("structurant : salles de sport collectifs \n",
-                      "proximité : terrains en accès libre"), 
-           footnote_as_chunk = T) %>%
-    footnote(general_title = "Taux d'équipements :",
-           general = "pour 10 000 habitants",
-           footnote_as_chunk = T) %>%
-  scroll_box(height="780px") 
+res_infra(geo=BV2012)[[2]]
 ```
 
 ### Carte {data-height="800"}
 
 ```{r}
-res <- carto_res(BV2012) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="BV2012") %>% 
-              select(CODGEO,BV2012=LIBGEO),
-            by=c("BV2012"="CODGEO") ) 
+carte <- bvcarto
+carte@data <- carte@data %>% select(BV2012)
+carte <- merge(carte,equip %>% 
+                 sum_res(BV2012) %>%
+                 taux_res() ,
+               by="BV2012")
 
-res <- sp::merge(bvcarto ,res,by="BV2012")
-  
-leafRES(x=10) %>% contour_depbfc()
+
+leaflet(carte) %>% 
+  carto(x=10) %>%
+  contour_depbfc() 
 ```
 
 Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
