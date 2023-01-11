@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/engagement/asso.RData")
 
@@ -81,23 +81,23 @@ pal <- colorBin("YlOrBr", domain =0:10 ,
 coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" , "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")
 
 carte_asso <- function(){
-carte <-   leaflet(RNAcarto) %>%  
-    addPolygons(data=RNAcarto,group  = "régions",
+cartasso <-   leaflet(carte) %>%  
+    addPolygons(data=carte,group  = "régions",
                 color = "#2F4F4F", weight = 2, smoothFactor = 2,
-                fillColor = ~pal(100*RNAcarto$total/RNAcarto$pop),fillOpacity  = 0.8,
+                fillColor = ~pal(100*carte$total/carte$pop),fillOpacity  = 0.8,
                 popup = sprintf("<center> %s <br>  Nombre d'associations : <b>%i</b> <br>
                                Taux d'association :<b>%.2f</b> </center> ",  
-                                RNAcarto$Libellé ,RNAcarto$total,round(100*(RNAcarto$total/RNAcarto$pop ),1) ) )   %>%
-    addMinicharts(centroid(RNAcarto)[,1],centroid(RNAcarto)[,2] ,
+                                carte$Libellé ,carte$total,round(100*(carte$total/carte$pop ),1) ) )   %>%
+    addMinicharts(centroid(carte)[,1],centroid(carte)[,2] ,
                   #maxValues = 100,
                   type = "pie",
-                  chartdata = RNAcarto@data %>% select("Culture":"NR"),
+                  chartdata = carte@data %>% select("Culture":"NR"),
                   colorPalette = coul,
-                  width = 30 *  sqrt(RNAcarto$total / sd(RNAcarto$total)),
+                  width = 30 *  sqrt(carte$total / sd(carte$total)),
                   opacity = 0.7) %>%
-    addLegend( pal = pal ,values = 100*(RNAcarto$total/RNAcarto$pop),
+    addLegend( pal = pal ,values = 100*(carte$total/carte$pop),
                position = "bottomright", title = "taux d'associations" )
-return(carte)
+return(cartasso)
 }
 
 
@@ -273,8 +273,7 @@ hw_grid(
 ### Carte 
 Hors Alsace-Moselle
 ```{r}
-
-RNAcarto <- merge(regwgs,RNAcarto(REG),by="REG")
+carte <- merge(regwgs,RNAcarto(geo=REG),by="REG")
 
 carte_asso() %>% contour_bfc()
 ```
@@ -456,11 +455,9 @@ hw_grid(
 ### Carte 
 Hors Alsace-Moselle
 ```{r}
-RNAcarto <- merge(depwgs,RNAcarto(DEP),by="DEP")
+carte <- merge(depwgs,RNAcarto(geo=DEP),by="DEP")
 
 carte_asso() %>% contour_bfc()
-
-
 ```
 
 
@@ -485,7 +482,7 @@ asso_tab(EPCI) %>%
 ### Carte EPCI
 
 ```{r}
-RNAcarto <- merge(epcicarto,RNAcarto(EPCI),by="CODE_EPCI")
+carte <- merge(epcicarto,RNAcarto(geo=EPCI),by="CODE_EPCI")
 
 carte_asso() %>% contour_depbfc()
 
@@ -512,7 +509,7 @@ asso_tab(BV2012) %>%
 ### carte BV
 
 ```{r}
-RNAcarto <- merge(bvcarto,RNAcarto(BV2012),by="BV2012")
+carte <- merge(bvcarto,RNAcarto(geo=BV2012),by="BV2012")
 
 carte_asso() %>% contour_depbfc()
 ```

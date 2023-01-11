@@ -13,6 +13,7 @@ output:
 
 ```{r, include=FALSE ,echo=FALSE, cache=F}
 sparkline(0)
+library(lubridate)
 
 load("data/formation/diplome.RData")
 load("data/formation/bafa.RData")

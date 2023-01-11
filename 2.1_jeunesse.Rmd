@@ -43,7 +43,7 @@ credits <- function(.tbl){
 
 pal <- colorBin("YlOrBr", domain =0:100 ,
                 bins= c(0, 12.5, 15, 17.5, 20, 100) )
-pal2 <- colorBin("RdYlBu", domain =-10:10 ,
+palevo <- colorBin("RdYlBu", domain =-10:10 ,
                  bins=c(-Inf,-2, -1, -0.5,0,0.5, 1 ,2, Inf), reverse = T)
 
 var <- c("pop","p1529","evol1529","prop1529") #définition des variables de la carte
@@ -53,7 +53,7 @@ carto <- function(.map) {
      addPolygons(fillColor = ~pal(prop1529), fillOpacity = 0.6, 
               color = "#2F4F4F",weight = 2,opacity = 0.6, 
               smoothFactor = 2 ) %>% 
-    addLegend(pal = pal2,values = regwgs$prop1529,
+    addLegend(pal = pal,values = regwgs$prop1529,
               opacity = 0.7,
               title = "taux de 15/29 ans",
               labFormat = labelFormat(suffix =  " %"),
@@ -62,14 +62,14 @@ carto <- function(.map) {
     addCircles(centroid(carte)[,1],centroid(carte)[,2],
              radius = ~50*p1529^(1/2), 
              color = "#4169E1", weight=4, opacity = 0.8,
-             fillColor = ~pal3(evol1529), fillOpacity = 0.8,
+             fillColor = ~palevo(evol1529), fillOpacity = 0.8,
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, 
                           fillOpacity =  0.4 ),
              popup = popupTable(carte@data %>% 
                                    select(-var) ,
                                 feature.id=F,row.numbers = F) ) %>%
-    addLegend(pal = pal3, values =  regwgs$evol1529, 
+    addLegend(pal = palevo, values =  regwgs$evol1529, 
               opacity = 0.7, 
               title = "évolution des 15/29 ans", 
               position = "bottomright") 

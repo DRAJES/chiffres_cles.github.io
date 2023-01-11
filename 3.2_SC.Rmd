@@ -334,6 +334,7 @@ leaflet(cartedep) %>%
 ### Flux (volontaires -> mission)
 
 ```{r}
+library(RColorBrewer )
 flows <- gcIntermediate(oursinxy[,5:6],oursinxy[,8:9],n=5, sp=T,addStartEnd = T)
 flows$nombre <- oursinxy$nombre
 flows$origine <- oursinxy$origine

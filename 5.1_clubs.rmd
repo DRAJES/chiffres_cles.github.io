@@ -11,7 +11,7 @@ output:
 
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 load("data/sport/licences.RData")
 load("data/sport/clubs.RData")
 
@@ -108,7 +108,7 @@ leaflet(carte) %>%
               fill = F ) %>%
     contour_depbfc() %>%
   addCircles(centroid(carte)[,1],centroid(carte)[,2],weight=4,
-             radius = ~500*`Nombre de clubs`^(1/2), color = "#4169E1",
+             radius = ~500*`Total clubs`^(1/2), color = "#4169E1",
              fillColor = ~pallic(`Taux de licences`), fillOpacity = 0.7,
              highlight = highlightOptions (
                                   color = "#00FFFF", fillOpacity =  0.5, weight = 5 ),
@@ -546,7 +546,7 @@ tab <-
   rename(Total=BFC) %>%
   select(-FM) %>%
   arrange(desc(`Total`)) %>%
-  type_fede() %>%
+  type_fed() %>%
   left_join(lic_dep_bfc %>% 
               dplyr::select(1,Licences="BFC"),
             by="code_fede" )  
@@ -559,7 +559,7 @@ tab %>%
   add_header_above(c(" "=2,"Codes départements"=8," "=3) )%>%
   column_spec(11, bold=T) %>%
   credits() %>%
-   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
+  footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
 
@@ -577,7 +577,7 @@ tab %>%
   add_header_above(c(" "=2,"Codes départements"=8," "=3) )%>%
   column_spec(11, bold=T) %>%
   credits() %>%
-   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
+  footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
 
@@ -593,7 +593,7 @@ tab %>%
   add_header_above(c(" "=2,"Codes départements"=8," "=3) )%>%
   column_spec(11, bold=T) %>%
   credits() %>%
-   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
+  footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
 
@@ -630,8 +630,9 @@ tab %>%
 carte <- epcicarto
 carte@data <- carte@data %>% select(EPCI,Population=pop)
 carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
+                                    `Total clubs`= `Nombre de clubs`,
                                     `Taux de clubs`=txclub,
-                                    `Taux de licences` = txlic),
+                                    `Taux de licences` = txlic) ,
                by="EPCI")
 
 leaflet(epcicarto) %>% 
@@ -679,6 +680,7 @@ tab %>%
 carte <- bvcarto
 carte@data <- carte@data %>% select(BV2012,Population=pop)
 carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
+                                    `Total clubs`= `Nombre de clubs`,
                                     `Taux de clubs`=txclub,
                                     `Taux de licences` = txlic),
                by="BV2012")
