@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F, plotly=T}
+```{r}
 
 load("data/engagement/SC.RData")
 

@@ -66,12 +66,19 @@ load("data/demo/cartes.RData")
 source("R/data/fonctions_carto.R")
 source("R/data/fonctions_merge.R")
 
+appartenance <- rbind(appartenance,c("REG","FR","France","-"))
+appartenance <- rbind(appartenance,c("REG","FM","France Métro","-"))
+
+
 # Option de chunk
 knitr::opts_chunk$set(
  fig.width = 6,
  fig.asp = 0.8,
  out.width = "80%"
 )
+
+options(knitr.kable.NA = '')
+options(knitr.table.format = "html")
 ```
 
 

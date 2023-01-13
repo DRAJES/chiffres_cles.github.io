@@ -25,8 +25,6 @@ credits <- function(.tbl){
   
 }
 
-
-
 #recodage type fédé
 
 type_fed <- function(.tbl) {
@@ -94,7 +92,7 @@ carto <- function(.map,var=NULL) {
                  fillOpacity =  0.1),
                popup = popupTable(carte@data %>%
                                     relocate(Libellé,.before = Population) %>%
-                                    select(-1,-var) %>% 
+                                    select(-1,-all_of(var)) %>% 
                                     mutate(`Taux de clubs`=round(10000*`Total clubs`/Population,1) ),
                                   feature.id=F,row.numbers = F)) %>%
     addLegend( pal = pal , values = carte$`Taux de clubs`,

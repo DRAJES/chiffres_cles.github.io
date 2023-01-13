@@ -14,9 +14,6 @@ output:
 
 load("data/engagement/asso.RData")
 
-appartenance <- rbind(appartenance,c("REG","FR","France","-"))
-appartenance <- rbind(appartenance,c("REG","FM","France Métro","-"))
-
 RNApop <- RNAcom %>%
       left_join(.,basecom %>% 
                   select(CODGEO,LIBGEO,EPCI,BV2012),

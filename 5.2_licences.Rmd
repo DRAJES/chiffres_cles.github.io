@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/sport/spark.RData")
 load("data/sport/licences.RData")
@@ -629,7 +629,7 @@ tab <-
   rename(Total=BFC) %>%
   select(-FM) %>%
   arrange(desc(`Total`)) %>%
-  type_fede() %>%
+  type_fed() %>%
   left_join(.,fede_sexe_dep %>%
               filter(DEP == "BFC") %>%
               select (code_fede=1,licf=4,lict=5) ,

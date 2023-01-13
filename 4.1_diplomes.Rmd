@@ -11,8 +11,7 @@ output:
     theme: simplex
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
-sparkline(0)
+```{r}
 library(lubridate)
 
 load("data/formation/diplome.RData")
@@ -59,9 +58,6 @@ idjeps <- function(.tbl){
          txempappr=round(100*emplappr/apprentis,1),
          txinserappr=round(100*inserapp/emplappr,1) ) }
 
-
-options(knitr.kable.NA = '')
-options(knitr.table.format = "html")
 ```
 
 # Diplômes professionnels {data-orientation="rows" height="30" data-icon="fa-graduation-cap"}

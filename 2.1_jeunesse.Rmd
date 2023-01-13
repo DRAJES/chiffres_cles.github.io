@@ -11,7 +11,7 @@ output:
 ---
 
  
-```{r, include=FALSE ,echo=FALSE, cache=F} 
+```{r} 
 
 #défintion des variables des tableaux
 demo <- function(.tbl,geo) {.tbl %>%

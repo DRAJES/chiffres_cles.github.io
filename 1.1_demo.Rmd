@@ -13,7 +13,7 @@ runtime: shiny
 
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/demo/tab_demo.RData")
 load("data/demo/CRTE.RData")

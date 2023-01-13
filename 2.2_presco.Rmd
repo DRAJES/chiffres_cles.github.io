@@ -10,7 +10,7 @@ output:
     theme: simplex
 ---
 
-```{r, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/jeunesse/PMI.RData")
 

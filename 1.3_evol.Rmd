@@ -11,10 +11,8 @@ output:
 ---
  
  
-```{r, include=FALSE ,echo=F, cache=F} 
+```{r} 
 load("data/demo/spark.RData")
-sparkline(0)
-
 
 #défintion des variables des tableaux
 demo <- function(.tbl,geo) {.tbl %>%
