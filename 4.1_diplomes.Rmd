@@ -130,21 +130,22 @@ hchart("bar",
 ### Répartition des diplômes
 
 ```{r}
-tab <- diplreg %>% 
-  slice(-14) %>% 
-  select(diplome=1,nombre=3, france=15) %>% 
-  filter(!is.na(nombre)) 
+tab <- tab %>%
+  select(-Total) %>%
+  pivot_longer(-1, names_to = "diplome",values_to = "nombre") %>%
+  mutate(diplome=str_sub(diplome,end = -7)) 
+#  arrange((nombre))
 
-tab %>%
-  hchart("pie", 
-         hcaes(x=diplome,y=nombre,z=france),
-         name="Bourgogne-Franche-Comté",
-         showInLegend = T, 
-         size ='80%',innerSize='60%' ) %>%
-  hc_add_series(pie,
+hchart(tab %>% filter(str_detect(Région,"Bourgogne") ),
+       "pie", 
+       hcaes(x=diplome,y=nombre),
+       name="Bourgogne-Franche-Comté",
+       showInLegend = T, 
+       size ='80%',innerSize='60%' ) %>%
+  hc_add_series(tab %>% filter(str_detect(Région,"Métro") ),
                 "pie", 
-                hcaes(x=diplome,y=france),
-                name="France",
+                hcaes(x=diplome,y=nombre),
+                name="France métro",
                 size='40%',innerSize="40%",
                 dataLabels=F, showInLegend = F,
                 linkedTo=':previous' ) %>%  # ne fonctionne pas ? 
