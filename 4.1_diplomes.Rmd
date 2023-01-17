@@ -77,23 +77,32 @@ idjeps <- function(.tbl){
 **Près de 1 000 diplômés de STAPS, Une large part de BPJEPS pour le reste des diplômes délivrés en 2019**
 
 ```{r}
-diplreg %>% 
-  rename(" "="...1") %>%
-  
-  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
-    align="crrrrrrrrrrrrrr", escape = F )%>%
-  kable_styling("hover", full_width = F) %>%
-  column_spec(15, 
-              bold=T) %>%
-  column_spec(3,
-              background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  row_spec(c(1,3,5,8,10,12,14),
-           bold = T) %>%
+tab <- diplreg %>% 
+  rename("diplome"="...1") %>%
+  pivot_longer(-1,names_to = "reg", values_to = "nombre") %>%
+  pivot_wider(names_from = "diplome", values_from = "nombre") %>%
+  select(!contains("niveau")) %>% select(-"Autres diplômes") %>%
+  mutate(reg=str_to_title(reg))
+
+colnames(tab) <- c("Région", "BAPAAT<sup>1","BPJEPS<sup>2","DUT<sup>3",
+                   "DEJEPS<sup>4", "DEMM<sup>5","DESJEPS<sup>6",
+                   "STAPS<sup>7","Total")
+
+tab %>%  
+  cc_kable(aligne = "lrrrrrrrr") %>%
+  add_header_above(c("diplôme de"=1, "niveau 3"=1, "niveau 4"=1, 
+                     "niveau 5"=3, "niveau 6"=1, "Autres"=1, " "=1)) %>%
+  footnote(number = c("Brevet d'Aptitude Professionnelle d'Assistant Animateur Technicien",
+                      "Brevet Professionnel de la Jeunesse, de l'Éducation Populaire et du Sport",
+                      "Diplôme Universitaire de Technologie Carrière sociale option Animation sociale et socioculturelle",
+                      "Diplôme d'État de la Jeunesse, de l'Éducation Populaire et du Sport",
+                      "Diplôme d'État des Métiers de la Montagne",
+                      "Diplôme d'État Supérieur de la Jeunesse, de l'Éducation Populaire et du Sport",
+                      "Sciences et Techniques des Activités Physiques et Sportives (LMD et hors LMD") ) %>%
   footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports",
            general_title = "Source : ",
            footnote_as_chunk = T)  %>%
-  scroll_box(height = "600px")
+  scroll_box(height = "800px")
 
 
 ```
@@ -103,41 +112,46 @@ diplreg %>%
 **8e région de France en nombre de diplômes délivrés**
 
 ```{r}
-bar <- as.data.frame(t(diplreg %>% slice(14)) ) %>% 
-                    mutate(total=as.numeric(V1)) %>% 
-                    slice(2:14) %>% 
-                    arrange(desc(total))
-
-hchart(bar,
- "bar",hcaes(x=rownames(bar),y=total ,
-             color=c(rep("#ffd700",7),"#6a5acd",rep("#ffd700",5))  ),
+tab %>%
+  slice(-14) %>%
+  arrange(desc(Total)) %>%
+hchart("bar",
+       hcaes(x=Région,y=Total ,
+             color=ifelse(str_detect(Région,"Bourgogne"),"#6a5acd","#ffd700") ),
        showInLegend = T, pointWidth = 20,
        name = "diplômes sport et animation délivrés" ) %>%
      hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de diplômes")) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 ```
 
 ### Répartition des diplômes
 
 ```{r}
-pie <- diplreg %>% 
-            slice(-14) %>% 
-            select(diplome=1,nombre=3, france=15) %>% 
-            filter(!is.na(nombre))
+tab <- diplreg %>% 
+  slice(-14) %>% 
+  select(diplome=1,nombre=3, france=15) %>% 
+  filter(!is.na(nombre)) 
 
-hchart(pie,
-"pie", hcaes(x=diplome,y=nombre,z=france),
-       name="Bourgogne-Franche-Comté",
-       showInLegend = T, 
-       size ='80%',innerSize='50%' ) %>%
+tab %>%
+  hchart("pie", 
+         hcaes(x=diplome,y=nombre,z=france),
+         name="Bourgogne-Franche-Comté",
+         showInLegend = T, 
+         size ='80%',innerSize='60%' ) %>%
   hc_add_series(pie,
-         "pie", hcaes(x=diplome,y=france),
+                "pie", 
+                hcaes(x=diplome,y=france),
                 name="France",
-                size='30%', dataLabels=F, showInLegend = F ) %>%  
-  hc_legend(enabled=T)%>%
+                size='40%',innerSize="40%",
+                dataLabels=F, showInLegend = F,
+                linkedTo=':previous' ) %>%  # ne fonctionne pas ? 
+  #hc_legend(enabled=T)%>%
   hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 ### Répartition par sexe (hors STAPS)
@@ -145,14 +159,14 @@ hchart(pie,
 **Taux de femmes en formation `r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**
 
 ```{r}
-
-hchart(forome %>% 
-         group_by (Type.de.diplôme) %>% 
-         summarise(hommes=sum(Sexe=="Homme"),
-                   femmes=sum(Sexe=="Femme")) %>%
-         arrange(desc(hommes+femmes)) %>% 
-         pivot_longer(-1,"stat","valeur"),
- "bar",hcaes(x = Type.de.diplôme,y=value,group=stat), 
+forome %>% 
+  group_by (Type.de.diplôme) %>% 
+  summarise(hommes=sum(Sexe=="Homme"),
+            femmes=sum(Sexe=="Femme")) %>%
+  arrange(desc(hommes+femmes)) %>% 
+  pivot_longer(-1,"stat","valeur") %>%
+hchart("bar",
+       hcaes(x = Type.de.diplôme,y=value,group=stat), 
        color=c("#da70d6",'#87ceeb'),
        stacking="normal", 
        pointWidth = 20)
@@ -186,10 +200,11 @@ hchart(density(forome$age ),
 ### âge moyen par diplôme (hors STAPS)
 
 ```{r}
-hchart(forome %>% 
-         group_by(Type.de.diplôme,Spécialité) %>% 
-         summarise(mage=mean(age)) ,    
-"column",hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
+forome %>% 
+  group_by(Type.de.diplôme,Spécialité) %>% 
+  summarise(mage=mean(age)) %>%
+hchart("column",
+       hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
        showInLegend = T) %>%
   hc_add_theme(thm) 
 
