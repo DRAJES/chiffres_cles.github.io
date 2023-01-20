@@ -11,7 +11,8 @@ output:
 ---
 
 ```{r}
-
+library(crosstalk)
+library(DT)
 library(tidyverse)#
 library(sparkline)#
 library(kableExtra)#
@@ -21,7 +22,7 @@ source("R/data/fonctions_carto.R")#
 source("R/data/fonctions_merge.R")#
 depbfc <- c('21','25','39','58','70','71','89','90')#
 
-load("data/jeunesse/ACMH.RData")
+load("data/jeunesse/ACM_evo.RData")
 sparkline(0)
 
 ACMH <- function(data,lignes) {
@@ -81,99 +82,42 @@ Les Accueils collectifs de mineurs avec hébergement regroupent les centres de v
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
 
-### Ensemble des ACMH
+### Tableaux
 
 ```{r}
+tab <- ACMH_reg %>%
+  filter(REG %in% c(11:94,"Total France métropolitaine","Total France + Étranger") ) %>%
+  arrange(REG)
 
-ACMH(data = ACMHreg_ensemble, 
-     lignes = c(11:94,"Total France métropolitaine","Total France + Étranger") )
+tab <- tab %>%
+  filter(année==2021 ) %>%
+  select(-année) %>%
+  left_join(tab %>% 
+              group_by(REG,séjour) %>%
+              summarise(`séjours 2010-2021`=spk_chr(`Nombre de séjours`),
+                        `séjours >5j 2010-2021`=spk_chr(`dont séjours de cinq jours ou plus`),
+                        `mineurs 2010-2021`=spk_chr(`Effectifs de départs de mineurs`),
+                        `<6 ans 2010-2021`=spk_chr(`Moins de 6 ans`),
+                        `6-13 ans 2018-2021 (1)*`=spk_chr(`6-13 ans`[année>2017]),
+                        `14-17 ans 2018-2021`=spk_chr(`14-17 ans`[année>2017]),
+                        `handicap 2016-2021`=spk_chr(`Mineurs déclarés en situation de handicap`[année>2015]),
+                        `journées 2010-2021`=spk_chr(`Nombre de journées`),
+                        `journées enfants 2010-2021`=spk_chr(`Nombre de journées enfants`)
+                        ) ,
+            by=c("REG","séjour") )
+
+tab <- SharedData$new(tab)
+
+filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
+
+tab %>% datatable(escape = FALSE,
+                  extensions = c('Scroller', 'Buttons'),
+                  options = list(
+                    dom = 'Bfrtip',
+                    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                    scrollX = TRUE),
+                  rownames = FALSE) %>% 
+  spk_add_deps() 
 
 ```
 
-### ACM vacances
-séjours non spécifiques d'au moins cinq jours
-```{r}
-
-ACMH(data = ACMHreg_vacances,
-     lignes = c(11:94,"Total France métropolitaine","Total France + Étranger") )
-
-```
-
-### ACM séjours courts
-séjours non spécifiques de moins de cinq jours
-```{r}
-
-ACMH(data = ACMHreg_courts,
-     lignes = c(11:94,"Total France métropolitaine","Total France + Étranger") )
-
-```
-
-### ACM séjours spécifiques 
-sportifs, linguistiques, artistiques ou culturels, rencontres européennes de jeunes, chantiers de bénévoles
-```{r}
-
-ACMH(data = ACMHreg_specifiques,
-     lignes = c(11:94,"Total France métropolitaine","Total France + Étranger") )
-
-```
-
-### ACM séjours activités accessoires
-aux accueils de loisirs ou aux accueils de jeunes (mini-séjours)
-```{r}
-
-ACMH(data = ACMHreg_accessoires,
-     lignes = c(11:94,"Total France métropolitaine","Total France + Étranger") )
-
-```
-
-
-## Row {data-height="20"} 
-
-### Données départementales
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
-
-### Ensemble des ACM
-
-```{r}
-
-ACMH(data = ACMHdep_ensemble,
-     lignes = depbfc )
-
-```
-
-### ACM vacances
-séjours non spécifiques d'au moins cinq jours
-```{r}
-
-ACMH(data = ACMHdep_vacances,
-     lignes = depbfc )
-
-```
-
-### ACM séjours courts
-séjours non spécifiques de moins de cinq jours
-```{r}
-
-ACMH(data = ACMHdep_courts,
-     lignes = depbfc )
-
-```
-
-### ACM séjours spécifiques 
-sportifs, linguistiques, artistiques ou culturels, rencontres européennes de jeunes, chantiers de bénévoles
-```{r}
-
-ACMH(data = ACMHdep_specifiques,
-     lignes = depbfc )
-
-```
-
-### ACM séjours activités accessoires
-aux accueils de loisirs ou aux accueils de jeunes (mini-séjours)
-```{r}
-
-ACMH(data = ACMHdep_accessoires,
-     lignes = depbfc )
-
-```

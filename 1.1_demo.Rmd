@@ -242,6 +242,25 @@ tab %>%
   credits()
 ```
 
+### Tableau filtré
+```{r}
+sd <- SharedData$new(epci27_tab %>%  
+                       left_join(.,pop_basecom(EPCI)) %>%
+                       demo(EPCI) %>%
+                       filtre(EPCI) )
+                       
+filter_select("reg","Région",sd,group=~DEP,allLevels=TRUE,multiple=FALSE)
+
+sd %>% datatable(escape = FALSE,
+               extensions = c('Scroller', 'Buttons'),
+               options = list(
+                 dom = 'Bfrtip',
+                 buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                 scrollX = TRUE),
+               rownames = FALSE) 
+
+```
+
 ### Carte ECPI
 
 
@@ -287,61 +306,22 @@ tab %>%
 ```
 
 
-### Shiny
-```{r,echo=F}
-shinyApp(
-ui <- fluidPage(
-  tags$h1("Département"),
-  pickerInput(
-    inputId = "DEP",
-    label = "Choix département",
-    choices = depbfc,
-    selected = depbfc,
-   options = list(`actions-box` = TRUE),multiple = T
-  ),
-#table
-  tags$h2("BV 2012"),
-  htmlOutput("kable")  %>% htmltools::browsable()
+### Tableau filtré
+```{r}
+sd <- SharedData$new(bv27_tab %>%  
+                       left_join(.,pop_basecom(BV2012)) %>%
+                       demo(BV2012) %>%
+                       filtre(BV2012) )
+                       
+filter_select("reg","Région",sd,group=~DEP,allLevels=TRUE,multiple=FALSE)
 
-),
-
-server <- function(input, output) {
-
-output$kable <- function(){ 
-                        req(input$DEP)
-bv27_tab %>%  
-  filter(substr(BV2012,1,2) %in% input$DEP) %>%
-  dplyr::select(BV2012,Nom,Population,Densité,rang,`Taux femmes`,partZRR,partQPV) %>%
-  left_join(.,basecom %>% 
-              group_by(BV2012) %>% 
-              summarise(comm=n())  %>%
-              bind_rows(.,basecom %>% 
-                          filter (DEP %in% depbfc) %>% 
-                          group_by () %>% 
-                          summarise(BV2012="BFC", comm=n())) %>%
-              bind_rows(.,basecom %>% 
-                          group_by () %>% 
-                          summarise(BV2012="METRO", comm=n())),
-            by="BV2012") %>%
-  dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
-                 "partQPV<sup>2</sup>" = partQPV ,
-                 "Nombre de communes" = comm) %>%
-  dplyr::relocate("Nombre de communes",.after="Population") %>%
-  adorn_totals("row",name = "total") %>%
-
-  
-  cc_kable(aligne = "clrrrccll") %>%
-  footnote(general = " Insee RP2019", 
-           general_title = "Source : ",
-           number = c("Zone de Revitalisation Rurale 2018 \n",
-                      "Population des quartiers politique de la ville (QPV) 2018/population RP 2019"), 
-           footnote_as_chunk = T)
-    
-  }
-},
-  options = list(height = 600)
-)
-
+sd %>% datatable(escape = FALSE,
+               extensions = c('Scroller', 'Buttons'),
+               options = list(
+                 dom = 'Bfrtip',
+                 buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                 scrollX = TRUE),
+               rownames = FALSE) 
 ```
 ### Carte BV
 

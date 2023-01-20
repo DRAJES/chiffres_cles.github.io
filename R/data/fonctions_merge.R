@@ -35,7 +35,11 @@ cc_kable <-  function(.tbl,aligne ){
   }
 
 
-#str_which(epci27_tab$Nom,"Franche")
-#which(epci27_tab$Nom == "Bourgogne-Franche-Comté")
-
-#str_which(epci27_tab %>% pull(Nom), c( "BFC")   )
+filtre <- function(.tbl,geo) {
+  .tbl %>%
+    left_join(.,basecom %>%
+            group_by({{geo}}) %>%
+            filter(pop==max(pop)) %>% 
+            select(DEP),
+          by=names(select(., {{geo}})) )
+}

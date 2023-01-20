@@ -8,6 +8,7 @@ output: html_document
 library(BAMMtools)
 library(glue)
 library(HatchedPolygons)
+library(crosstalk)
 library(shiny)
 library(shinyWidgets)
 library(shinydashboard)
