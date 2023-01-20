@@ -244,21 +244,9 @@ tab %>%
 
 ### Tableau filtré
 ```{r}
-sd <- SharedData$new(epci27_tab %>%  
-                       left_join(.,pop_basecom(EPCI)) %>%
-                       demo(EPCI) %>%
-                       filtre(EPCI) )
-                       
-filter_select("reg","Région",sd,group=~DEP,allLevels=TRUE,multiple=FALSE)
+tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
 
-sd %>% datatable(escape = FALSE,
-               extensions = c('Scroller', 'Buttons'),
-               options = list(
-                 dom = 'Bfrtip',
-                 buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                 scrollX = TRUE),
-               rownames = FALSE) 
-
+tab_filtre(geo=EPCI) 
 ```
 
 ### Carte ECPI
@@ -308,20 +296,9 @@ tab %>%
 
 ### Tableau filtré
 ```{r}
-sd <- SharedData$new(bv27_tab %>%  
-                       left_join(.,pop_basecom(BV2012)) %>%
-                       demo(BV2012) %>%
-                       filtre(BV2012) )
-                       
-filter_select("reg","Région",sd,group=~DEP,allLevels=TRUE,multiple=FALSE)
+tab <- tab %>% filter(!BV2012 %in% c('BFC','METRO'))
 
-sd %>% datatable(escape = FALSE,
-               extensions = c('Scroller', 'Buttons'),
-               options = list(
-                 dom = 'Bfrtip',
-                 buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                 scrollX = TRUE),
-               rownames = FALSE) 
+tab_filtre(geo="BV2012")
 ```
 ### Carte BV
 

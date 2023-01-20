@@ -35,11 +35,33 @@ cc_kable <-  function(.tbl,aligne ){
   }
 
 
-filtre <- function(.tbl,geo) {
-  .tbl %>%
+tab_filtre <- function(geo) {
+  
+  sd <- tab %>%
     left_join(.,basecom %>%
-            group_by({{geo}}) %>%
-            filter(pop==max(pop)) %>% 
-            select(DEP),
-          by=names(select(., {{geo}})) )
+                dplyr::group_by({{geo}}) %>%
+                dplyr::filter(pop==max(pop)) %>% 
+                dplyr::select({{geo}},DEP),
+              by=names(select(., {{geo}})) 
+    )
+  sd <- SharedData$new(sd)
+  
+  filter_select("dep","Département",sd,group=~DEP,allLevels=FALSE,multiple =FALSE)
+  
+  sd <- sd %>% 
+    datatable(escape = FALSE,
+              extensions = c('Scroller', 'Buttons'),
+              options = list(
+                dom = 'Bfrtip',
+                buttons = 
+                  list('copy', 'print', list(
+                    extend = 'collection',
+                    buttons = c('csv', 'excel', 'pdf'),
+                    text = 'Download'
+                  )),
+                scroller = TRUE,
+                scrollY=600),
+              rownames = FALSE) 
+    
+  return(sd)
 }
