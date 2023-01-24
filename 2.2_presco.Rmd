@@ -58,7 +58,8 @@ hPMI <- function(){
            pointWidth = 20) %>%
     hc_xAxis(title=list(text="")) %>%
     hc_yAxis(title=list(text="Nombre de places en accueil collectif")) %>%
-    hc_add_theme(thm),
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
   tab %>%
     arrange(desc(`Taux d'équipement en accueil collectif<sup>1</sup>`)) %>%
@@ -69,7 +70,8 @@ hPMI <- function(){
            showInLegend = T) %>%
     hc_xAxis(title=list(text="")) %>%
     hc_credits(enabled=T,text="Source") %>%
-    hc_add_theme(thm),
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
   tab %>%
     arrange(desc(`Taux d'équipement en accueil collectif<sup>1</sup>`)) %>%
@@ -82,7 +84,8 @@ hPMI <- function(){
     hc_xAxis(title=list(text="")) %>%
     hc_yAxis(title=list(text="Taux des différentes types d'accueils collectifs")) %>%
     hc_credits(enabled=T,text="Source") %>%
-    hc_add_theme(thm),
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 ncol = 3
     )  
 }
@@ -176,7 +179,8 @@ tab %>%
          name="Taux de scolarisation des enfants de 2 ans", 
          showInLegend = T) %>%
   hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 
@@ -264,7 +268,8 @@ tab %>%
          name="Taux de scolarisation des enfants de 2 ans", 
          showInLegend = T) %>%
   hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 

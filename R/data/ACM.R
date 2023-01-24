@@ -38,7 +38,7 @@ ACMH_var <- function(range){
   
   import_list(
     data,
-    rbind = TRUE, rbind_label = "année",range = "A4:B335") %>% 
+    rbind = TRUE, rbind_label = "année",range = "A4:B114") %>% 
     mutate(`Destination`=str_to_title(.[,2] ) ) %>%
     select(DEP=1,Destination) %>%
     mutate(DEP=if_else(nchar(DEP)==1,paste0('0',DEP),DEP)) %>%
@@ -55,11 +55,11 @@ ACMH_var <- function(range){
     )
 }
 
-ACMH_dep <- ACMH_var(range = "C4:K335") %>% mutate(séjour="Ensemble des séjours") %>%
-  bind_rows(ACMH_var(range = "L4:T335") %>% mutate(séjour="Séjours de vacances")) %>%
-  bind_rows(ACMH_var(range = "U4:AC335") %>% mutate(séjour="Séjours courts")) %>%
-  bind_rows(ACMH_var(range = "AD4:AL335") %>% mutate(séjour="Séjours spécifiques")) %>%
-  bind_rows(ACMH_var(range = "AM4:AU335") %>% mutate(séjour="Séjours activité accessoire")) 
+ACMH_dep <- ACMH_var(range = "C4:K114") %>% mutate(séjour="Ensemble des séjours") %>%
+  bind_rows(ACMH_var(range = "L4:T114") %>% mutate(séjour="Séjours de vacances")) %>%
+  bind_rows(ACMH_var(range = "U4:AC114") %>% mutate(séjour="Séjours courts")) %>%
+  bind_rows(ACMH_var(range = "AD4:AL114") %>% mutate(séjour="Séjours spécifiques")) %>%
+  bind_rows(ACMH_var(range = "AM4:AU114") %>% mutate(séjour="Séjours activité accessoire")) 
 
 
 
