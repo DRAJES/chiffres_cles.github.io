@@ -6,6 +6,8 @@ output: html_document
 ---
 ```{r setup, include=F ,echo=FALSE, cache=F}
 library(BAMMtools)
+library(htmltools)
+library(htmlwidgets)
 library(paletteer)
 library(glue)
 library(HatchedPolygons)

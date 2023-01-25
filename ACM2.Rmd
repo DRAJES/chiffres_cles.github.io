@@ -11,6 +11,10 @@ output:
 ---
 
 ```{r}
+library(htmltools)#
+library(paletteer)#
+library(reactable)#
+library(highcharter)#
 library(crosstalk)#
 library(DT)#
 library(tidyverse)#
@@ -21,7 +25,22 @@ load("data/demo/cartes.RData")#
 source("R/data/fonctions_carto.R")#
 source("R/data/fonctions_merge.R")#
 depbfc <- c('21','25','39','58','70','71','89','90')#
-
+thm <- hc_theme_merge(
+  hc_theme_gridlight( yAxis = list(
+        title = list(
+          style = list(
+            textTransform = "normal") ) ) ),
+  hc_theme(
+#    colors = c("#1a6ecc", "#434348", "#90ed7d"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  ) 
+)
 load("data/jeunesse/ACM_evo.RData")
 sparkline(0) #
 
@@ -31,14 +50,15 @@ filtreACM <- function(tab=tab) {
                   extensions = c('Scroller', 'Buttons'),
                   options = list(
                     dom = 'Bfrtip',
-                    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                    scrollX = TRUE),
+                  #  buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                  buttons = 'csv',
+                  scrollY=TRUE,
+                  scrollX = TRUE),
                   rownames = FALSE,
                   caption = htmltools::tags$caption(
     style = 'caption-side: bottom; text-align: center;',
     'Source : ', htmltools::em('MENJS, DJEPVA, fichier SIAM ; traitement INJEP, MEDES')
-  )) %>% 
-  spk_add_deps() 
+  ))
 }
 
 ```
@@ -80,8 +100,9 @@ tab %>% filtreACM()
 ### Evolutions 
 
 ```{r}
-tab <- ACMH_reg %>% 
-  filter(REG %in% c(11:94,"Total France métropolitaine","Total France + Étranger") ) %>%
+tab <- ACMH_reg %>%
+  filter(REG %in% c(11:94,"Total France métropolitaine",
+                    "Total France + Étranger") ) %>%
   arrange(REG) %>%
   group_by(REG,`séjour`) %>%
   summarise(`séjours 2010-2021`=spk_chr(`Nombre de séjours`),
@@ -93,15 +114,39 @@ tab <- ACMH_reg %>%
             `handicap 2016-2021`=spk_chr(`Mineurs déclarés en situation de handicap`[année>2015]),
             `journées 2010-2021`=spk_chr(`Nombre de journées`),
             `journées enfants 2010-2021`=spk_chr(`Nombre de journées enfants`)
-  ) 
+  )
+
+
 tab <- SharedData$new(tab)
 
-filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
+filter_select("sejour","Séjour",tab,group=~séjour,
+              multiple = FALSE, allLevels = "Ensemble des séjours")
 
-tab %>% filtreACM()
+tab %>% filtreACM()  %>% 
+  spk_add_deps() 
 
 ```
 
+
+### Evolutions 2010-2021
+
+
+```{r}
+tab <- ACMH_reg %>% 
+   filter(REG %in% c(11:94,"Total France métropolitaine",
+                     "Total France + Étranger") ) %>%
+   arrange(REG) %>%
+   group_by(REG,`séjour`) %>%
+   summarise_at(vars(`Nombre de séjours`:`Nombre de journées enfants`),spk_chr)
+
+tab <- SharedData$new(tab)
+
+filter_select("sejour","Séjour",tab,group=~séjour,
+              multiple = FALSE, allLevels = "Ensemble des séjours")
+
+tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) ) %>% spk_add_deps
+  
+```
 
 ### Comparaisons
 
@@ -154,7 +199,8 @@ hw_grid(
     filter(REG=='27') %>%
     arrange(desc(`Nombre de séjours`)) %>%
     hchart("pie",
-           hcaes(x=séjour,y=`Nombre de séjours`),
+           hcaes(x=séjour,y=`Nombre de séjours`,
+                 color = paletteer_d(`"nord::lumina"`,4) ),
            name="Bourgogne-Franche-Comté",
            showInLegend = T, 
            size='85%',
@@ -165,7 +211,8 @@ hw_grid(
                     filter(REG=="Total France métropolitaine") %>%
                     arrange(desc(`Nombre de séjours`)),
                   "pie",
-                  hcaes(x=séjour,y=`Nombre de séjours`),
+                  hcaes(x=séjour,y=`Nombre de séjours`,
+                        color = paletteer_d(`"nord::lumina"`,4) ),
                   name="France métro",
                   size='50%',innerSize="50%",
                   dataLabels=F, showInLegend = F,
@@ -182,32 +229,34 @@ hw_grid(
     filter(séjour != "Ensemble des séjours") %>%
     filter(REG=='27') %>%
     arrange(desc(`Nombre de journées enfants`)) %>%
-  hchart("pie",
-         hcaes(x=séjour,y=`Nombre de journées enfants`),
-         name="Bourgogne-Franche-Comté",
-         showInLegend = T, 
-          size='85%',
-          innerSize='75%', 
-          pointPlacement=0.2) %>%
-  hc_add_series(ACMH %>%
-                      filter(séjour != "Ensemble des séjours") %>%
-                      filter(REG=="Total France métropolitaine") %>%
-                      arrange(desc(`Nombre de journées enfants`)),
-                "pie",
-                hcaes(x=séjour,y=`Nombre de journées enfants`),
-                name="France métro",
-                size='50%',innerSize="50%",
+    hchart("pie",
+           hcaes(x=séjour,y=`Nombre de journées enfants`,
+                 color = paletteer_d(`"nord::lumina"`,4) ),
+           name="Bourgogne-Franche-Comté",
+           showInLegend = T, 
+           size='85%',
+           innerSize='75%', 
+           pointPlacement=0.2) %>%
+    hc_add_series(ACMH %>%
+                    filter(séjour != "Ensemble des séjours") %>%
+                    filter(REG=="Total France métropolitaine") %>%
+                    arrange(desc(`Nombre de journées enfants`)),
+                  "pie",
+                  hcaes(x=séjour,y=`Nombre de journées enfants`,
+                        color = paletteer_d(`"nord::lumina"`,4) ),
+                  name="France métro",
+                  size='50%',innerSize="50%",
                   dataLabels=F, showInLegend = F,
                   linkedTo=':previous') %>%
-  hc_title(verticalAlign="top",
-           text = "Nombre de journées enfants BFC")  %>%  
-  hc_subtitle(verticalAlign="middle",
-              text = "France",
-              distance=-10) %>%
-  hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
-
-    ncol=2, rowheight =500 )
+    hc_title(verticalAlign="top",
+             text = "Nombre de journées enfants BFC")  %>%  
+    hc_subtitle(verticalAlign="middle",
+                text = "France",
+                distance=-10) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ncol=2, rowheight =500 )
 
 
 ```
@@ -245,7 +294,8 @@ hw_grid(
                     filter(séjour == "Ensemble des séjours") %>%
                     filter(REG=='Total France métropolitaine') ,
                   "pie",
-                  hcaes(x=age,y=jeunes),
+                  hcaes(x=age,y=jeunes,
+                        color = paletteer_d(`"LaCroixColoR::Lime"`,3) ),
                   name="France métro",
                   size='50%',innerSize="50%",
                   dataLabels=F, showInLegend = F,
@@ -261,6 +311,7 @@ hw_grid(
     filter(REG=='27') %>% 
     hchart("bar",
            hcaes(x=age,y=jeunes,group=séjour),
+                 color = paletteer_d(`"nord::lumina"`,4) ,
            showInLegend = T, 
            stacking="normal") %>%
     hc_subtitle(text="âges par séjours BFC") %>%
@@ -272,6 +323,7 @@ hw_grid(
     filter(REG=='27') %>% 
     hchart("bar",
            hcaes(x=séjour,y=jeunes,group=age),
+                color = paletteer_d(`"LaCroixColoR::Lime"`,3) ,
            showInLegend = T, 
            stacking="normal") %>%
     hc_subtitle(text="séjours par âge BFC") %>%
@@ -324,7 +376,9 @@ tab <- SharedData$new(tab)
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
 
-tab %>% filtreACM()
+tab %>% filtreACM() %>%
+  spk_add_deps() 
+
 
 ```
 
@@ -341,6 +395,7 @@ hw_grid(
     filter(!is.na(Destination)) %>%
     hchart("bar", 
            hcaes(x=Destination,y= `Nombre de séjours`,group=séjour),
+                color = paletteer_d(`"nord::lumina"`,4) ,
            showInLegend = TRUE, pointWidth = 20,
            stacking="normal") %>%
     hc_xAxis(title=list(text="Départements")) %>%
@@ -354,6 +409,7 @@ hw_grid(
     filter(!is.na(Destination)) %>%
     hchart("bar", 
            hcaes(x=Destination,y= `Nombre de journées enfants`,group=séjour),
+                color = paletteer_d(`"nord::lumina"`,4) ,
            showInLegend = TRUE, pointWidth = 20,
            stacking="normal" ) %>%
     hc_yAxis(title=list(text="Nombre de journées enfants")) %>%
@@ -377,9 +433,10 @@ tab %>%
   filter(séjour =="Ensemble des séjours") %>%
     hchart("bar",
            hcaes(x=Destination,y=jeunes,group=age),
+                color = paletteer_d(`"LaCroixColoR::Lime"`,3) ,
            showInLegend = T, 
            stacking="normal") %>%
-    hc_subtitle(text="Séjours par âge") %>%
+    hc_subtitle(text="Séjours par âge et par départements") %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
   
