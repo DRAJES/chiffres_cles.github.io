@@ -11,8 +11,8 @@ output:
 ---
 
 ```{r}
-library(crosstalk)
-library(DT)
+library(crosstalk)#
+library(DT)#
 library(tidyverse)#
 library(sparkline)#
 library(kableExtra)#
@@ -23,10 +23,10 @@ source("R/data/fonctions_merge.R")#
 depbfc <- c('21','25','39','58','70','71','89','90')#
 
 load("data/jeunesse/ACM_evo.RData")
-sparkline(0)
+sparkline(0) #
 
 #crosstalk
-tabfiltre <- function(tab=tab) {
+filtreACM <- function(tab=tab) {
  tab %>% datatable(escape = FALSE,
                   extensions = c('Scroller', 'Buttons'),
                   options = list(
@@ -57,11 +57,7 @@ Les Accueils collectifs de mineurs avec hébergement regroupent les centres de v
 
 **(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
-## Row {data-height="20"}
-
-### Données régionales
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
+## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 
 ### Tableaux régionaux
 
@@ -77,7 +73,7 @@ tab <- SharedData$new(ACMH)
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
 
-tab %>% tabfiltre()
+tab %>% filtreACM()
 
 ```
 
@@ -102,7 +98,7 @@ tab <- SharedData$new(tab)
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
 
-tab %>% tabfiltre()
+tab %>% filtreACM()
 
 ```
 
@@ -142,7 +138,7 @@ hw_grid(
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
-  ncol = 2)
+  ncol = 2, rowheight =500)
   
 ```
 
@@ -151,7 +147,38 @@ hw_grid(
 Une large majorité de séjours de vacances.
 
 ```{r}
-ACMH %>%
+hw_grid(
+  
+  ACMH %>%
+    filter(séjour != "Ensemble des séjours") %>%
+    filter(REG=='27') %>%
+    arrange(desc(`Nombre de séjours`)) %>%
+    hchart("pie",
+           hcaes(x=séjour,y=`Nombre de séjours`),
+           name="Bourgogne-Franche-Comté",
+           showInLegend = T, 
+           size='85%',
+           innerSize='75%', 
+           pointPlacement=0.2) %>%
+    hc_add_series(ACMH %>%
+                    filter(séjour != "Ensemble des séjours") %>%
+                    filter(REG=="Total France métropolitaine") %>%
+                    arrange(desc(`Nombre de séjours`)),
+                  "pie",
+                  hcaes(x=séjour,y=`Nombre de séjours`),
+                  name="France métro",
+                  size='50%',innerSize="50%",
+                  dataLabels=F, showInLegend = F,
+                  linkedTo=':previous') %>%
+    hc_title(verticalAlign="top",
+             text = "Nombre de séjours BFC")  %>%  
+    hc_subtitle(verticalAlign="middle",
+                text = "France",
+                distance=-10) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ACMH %>%
     filter(séjour != "Ensemble des séjours") %>%
     filter(REG=='27') %>%
     arrange(desc(`Nombre de journées enfants`)) %>%
@@ -172,14 +199,20 @@ ACMH %>%
                 size='50%',innerSize="50%",
                   dataLabels=F, showInLegend = F,
                   linkedTo=':previous') %>%
-  hc_credits(enabled=T,text="Source") %>%
+  hc_title(verticalAlign="top",
+           text = "Nombre de journées enfants BFC")  %>%  
+  hc_subtitle(verticalAlign="middle",
+              text = "France",
+              distance=-10) %>%
   hc_add_theme(thm) %>%
-  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+  hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+
+    ncol=2, rowheight =500 )
 
 
 ```
 
-### Départs de mineurs par séjour
+### Ages des mineurs par séjour
 
 Une large majorité de mineurs de 6 à 13 ans.
 
@@ -195,7 +228,8 @@ hw_grid(
     filter(séjour == "Ensemble des séjours") %>%
     filter(REG=='27') %>% 
     hchart("pie",
-           hcaes(x=age,y=jeunes),
+           hcaes(x=age,y=jeunes,
+           color = paletteer_d(`"LaCroixColoR::Lime"`,3) ),
            name="Bourgogne-Franche-Comté",
            showInLegend = T, dataLabels=F,
            size='85%',
@@ -223,37 +257,49 @@ hw_grid(
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
   tab %>%
+    filter(séjour != "Ensemble des séjours") %>%
+    filter(REG=='27') %>% 
+    hchart("bar",
+           hcaes(x=age,y=jeunes,group=séjour),
+           showInLegend = T, 
+           stacking="normal") %>%
+    hc_subtitle(text="âges par séjours BFC") %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+    tab %>%
+    filter(séjour != "Ensemble des séjours") %>%
     filter(REG=='27') %>% 
     hchart("bar",
            hcaes(x=séjour,y=jeunes,group=age),
            showInLegend = T, 
            stacking="normal") %>%
-    hc_subtitle(text="Détail des séjours BFC") %>%
+    hc_subtitle(text="séjours par âge BFC") %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
-  ncol=2 )
+  ncol=3, rowheight =500 )
   
 ```
 
 
-## Row {.tabset .tabset-fade .tabset-pills data-height="500"}
+## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 
 ### Tableaux départementaux
 
 ```{r}
 
-ACMH <- ACMH_dep %>%
+ACMHdep <- ACMH_dep %>%
   filter(année == 2021) %>%
   filter(DEP %in% depbfc)  %>%
   arrange(DEP) %>%
   select(-année) 
 
-tab <- SharedData$new(ACMH)
+tab <- SharedData$new(ACMHdep)
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
 
-tab %>% tabfiltre()
+tab %>% filtreACM()
 
 ```
 
@@ -278,7 +324,7 @@ tab <- SharedData$new(tab)
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
 
-tab %>% tabfiltre()
+tab %>% filtreACM()
 
 ```
 
@@ -289,7 +335,7 @@ Des accueils avec hébergement plus nombreux dans le Jura et l’Yonne.
 ```{r}
 hw_grid(
   
-  ACMH %>%
+  ACMHdep %>%
   #      arrange(desc(`Nombre de séjours`)) %>%
     filter(séjour != "Ensemble des séjours") %>%
     filter(!is.na(Destination)) %>%
@@ -302,7 +348,7 @@ hw_grid(
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
-  ACMH %>%
+  ACMHdep %>%
    #     arrange(desc(`Nombre de journées enfants`)) %>%
     filter(séjour != "Ensemble des séjours") %>%
     filter(!is.na(Destination)) %>%
@@ -314,18 +360,18 @@ hw_grid(
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
-  ncol = 2)
+  ncol = 2, rowheight =500)
   
 ```
 
 
-### Départs de mineurs par séjour
+### Ages des mineurs par séjour
 
 ```{r}
-tab <- ACMH %>%
+tab <- ACMHdep %>%
   select(1,2,6:8,12) %>%
   pivot_longer(3:5,names_to = "age",values_to = "jeunes") %>%
-  arrange(desc(age))
+  arrange(séjour,age)
 
 tab %>%
   filter(séjour =="Ensemble des séjours") %>%
