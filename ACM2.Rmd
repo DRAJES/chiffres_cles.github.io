@@ -72,7 +72,7 @@ filtreACM <- function(tab=tab) {
 
 ## Row {data-height="100"}
 
-### Données générales des ACM avec hébergement selon la région de destination
+### Données générales des accueils collectifs de mineurs avec hébergement selon la destination
 
 Les Accueils collectifs de mineurs avec hébergement regroupent les centres de vacances, les colonies de vacances...\
 **1 100** séjours avec hébergement en BFC
@@ -109,26 +109,16 @@ tab <- ACMH_reg %>%
                     "Total France + Étranger") ) %>%
   arrange(REG) %>%
   group_by(REG,`séjour`) %>%
-  summarise(`séjours 2010-2021`=spk_chr(`Nombre de séjours`),
-            `séjours >5j 2010-2021`=spk_chr(`dont séjours de cinq jours ou plus`),
-            `mineurs 2010-2021`=spk_chr(`Effectifs de départs de mineurs`),
-            `<6 ans 2010-2021`=spk_chr(`Moins de 6 ans`),
-            `6-13 ans 2018-2021 (1)*`=spk_chr(`6-13 ans`[année>2017]),
-            `14-17 ans 2018-2021`=spk_chr(`14-17 ans`[année>2017]),
-            `handicap 2016-2021`=spk_chr(`Mineurs déclarés en situation de handicap`[année>2015]),
-            `journées 2010-2021`=spk_chr(`Nombre de journées`),
-            `journées enfants 2010-2021`=spk_chr(`Nombre de journées enfants`)
-  )
+   summarise_at(vars(`Nombre de séjours`:`Nombre de journées enfants`),spk_chr) %>%
+   formattable() 
+#   sparkline::spk_add_deps()
 
-
-tab <- SharedData$new(tab)
+   tab <- SharedData$new(tab)
 
 filter_select("sejour","Séjour",tab,group=~séjour,
               multiple = FALSE, allLevels = "Ensemble des séjours")
 
-tab %>% filtreACM()  %>% 
-  spk_add_deps() 
-
+tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
 
 
@@ -136,6 +126,8 @@ tab %>% filtreACM()  %>%
 
 
 ```{r}
+sparkline(0)
+
 tab <- ACMH_reg %>% 
    filter(REG %in% c(11:94,"Total France métropolitaine",
                      "Total France + Étranger") ) %>%
@@ -148,12 +140,10 @@ tab <- SharedData$new(tab)
 filter_select("sejour","Séjour",tab,group=~séjour,
               multiple = FALSE, allLevels = "Ensemble des séjours")
 
-tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) ) %>% spk_add_deps
-  # %>%
-#  
-#     htmltools::HTML() %>%
-#     shiny::div() %>%
-#     sparkline::spk_add_deps()
+tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) )  %>%
+     #htmltools::HTML() 
+     shiny::div() %>%
+     sparkline::spk_add_deps()
 ```
 
 ### Comparaisons
@@ -370,16 +360,9 @@ tab <- ACMH_dep %>%
   filter(DEP %in% depbfc)  %>%
   arrange(DEP) %>%
   group_by(DEP,`séjour`) %>%
-  summarise(`séjours 2010-2021`=spk_chr(`Nombre de séjours`),
-            `séjours >5j 2010-2021`=spk_chr(`dont séjours de cinq jours ou plus`),
-            `mineurs 2010-2021`=spk_chr(`Effectifs de départs de mineurs`),
-            `<6 ans 2010-2021`=spk_chr(`Moins de 6 ans`),
-            `6-13 ans 2018-2021 (1)*`=spk_chr(`6-13 ans`[année>2017]),
-            `14-17 ans 2018-2021`=spk_chr(`14-17 ans`[année>2017]),
-            `handicap 2016-2021`=spk_chr(`Mineurs déclarés en situation de handicap`[année>2015]),
-            `journées 2010-2021`=spk_chr(`Nombre de journées`),
-            `journées enfants 2010-2021`=spk_chr(`Nombre de journées enfants`)
-  ) 
+   summarise_at(vars(`Nombre de séjours`:`Nombre de journées enfants`),spk_chr) %>%
+   formattable() 
+
 tab <- SharedData$new(tab)
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
@@ -429,7 +412,7 @@ hw_grid(
 ```
 
 
-### Ages des mineurs par séjour
+### Ages des mineurs par départements
 
 ```{r}
 tab <- ACMHdep %>%
@@ -448,5 +431,441 @@ tab %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
   
+
+```
+
+
+
+
+
+# Sans hébergement {data-orientation="rows" height="30" data-icon="fa-child" font-size="25px"}
+
+## Row {data-height="20"}
+
+## Row {data-height="100"}
+
+### Données générales des accueils de loisirs et jeunesse sans hébergement
+
+Les Accueils collectifs de mineurs sans hébergement regroupent les accueils périscolaires, les centres de loisirs...\
+**1 300** lieux d'accueils sans hébergement en BFC\
+De nombreuses place dans le Doubs et en Côte-d'Or
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+
+### Tableaux régionaux
+
+```{r}
+ALJSH <- ALJSH_reg %>%
+  filter(année == 2021) %>%
+  filter(REG %in% c(11:94,"Total France métropolitaine","Total France + Étranger") ) %>%
+  arrange(REG) %>%
+  mutate(`taux de communes disposant d'un accueil`=
+           round(100*`Nombre de communes`/`Nombre de communes total`,1)) %>%
+  relocate(`taux de communes disposant d'un accueil`,.after = `Nombre de communes`) %>%
+  select(-année)
+
+tab <- SharedData$new(ALJSH)
+
+filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
+                inline=TRUE, allLevels = FALSE)
+filter_checkbox("periode","Période d'activité",tab,group=~`période d'activité`,
+                inline=TRUE, allLevels = FALSE)
+
+tab %>% filtreACM()
+
+```
+
+### Evolutions 
+
+```{r}
+sparkline(0)
+
+tab <- ALJSH_reg %>%
+  filter(REG %in% c(11:94,"Total France métropolitaine",
+                    "Total France + Étranger") ) %>%
+  arrange(REG) %>%
+  group_by(REG,`type d'accueil`,`période d'activité`) %>%
+   summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) %>%
+   formattable() 
+#   sparkline::spk_add_deps()
+
+   tab <- SharedData$new(tab)
+
+filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
+                inline=TRUE, allLevels = FALSE)
+filter_checkbox("periode","Période d'activité",tab,group=~`période d'activité`,
+                inline=TRUE, allLevels = FALSE)
+
+tab %>% filtreACM()  %>% sparkline::spk_add_deps()
+```
+
+
+### Evolutions 2010-2021
+
+
+```{r}
+sparkline(0)
+
+tab <- ALJSH_reg %>% 
+   filter(REG %in% c(11:94,"Total France métropolitaine",
+                     "Total France + Étranger") ) %>%
+   arrange(REG) %>%
+  group_by(REG,`type d'accueil`,`période d'activité`) %>%
+   summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) 
+
+tab <- SharedData$new(tab)
+
+filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
+                inline=TRUE, allLevels = FALSE)
+filter_checkbox("periode","Période d'activité",tab,group=~`période d'activité`,
+                inline=TRUE, allLevels = FALSE)
+
+tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) )  %>%
+     #htmltools::HTML() 
+     shiny::div() %>%
+     sparkline::spk_add_deps()
+```
+
+### Comparaisons
+
+**11e** région de France en nombre de lieux d’accueils de loisir ou jeunesse sans hébergement
+
+```{r}
+hw_grid(
+  
+  ALJSH %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" &
+             `période d'activité` == "année") %>%
+    filter(!is.na(Région)) %>%
+    arrange(desc(`Nombre de lieux d'accueils`)) %>%
+    hchart("bar", 
+           hcaes(x=Région,y= `Nombre de lieux d'accueils`,
+                 color=ifelse(REG=="27","#6a5acd","#ffd700")   ),
+           showInLegend = F, pointWidth = 20,
+           name = "Ensemble des accueils ouverts à une période de l'année" ) %>%
+    hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Nombre de lieux d'accueils")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ALJSH %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" &
+             `période d'activité` == "année") %>%
+    filter(!is.na(Région)) %>%
+    mutate(`places par accueil`= 
+             round(`Nombre de places ouvertes`/`Nombre de lieux d'accueils`,1) ) %>%
+    arrange(desc(`places par accueil`)) %>%
+    hchart("bar", 
+           hcaes(x=Région,y= `places par accueil`,
+                 color=ifelse(REG=="27","#6a5acd","#ffd700")   ),
+           showInLegend = F, pointWidth = 20,
+           name = "Nombre de places ouvertes par accueil" ) %>%
+    hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Nombre moyen de places ouvertes par accueil")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ncol = 2, rowheight =500)
+  
+```
+
+### Places ouvertes par période d'activité
+
+```{r}
+periode <-  c("semaine sauf mercredi et samedi",
+              "mercredi","samedi",
+              "congés scolaires","Autres périodes")
+
+hw_grid(
+  ALJSH %>%
+    filter(`type d'accueil` %in% c("Accueils de loisirs", 
+                                   "Accueils de jeunes") & 
+           `période d'activité` == "année") %>%
+    filter(REG=='27') %>%
+    arrange(desc(`Nombre de places ouvertes`)) %>%
+    hchart("pie",
+           hcaes(x=`type d'accueil`,y=`Nombre de places ouvertes`,
+                 color = paletteer_d(`"nord::lumina"`,2) ),
+           name="Bourgogne-Franche-Comté",
+           showInLegend = T, 
+           size='85%',
+           innerSize='75%', 
+           pointPlacement=0.2) %>%
+    hc_add_series(ALJSH %>%
+                    filter(`type d'accueil` %in% c("Accueils de loisirs", 
+                                                   "Accueils de jeunes") & 
+                             `période d'activité` == "année") %>%
+                    filter(REG=="Total France métropolitaine") %>%
+                    arrange(desc(`Nombre de places ouvertes`)),
+                  "pie",
+                  hcaes(x=`type d'accueil`,y=`Nombre de places ouvertes`,
+                        color = paletteer_d(`"nord::lumina"`,2) ),
+                  name="France métro",
+                  size='50%',innerSize="50%",
+                  dataLabels=F, showInLegend = F,
+                  linkedTo=':previous') %>%
+    hc_title(verticalAlign="top",
+             text = "Nombre de places ouvertes BFC")  %>%  
+    hc_subtitle(verticalAlign="middle",
+                text = "France",
+                distance=-10) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  
+  
+  ALJSH %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+             `période d'activité` %in% periode) %>%
+    filter(REG=='27') %>%
+    arrange(desc(`Nombre de places ouvertes`)) %>%
+    hchart("pie",
+           hcaes(x=`période d'activité`,y=`Nombre de places ouvertes`,
+                 color = paletteer_d(`"nord::lumina"`,5) ),
+           name="Bourgogne-Franche-Comté",
+           showInLegend = T, 
+           size='85%',
+           innerSize='75%', 
+           pointPlacement=0.2) %>%
+    hc_add_series(ALJSH %>%
+                    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+                           `période d'activité` %in% periode) %>%
+                    filter(REG=="Total France métropolitaine") %>%
+                    arrange(desc(`Nombre de places ouvertes`)),
+                  "pie",
+                  hcaes(x=`période d'activité`,y=`Nombre de places ouvertes`,
+                        color = paletteer_d(`"nord::lumina"`,5) ),
+                  name="France métro",
+                  size='50%',innerSize="50%",
+                  dataLabels=F, showInLegend = F,
+                  linkedTo=':previous') %>%
+    hc_title(verticalAlign="top",
+             text = "Nombre de places ouvertes BFC")  %>%  
+    hc_subtitle(verticalAlign="middle",
+                text = "France",
+                distance=-10) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ncol=2, rowheight =500 )
+
+
+```
+
+### Ages des mineurs par séjour
+
+Une large majorité de mineurs de 6 à 13 ans.
+
+```{r}
+tab <- ALJSH %>%
+  select(1,2,8:10,12,13) %>%
+  pivot_longer(3:5,names_to = "age",values_to = "jeunes") %>%
+  arrange(desc(age))
+
+hw_grid(
+  
+  tab %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+             `période d'activité` == "année") %>%
+    filter(REG=='27') %>% 
+    hchart("pie",
+           hcaes(x=age,y=jeunes,
+           color = paletteer_d(`"LaCroixColoR::Lime"`,3) ),
+           name="Bourgogne-Franche-Comté",
+           showInLegend = T, dataLabels=F,
+           size='85%',
+           innerSize='75%', 
+           pointPlacement=0.2) %>%
+        #   dataLabels = list(enabled = TRUE,
+                           # format = "{point.age} : <b>{point.jeunes}</b>",
+                           # distance = -30,
+                           # padding = 0) ) %>%
+     hc_title(verticalAlign="top",
+              text = "BFC")  %>%
+    hc_add_series(tab %>%
+                    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+                             `période d'activité` == "année" ) %>%
+                    filter(REG=='Total France métropolitaine') ,
+                  "pie",
+                  hcaes(x=age,y=jeunes,
+                        color = paletteer_d(`"LaCroixColoR::Lime"`,3) ),
+                  name="France métro",
+                  size='50%',innerSize="50%",
+                  dataLabels=F, showInLegend = F,
+                  linkedTo=':previous') %>%
+       hc_subtitle(verticalAlign="middle",
+                   text = "France",
+                   distance=-10) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  tab %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+             `période d'activité` %in% periode) %>%
+    filter(REG=='27') %>% 
+    hchart("bar",
+           hcaes(x=age,y=jeunes,group=`période d'activité`),
+                 color = paletteer_d(`"nord::lumina"`,5) ,
+           showInLegend = T, 
+           stacking="normal") %>%
+    hc_subtitle(text="âges par périodes d'accueils BFC") %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+    tab %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+             `période d'activité` %in% periode) %>%
+    filter(REG=='27') %>% 
+    hchart("bar",
+           hcaes(x=`période d'activité`,y=jeunes,group=age),
+                color = paletteer_d(`"LaCroixColoR::Lime"`,3) ,
+           showInLegend = T, 
+           stacking="normal") %>%
+    hc_subtitle(text="périodes d'accueil par âge BFC") %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ncol=3, rowheight =500 )
+  
+```
+
+
+## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+
+### Tableaux départementaux
+
+```{r}
+
+ALJSHdep <- ALJSH_dep %>%
+  filter(année == 2021) %>%
+  filter(DEP %in% depbfc)  %>%
+  arrange(DEP) %>%
+  select(-année) 
+
+tab <- SharedData$new(ALJSHdep)
+
+filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
+                inline=TRUE, allLevels = FALSE)
+filter_checkbox("periode","Période d'activité",tab,group=~`période d'activité`,
+                inline=TRUE, allLevels = FALSE)
+
+tab %>% filtreACM()
+
+```
+
+### Evolutions 
+
+```{r}
+tab <- ALJSH_dep %>% 
+  filter(DEP %in% depbfc)  %>%
+  arrange(DEP) %>%
+  group_by(DEP,`type d'accueil`,`période d'activité`) %>%
+   summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) %>%
+   formattable() 
+
+tab <- SharedData$new(tab)
+
+filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
+                inline=TRUE, allLevels = FALSE)
+filter_checkbox("periode","Période d'activité",tab,group=~`période d'activité`,
+                inline=TRUE, allLevels = FALSE)
+
+tab %>% filtreACM() %>%
+  spk_add_deps() 
+
+
+```
+
+
+### Comparaisons
+Des accueils sans hébergement plus nombreux dans le Doubs.
+
+```{r}
+hw_grid(
+  
+  ALJSHdep %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+             `période d'activité` %in% periode) %>%
+    filter(!is.na(Département)) %>%
+    hchart("bar", 
+           hcaes(x=Département,y= `Nombre de lieux d'accueils`,
+                 group=`période d'activité`),
+                color = paletteer_d(`"nord::lumina"`,5) ,
+           showInLegend = TRUE, pointWidth = 20,
+           stacking="normal") %>%
+    hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de lieux d'accueils")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ALJSHdep %>%
+    filter(`type d'accueil` == "Accueils loisirs ou jeunes" & 
+             `période d'activité` %in% periode) %>%
+    filter(!is.na(Département)) %>%
+    hchart("bar", 
+           hcaes(x=Département,y= `Nombre de places ouvertes`,
+                 group=`période d'activité`),
+                color = paletteer_d(`"nord::lumina"`,5) ,
+           showInLegend = TRUE, pointWidth = 20,
+           stacking="normal") %>%
+    hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre de places ouvertes")) %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ncol = 2, rowheight =500)
+  
+```
+
+
+### Ages des mineurs par départements
+
+```{r}
+tab <- ALJSHdep %>%
+  select(1,2,7:9,11,12) %>%
+  pivot_longer(3:5,names_to = "age",values_to = "jeunes") %>%
+  arrange(desc(age))
+
+hw_grid(
+  
+  tab %>%
+    filter(`type d'accueil` =="Accueils loisirs ou jeunes" &
+             `période d'activité`== "année") %>%
+    hchart("bar",
+           hcaes(x=Département,y=jeunes,group=age),
+           color = paletteer_d(`"LaCroixColoR::Lime"`,3) ,
+           showInLegend = T, 
+           stacking="normal") %>%
+    hc_subtitle(text="Accueils par âge et par départements") %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  tab %>%
+    filter(`type d'accueil` =="Accueils de loisirs" &
+             `période d'activité`== "année") %>%
+    hchart("bar",
+           hcaes(x=Département,y=jeunes,group=age),
+           color = paletteer_d(`"LaCroixColoR::Lime"`,3) ,
+           showInLegend = T, 
+           stacking="normal") %>%
+    hc_subtitle(text="Accueils de loisirs") %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  tab %>%
+    filter(`type d'accueil` =="Accueils de jeunes" &
+             `période d'activité`== "année") %>%
+    hchart("bar",
+           hcaes(x=Département,y=jeunes,group=age),
+           color = paletteer_d(`"LaCroixColoR::Lime"`,3) ,
+           showInLegend = T, 
+           stacking="normal") %>%
+    hc_subtitle(text="Accueils de jeunes") %>%
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+  
+  ncol = 3, rowheight =500)
 
 ```

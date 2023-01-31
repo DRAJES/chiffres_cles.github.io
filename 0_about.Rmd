@@ -4,7 +4,7 @@ author: "PSLèbre"
 output: html_document
 
 ---
-```{r setup, include=FALSE ,eval=TRUE, cache=TRUE}
+```{r, setup, include=FALSE ,eval=TRUE, cache=TRUE}
 #library(BAMMtools)
 library(htmltools)
 library(htmlwidgets)
@@ -75,7 +75,8 @@ source("R/data/fonctions_merge.R")
 knitr::opts_chunk$set(
  fig.width = 6,
  fig.asp = 0.8,
- out.width = "80%"
+ out.width = "80%",
+ collapse = TRUE
 )
 
 options(knitr.kable.NA = '')
