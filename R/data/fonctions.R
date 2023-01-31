@@ -22,6 +22,30 @@ tableau <- function(.tbl){
 }
 
 
+
+bg = function(start, end, color, ...) {
+  paste("linear-gradient(90deg,transparent ",percent(start),",",
+        color, percent(start), ",", color, percent(end),
+        ", transparent", percent(end),")")
+} 
+
+pm_color_bar2 <- function(color1 = "lightgreen", color2 = "pink", ...){
+  formatter("span",
+            style = function(x) style(
+              display = "inline-block",
+              color = ifelse(x> 0,'green',ifelse(x<0,'red','lightgrey')),
+              "text-align" = ifelse(x > 0, 'left', ifelse(x<0, 'right', 'center')),
+              "width"='100%',
+              "background" = bg(ifelse(x >= 0, 0.5,xnormalize(x)),
+                                ifelse(x >= 0,xnormalize(x),0.5),
+                                ifelse(x >= 0, color1, color2))
+            ))
+}
+
+
+
+
+
 forme <- function(.tbl){
   .tbl %>% 
     mutate_at(vars(starts_with("pop")), ~ cell_spec(digits(.,0,big.mark = " ")))%>%

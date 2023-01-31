@@ -4,8 +4,8 @@ author: "PSLèbre"
 output: html_document
 
 ---
-```{r setup, include=F ,echo=FALSE, cache=F}
-library(BAMMtools)
+```{r setup, include=FALSE ,eval=TRUE, cache=TRUE}
+#library(BAMMtools)
 library(htmltools)
 library(htmlwidgets)
 library(paletteer)
@@ -21,6 +21,7 @@ library(gghighlight)
 library(highcharter)
 library(janitor)
 library(DT)
+library(reactable)
 library(fontawesome)
 library(formattable)
 library(sparkline)
@@ -69,10 +70,6 @@ load("data/demo/cartes.RData")
 
 source("R/data/fonctions_carto.R")
 source("R/data/fonctions_merge.R")
-
-appartenance <- rbind(appartenance,c("REG","FR","France","-"))
-appartenance <- rbind(appartenance,c("REG","FM","France Métro","-"))
-
 
 # Option de chunk
 knitr::opts_chunk$set(

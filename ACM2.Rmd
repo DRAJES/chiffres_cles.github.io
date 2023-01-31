@@ -11,38 +11,40 @@ output:
 ---
 
 ```{r}
-library(htmltools)#
-library(paletteer)#
-library(reactable)#
-library(highcharter)#
-library(crosstalk)#
-library(DT)#
-library(tidyverse)#
-library(sparkline)#
-library(kableExtra)#
-load("data/demo/basecom.RData")#
-load("data/demo/cartes.RData")#
-source("R/data/fonctions_carto.R")#
-source("R/data/fonctions_merge.R")#
-depbfc <- c('21','25','39','58','70','71','89','90')#
-thm <- hc_theme_merge(
-  hc_theme_gridlight( yAxis = list(
-        title = list(
-          style = list(
-            textTransform = "normal") ) ) ),
-  hc_theme(
-#    colors = c("#1a6ecc", "#434348", "#90ed7d"),
-    chart = list(
-      backgroundColor = "transparent",
-      style = list(fontFamily = "Source Sans Pro")
-    ),
-    xAxis = list(
-      gridLineWidth = 1
-    )
-  ) 
-)
+# library(htmltools)#
+# library(paletteer)#
+# library(reactable)#
+# library(highcharter)#
+# library(crosstalk)#
+# library(DT)#
+# library(tidyverse)#
+# library(sparkline)#
+# sparkline(0) #
+# library(kableExtra)#
+# load("data/demo/basecom.RData")#
+# load("data/demo/cartes.RData")#
+# source("R/data/fonctions_carto.R")#
+# source("R/data/fonctions_merge.R")#
+# depbfc <- c('21','25','39','58','70','71','89','90')#
+# thm <- hc_theme_merge(
+#   hc_theme_gridlight( yAxis = list(
+#         title = list(
+#           style = list(
+#             textTransform = "normal") ) ) ),
+#   hc_theme(
+# #    colors = c("#1a6ecc", "#434348", "#90ed7d"),
+#     chart = list(
+#       backgroundColor = "transparent",
+#       style = list(fontFamily = "Source Sans Pro")
+#     ),
+#     xAxis = list(
+#       gridLineWidth = 1
+#     )
+#   ) 
+# )
+
+
 load("data/jeunesse/ACM_evo.RData")
-sparkline(0) #
 
 #crosstalk
 filtreACM <- function(tab=tab) {
@@ -100,6 +102,8 @@ tab %>% filtreACM()
 ### Evolutions 
 
 ```{r}
+sparkline(0)
+
 tab <- ACMH_reg %>%
   filter(REG %in% c(11:94,"Total France métropolitaine",
                     "Total France + Étranger") ) %>%
@@ -145,7 +149,11 @@ filter_select("sejour","Séjour",tab,group=~séjour,
               multiple = FALSE, allLevels = "Ensemble des séjours")
 
 tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) ) %>% spk_add_deps
-  
+  # %>%
+#  
+#     htmltools::HTML() %>%
+#     shiny::div() %>%
+#     sparkline::spk_add_deps()
 ```
 
 ### Comparaisons

@@ -167,6 +167,8 @@ rowheight = 550)
 Environ **40 % ** de licences féminines. 
 
 ```{r}
+sparkline(0)
+
 tab <- 
   lic_reg %>% 
   select(-1) %>%
@@ -201,7 +203,12 @@ tab %>%
   cc_kable("rcrrrrrlrr") %>%
   column_spec(6, bold=T) %>%
   add_header_above(c( " "=2,"Fédérations"=3,"Licences"=4) ) %>%
-  credits()
+  credits() 
+# %>%
+#  
+#     htmltools::HTML() %>%
+#     shiny::div() %>%
+#     sparkline::spk_add_deps()
 
 
 ```

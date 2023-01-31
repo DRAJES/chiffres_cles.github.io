@@ -88,15 +88,19 @@ Row {.tabset .tabset-fade}
 ### Comparaisons régionales
   
 ```{r,echo=F}
-
+sparkline(0)
 tab <- region_tab %>% 
   demo(Région) %>%
-  left_join(.,serie_reg,
-            by=c("Région" = "REG") ) 
+  left_join(.,serie_reg ,
+            by=c("Région" = "REG") )
+#%>%  formattable() %>%  as.htmlwidget() %>% spk_add_deps() 
 
-tab %>%  
-  credits()
-  
+tab %>% 
+   credits() 
+  # htmltools::HTML() %>%
+  # shiny::div() %>%
+  # sparkline::spk_add_deps()
+
 ```   
 
 ### Carte régionale

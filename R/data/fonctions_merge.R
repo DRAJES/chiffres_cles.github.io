@@ -20,8 +20,9 @@ pop_basecom <-   function(geo){
 
 cc_kable <-  function(.tbl,aligne ){ 
   .tbl %>% 
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-          align=aligne, escape = F) %>% 
+    kable("html", escape = FALSE,
+          align=aligne,
+          format.args = list(decimal.mark = ",", big.mark = " ") ) %>% 
     kable_styling("hover", full_width = F) %>%
     row_spec(str_which (.tbl %>% pull(1) ,"FR|Total|France.|METRO" ) ,
              bold = T,color = "navy")  %>%
