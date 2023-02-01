@@ -165,9 +165,9 @@ forome %>%
   summarise(hommes=sum(Sexe=="Homme"),
             femmes=sum(Sexe=="Femme")) %>%
   arrange(desc(hommes+femmes)) %>% 
-  pivot_longer(-1,"stat","valeur") %>%
+  pivot_longer(-1,names_to = "stat",values_to = "valeur") %>%
 hchart("bar",
-       hcaes(x = Type.de.diplôme,y=value,group=stat), 
+       hcaes(x = Type.de.diplôme,y=valeur,group=stat), 
        color=c("#da70d6",'#87ceeb'),
        stacking="normal", 
        pointWidth = 20)

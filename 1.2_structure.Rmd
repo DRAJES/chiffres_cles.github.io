@@ -126,8 +126,8 @@ region %>%
             `1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
             `2_Moins de 20 ans`=round(100*p20/pop,2),
             `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
-  pivot_longer(-c('REG','LIBGEO'),'âge') %>% 
-  rename(Région=LIBGEO,part=value) %>%
+  pivot_longer(-c("REG","LIBGEO"),names_to = "âge",values_to = "part") %>% 
+  rename(Région=LIBGEO) %>%
   arrange(REG,Région,âge)  %>%
 hstructure("Région")
 ```
@@ -182,7 +182,7 @@ departement %>%
             `1_21 à 59 ans`=round(100*(pop-p20-p60)/pop,2),
             `2_Moins de 20 ans`=round(100*p20/pop,2),
             `0_Plus de 60 ans`=round(100*p60/pop,2) ) %>%
-  pivot_longer(-c('DEP','LIBGEO'),'âge') %>% 
+  pivot_longer(-c('DEP','LIBGEO'),names_to = "âge") %>% 
   rename(Département=LIBGEO,part=value) %>%
   arrange(DEP,Département,âge) %>%
   hstructure("Département")

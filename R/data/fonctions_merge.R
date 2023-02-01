@@ -41,28 +41,31 @@ tab_filtre <- function(geo) {
   sd <- tab %>%
     left_join(.,basecom %>%
                 dplyr::group_by({{geo}}) %>%
+                dplyr::filter(REG=='27') %>%
                 dplyr::filter(pop==max(pop)) %>% 
                 dplyr::select({{geo}},DEP),
               by=names(select(., {{geo}})) 
-    )
+    ) %>%
+    libelle(DEP) %>% select(-DEP)
+  
   sd <- SharedData$new(sd)
+  return(sd) }
   
-  filter_select("dep","Département",sd,group=~DEP,allLevels=FALSE,multiple =FALSE)
-  
-  sd <- sd %>% 
+datafiltre <- function(sd=sd)  {
+  sd %>% 
     datatable(escape = FALSE,
+              height = 700,
               extensions = c('Scroller', 'Buttons'),
               options = list(
                 dom = 'Bfrtip',
-                buttons = 
-                  list('copy', 'print', list(
-                    extend = 'collection',
-                    buttons = c('csv', 'excel', 'pdf'),
-                    text = 'Download'
-                  )),
-                scroller = TRUE,
-                scrollY=600),
+                buttons = 'csv',
+                #   list('copy', 'print', list(
+                #     extend = 'collection',
+                #     buttons = 'csv',
+                #     buttons = c('csv', 'excel', 'pdf'),
+                #     text = 'Download')),
+                # scroller = TRUE,
+                #scrollY=600,
+                paging = FALSE),
               rownames = FALSE) 
-    
-  return(sd)
 }

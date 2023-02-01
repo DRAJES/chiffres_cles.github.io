@@ -196,7 +196,7 @@ tab <-
   left_join(lic_reg %>%
               select(-1) %>%
               slice(114) %>%
-              pivot_longer(-fede, 'variable', 'value') %>%
+              pivot_longer(-fede, names_to = 'variable', values_to ='value') %>%
               pivot_wider(variable, names_from =  fede) %>%
               select(REG=1,licences=2),
             by="REG"   ) %>%  
@@ -464,7 +464,7 @@ tab <-
   left_join(lic_dep_bfc %>%
               select(-1) %>%
               slice(114) %>%
-              pivot_longer(-`fede`, 'variable', 'value') %>%
+              pivot_longer(-`fede`, names_to='variable',values_to= 'value') %>%
               pivot_wider(variable, names_from =  `fede`) %>%
               select(DEP=1,licences=2),
             by="DEP"   ) %>%  

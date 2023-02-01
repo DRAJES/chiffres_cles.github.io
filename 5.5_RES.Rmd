@@ -263,7 +263,7 @@ La Bourgogne-Franche-Comté est la région française la mieux dotée en équipe
 hchart( tab %>%
           taux_res() %>%
           select(Libellé, `taux bassins`:autres) %>%
-          pivot_longer(-1,'type')  ,
+          pivot_longer(-1,names_to = 'type')  ,
    "bar", hcaes(x=Libellé,y=value, group=type  ) , 
           stacking= 'normal' , 
           shadow=F,  showInLegend = T,  pointWidth =20) %>%
@@ -378,7 +378,7 @@ hchart( equip %>%
 hchart( tab %>%
           taux_res() %>%
           select(Libellé, `taux bassins`:autres) %>%
-          pivot_longer(-1,'type')  ,
+          pivot_longer(-1,names_to = 'type')  ,
    "bar", hcaes(x=Libellé,y=value, group=type  ) , 
           stacking= 'normal' , 
           shadow=F,  showInLegend = T,  pointWidth =20) %>%

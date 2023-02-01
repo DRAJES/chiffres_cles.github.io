@@ -11,38 +11,6 @@ output:
 ---
 
 ```{r}
-# library(htmltools)#
-# library(paletteer)#
-# library(reactable)#
-# library(highcharter)#
-# library(crosstalk)#
-# library(DT)#
-# library(tidyverse)#
-# library(sparkline)#
-# sparkline(0) #
-# library(kableExtra)#
-# load("data/demo/basecom.RData")#
-# load("data/demo/cartes.RData")#
-# source("R/data/fonctions_carto.R")#
-# source("R/data/fonctions_merge.R")#
-# depbfc <- c('21','25','39','58','70','71','89','90')#
-# thm <- hc_theme_merge(
-#   hc_theme_gridlight( yAxis = list(
-#         title = list(
-#           style = list(
-#             textTransform = "normal") ) ) ),
-#   hc_theme(
-# #    colors = c("#1a6ecc", "#434348", "#90ed7d"),
-#     chart = list(
-#       backgroundColor = "transparent",
-#       style = list(fontFamily = "Source Sans Pro")
-#     ),
-#     xAxis = list(
-#       gridLineWidth = 1
-#     )
-#   ) 
-# )
-
 
 load("data/jeunesse/ACM_evo.RData")
 
@@ -54,8 +22,10 @@ filtreACM <- function(tab=tab) {
                     dom = 'Bfrtip',
                   #  buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
                   buttons = 'csv',
-                  scrollY=TRUE,
-                  scrollX = TRUE),
+                  scrollY=400,
+                  scrollX = TRUE,
+                  paging = FALSE),
+                  height = 500,
                   rownames = FALSE,
                   caption = htmltools::tags$caption(
     style = 'caption-side: bottom; text-align: center;',
