@@ -46,7 +46,9 @@ tab_filtre <- function(geo) {
                 dplyr::select({{geo}},DEP),
               by=names(select(., {{geo}})) 
     ) %>%
-    libelle(DEP) %>% select(-DEP)
+    libelle(DEP) %>% 
+    select(-DEP) %>%
+    rename(filtre_DEP=Libellé)
   
   sd <- SharedData$new(sd)
   return(sd) }

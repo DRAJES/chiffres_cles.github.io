@@ -177,7 +177,17 @@ tab %>%
   credits()
 ```
 
+### Tableau filtré
+```{r}
+tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
 
+sd <- tab_filtre(geo=EPCI)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
+```
 
 ### Carte ECPI
   
@@ -211,7 +221,17 @@ tab %>%
   credits()
 ```  
   
+### Tableau filtré
+```{r}
+tab <- tab %>% filter(!BV2012 %in% c('BFC','METRO'))
 
+sd <- tab_filtre(geo=BV2012)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
+```
   
 ### Carte BV
 

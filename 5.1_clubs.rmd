@@ -616,9 +616,21 @@ tab %>%
   add_header_above(c(" "= 4,"Taux"=2," ")) %>%
   credits() %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française")) %>%
-  scroll_box(height = "780px") 
+  scroll_box(height = "800px") 
 
 
+```
+
+### Tableau filtré
+```{r}
+tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
+
+sd <- tab_filtre(geo=EPCI)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
 ```
 
 ### Carte ECPI taux de clubs pour 10 000 habitants {data-height="800"}
@@ -669,7 +681,19 @@ tab %>%
   add_header_above(c(" "=4,"Taux"=2," ")) %>%
   credits() %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française")) %>%
-  scroll_box(height = "780px") 
+  scroll_box(height = "800px") 
+```
+
+### Tableau filtré
+```{r}
+tab <- tab %>% filter(!BV2012 %in% c('BFC','METRO'))
+
+sd <- tab_filtre(geo=BV2012)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
 ```
 
 ### Carte BV taux de clubs pour 10 000 habitants {data-height="800"}

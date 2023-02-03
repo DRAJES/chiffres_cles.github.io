@@ -236,16 +236,31 @@ Les grandes agglomérations servent de centre de service pour les EPCI alentours
 31 EPCI n'ont aucune piscine publique accessible aux scolaires.
 
 ```{r,echo=F}
-piscines %>% 
+tab <- piscines %>% 
   filter(EPCI %in% basecom$EPCI[basecom$REG=="27"] ) %>%
-  piscine(geo=EPCI) %>%
+  piscine(geo=EPCI) 
   
+tab %>%
   cc_kable("rcrrrrlrr") %>%
   column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
+```
+
+### Tableau filtré
+```{r}
+tab <- tab %>% 
+  filter(!EPCI %in% c('BFC','METRO')) %>%
+  rename(LibEPCI=Libellé)
+
+sd <- tab_filtre(geo=EPCI)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
 ```
 
 ### Carte de surface de baignade {data-height="800"}
@@ -279,16 +294,31 @@ Les bassins de vie égalisent un peu le poids des grandes agglomération en mett
 42 bassins de vie n'ont pas de piscines publique accessible aux scolaires.
 
 ```{r,echo=F}
-piscines %>% 
+tab <- piscines %>% 
   filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"] ) %>%
-  piscine(geo=BV2012) %>%
-  
+  piscine(geo=BV2012) 
+
+tab %>%  
   cc_kable("rcrrrrlrr") %>%
   column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
            general_title = "Source : ",
            footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
+```
+
+### Tableau filtré
+```{r}
+tab <- tab %>% 
+  filter(!BV2012 %in% c('BFC','METRO')) %>%
+  rename(LibBV=Libellé)
+
+sd <- tab_filtre(geo=BV2012)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
 ```
 
 ### Carte de surface de baignade {data-height="800"}

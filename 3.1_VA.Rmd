@@ -45,7 +45,11 @@ tableau_asso <- function(.tbl){
            Autres=color_tile('transparent','lightblue')
            (digits(Autres,1,decimal.mark=",") ),
            NR=color_tile('transparent','lightgrey')
-           (digits(NR,1,decimal.mark=",") ) ) %>%
+           (digits(NR,1,decimal.mark=",") ) ) 
+  }
+  
+credits <- function(.tbl) {
+  .tbl %>%
     cc_kable("crlrrrrrr") %>%
     column_spec(3, bold=T) %>%
     column_spec(4, italic=T) %>%
@@ -174,6 +178,7 @@ asso_tab(REG) %>%
   mutate(txasso=total*100/pop) %>%
   
   tableau_asso() %>%
+  credits() %>%
   footnote(general = "ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA"  ) 
 ```
 
@@ -375,7 +380,8 @@ asso_tab(DEP) %>%
   filter(DEP %in% depbfc) %>%
   adorn_totals("row", name = "BFC" , fill = "Bourgogne-Franche-Comté") %>%
   mutate(txasso=total*100/pop) %>%
-  tableau_asso() 
+  tableau_asso() %>%
+  credits()
   
 ```
 
@@ -468,12 +474,28 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Tableau des associations 
 ```{r}
-asso_tab(EPCI) %>% 
+tab <- asso_tab(EPCI) %>% 
   filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
   arrange(desc(total)) %>%
   mutate(txasso=total*100/pop) %>%
   tableau_asso() 
 
+tab %>%
+  credits()
+```
+
+### Tableau filtré
+```{r}
+tab <- tab %>% 
+  filter(!EPCI %in% c('BFC','METRO')) %>% 
+  rename(LibEPCI=Libellé)
+
+sd <- tab_filtre(geo=EPCI)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
 ```
 
 ### Carte EPCI
@@ -495,12 +517,29 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Tableau des associations 
 ```{r}
-asso_tab(BV2012) %>%
+tab <- asso_tab(BV2012) %>%
   filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
   arrange(desc(total)) %>%
   mutate(txasso=total*100/pop) %>%
   tableau_asso()
 
+tab %>%
+  credits()
+```
+
+### Tableau filtré
+```{r}
+tab <- tab %>% 
+  filter(!BV2012 %in% c('BFC','METRO')) %>%
+  rename(LibBV=Libellé)
+
+
+sd <- tab_filtre(geo=BV2012)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
 ```
 
 ### carte BV

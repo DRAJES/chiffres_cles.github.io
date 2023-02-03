@@ -63,7 +63,8 @@ ACMH <- ACMH_reg %>%
 
 tab <- SharedData$new(ACMH)
 
-filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
+filter_checkbox("sejour","Séjour",tab,group=~séjour,
+                inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()
 
@@ -85,36 +86,12 @@ tab <- ACMH_reg %>%
 
    tab <- SharedData$new(tab)
 
-filter_select("sejour","Séjour",tab,group=~séjour,
-              multiple = FALSE, allLevels = "Ensemble des séjours")
+filter_checkbox("sejour","Séjour",tab,group=~séjour,
+                inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
 
-
-### Evolutions 2010-2021
-
-
-```{r}
-sparkline(0)
-
-tab <- ACMH_reg %>% 
-   filter(REG %in% c(11:94,"Total France métropolitaine",
-                     "Total France + Étranger") ) %>%
-   arrange(REG) %>%
-   group_by(REG,`séjour`) %>%
-   summarise_at(vars(`Nombre de séjours`:`Nombre de journées enfants`),spk_chr)
-
-tab <- SharedData$new(tab)
-
-filter_select("sejour","Séjour",tab,group=~séjour,
-              multiple = FALSE, allLevels = "Ensemble des séjours")
-
-tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) )  %>%
-     #htmltools::HTML() 
-     shiny::div() %>%
-     sparkline::spk_add_deps()
-```
 
 ### Comparaisons
 
@@ -317,7 +294,8 @@ ACMHdep <- ACMH_dep %>%
 
 tab <- SharedData$new(ACMHdep)
 
-filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
+filter_checkbox("sejour","Séjour",tab,group=~séjour,
+                inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()
 
@@ -335,7 +313,8 @@ tab <- ACMH_dep %>%
 
 tab <- SharedData$new(tab)
 
-filter_checkbox("sejour","Séjour",tab,group=~séjour,inline=TRUE, allLevels = FALSE)
+filter_checkbox("sejour","Séjour",tab,group=~séjour,
+                inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM() %>%
   spk_add_deps() 
@@ -469,33 +448,6 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
                 inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
-```
-
-
-### Evolutions 2010-2021
-
-
-```{r}
-sparkline(0)
-
-tab <- ALJSH_reg %>% 
-   filter(REG %in% c(11:94,"Total France métropolitaine",
-                     "Total France + Étranger") ) %>%
-   arrange(REG) %>%
-  group_by(REG,`type d'accueil`,`période d'activité`) %>%
-   summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) 
-
-tab <- SharedData$new(tab)
-
-filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
-                inline=TRUE, allLevels = FALSE)
-filter_checkbox("periode","Période d'activité",tab,group=~`période d'activité`,
-                inline=TRUE, allLevels = FALSE)
-
-tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) )  %>%
-     #htmltools::HTML() 
-     shiny::div() %>%
-     sparkline::spk_add_deps()
 ```
 
 ### Comparaisons
@@ -745,7 +697,6 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
 tab %>% filtreACM() %>%
   spk_add_deps() 
 
-
 ```
 
 
@@ -889,26 +840,6 @@ tab <- AS_reg %>%
    formattable() 
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
-```
-
-
-### Evolutions 2010-2021
-
-
-```{r}
-sparkline(0)
-
-tab <- AS_reg %>% 
-   filter(REG %in% c(11:94,"Total France métropolitaine",
-                     "Total France + Étranger") ) %>%
-   arrange(REG) %>%
-   group_by(REG) %>%
-   summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) 
-
-tab %>% reactable::reactable(defaultColDef = colDef(html = TRUE) )  %>%
-     #htmltools::HTML() 
-     shiny::div() %>%
-     sparkline::spk_add_deps()
 ```
 
 ### Comparaisons
