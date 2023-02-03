@@ -780,7 +780,7 @@ Row {data-height="20"}
 ```{r}
 tab <- 
   lic27bv %>%
-  tab_lic(geo=BV2012) 
+  tab_lic(geo=BV2022) 
   
 tab %>%
   cc_kable("lcrllllrrrrr") %>%
@@ -792,9 +792,9 @@ tab %>%
 
 ### Tableau filtré
 ```{r}
-tab <- tab %>% filter(!BV2012 %in% c('BFC','METRO'))
+tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -806,7 +806,7 @@ sd %>% datafiltre()
 
 ```{r}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012,Population=pop)
+carte@data <- carte@data %>% select(BV2022,Population=pop)
 carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                                     `Total licences`=licences,
                                     "licences pop femmes"=femmes,
@@ -814,7 +814,7 @@ carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                                     "licences pop jeunes"=jeunes,
                                     "% licences féminines"=féminines,
                                     "% licences jeunes"=`jeunes<20`),
-               by="BV2012")
+               by="BV2022")
 carte@data <- carte@data %>% mutate(`Taux de licences (%)`=round(100*`Total licences`/Population,1))
   
 leaflet(bvcarto) %>% 

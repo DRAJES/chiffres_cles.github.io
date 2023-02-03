@@ -216,7 +216,7 @@ Row {data-height="20"}
 ### Comparaisons bassins de vie
 ```{r,echo=F}
 tab <- bv27_tab %>%
-  demo(geo=BV2012)
+  demo(geo=BV2022)
   
 tab %>%  
   credits()
@@ -224,9 +224,9 @@ tab %>%
   
 ### Tableau filtré
 ```{r}
-tab <- tab %>% filter(!BV2012 %in% c('BFC','METRO'))
+tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -238,8 +238,8 @@ sd %>% datafiltre()
 
 ```{r,echo=F}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012,var)
-carte <- merge(carte,tab,by="BV2012")
+carte@data <- carte@data %>% select(BV2022,var)
+carte <- merge(carte,tab,by="BV2022")
 
 
 leaflet(carte) %>%  

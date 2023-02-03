@@ -673,7 +673,7 @@ Row {data-height="20"}
 ```{r,echo=F}
 tab <- 
   lic27bv %>%
-  tab_club(geo=BV2012)
+  tab_club(geo=BV2022)
 
 tab %>% 
   select(-5,-6,-7) %>%
@@ -686,9 +686,9 @@ tab %>%
 
 ### Tableau filtré
 ```{r}
-tab <- tab %>% filter(!BV2012 %in% c('BFC','METRO'))
+tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -700,12 +700,12 @@ sd %>% datafiltre()
 
 ```{r}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012,Population=pop)
+carte@data <- carte@data %>% select(BV2022,Population=pop)
 carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                                     `Total clubs`= `Nombre de clubs`,
                                     `Taux de clubs`=txclub,
                                     `Taux de licences` = txlic),
-               by="BV2012")
+               by="BV2022")
 
 leaflet(bvcarto) %>% 
   carto(var = c("Taux de clubs", "Taux de licences","liclub") ) %>%

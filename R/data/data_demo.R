@@ -1,39 +1,27 @@
 source("librairies.R")
 #construction de la base communale démographie
 library(readxl)
-#passage <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table_passage_annuelle_2021.xlsx",sheet=1,skip=5)
 passage <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/table_passage_annuelle_2022.xlsx",sheet=1,skip=5)
-#surface <- read.dbf("I:/SUPPORT/05_CARTO/Fonds de cartes/IGN/COMMUNE GEOFLA2016/COMMUNE.dbf")
 surface <- read.csv2("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/base_cc_comparateur.csv")
-#communes <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table-appartenance-geo-communes-21.xlsx",sheet=1,skip=5)
 communes <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/table-appartenance-geo-communes-22.xlsx",sheet=1,skip=5)
-#appartenance <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2021/table-appartenance-geo-communes-21.xlsx",sheet=3,skip=5)
 appartenance <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/table-appartenance-geo-communes-22.xlsx",sheet=3,skip=5)
+BV2022_a <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/bv/BV2022/BV2022_au_01-01-2022.xlsx",skip = 5,sheet = 1)
+BV2022 <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/bv/BV2022/BV2022_au_01-01-2022.xlsx",skip = 5,sheet = 2)
 
-appartenance <- rbind(appartenance, c("DEP","BFC","Bourgogne-Franche-Comté","-"),
-                                           c("REG","FR","France","-"),
-                                           c("REG","METRO","France métropolitaine","-") )
+
+appartenance <- rbind(appartenance, 
+                      c("DEP","BFC","Bourgogne-Franche-Comté","-"),
+                      c("REG","FR","France","-"),
+                      c("REG","METRO","France métropolitaine","-") )
+
+appartenance <- appartenance %>%
+  bind_rows(BV2022_a %>% 
+              dplyr::mutate (NIVGEO="BV2022",NB_COM=as.character(NB_COM)) %>%
+              dplyr::select (NIVGEO,CODGEO="BV2022",LIBGEO=LIBBV2022,NB_COM)
+            )
 
 passage$CODGEO_2014[passage$CODGEO_2021 =="55138"] <- "55138"
 
-#communes <- communes %>%  
-#  left_join(.,passage %>% select(CODGEO_2020,CODGEO_2021) %>% 
-#             distinct(CODGEO_2020,.keep_all = T),by=c("CODGEO" = "CODGEO_2020") ) %>% 
-#  distinct(CODGEO_2021,.keep_all = T)
-
-#basecom_temp <- surface %>% filter(as.character( CODE_REG ) >"10") %>%
-#    select (INSEE_COM,SUPERFICIE) %>%   
-#    mutate (INSEE_COM=as.character(INSEE_COM)) %>%
-#    mutate (INSEE_COM = case_when(
-#      INSEE_COM>"75100" & INSEE_COM<"75200" ~ "75056",
-#      INSEE_COM>"13200" & INSEE_COM<"13300" ~ "13055",
-#      INSEE_COM>"69300" & INSEE_COM<"69400" ~ "69123",
-#      TRUE ~ INSEE_COM) ) %>%
-#    left_join(.,passage %>% distinct(CODGEO_2016,.keep_all = T),by=c("INSEE_COM" = "CODGEO_2016") ) %>%
-#    group_by(CODGEO_2021) %>%
-#    summarise(SUPERFICIE=sum(SUPERFICIE)) %>%
-#  left_join(communes %>% filter(REG>"10") 
-#            ,.,by=c("CODGEO" ="CODGEO_2021") )
 
 basecom_temp <- communes %>% filter(REG>"10") %>%
   left_join(.,surface %>% select(1:4),by="CODGEO") %>% mutate(SUPERF=as.numeric(SUPERF))
@@ -172,6 +160,10 @@ basecomQPV <- basecom %>% left_join(.,QPV %>% select(CODGEO=codeDepcom,popMuniQP
 
 basecomQPV$popMuniQPV[is.na(basecomQPV$popMuniQPV)] <- 0
 #basecomQPV$POP_COM <- if_else(basecomQPV$POP_MUN==0,basecomQPV$pop,basecomQPV$POP_COM)
+
+basecom <- basecomQPV %>% left_join(.,BV2022 %>%
+                                      dplyr::select(CODGEO,BV2022,LIBBV2022),by="CODGEO")
+
 
 save(basecomQPV,basecom,appartenance,file="data/demo/basecom.RData")
 

@@ -16,7 +16,7 @@ load("data/engagement/asso.RData")
 
 RNApop <- RNAcom %>%
       left_join(.,basecom %>% 
-                  select(CODGEO,LIBGEO,EPCI,BV2012),
+                  select(CODGEO,LIBGEO,EPCI,BV2022),
                 by=c("CODGEO_2022"="CODGEO"))
 
 #tableau des asso
@@ -517,8 +517,8 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### Tableau des associations 
 ```{r}
-tab <- asso_tab(BV2012) %>%
-  filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"]) %>%
+tab <- asso_tab(BV2022) %>%
+  filter(BV2022 %in% basecom$BV2022[basecom$REG=="27"]) %>%
   arrange(desc(total)) %>%
   mutate(txasso=total*100/pop) %>%
   tableau_asso()
@@ -530,11 +530,11 @@ tab %>%
 ### Tableau filtré
 ```{r}
 tab <- tab %>% 
-  filter(!BV2012 %in% c('BFC','METRO')) %>%
+  filter(!BV2022 %in% c('BFC','METRO')) %>%
   rename(LibBV=Libellé)
 
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -545,7 +545,7 @@ sd %>% datafiltre()
 ### carte BV
 
 ```{r}
-carte <- merge(bvcarto,RNAcarto(geo=BV2012),by="BV2012")
+carte <- merge(bvcarto,RNAcarto(geo=BV2022),by="BV2022")
 
 carte_asso() %>% contour_depbfc()
 ```

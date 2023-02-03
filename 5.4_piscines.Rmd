@@ -295,8 +295,8 @@ Les bassins de vie égalisent un peu le poids des grandes agglomération en mett
 
 ```{r,echo=F}
 tab <- piscines %>% 
-  filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"] ) %>%
-  piscine(geo=BV2012) 
+  filter(BV2022 %in% basecom$BV2022[basecom$REG=="27"] ) %>%
+  piscine(geo=BV2022) 
 
 tab %>%  
   cc_kable("rcrrrrlrr") %>%
@@ -310,10 +310,10 @@ tab %>%
 ### Tableau filtré
 ```{r}
 tab <- tab %>% 
-  filter(!BV2012 %in% c('BFC','METRO')) %>%
+  filter(!BV2022 %in% c('BFC','METRO')) %>%
   rename(LibBV=Libellé)
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -325,10 +325,10 @@ sd %>% datafiltre()
 
 ```{r}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012)
+carte@data <- carte@data %>% select(BV2022)
 carte <- merge(carte, piscines %>%
-                   piscine(geo=BV2012),
-               by="BV2012")
+                   piscine(geo=BV2022),
+               by="BV2022")
 
 leaflet(bvcarto) %>% 
   carto() %>%

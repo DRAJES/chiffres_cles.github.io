@@ -540,16 +540,16 @@ leaflet(carte) %>%
 ### Comparaisons bassins de vie {vertical_layout="scroll"}
 
 ```{r}
-res_infra(geo=BV2012)[["tab_nombre"]]
+res_infra(geo=BV2022)[["tab_nombre"]]
 ```
 
 ### Tableau filtré
 ```{r}
-tab <- res_infra(geo=BV2012)[["tableau"]] %>% 
-  filter(!BV2012 %in% c('BFC','METRO')) %>% 
+tab <- res_infra(geo=BV2022)[["tableau"]] %>% 
+  filter(!BV2022 %in% c('BFC','METRO')) %>% 
   rename(LibBV=Libellé)
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -561,16 +561,16 @@ sd %>% datafiltre()
 ### Taux d'équipements 
 
 ```{r}
-res_infra(geo=BV2012)[["tab_taux"]]
+res_infra(geo=BV2022)[["tab_taux"]]
 ```
 
 ### Tableau filtré
 ```{r}
-tab <- res_infra(geo=BV2012)[["taux"]] %>% 
-  filter(!BV2012 %in% c('BFC','METRO')) %>% 
+tab <- res_infra(geo=BV2022)[["taux"]] %>% 
+  filter(!BV2022 %in% c('BFC','METRO')) %>% 
   rename(LibBV=Libellé)
 
-sd <- tab_filtre(geo=BV2012)
+sd <- tab_filtre(geo=BV2022)
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
@@ -582,11 +582,11 @@ sd %>% datafiltre()
 
 ```{r}
 carte <- bvcarto
-carte@data <- carte@data %>% select(BV2012)
+carte@data <- carte@data %>% select(BV2022)
 carte <- merge(carte,equip %>% 
-                 sum_res(BV2012) %>%
+                 sum_res(BV2022) %>%
                  taux_res() ,
-               by="BV2012")
+               by="BV2022")
 
 
 leaflet(carte) %>% 
