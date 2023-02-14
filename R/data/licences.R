@@ -83,10 +83,10 @@ licences27 <- basecom %>%
                                dplyr::filter (EPCI %in% 
                                                 basecom$EPCI[basecom$REG=="27"] |
                                                 BV2012 %in% 
-                                                basecom$BV2012[basecom$REG=="27"]) %>%
+                                                basecom$BV2022[basecom$REG=="27"]) %>%
                                dplyr::select (CODGEO) %>% 
                                pull ) ) %>%
-  dplyr::select(CODGEO,EPCI,BV2012,poph,popf,pop,p20) %>%
+  dplyr::select(CODGEO,EPCI,BV2022,poph,popf,pop,p20) %>%
   left_join(.,licences %>% 
               dplyr::select (code_commune,fede=fed_2019,licences=l_2019,
                              lic_femmes=l_f_2019,lic_hommes=l_h_2019,
@@ -126,8 +126,8 @@ lic27epci <- licences27 %>%
             by=c("EPCI" = "CODGEO") ) 
 
 lic27bv <- licences27 %>% 
-  group_by(CODGEO,BV2012,pop,popf,poph,p20) %>%
-  dplyr::filter ( BV2012 %in% basecom$BV2012[basecom$REG=="27"] ) %>%
+  group_by(CODGEO,BV2022,pop,popf,poph,p20) %>%
+  dplyr::filter ( BV2022 %in% basecom$BV2022[basecom$REG=="27"] ) %>%
   summarise(licences=sum(licences,na.rm=T),
             licfemmes=sum(lic_femmes,na.rm=T),
             lichommes=sum(lic_hommes,na.rm=T),
@@ -135,7 +135,7 @@ lic27bv <- licences27 %>%
             clubs_sportifs=sum(clubs_sportifs_2019,na.rm=T),
             etablissements_prof=sum(etablissements_prof_2019,na.rm=T),
             total_clubs=sum(total_clubs_2019,na.rm=T)) %>%
-  group_by(BV2012) %>% 
+  group_by(BV2022) %>% 
   summarise_if(is.numeric,~sum(.x,na.rm=T)) %>%
   mutate(txlic=100*licences/pop,
          txfemmes=100*licfemmes/licences,
@@ -145,9 +145,9 @@ lic27bv <- licences27 %>%
          txlich=100*lichommes/poph,
          txclub=10000*total_clubs/pop,
          liclub=licences/total_clubs) %>%
-  left_join(.,appartenance %>% dplyr::filter(NIVGEO=="BV2012") %>%
+  left_join(.,appartenance %>% dplyr::filter(NIVGEO=="BV2022") %>%
               dplyr::select(CODGEO,LIBGEO) ,
-            by=c("BV2012" = "CODGEO") ) 
+            by=c("BV2022" = "CODGEO") ) 
 
 
 

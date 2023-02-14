@@ -26,12 +26,12 @@ piscine <- function(.tbl,geo) {
     group_by({{geo}}) %>% 
     summarise_if(is.numeric,sum) %>%
     libelle({{geo}}) %>%
-    arrange(desc(nbpiscines),desc(pop)) %>%
+    arrange(desc(nbpiscines),desc(P19_POP)) %>%
     adorn_totals("row",name = "Total", fill = "tot") %>%
-    mutate(baignade=round(10000*surfpiscines/pop,1),
+    mutate(baignade=round(10000*surfpiscines/P19_POP,1),
            surfnat=color_bar("lightblue")
-                  (digits(10000*surfpiscines/pop,1,decimal.mark=",") ),
-           surfnat_rec = cut(10000*surfpiscines/pop,
+                  (digits(10000*surfpiscines/P19_POP,1,decimal.mark=",") ),
+           surfnat_rec = cut(10000*surfpiscines/P19_POP,
                              include.lowest = FALSE,
                              right = FALSE,
                              dig.lab = 4,
@@ -44,11 +44,11 @@ piscine <- function(.tbl,geo) {
                                         "200 à 250 m² / 10 000",
                                         "250 à 350 m² / 10 000",
                                         "> 350 m² / 10 000"  )  )) %>%
-      select ({{geo}}, Libellé, 
+      dplyr::select ({{geo}}, Libellé, 
               `Nombre de bassins publics`=nbpiscines,
               `Bassins couverts`=nbpiscines_couv,
               `Bassins saisonniers`=nbpisc_saison,
-              Population=pop,
+              Population=P19_POP,
               `surface de baignade`=surfnat,
               tranches=surfnat_rec,
               baignade) 

@@ -2,9 +2,9 @@
 libelle <- function(.tbl,geo){
   .tbl %>%
     left_join(.,appartenance %>% 
-                filter(NIVGEO==rlang::ensym(geo)) %>%
-                select("{{geo}}" := CODGEO, "Libellé" := LIBGEO),
-              by=names(select(., {{geo}}))  ) %>%
+                dplyr::filter(NIVGEO==rlang::ensym(geo)) %>%
+                dplyr::select("{{geo}}" := CODGEO, "Libellé" := LIBGEO),
+              by=names(dplyr::select(., {{geo}}))  ) %>%
     relocate(Libellé,.after = {{geo}} )
 }
 
