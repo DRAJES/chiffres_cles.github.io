@@ -179,6 +179,7 @@ tab %>%
 
 ### Tableau filtré
 ```{r}
+sparkline(0)
 tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
 
 sd <- tab_filtre(geo=EPCI)
@@ -186,7 +187,7 @@ sd <- tab_filtre(geo=EPCI)
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
 
-sd %>% datafiltre()
+sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
 
 ### Carte ECPI
@@ -223,6 +224,7 @@ tab %>%
   
 ### Tableau filtré
 ```{r}
+sparkline(0)
 tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
 
 sd <- tab_filtre(geo=BV2022)
@@ -230,7 +232,7 @@ sd <- tab_filtre(geo=BV2022)
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
 
-sd %>% datafiltre()
+sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
   
 ### Carte BV
