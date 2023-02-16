@@ -110,9 +110,9 @@ Row {data-height="120"}
 
 ### Données générales
 
-La région Bourgogne-Franche-Comté compte **`r prettyNum(round(as.numeric(lic_reg[117,5])/1000,0)*1000,big.mark = " ")`** licenciés en 2020.
-La pratique sportive est moins développée qu'au niveau national : le taux de pénétration sportive atteint **21,9 %** contre 22,7 % en France métropolitaine.
-Mais la pratique féminine est plus fréquente : **39,7 %** des licences sont détenues par des femmes contre 38,8 % en France.  
+La région Bourgogne-Franche-Comté compte **499 100** licenciés en 2021.
+La pratique sportive est moins développée qu'au niveau national : le taux de pénétration sportive atteint **17,8 %** contre 18,6 % en France métropolitaine, après une forte chutte due au covid.
+Mais la pratique féminine est plus fréquente : **38,3 %** des licences sont détenues par des femmes contre 37,4 % en France.  
 Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
 à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
 

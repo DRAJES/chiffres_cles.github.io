@@ -180,7 +180,10 @@ tab %>%
 ### Tableau filtré
 ```{r}
 sparkline(0)
-tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
+tab <- tab %>% 
+  filter(!EPCI %in% c('BFC','METRO')) %>% 
+  select(-" ") %>%
+  formattable() 
 
 sd <- tab_filtre(geo=EPCI)
 
@@ -225,7 +228,11 @@ tab %>%
 ### Tableau filtré
 ```{r}
 sparkline(0)
-tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
+
+tab <- tab %>% 
+  filter(!BV2022 %in% c('BFC','METRO')) %>% 
+  select(-" ") %>%
+  formattable() 
 
 sd <- tab_filtre(geo=BV2022)
 
