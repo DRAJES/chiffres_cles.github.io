@@ -68,7 +68,8 @@ idjeps <- function(.tbl){
 
 ### Données générales sur les diplômes professionnels délivrés en Bourgogne-Franche-Comté en 2019
 
-**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = ",")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
+**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
+**8e** région de France en nombre de diplômes délivrés. La moitié des diplômes sont issus de la filière STAPS.
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
@@ -230,6 +231,8 @@ Les recrutements baissent fortement dans les départements de la région, comme 
 ### Tableau des diplômes non professionnels
 
 ```{r}
+sparkline(0)
+
 bafaregm %>% 
   filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
   bind_cols (bafdregm %>% 
@@ -361,6 +364,8 @@ hchart(bafaregm %>%
 ### Diplômes non professionnels délivrés par département
 
 ```{r}
+sparkline(0)
+
 bafadepm %>% 
   filter(dep %in% depbfc) %>%
   filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
@@ -395,7 +400,7 @@ bafadepm %>%
   bind_cols( bafadepm %>%
                filter(dep %in% depbfc & sexe=="Hommes")  %>% # sparkine
                group_by(dep) %>%
-               summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
+               summarise(`évo Hommes`=spk_chr(BAFA)) ) %>% 
   select(dep=dep...2,département=deplib,
          `2019`,`2020`,`2021`,
          `age médian (ans)`=`age BAFA`, `Taux de femmes (%)`=`femmes BAFA`,
@@ -403,7 +408,7 @@ bafadepm %>%
   arrange(dep) %>%
      
  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
-       align="clrrrlllccc", escape = F) %>%
+       align="clrrrlllccc", escape = FALSE) %>%
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=2,"BAFA"=6,"effectifs annuels 2011-2021"=3) ) %>%
 #  row_spec(15, bold=T) %>%

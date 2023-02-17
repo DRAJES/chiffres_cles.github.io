@@ -149,7 +149,11 @@ tab %>%
 ```{r,echo=F}
 carte <- depwgs
 carte@data <- carte@data %>% select(Département=DEP,var)
-carte <- merge(carte,tab,by="Département")
+carte <- merge(carte,dep_tab[-10,-1] %>%  
+                 demo(geo=Département) %>%
+                 left_join(.,serie_dep[,2:3],
+                           by=c("Département" = "DEP") ),
+               by="Département")
 
 leaflet(depwgs) %>%  
   carto() %>%

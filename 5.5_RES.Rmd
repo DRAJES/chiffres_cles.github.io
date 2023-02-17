@@ -238,7 +238,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
 
 ### Données générales
 
-La région Bourgogne-Franche-Comté compte **15 000** équipements en 2020.
+La région Bourgogne-Franche-Comté compte **15 000** équipements en 2020.C'est la région la mieux dotée par habitant. Cependant, les contrastes sont importants entre les villes généralement bien équipées et certains territoires ruraux ou enclavés beaucoup plus éloignés de certains équipements.
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
@@ -329,7 +329,7 @@ leaflet(carte) %>%
 
 ### Données générales
 
-La Haute-Saône est une des départements les mieux équipés de France. Le Doubs est le département le moins bien doté de la région.
+La Haute-Saône est un des départements les mieux équipés de France. Le Doubs est le département le moins bien doté de la région.
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 

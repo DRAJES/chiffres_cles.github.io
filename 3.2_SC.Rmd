@@ -48,7 +48,8 @@ Row {data-height="100"}
 ### Données générales
 
 **3 200** missions de service civique en Bourgogne-Franche-Comté en 2020.
-**3 100** volontaires originaires de la région.
+**3 100** volontaires originaires de la région.  
+Des missions tournées principalement vers les actions humanitaires et la solidarité.
 
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------

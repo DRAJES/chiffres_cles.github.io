@@ -127,7 +127,7 @@ Row {data-height="100"}
 -----------------------------------------------------------------------
 
 ### Données générales
-La région Bourgogne-Franche-Comté compte **`r prettyNum(round(as.numeric(club_reg[118,5])/100,0)*100,big.mark = " ")`** clubs en 2021.
+La région Bourgogne-Franche-Comté compte **7 500** clubs en 2021.
 La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
 
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
@@ -382,7 +382,7 @@ Row {data-height="100"}
 
 ### Données générales
 
-La Nièvre et le Jura comptent plus de **10 clubs sportifs** pour 10 000 habitants. La Saône et Loire, 2 fois moins... En contre partie, la taille des clubs y est bien plus grande , comme dans le Territoire de Belfort, la Côte d'Or et le Doubs.
+La Nièvre et le Jura comptent plus de **30 clubs sportifs** pour 10 000 habitants. Les  clubs sont plus petits dans la Nièvre et dans l'Yonne.
 
  Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
@@ -471,7 +471,6 @@ tab <-
   
   mutate(`licences par club` = color_bar('lightgreen')
          (digits(licences / `Total clubs` ,1,decimal.mark=","))) 
-
 tab %>%  
   cc_kable(aligne = "rcrrrrrl") %>%
   column_spec(6, bold=T) %>%
@@ -515,13 +514,41 @@ rowheight = 550)
 ### Carte 
 
 ```{r}
+
+tab <- club_dep %>%
+  select(-1) %>%
+  filter(str_detect(fede,"Total")) %>%
+  pivot_longer(-fede,names_to = "DEP",values_to = "clubs") %>%
+  pivot_wider(names_from = fede, values_from = clubs) %>%
+  libelle(geo=DEP) %>%
+  rename(`unisport olympique`="Total fédérations unisport olympiques",
+         `unisport non olympique`="Total fédérations unisport non olympiques",
+         multisports=`Total fédérations multisports`,
+         `Total clubs`=`Total (hors groupements sportifs)` ) %>%
+  left_join(lic_dep %>%
+              select(-1,-3) %>%
+              rename("fede"=1) %>%
+              slice(118) %>%
+              pivot_longer(-`fede`, names_to='variable',values_to= 'value') %>%
+              pivot_wider(variable, names_from =  `fede`) %>%
+              select(DEP=1,licences=2) %>%
+              mutate(DEP=if_else(nchar(DEP)==1,paste0("0",DEP),DEP),
+                licences=as.numeric(licences)),
+            by="DEP"   ) %>%  
+  
+  mutate(`licences par club` = color_bar('lightgreen')
+         (digits(licences / `Total clubs` ,1,decimal.mark=","))) 
+
+
 carte <- depwgs
 carte@data <- carte@data %>% select(Département=DEP)
 carte <- merge(carte,clubdep %>%
                  select(Département=DEP,Libellé,Population=pop,
                         `Total clubs`=clubs,`Taux de clubs`=txclub),
                by="Département")
-carte@data <- carte@data %>% left_join(tab %>% select(1,3:5,7:8),by=c("Département"="DEP")) 
+carte@data <- carte@data %>% left_join(tab %>%
+                                         select(1,3:5,7:8),
+                                       by=c("Département"="DEP")) 
 
 leaflet(depwgs) %>% 
   carto() %>%

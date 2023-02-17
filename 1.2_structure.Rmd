@@ -155,7 +155,7 @@ Row  {data-height=100}
 -----------------------------------------------------------------------
 ### Données générales
 
-La Côte d'Or est de département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux. Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
+La Côte d'Or est le département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux. Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
 
 
   Row {.tabset .tabset-fade}
@@ -195,7 +195,11 @@ departement %>%
 ```{r}
 carte <- depwgs
 carte@data <- carte@data %>% select(Département=DEP,var)
-carte <- merge(carte,tab,by="Département")
+carte <- merge(carte,dep_tab %>%  
+                 demo(geo=Département) %>% 
+                 ungroup() %>%
+                 select(-Région),
+               by="Département")
 
 
 leaflet(carte) %>%  
