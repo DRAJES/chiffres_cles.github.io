@@ -634,11 +634,11 @@ Row {.tabset .tabset-fade }
 
 ```{r,echo=F}
 tab <- 
-  lic27epci %>%
-  tab_club(geo=EPCI) 
+  lic27epci %>% 
+  tab_club(geo=EPCI) %>% 
+  select(-5,-6,-7)
 
-tab %>% 
-  select(-5,-6,-7) %>%
+tab  %>%
   cc_kable("lcrrlll") %>%
   add_header_above(c(" "= 4,"Taux"=2," ")) %>%
   credits() %>%
@@ -650,7 +650,7 @@ tab %>%
 
 ### Tableau filtré
 ```{r}
-tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
+tab <- tab %>% filter(!EPCI %in% c('BFC','METRO')) 
 
 sd <- tab_filtre(geo=EPCI)
 
@@ -663,7 +663,10 @@ sd %>% datafiltre()
 ### Carte ECPI taux de clubs pour 10 000 habitants {data-height="800"}
 
 ```{r}
- 
+ tab <- 
+  lic27epci %>% 
+  tab_club(geo=EPCI)
+
 carte <- epcicarto
 carte@data <- carte@data %>% select(EPCI,Population=pop)
 carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
@@ -700,10 +703,10 @@ Row {data-height="20"}
 ```{r,echo=F}
 tab <- 
   lic27bv %>%
-  tab_club(geo=BV2022)
+  tab_club(geo=BV2022) %>% 
+  select(-5,-6,-7)
 
-tab %>% 
-  select(-5,-6,-7) %>%
+tab  %>%
   cc_kable("lcrrlll") %>%
   add_header_above(c(" "=4,"Taux"=2," ")) %>%
   credits() %>%
@@ -726,6 +729,10 @@ sd %>% datafiltre()
 ### Carte BV taux de clubs pour 10 000 habitants {data-height="800"}
 
 ```{r}
+tab <- 
+  lic27bv %>%
+  tab_club(geo=BV2022) 
+
 carte <- bvcarto
 carte@data <- carte@data %>% select(BV2022,Population=pop)
 carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,

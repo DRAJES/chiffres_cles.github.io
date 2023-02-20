@@ -14,7 +14,6 @@ runtime: shiny
 ---
 
 ```{r}
-
 load("data/demo/tab_demo.RData")
 load("data/demo/CRTE.RData")
 
@@ -156,6 +155,7 @@ leaflet() %>%
  contour_bfc() 
  
 ```
+
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20"}
 
