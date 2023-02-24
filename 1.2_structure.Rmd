@@ -54,11 +54,11 @@ hstructure <- function(.tbl,geo) {
 
 #définition des ronds proportionnels et choroplèthe
 pal <- colorBin("Purples", domain =0:200 ,
-                bins=c(0, 50, 75, 100 , Inf), 
+                bins=c(0, 50, 75, 100 , 125, Inf), 
                 reverse = T)
 
 pal2 <- colorBin("YlOrBr", domain =0:100 ,
-                 bins= c(0, 12.5, 15, 17.5, 20, 100) )
+                 bins= c(0, 12.5, 15, 17.5, 20, 22.5, 100) )
 
 var <- c("pop","ind_jeun","p1529") #définition des variables de la carte
 

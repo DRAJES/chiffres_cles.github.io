@@ -68,7 +68,7 @@ tab_lic <- function(.tbl,geo){
 
 #cartographie
 pallic <- colorBin("RdYlBu", domain =0:100 , reverse = TRUE,
-                   bins= c(0, 15, 20, 25, 30, 100) )
+                   bins= c(0, 15,17.5, 20, 22.5, 25, 30, 100) )
 
 carto <- function(.map,var=NULL) {
 

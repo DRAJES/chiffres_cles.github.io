@@ -153,6 +153,7 @@ leaflet() %>%
  carto_ZRR() %>%
  carto() %>%
  contour_bfc() 
+
  
 ```
 
@@ -210,9 +211,11 @@ carte <- merge(carte,dep_tab %>%
 
 
 leaflet() %>%
-  densite() %>%
+  densite() %>% 
   carto() %>%
   contour_depbfc(zoom= 6) 
+
+ 
 
 ```
 
@@ -266,7 +269,7 @@ carte <- merge(carte,tab,by="EPCI")
 leaflet() %>% 
   densite() %>%
   carto() %>%
-  contour_depbfc() %>%   
+  contour_depbfc() %>% 
   QPV()
 
 ```

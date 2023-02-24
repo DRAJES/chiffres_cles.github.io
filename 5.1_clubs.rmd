@@ -71,10 +71,8 @@ tab_club <- function(.tbl,geo){
 pal <- colorBin("YlOrBr", domain =0:100 ,
                  bins= c(0, 15, 20, 25, 30,35, 100) )
 
-# pallic <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,
-#                    bins= c(0, 19, 22, 25, 100) )
 pallic <- colorBin("RdYlBu", domain =0:100 , reverse = TRUE,
-                    bins= c(0, 19, 22, 25, 100) )
+                    bins= c(0, 15,17.5, 20, 22.5, 25, 30, 100) )
 
 carto <- function(.map,var=NULL) {
 
