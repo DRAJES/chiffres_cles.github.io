@@ -24,34 +24,40 @@ lic_reg <- lic_reg %>%
   rename(code_fede=...1,fede=`Codes régions`,FM=...22)
 
 lic_reg_sexe <- lic_reg_sexe %>% 
-  slice (2:18) %>% 
-  dplyr::select(-c(3,17:21,23:24)) %>% 
-  mutate_at(3:16,as.numeric) %>%
-  rename(code_fede=...1,fede=`Codes régions`,FM=...22)
+  slice (17:18) %>% 
+  dplyr::select(-c(1,3,17:21,23:24)) %>% 
+  mutate_at(2:15,as.numeric) %>%
+  rename(FM=...22) %>%
+  pivot_longer(-1, names_to = "REG", values_to = "licences") %>%
+  pivot_wider(REG,names_from = "Codes régions",values_from = "licences") %>%
+  mutate(txfem=round(100*`Licences féminines`/Total,1) )
+
 
 lic_dep[118,2] <- "Total général (hors groupements nationaux)"
-lic_dep_bfc <- lic_dep %>% 
+lic_dep <- lic_dep %>% 
   slice (2:118) %>%
-  filter(!is.na(`Codes départements`)) %>%
-  dplyr::select(1:2,depbfc,FM="...114") %>%
-  bind_cols(BFC=lic_reg$`27`) %>% 
-  relocate(BFC,.before=FM) %>% 
-  mutate_at(3:12,as.numeric) %>%
+  filter(!is.na(`Codes départements`)) %>%  
+  mutate_at(3:116,as.numeric) %>%
   rename(code_fede=...1,fede=`Codes départements`)
 
+lic_dep_bfc <- lic_dep %>%
+  dplyr::select(1:2,depbfc,FM="...114") %>%
+  bind_cols(BFC=lic_reg$`27`) %>% 
+  relocate(BFC,.before=FM)  
 
 feddepsexe <- feddepsexe %>%  
-  slice (2:18) %>%
-  dplyr::select(1:2,depbfc,France="...114") %>%
-  bind_cols(BFC=lic_reg_sexe$`27`)%>%
-  relocate(BFC,.before=France) %>% 
-  mutate_at(3:12,as.numeric)
-
-feddepsexe <- as.data.frame(t(feddepsexe)) %>% 
-  select(16:17) %>% 
-  rownames_to_column() %>% 
-  mutate(txfem=100*as.numeric(V16)/as.numeric(V17))
-
+  select(-...1,-...3) %>%
+  rename(FM="...114") %>%
+  slice (17:18) %>% 
+  mutate_at(2:114,as.numeric) %>%
+  pivot_longer(-1,names_to = "DEP",values_to = "licences") %>%
+  pivot_wider(names_from = "Codes départements", values_from = "licences") %>%
+  mutate(DEP=if_else(nchar(DEP)==1,paste0("0",DEP),DEP),
+         txfem=round(100*`Licences féminines`/Total,1)) %>% 
+  bind_rows(lic_reg_sexe %>% 
+              filter(REG=='27') %>% 
+              select(-REG) %>%
+              mutate(DEP="BFC") )
 
 fede_sexe_dep <- fedsexeuni %>% 
   select(1:2,depbfc)%>% 
