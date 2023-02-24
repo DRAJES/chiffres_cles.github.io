@@ -528,7 +528,7 @@ tab <- club_dep %>%
   left_join(lic_dep %>%
               select(-1,-3) %>%
               rename("fede"=1) %>%
-              slice(118) %>%
+              slice(114) %>%
               pivot_longer(-`fede`, names_to='variable',values_to= 'value') %>%
               pivot_wider(variable, names_from =  `fede`) %>%
               select(DEP=1,licences=2) %>%
