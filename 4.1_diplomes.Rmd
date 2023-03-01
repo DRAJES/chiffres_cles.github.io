@@ -171,7 +171,8 @@ hchart("bar",
        hcaes(x = Type.de.diplôme,y=valeur,group=stat), 
        color=c("#da70d6",'#87ceeb'),
        stacking="normal", 
-       pointWidth = 20)
+       pointWidth = 20) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
         
   
 ```
@@ -195,7 +196,8 @@ hchart(density(forome$age ),
                  type= "area",  
                  color = "#00FF0060", pointWidth = 50 , showInLegend = T, 
                  name = "Sport" ) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm)   %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
@@ -208,8 +210,9 @@ forome %>%
 hchart("column",
        hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
        showInLegend = T) %>%
-  hc_add_theme(thm) 
-
+  hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
+ 
 ```
 
 # Diplômes non professionnels (BAFA/BAFD) {data-orientation="rows" height="30" data-icon="fa-users"}
@@ -341,7 +344,8 @@ hchart(bafaregm %>%
        name=c("BAFA","BAFD")) %>%
   hc_xAxis(title=list(text="Région")) %>%
   hc_yAxis(title=list(text="Nombre de Brevets d'Aptitude")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 ### évolution du poids des régions
@@ -354,7 +358,8 @@ hchart(bafaregm %>%
 "areaspline", hcaes(x = année, y = BAFA, group = region),
           stacking = "normal",
           marker=FALSE,
-          showInLegend =T,  pointWidth = 20)
+          showInLegend =T,  pointWidth = 20) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
@@ -450,11 +455,12 @@ list_of_plots <- map(depbfc, function(x) {
                   type = "spline",
                   name = "Hommes",  pointWidth = 10, dashStyle=  'ShortDot') %>%
     hc_title(text = str_to_title(filtered$deplib[1])) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
   
   })
 
-hw_grid(list_of_plots, rowheight = 300) %>%
+hw_grid(list_of_plots,ncol=4, rowheight = 300) %>%
   htmltools::browsable()
 
 ```

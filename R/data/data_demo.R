@@ -1,6 +1,7 @@
-source("librairies.R")
+#source("librairies.R")
 #construction de la base communale démographie
 library(readxl)
+library(tidyverse)
 passage <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/table_passage_annuelle_2022.xlsx",sheet=1,skip=5)
 surface <- read.csv2("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/base_cc_comparateur.csv")
 communes <- read_excel("I:/SUPPORT/05_CARTO/Fonds de cartes/fonds insee 2022/table-appartenance-geo-communes-22.xlsx",sheet=1,skip=5)
@@ -32,6 +33,8 @@ basecom_temp <- communes %>% filter(REG>"10") %>%
 
 #pop_new <- read_excel("I:/SUPPORT/04_STATS/Sources/INSEE/RP/RP2018/BTX_TD_POP1B_2018.xlsx",sheet = 1,skip = 10)
 pop_new <- read_csv2("I:/SUPPORT/04_STATS/Sources/INSEE/RP/RP2019/BTT_TD_POP1B_2019.csv")
+
+save(pop_new,file = "data/demo/RPage.RData")
 
 #op_new <- pop_new %>% 
 #         transmute(CODGEO,

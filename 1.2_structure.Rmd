@@ -12,6 +12,15 @@ output:
  
  
 ```{r} 
+load("data/demo/RPage.RData")
+source("R/data/pop_dep_age.R")
+library(summarywidget)
+
+pop_age_bfc <-   pop_new %>% 
+  mutate (NB = as.numeric(NB),
+          DEP = substr(CODGEO,1,2)) %>%
+  filter(DEP %in% depbfc)
+
 #défintion des variables des tableaux
 demo <- function(.tbl,geo) {.tbl %>%
      select({{geo}},Nom,Population,
@@ -132,6 +141,28 @@ region %>%
 hstructure("Région")
 ```
 
+### Pyramide
+```{r}
+pop_age_bfc %>% 
+  group_by(AGED100,SEXE) %>%
+  summarise(popage=sum(NB)) %>%
+  mutate(popage=if_else(SEXE==1,-popage,popage),
+         popage=round(popage,0),
+         SEXE=as.character(SEXE),
+         SEXE=if_else(SEXE=="1"," Hommes","Femmes") ) %>%
+  arrange(desc(AGED100)) %>%
+  hchart("bar",
+         hcaes(x=AGED100,y=popage,group=SEXE),
+         stacking="normal") %>%
+   hc_yAxis(labels=list(formatter=JS("function () {
+                      return (Math.abs(this.value))}"))) %>%
+    hc_tooltip(formatter = JS("function (tooltip) {
+     return tooltip.defaultFormatter.call(this, tooltip)}")) %>%
+  hc_add_theme(thm)  %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+```
+
+
 ### Carte régionale
 ```{r}
 carte <- regwgs
@@ -188,6 +219,36 @@ departement %>%
   hstructure("Département")
 
 
+```
+
+### Pyramide
+```{r}
+list_of_plots <- map(depbfc, function(x) {
+ 
+  filtered <-
+    pop_age_bfc %>%
+    filter(DEP == x)
+
+  filtered %>% 
+  group_by(AGED100,SEXE) %>%
+  summarise(popage=sum(NB)) %>%
+  mutate(popage=if_else(SEXE==1,-popage,popage),
+         popage=round(popage,0),
+         SEXE=as.character(SEXE),
+         SEXE=if_else(SEXE=="1"," Hommes","Femmes") ) %>%
+  arrange(desc(AGED100)) %>%
+  hchart("bar",
+         hcaes(x=AGED100,y=popage,group=SEXE),
+         stacking="normal") %>%
+    hc_yAxis(labels=list(formatter=JS("function () {
+                      return (Math.abs(this.value))}"))) %>%
+    hc_title(text = str_to_title(filtered$DEP[1])) %>%
+    hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
+})
+
+hw_grid(list_of_plots,ncol = 4, rowheight = 300) %>%
+  htmltools::browsable()
 ```
 
 
@@ -291,6 +352,68 @@ leaflet(carte) %>%
   carto() %>%
   contour_depbfc() 
 ```
+
+
+# Structure par âge à façon
+
+Row {data-height="20"}
+-----------------------------------------------------------------------
+
+Row  {data-height=800}
+-----------------------------------------------------------------------
+### Création de classes d'âges à façon
+
+```{r}
+sd <- SharedData$new(pop_age_bfc)
+
+    filter_slider("age","âge",sd ,column = ~as.numeric(AGED100) , step = 1, width = 300)
+{
+  pop21 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="21", digits=0)
+  fem21 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="21" & SEXE==2, digits=0)
+  pop25 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="25", digits=0)
+  fem25 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="25" & SEXE==2, digits=0)
+  pop39 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="39", digits=0)
+  fem39 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="39" & SEXE==2, digits=0)
+  pop58 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="58", digits=0)
+  fem58 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="58" & SEXE==2, digits=0)
+  pop70 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="70", digits=0)
+  fem70 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="70" & SEXE==2, digits=0)
+  pop71 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="71", digits=0)
+  fem71 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="71" & SEXE==2, digits=0)
+  pop89 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="89", digits=0)
+  fem89 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="89" & SEXE==2, digits=0)
+  pop90 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="90", digits=0)
+  fem90 <-   summarywidget(sd, 'sum', 'NB', selection=~DEP=="90" & SEXE==2, digits=0)
+  popbfc <-   summarywidget(sd, 'sum', 'NB', selection=~DEP %in% depbfc, digits=0)
+  fembfc <-   summarywidget(sd, 'sum', 'NB', selection=~DEP %in% depbfc & SEXE==2, digits=0)
+
+  }
+
+# df <- data.frame(dep= depbfc,
+#                  pop = c(pop21,pop25,pop39,pop58,pop70,pop71,pop89,pop90) )
+
+```
+
+Population par âges sélectionnés :
+
+Côte-d'Or : **`r pop21`** dont **`r fem21`** femmes.
+
+Doubs : **`r pop25`** dont **`r fem25`** femmes.
+
+Jura : **`r pop39`** dont **`r fem39`** femmes.
+
+Nièvre : **`r pop58`** dont **`r fem58`** femmes.
+
+Haute-Saône : **`r pop70`** dont **`r fem70`** femmes.
+
+Saône-et-Loire : **`r pop71`** dont **`r fem71`** femmes.
+
+Yonne : **`r pop89`** dont **`r fem89`** femmes.
+
+Territoire de Belfort : **`r pop90`** dont **`r fem90`** femmes.
+
+Soit **`r popbfc`** en Bourgogne-Franche-Comté dont **`r fembfc`** femmes.
+
 
 
 *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }

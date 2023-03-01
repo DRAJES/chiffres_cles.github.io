@@ -53,8 +53,8 @@ tab_filtre <- function(geo) {
   sd <- SharedData$new(sd)
   return(sd) }
   
-datafiltre <- function(sd=sd)  {
-  sd %>% 
+datafiltre <- function(.tbl=sd)  {
+  .tbl %>% 
     datatable(escape = FALSE,
               height = 700,
               extensions = c('Scroller', 'Buttons'),
