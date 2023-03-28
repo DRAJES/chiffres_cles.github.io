@@ -70,14 +70,14 @@ Row {data-height="100"}
 
 ### Données générales
 
-**3 200** missions de service civique en Bourgogne-Franche-Comté en 2020.
-**3 100** volontaires originaires de la région.  
-Des missions tournées principalement vers les actions humanitaires et la solidarité.
+**3 100** missions de service civique en Bourgogne-Franche-Comté en 2020.
+**3 000** volontaires originaires de la région.  
+Des missions tournées principalement vers l'éducation pour tous et la solidarité.
 
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
-### évolution du nombre de nouveaux volontaires originaires de la région et des nouvelles missions réalisées dans la région
+### évolution annuelle des missions et volontaires
 
 **Légèrement plus de missions que de volontaires dans la région.**
 
@@ -175,7 +175,7 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### évolutions départementales
 
-**Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020.**
+**Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020, un rebond en 2021 et à nouveau une baisse en 2022.**
 
 ```{r}
 baseSC %>% 
@@ -201,7 +201,7 @@ baseSC %>%
 
 ### Caractéristiques des volontaires de la région
 
-**Une large majorité de femmes parmi les volontaires, près de 30% de peu diplômés, 37% étaient chômeurs auparavant, un contrat sur cinq rompu avant son terme**
+**Une large majorité de femmes parmi les volontaires, près d'un tiers de peu diplômés, 30% étaient chômeurs auparavant, un contrat sur cinq rompu avant son terme dont 9% pour embauche.**
 
 ```{r}
 
@@ -437,7 +437,7 @@ Row {data-height="600"}
 
 ### Missions effectuées par les jeunes en QPV
 
-**Près de 1% des 16/25 ans s'engagent sur une mission de Service civique, y compris dans les QPV**
+**Environ un jeune de 16 à 25 ans sur 100 s'engage dans une mission de Service civique, y compris dans les QPV, presque un volontaire sur cinq issus de quartier prioritaire dans le Territoire de Belfort et le Doubs.**
 
 ```{r}
 baseSC %>%
