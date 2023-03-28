@@ -114,7 +114,7 @@ Row {data-height="100"}
 
 ### Données générales
 
-En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire national des Associations.
+En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire national des Associations. Si le répertoire est exhaustif, il est en revanche peu actualisé, en particulier pour les associations qui ont peu d'activité ou n'ont pas de besoin de subvention. On estime à un peu plus de la moitié les associations véritablement actives (entre 60 000 et 65 000 dans la région, sans clé de répartition).
 C'est la troisième région de France en nombre d'association par habitant derrière la Corse et l'Occitanie.
 Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
