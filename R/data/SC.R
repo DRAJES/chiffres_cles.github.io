@@ -5,6 +5,8 @@ library(ggplot2)
 library(tidyverse)
 #library(plotly)
 #devtools::install_github("joelgombin/banR", build_vignettes = TRUE)
+#devtools::install_github(repo = 'rCarto/photon')  
+
 # Traitement QPV
 #base2023 <- read_ods("C:/Users/plebre/Documents/projets R/service civique/2023/liste_contrats_valides_2023_03_27_11_30_40.ods")
 # ou load("sc2023.RData")
@@ -22,7 +24,7 @@ library(tidyverse)
 # write.csv2(sc2023,"C:/Users/plebre/Documents/projets R/service civique/2023/sc2023.csv")
 
 # appliquer géocodage sur sigville et récupérer le fichier
-#SC_sig <- read.csv2("C:/Users/plebre/Documents/projets R/service civique/2023/sc2023_QP_230327_1849.csv",as.is = T)
+SC_sig <- read.csv2("C:/Users/plebre/Documents/projets R/service civique/2023/sc2023_QP_230327_1849.csv",as.is = T)
 
 #jointure sur la base d'origine
 basebfc <- left_join(base2023,SC_sig,by=c("CTV_NUMERO"="X_IDENTIFIANT") )
@@ -41,8 +43,6 @@ dipl <- c("Sortie en cours de terminale ou Bac non validé (IV)",
 
 #baseSC <- read.csv2("I:/SUPPORT/04_STATS/engagement/Service Civique/liste_contrats_valides_2021_11_08_10_34_21.geocoded.csv",as.is = T)
 
-#on va maintenant géolocaliser les adresses et les lieux de missions 1 (uniquement)
-library(banR)
 
 baseSC <- basebfc %>% 
   filter(CTV_DATE_DEBUT != "" & substr(dmy((CTV_DATE_DEBUT)),1,4) < "2023") %>% #contrats commencés jusqu'en 2022
@@ -85,8 +85,10 @@ baseSC <- basebfc %>%
          age=time_length(dmy(VOL_DATE_NAISSANCE) %--% dmy(CTV_DATE_DEBUT),"years")
   )
 
-save(baseSC,oursin,oursinxy,flows,file="data/engagement/SC.RData")
+save(baseSC,file="data/engagement/SC.RData")
 
+
+#suite voir SC_oursins
 
 
 tableau <- baseSC %>% 
@@ -195,116 +197,6 @@ p <- ggplot(duree,aes(x=debut,y=mduree,group=depvol,color=depvol))+ ylim(23,31)+
 #scale_color_jcolors(palette = "pal6")
 p
 
-
-
-
-qp <- c("VOIE_EN_LIMITE","VOIE_EN_PARTIE","VOIE_ENTIERE") 
-qp <- c("VOIE_ENTIERE") 
-
-tableauqpv <- baseSC %>% 
-  mutate(dep_v=substr(CODE_COMMUNE_INSEE,1,2) ) %>%
-  filter(dep_v %in% depbfc ) %>% 
-  group_by(dep_v) %>%
-  summarise(qpv=sum(!(CODE_QUARTIER=="")), n() ,tx= 100*qpv/n() 
-            #chomageqpv=100*sum(LOCADR_REF[SAC_LIBELLE =="Demandeur d'emploi"] =="OUI" )/qpv,
-  ) %>% adorn_totals()
-write.csv(tableauqpv,"C:/Users/plebre/Documents/projets R/service civique/2020/tableau.csv")
-rpivotTable::rpivotTable(basebfc%>% mutate(dep_v=substr(CODE_COMMUNE_INSEE,1,2) ))  
-
-
-save(baseSC,basebfc,basebfcsig,oursin,oursinxy,flows,file="data/engagement/SC.RData")
-
-library(geosphere)
-library(rgdal)
-
-oursin <- read.dbf("I:/SUPPORT/04_STATS/Jeunesse/SERVICE CIVIQUE/service_civique_2019/oursin.dbf")
-
-
-library(photon)
-
-
-load("data/demo/cartes.RData")
-cartexy <- centroid(com27wgs)
-cartexy <- cbind(com27wgs,cartexy)
-
-oursinxy <- left_join(oursin,cartexy@data %>% select(INSEE_COM,origine=NOM_COM,origine.x=X1,origine.y=X2),by=c("volontaire"="INSEE_COM"))
-oursinxy <- left_join(oursinxy,cartexy@data %>% select(INSEE_COM,destination=NOM_COM,destination.x=X1,destination.y=X2),by=c("mission"="INSEE_COM")) %>%
-  filter(!is.na(origine.x) & !is.na(destination.x)) 
-oursinxy <- oursinxy %>%  group_by(destination) %>%
-  mutate(missions=sum(nombre),
-         rayon=missions*10)
-
-library(ggforce)
-
-flows <- gcIntermediate(oursinxy[,5:6],oursinxy[,8:9],n=5, sp=T,addStartEnd = T)
-
-ggplot()+geom_bezier(aes(x=oursinxy[,5],y=oursinxy[,8]),data=oursinxy)
-
-flows$nombre <- oursinxy$nombre
-flows$origine <- oursinxy$origine
-flows$destination <- oursinxy$destination
-
-library(leaflet)
-library(RColorBrewer)
-
-hover <- paste0(flows$origine, " à ", 
-                flows$destination, ': ', 
-                as.character(flows$nombre))
-
-pal <- colorFactor(brewer.pal(4, 'Set2'), flows$origine)
-
-
-
-leaflet() %>%
-  addProviderTiles('CartoDB.Positron') %>%
-  addCircles(data=oursinxy, ~destination.x, ~destination.y,
-             weight =~oursinxy%>% group_by(destination)%>% mutate(sum(nombre)^(1/2))%>%pull, 
-             #radius=40, 
-             label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5) %>%
-  addPolylines(data = flows, 
-               weight = ~ifelse(nombre>3,nombre^(1/2), 0),
-               label = hover,
-              # group = ~origine
-              stroke = T, 
-              #color = "#6eff2a",
-              #color = colorRampPalette(c("orange", "green"), alpha = TRUE)(8),
-              #color = rainbow(30, alpha = NULL),
-              #opacity = 0.8,
-              fill = F, fillOpacity = 0.8, dashArray = NULL,
-              smoothFactor = 1,
-              fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
-              color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")(seq(0, 1, length.out = 25))
-                             ) 
-
-
-leaflet(oursinxy) %>%
-  addProviderTiles('CartoDB.Positron')  %>%
-  addFlows( oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.x),
-            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(origine.y),
-            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.x),
-            oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(destination.y),
-            flow = oursinxy %>% filter(destination!=origine & nombre>3) %>% pull(nombre),
-               #popup = hover,
-               # group = ~origine
-               opacity = 0.6, 
-               color = "lightblue",
-               #color = colorRampPalette(c("orange", "green"), alpha = TRUE),
-               #color = rainbow(30, alpha = NULL),
-               #fill = F, fillOpacity = 0.8, dashArray = NULL,
-               #smoothFactor = 1,
-               #fillColor = colorRampPalette(c(rgb(0,0,1,1), rgb(0,0,1,0)), alpha = TRUE)(8),
-               #color = scales::seq_gradient_pal(low = "lightblue", high = "lightgreen", space = "Lab")(seq(0, 1, length.out = 25))
-  ) %>%
-  addMinicharts( oursinxy %>% filter(destination==origine) %>% pull(destination.x),
-                 oursinxy %>% filter(destination==origine) %>% pull(destination.y),
-                 chartdata =  oursinxy %>% filter(destination==origine) %>%ungroup() %>% mutate(entrant=missions-nombre) %>%
-                   select(stable=nombre,entrant),
-                  opacity = 0.7,              
-                 type = "pie",
-                 colorPalette = c("lightgreen", "lightblue"),
-                width = oursinxy %>% filter(destination==origine) %>% mutate(2*missions^(1/2)) %>% pull(12),
-               #label = ~as.character(destination),color="#ffa500", stroke = TRUE, fillOpacity = 0.5
-             )
 
 
 

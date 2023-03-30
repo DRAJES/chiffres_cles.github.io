@@ -13,6 +13,7 @@ output:
 ```{r}
 
 load("data/engagement/SC.RData")
+load("data/engagement/flux.RData")
 
 pal2 <- colorBin("YlOrBr", domain =0:2 ,bins= c(0, 0.8, 0.9, 1, 1.1, 2) )
 
@@ -70,7 +71,7 @@ Row {data-height="100"}
 
 ### Données générales
 
-**3 100** missions de service civique en Bourgogne-Franche-Comté en 2020.
+**3 100** missions de service civique en Bourgogne-Franche-Comté en 2022.  
 **3 000** volontaires originaires de la région.  
 Des missions tournées principalement vers l'éducation pour tous et la solidarité.
 
