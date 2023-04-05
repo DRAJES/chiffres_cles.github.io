@@ -368,6 +368,10 @@ leaflet() %>%
 ```
 
 
+### Flux annuels
+
+[![](images/fluxSC.PNG)</br>\
+flux de nouveaux volontaires par année](https://pierre-stephanelebre.shinyapps.io/fluxSC/)
 
 
 ### Flux arc

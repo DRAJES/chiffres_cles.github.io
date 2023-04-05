@@ -414,6 +414,10 @@ Territoire de Belfort : **`r pop90`** dont **`r fem90`** femmes.
 
 Soit **`r popbfc`** en Bourgogne-Franche-Comté dont **`r fembfc`** femmes.
 
+### Outil interactif en ligne
+
+[![](images/ageD.PNG) </br>\
+population des territoires par âge à façon](https://pierre-stephanelebre.shinyapps.io/ageD/)
 
 
 *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }

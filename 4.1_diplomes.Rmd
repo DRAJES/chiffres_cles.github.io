@@ -68,8 +68,7 @@ idjeps <- function(.tbl){
 
 ### Données générales sur les diplômes professionnels délivrés en Bourgogne-Franche-Comté en 2019
 
-**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
-**8e** région de France en nombre de diplômes délivrés. La moitié des diplômes sont issus de la filière STAPS.
+**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS. **8e** région de France en nombre de diplômes délivrés. La moitié des diplômes sont issus de la filière STAPS.
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
@@ -363,7 +362,6 @@ hchart(bafaregm %>%
 
 ```
 
-
 ## Row {.tabset .tabset-fade .tabset-pills data-height="1000"}
 
 ### Diplômes non professionnels délivrés par département
@@ -428,7 +426,6 @@ bafadepm %>%
 
 ### évolution des BAFA de Bourgogne-Franche-Comté
 
-
 ```{r}
 list_of_plots <- map(depbfc, function(x) {
   
@@ -464,8 +461,6 @@ hw_grid(list_of_plots,ncol=4, rowheight = 300) %>%
   htmltools::browsable()
 
 ```
-
-
 
 # Insertion des diplômés {data-orientation="rows" height="30" data-icon="fa-user-tie"}
 
@@ -533,15 +528,11 @@ IDJEPSg %>%
   
 ```
 
-
 ### Profils d'emploi des diplômés de BFC
 
 ```{r}
 
 ```
-
-
-
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
@@ -552,8 +543,7 @@ IDJEPSg %>%
 **Sources :**
 
 -   Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports
-- Données BAFA/BAFD <https://injep.fr/donnee/bafa-bafd-2011-2021/>
-Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
+-   Données BAFA/BAFD <https://injep.fr/donnee/bafa-bafd-2011-2021/> Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
 
 Le dispositif régional d'observation de l'emploi et de la formation (DROEF) est un réseau de correspondants régionaux animé par la direction des Sports et chargé de suivre la formation et l'insertion des diplômés, en particulier à travers une enquête d'insertion des diplômés Jeunesse et Sports :\
 

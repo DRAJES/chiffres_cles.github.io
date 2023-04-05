@@ -1,0 +1,14 @@
+name: fluxSC
+title: fluxSC
+username:
+account: pierre-stephanelebre
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8729955
+bundleId: 7032334
+url: https://pierre-stephanelebre.shinyapps.io/fluxSC/
+when: 1680258052.74619
+lastSyncTime: 1680258052.74621
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ACM.R|ACM_pano.R|bafa.R|carroussel.R|clubs.R|data_demo.R|diplomes.R|ecoles.R|fonctions.R|fonctions_carto.R|fonctions_merge.R|JO.R|licences.R|NEET.R|piscines.R|PMI.R|pop_dep_age.R|RES nature.R|RES.R|SC.R|SC_oursins.R|spark_licence.R|sparkline.R|VA.R|VA_evo.R

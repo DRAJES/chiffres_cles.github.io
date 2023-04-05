@@ -1,4 +1,5 @@
 library(tidyverse)
+library(glue)
 library(readODS)
 
 #load("~/projets R/service civique/sc2023.RData")
@@ -163,6 +164,5 @@ oursinxy <- oursinxy %>%
   mutate(missions=sum(nombre),
          rayon=missions*10)
 
-
-save(oursinxy,file="data/engagement/flux.RData")
+save(vol_geo,miss_geo,cartexy,oursinxy,file="data/engagement/flux.RData")
 
