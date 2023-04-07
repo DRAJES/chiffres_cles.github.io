@@ -1,23 +1,28 @@
-pop_basecom <-   function(geo=REG){ 
+
+libelle <- function(.tbl,geo){
+  .tbl %>%
+    left_join(.,appartenance %>% 
+                dplyr::filter(NIVGEO==rlang::ensym(geo)) %>%
+                dplyr::select("{{geo}}" := CODGEO, "Libellé" := LIBGEO),
+              by=names(dplyr::select(., {{geo}}))  ) %>%
+    relocate(Libellé,.after = {{geo}} )
+}
+
+pop_basecom <-   function(geo){ 
    basecom %>% 
       group_by({{geo}} ) %>%
      summarise(comm=n(),
               pop=sum(pop,na.rm=T)) %>%
-    left_join(appartenance %>%
-                filter (NIVGEO == ensym(geo)  )  %>%
- #               select("{{geo}}" := CODGEO,"nom_{{geo}}" := LIBGEO),
-                 select("{{geo}}" := CODGEO, "Libellé" := LIBGEO),
-              by=names(select(., {{geo}}) )  )  %>%
-    relocate("Libellé",.after = 1)
+    libelle({{geo}})
 #        adorn_totals("row",name="METRO")
        }
-
 #pop_basecom(REG)
 
 cc_kable <-  function(.tbl,aligne ){ 
   .tbl %>% 
-    kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-          align=aligne, escape = F) %>% 
+    kable("html", escape = FALSE,
+          align=aligne,
+          format.args = list(decimal.mark = ",", big.mark = " ") ) %>% 
     kable_styling("hover", full_width = F) %>%
     row_spec(str_which (.tbl %>% pull(1) ,"FR|Total|France.|METRO" ) ,
              bold = T,color = "navy")  %>%
@@ -31,7 +36,38 @@ cc_kable <-  function(.tbl,aligne ){
   }
 
 
-#str_which(epci27_tab$Nom,"Franche")
-#which(epci27_tab$Nom == "Bourgogne-Franche-Comté")
-
-#str_which(epci27_tab %>% pull(Nom), c( "BFC")   )
+tab_filtre <- function(geo) {
+  
+  sd <- tab %>%
+    left_join(.,basecom %>%
+                dplyr::group_by({{geo}}) %>%
+                dplyr::filter(REG=='27') %>%
+                dplyr::filter(pop==max(pop)) %>% 
+                dplyr::select({{geo}},DEP),
+              by=names(select(., {{geo}})) 
+    ) %>%
+    libelle(DEP) %>% 
+    select(-DEP) %>%
+    rename(filtre_DEP=Libellé)
+  
+  sd <- SharedData$new(sd)
+  return(sd) }
+  
+datafiltre <- function(.tbl=sd)  {
+  .tbl %>% 
+    datatable(escape = FALSE,
+              height = 700,
+              extensions = c('Scroller', 'Buttons'),
+              options = list(
+                dom = 'Bfrtip',
+                buttons = 'csv',
+                #   list('copy', 'print', list(
+                #     extend = 'collection',
+                #     buttons = 'csv',
+                #     buttons = c('csv', 'excel', 'pdf'),
+                #     text = 'Download')),
+                # scroller = TRUE,
+                #scrollY=600,
+                paging = FALSE),
+              rownames = FALSE) 
+}

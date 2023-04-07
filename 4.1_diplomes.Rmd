@@ -11,8 +11,8 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
-sparkline(0)
+```{r}
+library(lubridate)
 
 load("data/formation/diplome.RData")
 load("data/formation/bafa.RData")
@@ -58,17 +58,6 @@ idjeps <- function(.tbl){
          txempappr=round(100*emplappr/apprentis,1),
          txinserappr=round(100*inserapp/emplappr,1) ) }
 
-
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
-
-options(knitr.kable.NA = '')
-options(knitr.table.format = "html")
 ```
 
 # Diplômes professionnels {data-orientation="rows" height="30" data-icon="fa-graduation-cap"}
@@ -79,7 +68,7 @@ options(knitr.table.format = "html")
 
 ### Données générales sur les diplômes professionnels délivrés en Bourgogne-Franche-Comté en 2019
 
-**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = ",")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
+**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS. **8e** région de France en nombre de diplômes délivrés. La moitié des diplômes sont issus de la filière STAPS.
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
@@ -88,23 +77,32 @@ options(knitr.table.format = "html")
 **Près de 1 000 diplômés de STAPS, Une large part de BPJEPS pour le reste des diplômes délivrés en 2019**
 
 ```{r}
-diplreg %>% 
-  rename(" "="...1") %>%
-  
-  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
-    align="crrrrrrrrrrrrrr", escape = F )%>%
-  kable_styling("hover", full_width = F) %>%
-  column_spec(15, 
-              bold=T) %>%
-  column_spec(3,
-              background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
-  #add_header_above(c( " "=2,"Fédérations"=3," "=3) ) %>%
-  row_spec(c(1,3,5,8,10,12,14),
-           bold = T) %>%
+tab <- diplreg %>% 
+  rename("diplome"="...1") %>%
+  pivot_longer(-1,names_to = "reg", values_to = "nombre") %>%
+  pivot_wider(names_from = "diplome", values_from = "nombre") %>%
+  select(!contains("niveau")) %>% select(-"Autres diplômes") %>%
+  mutate(reg=str_to_title(reg))
+
+colnames(tab) <- c("Région", "BAPAAT<sup>1","BPJEPS<sup>2","DUT<sup>3",
+                   "DEJEPS<sup>4", "DEMM<sup>5","DESJEPS<sup>6",
+                   "STAPS<sup>7","Total")
+
+tab %>%  
+  cc_kable(aligne = "lrrrrrrrr") %>%
+  add_header_above(c("diplôme de"=1, "niveau 3"=1, "niveau 4"=1, 
+                     "niveau 5"=3, "niveau 6"=1, "Autres"=1, " "=1)) %>%
+  footnote(number = c("Brevet d'Aptitude Professionnelle d'Assistant Animateur Technicien",
+                      "Brevet Professionnel de la Jeunesse, de l'Éducation Populaire et du Sport",
+                      "Diplôme Universitaire de Technologie Carrière sociale option Animation sociale et socioculturelle",
+                      "Diplôme d'État de la Jeunesse, de l'Éducation Populaire et du Sport",
+                      "Diplôme d'État des Métiers de la Montagne",
+                      "Diplôme d'État Supérieur de la Jeunesse, de l'Éducation Populaire et du Sport",
+                      "Sciences et Techniques des Activités Physiques et Sportives (LMD et hors LMD") ) %>%
   footnote(general = "Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports",
            general_title = "Source : ",
            footnote_as_chunk = T)  %>%
-  scroll_box(height = "600px")
+  scroll_box(height = "800px")
 
 
 ```
@@ -114,41 +112,47 @@ diplreg %>%
 **8e région de France en nombre de diplômes délivrés**
 
 ```{r}
-bar <- as.data.frame(t(diplreg %>% slice(14)) ) %>% 
-                    mutate(total=as.numeric(V1)) %>% 
-                    slice(2:14) %>% 
-                    arrange(desc(total))
-
-hchart(bar,
- "bar",hcaes(x=rownames(bar),y=total ,
-             color=c(rep("#ffd700",7),"#6a5acd",rep("#ffd700",5))  ),
+tab %>%
+  slice(-14) %>%
+  arrange(desc(Total)) %>%
+hchart("bar",
+       hcaes(x=Région,y=Total ,
+             color=ifelse(str_detect(Région,"Bourgogne"),"#6a5acd","#ffd700") ),
        showInLegend = T, pointWidth = 20,
        name = "diplômes sport et animation délivrés" ) %>%
      hc_xAxis(title=list(text="Région")) %>%
     hc_yAxis(title=list(text="Nombre de diplômes")) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 ```
 
 ### Répartition des diplômes
 
 ```{r}
-pie <- diplreg %>% 
-            slice(-14) %>% 
-            select(diplome=1,nombre=3, france=15) %>% 
-            filter(!is.na(nombre))
+tab <- tab %>%
+  select(-Total) %>%
+  pivot_longer(-1, names_to = "diplome",values_to = "nombre") %>%
+  mutate(diplome=str_sub(diplome,end = -7)) 
+#  arrange((nombre))
 
-hchart(pie,
-"pie", hcaes(x=diplome,y=nombre,z=france),
+hchart(tab %>% filter(str_detect(Région,"Bourgogne") ),
+       "pie", 
+       hcaes(x=diplome,y=nombre),
        name="Bourgogne-Franche-Comté",
        showInLegend = T, 
-       size ='80%',innerSize='50%' ) %>%
-  hc_add_series(pie,
-         "pie", hcaes(x=diplome,y=france),
-                name="France",
-                size='30%', dataLabels=F, showInLegend = F ) %>%  
-  hc_legend(enabled=T)%>%
+       size ='80%',innerSize='60%' ) %>%
+  hc_add_series(tab %>% filter(str_detect(Région,"Métro") ),
+                "pie", 
+                hcaes(x=diplome,y=nombre),
+                name="France métro",
+                size='40%',innerSize="40%",
+                dataLabels=F, showInLegend = F,
+                linkedTo=':previous' ) %>%  # ne fonctionne pas ? 
+  #hc_legend(enabled=T)%>%
   hc_credits(enabled=T,text="Source") %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 ### Répartition par sexe (hors STAPS)
@@ -156,17 +160,18 @@ hchart(pie,
 **Taux de femmes en formation `r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**
 
 ```{r}
-
-hchart(forome %>% 
-         group_by (Type.de.diplôme) %>% 
-         summarise(hommes=sum(Sexe=="Homme"),
-                   femmes=sum(Sexe=="Femme")) %>%
-         arrange(desc(hommes+femmes)) %>% 
-         pivot_longer(-1,"stat","valeur"),
- "bar",hcaes(x = Type.de.diplôme,y=value,group=stat), 
+forome %>% 
+  group_by (Type.de.diplôme) %>% 
+  summarise(hommes=sum(Sexe=="Homme"),
+            femmes=sum(Sexe=="Femme")) %>%
+  arrange(desc(hommes+femmes)) %>% 
+  pivot_longer(-1,names_to = "stat",values_to = "valeur") %>%
+hchart("bar",
+       hcaes(x = Type.de.diplôme,y=valeur,group=stat), 
        color=c("#da70d6",'#87ceeb'),
        stacking="normal", 
-       pointWidth = 20)
+       pointWidth = 20) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
         
   
 ```
@@ -190,20 +195,23 @@ hchart(density(forome$age ),
                  type= "area",  
                  color = "#00FF0060", pointWidth = 50 , showInLegend = T, 
                  name = "Sport" ) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm)   %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
 ### âge moyen par diplôme (hors STAPS)
 
 ```{r}
-hchart(forome %>% 
-         group_by(Type.de.diplôme,Spécialité) %>% 
-         summarise(mage=mean(age)) ,    
-"column",hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
+forome %>% 
+  group_by(Type.de.diplôme,Spécialité) %>% 
+  summarise(mage=mean(age)) %>%
+hchart("column",
+       hcaes(x=Type.de.diplôme,y=mage,group=Spécialité), 
        showInLegend = T) %>%
-  hc_add_theme(thm) 
-
+  hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
+ 
 ```
 
 # Diplômes non professionnels (BAFA/BAFD) {data-orientation="rows" height="30" data-icon="fa-users"}
@@ -225,6 +233,8 @@ Les recrutements baissent fortement dans les départements de la région, comme 
 ### Tableau des diplômes non professionnels
 
 ```{r}
+sparkline(0)
+
 bafaregm %>% 
   filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
   bind_cols (bafdregm %>% 
@@ -333,7 +343,8 @@ hchart(bafaregm %>%
        name=c("BAFA","BAFD")) %>%
   hc_xAxis(title=list(text="Région")) %>%
   hc_yAxis(title=list(text="Nombre de Brevets d'Aptitude")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 ### évolution du poids des régions
@@ -346,16 +357,18 @@ hchart(bafaregm %>%
 "areaspline", hcaes(x = année, y = BAFA, group = region),
           stacking = "normal",
           marker=FALSE,
-          showInLegend =T,  pointWidth = 20)
+          showInLegend =T,  pointWidth = 20) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
-
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="1000"}
 
 ### Diplômes non professionnels délivrés par département
 
 ```{r}
+sparkline(0)
+
 bafadepm %>% 
   filter(dep %in% depbfc) %>%
   filter (année %in% 2019:2021 & sexe =='Ensemble') %>%
@@ -390,7 +403,7 @@ bafadepm %>%
   bind_cols( bafadepm %>%
                filter(dep %in% depbfc & sexe=="Hommes")  %>% # sparkine
                group_by(dep) %>%
-               summarise(`évo Hommes`=spk_chr(BAFA)) ) %>%
+               summarise(`évo Hommes`=spk_chr(BAFA)) ) %>% 
   select(dep=dep...2,département=deplib,
          `2019`,`2020`,`2021`,
          `age médian (ans)`=`age BAFA`, `Taux de femmes (%)`=`femmes BAFA`,
@@ -398,7 +411,7 @@ bafadepm %>%
   arrange(dep) %>%
      
  kable(format.args = list(decimal.mark = ",", big.mark = " "), 
-       align="clrrrlllccc", escape = F) %>%
+       align="clrrrlllccc", escape = FALSE) %>%
   kable_styling("hover", full_width = F) %>%
   add_header_above(c( " "=2,"BAFA"=6,"effectifs annuels 2011-2021"=3) ) %>%
 #  row_spec(15, bold=T) %>%
@@ -412,7 +425,6 @@ bafadepm %>%
 ```
 
 ### évolution des BAFA de Bourgogne-Franche-Comté
-
 
 ```{r}
 list_of_plots <- map(depbfc, function(x) {
@@ -440,16 +452,15 @@ list_of_plots <- map(depbfc, function(x) {
                   type = "spline",
                   name = "Hommes",  pointWidth = 10, dashStyle=  'ShortDot') %>%
     hc_title(text = str_to_title(filtered$deplib[1])) %>%
-    hc_add_theme(thm) 
+    hc_add_theme(thm)  %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name")
   
   })
 
-hw_grid(list_of_plots, rowheight = 300) %>%
+hw_grid(list_of_plots,ncol=4, rowheight = 300) %>%
   htmltools::browsable()
 
 ```
-
-
 
 # Insertion des diplômés {data-orientation="rows" height="30" data-icon="fa-user-tie"}
 
@@ -517,15 +528,11 @@ IDJEPSg %>%
   
 ```
 
-
 ### Profils d'emploi des diplômés de BFC
 
 ```{r}
 
 ```
-
-
-
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
@@ -536,8 +543,7 @@ IDJEPSg %>%
 **Sources :**
 
 -   Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports
-- Données BAFA/BAFD <https://injep.fr/donnee/bafa-bafd-2011-2021/>
-Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
+-   Données BAFA/BAFD <https://injep.fr/donnee/bafa-bafd-2011-2021/> Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
 
 Le dispositif régional d'observation de l'emploi et de la formation (DROEF) est un réseau de correspondants régionaux animé par la direction des Sports et chargé de suivre la formation et l'insertion des diplômés, en particulier à travers une enquête d'insertion des diplômés Jeunesse et Sports :\
 

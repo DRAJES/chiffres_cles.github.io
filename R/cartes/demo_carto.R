@@ -25,7 +25,7 @@ comm84 <- readOGR(paste0(chemin,"COMMUNE.shp"))
 
 densitewgs <- readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/densité et AU/grille_densite_7_niveaux.shp")
 densiteBFC <- readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/densité et AU/grille_densite_7_niveauxBFC.shp")
-bvwgs84 <-  readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/bv/bv2012_2022.shp")
+bvwgs84 <-  readOGR("I:/SUPPORT/05_CARTO/Fonds de cartes/bv/BV2022/BV2022.shp")
 
 
 regwgs <- ms_simplify(regwgs84, keep=0.05,keep_shapes = T)
@@ -48,9 +48,8 @@ EPCI <- EPCI %>%  filter(EPCI %in% epci27_tab$EPCI)
 epciwgs@data <- epciwgs@data %>% rename(EPCI=CODE_SIREN)
 epcicarto <- merge(epciwgs,EPCI,by= "EPCI",all.x=F, all.y=T)
 
-BV <- BV %>% filter(BV2012 %in% bv27_tab$BV2012) 
-bvwgs@data <- bvwgs@data %>% rename(BV2012=bv2012)
-bvcarto <- merge(bvwgs,BV,by= "BV2012",all.x=F, all.y=T)
+BV <- BV %>% filter(BV2022 %in% bv27_tab$BV2022) 
+bvcarto <- merge(bvwgs84,BV,by= "BV2022",all.x=F, all.y=T)
 
 regwgs@data <- regwgs@data %>% rename(REG=INSEE_REG)
 regwgs <- merge(regwgs,region %>% rename(INSEE_REG=REG),by="REG")
@@ -87,12 +86,13 @@ dep27carto <- subset(depwgs, REG=="27")
 
 
 
-leaflet(regwgs_s) %>% addProviderTiles(providers$CartoDB.Positron) %>%
+leaflet(bvcarto) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F )
 
 
-save(regwgs,depwgs,bvwgs,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
+save(regwgs,depwgs,bvwgs84,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
      com27wgs,QPV27,ZRR,file = "data/demo/cartes.RData")
-save(regwgs,depwgs,bvwgs,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
+save(regwgs,depwgs,bvwgs84,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
      com27wgs,QPV27,ZRR,file = "I:/SUPPORT/05_CARTO/Fonds de cartes/cartes.RData")
+

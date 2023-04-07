@@ -10,9 +10,10 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F, plotly=T}
+```{r}
 
 load("data/engagement/SC.RData")
+load("data/engagement/flux.RData")
 
 pal2 <- colorBin("YlOrBr", domain =0:2 ,bins= c(0, 0.8, 0.9, 1, 1.1, 2) )
 
@@ -26,12 +27,30 @@ dipl <- c("Sortie en cours de terminale ou Bac non validé (IV)",
           "Sortie en 3ème (Vbis)",
           "CAP-BEP validé (V)")
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
+
+tab_sc <- function(.tbl){
+  .tbl %>%
+    group_by(depvol) %>%
+    summarise(tot=n(), 
+              tot22=sum(debut==2022),
+              mage=mean(age),
+              mage22=mean(age[debut==2022]),
+              femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
+              femmes22=100*sum(CIV_LIBCOURT[debut==2022] =="MME")/tot22,
+              peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
+              peudipl22=100*sum(NIF_LIBELLE[debut==2022]  %in% dipl )/tot22,
+              sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
+              sitfam22=100*sum(SIF_LIBELLE[debut==2022] =="Célibataire" )/tot22,
+              chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
+              chomage22=100*sum(SAC_LIBELLE[debut==2022] =="Demandeur d'emploi"  )/tot22,
+              rupture=sum(MRC_MOTIF_RUPTURE != "-"),
+              txrupture=100*rupture/tot,
+              embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
+                "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
+                "05 - Embauche en CDD moins de 6 mois")/rupture ),
+              qpv=sum(!(CODE_QUARTIER=="") & debut==2022 ) )
+}
+
 ```
 
 ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
@@ -52,35 +71,38 @@ Row {data-height="100"}
 
 ### Données générales
 
-**3 200** missions de service civique en Bourgogne-Franche-Comté en 2020.
-**3 100** volontaires originaires de la région.
+**3 100** missions de service civique en Bourgogne-Franche-Comté en 2022.  
+**3 000** volontaires originaires de la région.  
+Des missions tournées principalement vers l'éducation pour tous et la solidarité.
 
 Row {.tabset .tabset-fade .tabset-pills data-height="600"}
 -----------------------------------------------------------------------
 
-### évolution du nombre de nouveaux volontaires originaires de la région et des nouvelles missions réalisées dans la région
+### évolution annuelle des missions et volontaires
 
 **Légèrement plus de missions que de volontaires dans la région.**
 
 ```{r}
-hchart(basebfc %>% 
-         filter(depvol %in% depbfc ) %>% 
-         group_by(debut) %>% 
-         summarise(tot=n()),
-  "areaspline", hcaes(x=debut,y=tot), 
-       #color="#f0808060",
-       showInLegend = T, pointWidth = 20,
-       name = "Nouveaux volontaires" ) %>%
+baseSC %>% 
+  filter(depvol %in% depbfc ) %>% 
+  group_by(debut) %>% 
+  summarise(tot=n()) %>%
+  hchart("areaspline", 
+         hcaes(x=debut,y=tot), 
+         #color="#f0808060",
+         showInLegend = T, pointWidth = 20,
+         name = "Nouveaux volontaires" ) %>%
   
-  hc_add_series(basebfc %>% 
+  hc_add_series(baseSC %>% 
                   filter(depmis %in% depbfc ) %>% 
                   group_by(debut) %>% 
                   summarise(tot=n()),
-    "areaspline", hcaes(x=debut,y=tot), 
+                "areaspline", hcaes(x=debut,y=tot), 
                 #color = "#4682b460" , 
                 showInLegend = T, pointWidth = 50 ,
                 name = "Nouvelles missions") %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
 ### Domaines de mission
@@ -88,18 +110,18 @@ hchart(basebfc %>%
 **Une majorité de missions dans l'éducation populaire et la solidarité. **
 
 ```{r}
-hchart( basebfc %>% 
-          filter(depmis %in% depbfc)  %>%
-          filter() %>%
-          group_by(mission,debut) %>%
-          count(),
-  "bar",hcaes(x=debut,y=n ,group=mission),
-        stacking = "normal" , showInLegend = T) %>%
+baseSC %>% 
+  filter(depmis %in% depbfc)  %>%
+  filter() %>%
+  group_by(mission,debut) %>%
+  count() %>%
+  hchart("bar",
+         hcaes(x=debut,y=n ,group=mission),
+         stacking = "normal" , showInLegend = T) %>%
   hc_xAxis(title=list(text="Année")) %>%
   hc_yAxis(title=list(text="Nombre de missions")) %>%
-  hc_add_theme(thm) 
-
-
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
@@ -109,18 +131,21 @@ hchart( basebfc %>%
 **Une part prépondérante des agréments nationaux.**
 
 ```{r}
-hchart( basebfc %>% 
-          filter(depmis %in% depbfc)  %>%
-          filter(agre %in% c('NA','FC','BO')) %>%
-          group_by(agre,debut) %>%
-          count(),
-  "bar",hcaes(x=debut,y=n ,group=agre),
-        stacking = "normal" ,
-        name=c("Bourgogne","Franche-Comté","National"), 
-        showInLegend = T) %>%
+baseSC %>% 
+  filter(depmis %in% depbfc)  %>%
+  filter(agre %in% c('NA','FC','BO')) %>%
+  group_by(agre,debut) %>%
+  count() %>%
+  hchart("bar",
+         hcaes(x=debut,y=n ,group=agre),
+         stacking = "normal" ,
+         name=c("Bourgogne","Franche-Comté","National"), 
+         showInLegend = T) %>%
   hc_xAxis(title=list(text="Année")) %>%
   hc_yAxis(title=list(text="Nombre de missions")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 ```
 
 
@@ -130,12 +155,13 @@ hchart( basebfc %>%
 
 ```{r}
 
-hchart( density( basebfc[basebfc$depvol %in% depbfc,]$age ) , 
+hchart( density( baseSC[baseSC$depvol %in% depbfc,]$age ) , 
         "area",
         color="#b71c1c",
         showInLegend = T,
         name="âge du volontaire") %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
@@ -150,112 +176,76 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
 ### évolutions départementales
 
-**Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020.**
+**Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020, un rebond en 2021 et à nouveau une baisse en 2022.**
 
 ```{r}
-hchart( basebfc %>% 
-          filter(depvol %in% depbfc ) %>% 
-          mutate(dept_vol=as.character(depvol)) %>%
-          group_by(depvol,debut) %>%
-          summarise(volresid=n()) %>%
-          left_join(.,appartenance %>% 
-                      filter(NIVGEO=="DEP") %>% 
-                      select(CODGEO,département=LIBGEO),
-                    by=c("depvol"="CODGEO") ) ,
-"spline",hcaes(x=debut,y=volresid,group=département),
-        showInLegend = T,  pointWidth = 20,
-        marker = FALSE) %>%
+baseSC %>% 
+  filter(depvol %in% depbfc ) %>% 
+  mutate(dept_vol=as.character(depvol)) %>%
+  group_by(depvol,debut) %>%
+  summarise(volresid=n()) %>%
+  left_join(.,appartenance %>% 
+              filter(NIVGEO=="DEP") %>% 
+              select(CODGEO,département=LIBGEO),
+            by=c("depvol"="CODGEO") ) %>%
+  hchart("spline",
+         hcaes(x=debut,y=volresid,group=département),
+         showInLegend = T,  pointWidth = 20,
+         marker = FALSE) %>%
   hc_xAxis(title=list(text="Année")) %>%
   hc_yAxis(title=list(text="Nombre de volontaires")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
 
 ### Caractéristiques des volontaires de la région
 
-**Une large majorité de femmes parmi les volontaires, près de 30% de peu diplômés, 37% étaient chômeurs auparavant, un contrat sur cinq rompu avant son terme**
+**Une large majorité de femmes parmi les volontaires, près d'un tiers de peu diplômés, 30% étaient chômeurs auparavant, un contrat sur cinq rompu avant son terme dont 9% pour embauche.**
 
 ```{r}
 
-
-basebfc %>%
+tab <- 
+  baseSC %>%
   filter(depvol %in% depbfc ) %>%
-  group_by(depvol) %>%
-  summarise(tot=n(), 
-            tot20=sum(debut==2020),
-            mage=mean(age),
-            mage20=mean(age[debut==2020]),
-            femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
-            femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
-            peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
-            peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
-            sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
-            sitfam20=100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,
-            chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
-            chomage20=100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,
-            rupture=sum(MRC_MOTIF_RUPTURE != " - "),
-            txrupture=100*rupture/tot,
-            embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
-              "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
-              "05 - Embauche en CDD moins de 6 mois")/rupture )  ) %>%
-  bind_rows( basebfc %>%
-               filter(depvol %in% depbfc ) %>% 
-               group_by() %>%
-               summarise(depvol="BFC",
-                         tot=n(),
-                         tot20=sum(debut==2020),
-                         mage=mean(age),
-                         mage20=mean(age[debut==2020]),
-                         femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
-                         femmes20=100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,
-                         peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
-                         peudipl20=100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,
-                         sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
-                         sitfam20=100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,
-                         chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
-                         chomage20=100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,
-                         rupture=sum(MRC_MOTIF_RUPTURE != " - "),
-                         txrupture=100*rupture/tot,
-                         embauche=100*sum(MRC_MOTIF_RUPTURE %in% c(
-                           "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
-                           "05 - Embauche en CDD moins de 6 mois")/rupture ) ) ) %>% 
+  tab_sc() %>%
+  bind_rows( baseSC %>%
+               filter(depvol %in% depbfc ) %>%  
+               mutate(depvol="BFC") %>%
+               tab_sc() ) %>% 
   left_join(.,appartenance %>% 
               filter(NIVGEO=="DEP") %>%
               select(CODGEO,département=LIBGEO),
-            by=c("depvol"="CODGEO") ) %>%
+            by=c("depvol"="CODGEO") )  %>%
+  mutate(`Moyenne d'âge`=color_bar('gold')
+         (digits(mage22 ,1,decimal.mark=",")), 
+         `Part de femmes`=color_bar('pink')
+         (digits(femmes22 ,1,decimal.mark=",")), 
+         `Part de peu diplômés`=color_bar('gold')
+         (digits(peudipl22 ,1,decimal.mark=",")), 
+         `Part de célibataires`=color_bar('lightblue')
+         (digits(sitfam22 ,1,decimal.mark=",")) ,
+         `Part de chômeurs`=color_bar('gold')
+         (digits(chomage22 ,1,decimal.mark=",")) , 
+         `Taux de rupture`=color_bar('lightgreen')
+         (digits(txrupture ,1,decimal.mark=",")) , 
+         `Rupture pour embauche`=color_bar('lightgreen')
+         (digits(embauche ,1,decimal.mark=","))
+  ) 
+
+tab %>%
   select(`département volontaire`=depvol,département,
-         `volontaires depuis création`=tot,`volontaires 2020`=tot20,
-         `moyenne d'âge`=mage20,
-         `part de femmes`=femmes20,
-         `Part de célibataires`=sitfam20,
-         `part de peu diplômés`=peudipl20,
-         `part de chômeurs`=chomage20,
-         `taux de rupture`=txrupture,
-         `rupture pour embauche`=embauche) %>%
-  mutate(`moyenne d'âge`=color_bar('gold')
-                         (digits(`moyenne d'âge` ,1,decimal.mark=",")), 
-          `part de femmes`=color_bar('pink')
-                           (digits(`part de femmes` ,1,decimal.mark=",")), 
-          `part de peu diplômés`=color_bar('gold')
-                                 (digits(`part de peu diplômés` ,1,decimal.mark=",")), 
-          `Part de célibataires`=color_bar('lightblue')
-                                 (digits(`Part de célibataires` ,1,decimal.mark=",")) ,
-          `part de chômeurs`=color_bar('gold')
-                             (digits(`part de chômeurs` ,1,decimal.mark=",")) , 
-          `taux de rupture`=color_bar('lightgreen')
-                            (digits(`taux de rupture` ,1,decimal.mark=",")) , 
-          `rupture pour embauche`=color_bar('lightgreen')
-                                  (digits(`rupture pour embauche` ,1,decimal.mark=","))
-           ) %>%
+         `Volontaires depuis création`=tot,`Volontaires 2022`=tot22,
+         `Moyenne d'âge`,`Part de femmes`,
+         `Part de célibataires`,`Part de peu diplômés`,`Part de chômeurs`,
+         `Taux de rupture`,`Rupture pour embauche`) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="ccrrlllllll", escape = F) %>% 
+        align="ccrrlllllll", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, 
-              bold=T) %>%
-  row_spec(9,
-           background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
+  column_spec(3, bold=T) %>%
+  row_spec(9,background = "#E0FFFF75",  bold = T , color = "steelblue") %>%
   footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", 
            general_title = "Source : ",
            footnote_as_chunk = T)  
@@ -269,27 +259,8 @@ basebfc %>%
 ### Carte départementale
 
 ```{r}
-cartedep <- basebfcsig %>%
-              filter(depvol %in% depbfc) %>%
-              group_by(DEP=depvol) %>%
-              summarise(tot=n(),
-                        tot20=sum(debut==2020),
-                        qpv=sum(!(CODE_QUARTIER=="") & debut==2020),
-                        mage=mean(age),
-                        mage20=round(mean(age[debut==2020]),1),
-                        femmes=100*sum(CIV_LIBCOURT =="MME")/tot,
-                        femmes20=round( 100*sum(CIV_LIBCOURT[debut==2020] =="MME")/tot20,1),
-                        peudipl=100*sum(NIF_LIBELLE  %in% dipl )/tot,
-                        peudipl20=round( 100*sum(NIF_LIBELLE[debut==2020]  %in% dipl )/tot20,1),
-                        sitfam=100*sum(SIF_LIBELLE =="Célibataire" )/tot,
-                        sitfam20=round( 100*sum(SIF_LIBELLE[debut==2020] =="Célibataire" )/tot20,1),
-                        chomage=100*sum(SAC_LIBELLE =="Demandeur d'emploi" )/tot,
-                        chomage20=round( 100*sum(SAC_LIBELLE[debut==2020] =="Demandeur d'emploi"  )/tot20,1),
-                        rupture=sum(MRC_MOTIF_RUPTURE != " - "),
-                        txrupture=round( 100*rupture/tot,1),
-                        embauche=round( 100*sum(MRC_MOTIF_RUPTURE %in% c(
-                          "04 - Embauche en CDD d'au moins 6 mois ou CDI ",
-                          "05 - Embauche en CDD moins de 6 mois")/rupture ),1)  ) %>%
+cartedep <- tab %>% 
+  rename(DEP=depvol) %>%
   left_join(.,basecomQPV %>% 
               filter(DEP %in% depbfc) %>% 
               group_by(DEP) %>% 
@@ -299,35 +270,30 @@ cartedep <- basebfcsig %>%
               adorn_totals(name="BFC"),
             by="DEP") %>%
   mutate(txQPV=round(100*popQPV/pop,1), 
-         partvol=1000*tot20/pop, 
-         txvol=round( 100*tot20/pop1625,2), 
+         partvol=1000*tot22/pop, 
+         txvol=round( 100*tot22/pop1625,2), 
          txvolqpv=1000*qpv/popQPV, 
-         tx= round(100*qpv/tot20,1) ) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="DEP") %>% 
-              select(CODGEO,département=LIBGEO),
-            by=c("DEP"="CODGEO") ) %>%
-  rename(`Volontaires 2020`=tot20,`Taux de volontaires parmi les 16-25 ans`=txvol)
-     
+         tx= round(100*qpv/tot22,1) ) %>%
+  rename(`Volontaires 2022`=tot22,`Taux de volontaires parmi les 16-25 ans`=txvol)
+
 
 cartedep <- sp::merge(depwgs,cartedep,by="DEP")
 
 leaflet(cartedep) %>% 
-    contour_depbfc() %>%
+  contour_depbfc() %>%
   addCircles(centroid(cartedep)[,1],centroid(cartedep)[,2], group = "region",
-             radius=~500*`Volontaires 2020`^(1/2),
+             radius=~500*`Volontaires 2022`^(1/2),
              fillColor = ~pal2(`Taux de volontaires parmi les 16-25 ans`), fillOpacity = 0.8,
              color = "#4169E1", weight=4,  opacity = 0.8,
              highlight = highlightOptions (
-                          color = "#00FFFF", weight = 5,fillOpacity =  0.1),
+               color = "#00FFFF", weight = 5,fillOpacity =  0.1),
              popup = popupTable(cartedep@data %>%
-                                  select(DEP,département,`Volontaires depuis création`=tot,
-                                         `Volontaires 2020`, `Taux de volontaires parmi les 16-25 ans`,
-                                         `Moyenne d'âge`=mage20,`Part de femmes`=femmes20,
-                                  `Part de célibataires`=sitfam20,`Part de peu diplômés`=peudipl20,
-                                  `Part de chômeurs`=chomage20,`Taux de rupture`=txrupture,
-                                  `Rupture pour embauche`=embauche,`Volontaires issus de QPV`=tx,
-                                  `Pop en QPV`=txQPV),
+                                  select(département,`Volontaires depuis création`=tot,
+                                         `Volontaires 2022`, `Taux de volontaires parmi les 16-25 ans`,
+                                         `Moyenne d'âge`,`Part de femmes`,
+                                         `Part de célibataires`,`Part de peu diplômés`,`Part de chômeurs`,
+                                         `Taux de rupture`,`Rupture pour embauche`,
+                                         `Volontaires issus de QPV`=tx,`Pop en QPV`=txQPV),
                                 feature.id=F,row.numbers = F)) %>%
   addLegend( pal = pal2 , values = cartedep$`Taux de volontaires parmi les 16-25 ans`,
              position = "bottomright", title = "taux de volontaires")
@@ -339,6 +305,7 @@ leaflet(cartedep) %>%
 ### Flux (volontaires -> mission)
 
 ```{r}
+library(RColorBrewer )
 flows <- gcIntermediate(oursinxy[,5:6],oursinxy[,8:9],n=5, sp=T,addStartEnd = T)
 flows$nombre <- oursinxy$nombre
 flows$origine <- oursinxy$origine
@@ -401,6 +368,10 @@ leaflet() %>%
 ```
 
 
+### Flux annuels
+
+[![](images/fluxSC.PNG)</br>\
+flux de nouveaux volontaires par année](https://pierre-stephanelebre.shinyapps.io/fluxSC/)
 
 
 ### Flux arc
@@ -444,19 +415,18 @@ Row {data-height="800"}
 
 
 ```{r}
-basebfc %>%
+baseSC %>%
   filter(depmis=="ETRANGER") %>%
   group_by(`Pays de la mission`=PAYS_MISSION1) %>%
   summarise(tot=n(),
-            tot20=sum(debut==2020)) %>% 
+            tot22=sum(debut==2022)) %>% 
   arrange(desc(tot)) %>% 
   adorn_totals(name="Total") %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
       align="rcrrrrrrr", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
-  column_spec(3, 
-              bold=T) %>%
+  column_spec(3, bold=T) %>%
   footnote(general = "Agence du Service Civique, Elisa, traitement DRAJES", 
            general_title = "Source : ",
            footnote_as_chunk = T) 
@@ -472,15 +442,15 @@ Row {data-height="600"}
 
 ### Missions effectuées par les jeunes en QPV
 
-**Près de 1% des 16/25 ans s'engagent sur une mission de Service civique, y compris dans les QPV**
+**Environ un jeune de 16 à 25 ans sur 100 s'engage dans une mission de Service civique, y compris dans les QPV, presque un volontaire sur cinq issus de quartier prioritaire dans le Territoire de Belfort et le Doubs.**
 
 ```{r}
-basebfcsig %>%
+baseSC %>%
   filter(depvol %in% depbfc) %>%
   group_by(DEP=depvol) %>%
   summarise(tot=n(),
-            tot20=sum(debut==2020),
-            qpv=sum(!(CODE_QUARTIER=="") & debut==2020) ) %>%
+            tot22=sum(debut==2022),
+            qpv=sum(!(CODE_QUARTIER=="") & debut==2022) ) %>%
   adorn_totals(name="BFC") %>%
   left_join(.,basecomQPV %>% 
               filter(DEP %in% depbfc) %>% 
@@ -491,26 +461,26 @@ basebfcsig %>%
               adorn_totals(name="BFC"),
             by="DEP") %>%
   mutate(txQPV=100*popQPV/pop,
-         partvol=1000*tot20/pop,
-         txvol=100*tot20/pop1625,
+         partvol=1000*tot22/pop,
+         txvol=100*tot22/pop1625,
          txvolqpv=1000*qpv/popQPV, 
-         tx= 100*qpv/tot20 ) %>%
+         tx= 100*qpv/tot22 ) %>%
   left_join(.,appartenance %>% 
               filter(NIVGEO=="DEP") %>% 
               select(CODGEO,département=LIBGEO),
             by=c("DEP"="CODGEO") ) %>%  
   select(DEP,département,
-         `volontaires`=tot20,`volontaires issus de QPV`=tx,
+         `volontaires`=tot22,`volontaires issus de QPV`=tx,
          `Pop en QPV`=txQPV,`Taux de volontaires parmi les 16-25 ans`=txvol) %>%
   mutate(`volontaires issus de QPV`=color_bar('gold')
-        (digits(`volontaires issus de QPV` ,1,decimal.mark=","))) %>% 
+         (digits(`volontaires issus de QPV` ,1,decimal.mark=","))) %>% 
   mutate(`Pop en QPV`=color_bar('gold')
-        (digits(`Pop en QPV` ,1,decimal.mark=","))) %>% 
+         (digits(`Pop en QPV` ,1,decimal.mark=","))) %>% 
   mutate(`Taux de volontaires parmi les 16-25 ans`=color_bar('lightgreen')
-        (digits(`Taux de volontaires parmi les 16-25 ans` ,2,decimal.mark=","))) %>%
+         (digits(`Taux de volontaires parmi les 16-25 ans` ,2,decimal.mark=","))) %>%
   
   kable("html", format.args = list(decimal.mark = ",", big.mark = " "),
-      align="rcrlll", escape = F) %>% 
+        align="rcrlll", escape = F) %>% 
   kable_styling("hover", full_width = F) %>%
   column_spec(3, 
               bold=T) %>%

@@ -48,25 +48,33 @@ rm(proprio);rm(equipement)
 equip <- equips %>% 
   left_join(.,as.data.frame(passage) %>% distinct(CODGEO_2014,.keep_all = T) %>%
               dplyr::select(CODGEO_2014,CODGEO_2021),by=c("ComInsee"="CODGEO_2014") )%>%              
-  left_join(.,basecom %>% dplyr::select (CODGEO_2021=1,2,3,4,5,17,18,31) ,by="CODGEO_2021")  %>%
+  left_join(.,basecom %>% dplyr::select (CODGEO_2021=1,LIBGEO,DEP,REG,EPCI,BV2022,P19_POP) ,by="CODGEO_2021")  %>%
   left_join(.,as.data.frame(appartenance)%>% 
-              filter (NIVGEO=="BV2012") %>% 
+              filter (NIVGEO=="BV2022") %>% 
               dplyr::select(CODGEO,LIBGEO),
-            by=c("BV2012" = "CODGEO") ) 
-
+            by=c("BV2022" = "CODGEO") ) 
+ 
 #rpivotTable(equip)
 
 ##base des piscines----
 
-piscines <- equip %>% filter (EquipementTypeCode %in% c('101','102','103') ) %>%
+piscines <- equip %>% 
+  filter (EquipementTypeCode %in% c('101','102','103') ) %>%
   filter (EquUtilScolaire==1 | (EquNatSurfaceBassin >20 & EquNatProfMax > 1) ) %>%
   mutate(surface=ifelse(EquOuvertSaison==1,EquNatSurfaceBassin/3,EquNatSurfaceBassin) ) %>%
-  group_by(CODGEO_2021) %>%
+  group_by(CODGEO_2021) %>% 
   dplyr::summarise ( surfpiscines=sum(surface,na.rm=T),
                      nbpiscines=n(),
                      nbpiscines_couv=sum(NatureLibelle %in% c("Intérieur","Découvrable") ),
                      nbpisc_saison = sum(EquOuvertSaison == 1)  ) %>%
-  full_join(.,basecom %>% dplyr::select (CODGEO_2021=1,2,3,4,5,17,18,31) ,by="CODGEO_2021")  
+   full_join(.,basecom %>% 
+               dplyr::select (CODGEO_2021=1,LIBGEO,DEP,REG,EPCI,BV2022,P19_POP) ,
+             by="CODGEO_2021")  %>%
+  filter(!is.na(LIBGEO))
+
+
+
+
  #   mutate (surfnat=if_else(is.na(surfpiscines),0,10000*surfpiscines/pop) )
 piscines[is.na(piscines)] <- 0
 
@@ -74,6 +82,11 @@ piscines[is.na(piscines)] <- 0
 save(piscines,file = "data/sport/piscines.RData")
 
 
+piscines <- piscines %>%
+  group_by(BV2022) %>% 
+  dplyr::summarise ( surfpiscines=sum(surfpiscines,na.rm=T) ) %>%
+  left_join(.,pop_basecom(BV2022)) %>%
+  rename("popbv"=pop)
 
 #calcul des carences ----
 g <- ggplot(piscines,aes((popbv),surfpiscines))
@@ -89,7 +102,7 @@ inter <- predict(pisc.gam, se=T)
 summary(inter)
 inter$upper <- ceiling(inter$fit+2.576*inter$se.fit)
 inter$lower <- floor(inter$fit-2.576*inter$se.fit)
-inter <- as.data.frame(bind_cols(bv=piscines$BV2012,upper=inter$upper, lower=inter$lower))
+inter <- as.data.frame(bind_cols(bv=piscines$BV2022,upper=inter$upper, lower=inter$lower))
 piscines$pisc.delta <- if_else(piscines$surfpiscines>=inter$lower & piscines$surfpiscines <=  inter$upper,0,
                                if_else(piscines$surfpiscines>inter$upper,
                                        100*(piscines$surfpiscines-inter$upper)/inter$upper,
@@ -107,7 +120,7 @@ piscines$classement <- ifelse(piscines$surfpiscines==0,"6 aucune piscine",as.cha
 pal <- colorFactor(c("#006400","#228B22","#F5F5F5","#FF7F50","#B22222","#87CEEB"), 
                    domain = sort(unique(piscines$classement)  ) )
 
-bv_piscines <- merge(bvwgs,piscines,by="BV2012")
+bv_piscines <- merge(bvwgs,piscines,by="BV2022")
 #rpivotTable(piscines)
 
 
@@ -122,7 +135,7 @@ leaflet(bv_piscines) %>% addProviderTiles(providers$CartoDB.Positron) %>%
   addPolygons(fillColor = ~pal(classement),stroke = F, fillOpacity =  0.6,
               highlight = highlightOptions (fillOpacity =  0.1, sendToBack = T),
               popup = popupTable(bv_piscines@data %>% 
-                                   select(BV2012,LIBGEO,popbv,densité,partZRR,
+                                   select(BV2022,LIBGEO,popbv,densité,partZRR,
                                           nbpiscines,nbpiscines_couv,nbpisc_saison,
                                           surfpiscines,pisc.pred,pisc.delta,classement,
                                           surfnat,surfnat_lib) %>%

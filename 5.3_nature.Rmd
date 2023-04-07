@@ -10,76 +10,114 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/sport/RES.RData")
 
+#crédits RES
+credits_res <- function(.tbl){
+  .tbl %>%
+    footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
+             general_title = "Source : ",
+             footnote_as_chunk = T)
+}
 
 icons <- awesomeIconList (
-  "407" = makeAwesomeIcon(text = fa("truck-monster"),markerColor="darkred",iconColor="#FF0000",squareMarker=F),
+  "407" = makeAwesomeIcon(text = fa("truck-monster"),squareMarker=F,
+                          markerColor="darkred",iconColor="#FF0000"),
   
-  "3001" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#2F4F4F",markerColor ="lightgreen"), 
-  "3003" = makeAwesomeIcon(text =  fa("child"),iconColor="#2F4F4F",markerColor ="lightgreen"),
-  "3004" = makeAwesomeIcon(text  =  fa("person-walking"),iconColor="#6B8E23",markerColor ="lightgreen")  ,
-  "3005" = makeAwesomeIcon(text =  fa("signs-post"),iconColor="#6B8E23",markerColor ="lightgreen")  ,
-  "3007" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#2F4F4F",markerColor ="lightgreen"), 
-  "3008" = makeAwesomeIcon(text =  fa("icicles"),iconColor="#696969",markerColor ="lightgreen"),
-  "3010" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#2F4F4F",markerColor ="lightgreen"), 
-  "3011" = makeAwesomeIcon(text =  fa("mountain"),iconColor="#0000ff",markerColor ="lightgreen")  ,
-  "3012" = makeAwesomeIcon(text =  fa("person-hiking"),iconColor="#228B22",markerColor ="lightgreen")  ,
-  "3014" = makeAwesomeIcon(text =  fa("child"),iconColor="#2F4F4F",markerColor ="lightgreen"),
-  "3015" = makeAwesomeIcon(text =  fa("icicles"),iconColor="#696969",markerColor ="lightgreen"),
+  "3001" = makeAwesomeIcon(text =  fa("mountain"),
+                           iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3002" = makeAwesomeIcon(text =  fa("mountain"),
+                           iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3003" = makeAwesomeIcon(text =  fa("child"),
+                           iconColor="#2F4F4F",markerColor ="lightgreen"),
+  "3004" = makeAwesomeIcon(text  =  fa("person-walking"),
+                           iconColor="#6B8E23",markerColor ="lightgreen")  ,
+  "3005" = makeAwesomeIcon(text =  fa("signs-post"),
+                           iconColor="#6B8E23",markerColor ="lightgreen")  ,
+  "3007" = makeAwesomeIcon(text =  fa("mountain"),
+                           iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3008" = makeAwesomeIcon(text =  fa("icicles"),
+                           iconColor="#696969",markerColor ="lightgreen"),
+  "3010" = makeAwesomeIcon(text =  fa("mountain"),
+                           iconColor="#2F4F4F",markerColor ="lightgreen"), 
+  "3011" = makeAwesomeIcon(text =  fa("mountain"),
+                           iconColor="#0000ff",markerColor ="lightgreen")  ,
+  "3012" = makeAwesomeIcon(text =  fa("person-hiking"),
+                           iconColor="#228B22",markerColor ="lightgreen")  ,
+  "3014" = makeAwesomeIcon(text =  fa("child"),
+                           iconColor="#2F4F4F",markerColor ="lightgreen"),
+  "3015" = makeAwesomeIcon(text =  fa("icicles"),
+                           iconColor="#696969",markerColor ="lightgreen"),
   
-  "701" = makeAwesomeIcon(text =  fa("person-skiing"),iconColor="#778899",markerColor ="white"),
-  "703" = makeAwesomeIcon(text =  fa("person-skiing"),iconColor="#696969",markerColor ="white"),
-  "705" = makeAwesomeIcon(text =  fa("person-skiing-nordic"),iconColor="#708090",markerColor ="white"),
-  "706" = makeAwesomeIcon(text =  fa("person-skiing"),iconColor="#696969",markerColor ="white"),
+  "701" = makeAwesomeIcon(text =  fa("person-skiing"),
+                          iconColor="#778899",markerColor ="white"),
+  "703" = makeAwesomeIcon(text =  fa("person-skiing"),
+                          iconColor="#696969",markerColor ="white"),
+  "705" = makeAwesomeIcon(text =  fa("person-skiing-nordic"),
+                          iconColor="#708090",markerColor ="white"),
+  "706" = makeAwesomeIcon(text =  fa("person-skiing"),
+                          iconColor="#696969",markerColor ="white"),
   
-  "603" = makeAwesomeIcon(text =  fa("person-biking"),iconColor="#6A5ACD",markerColor ="orange"),
-  "604" = makeAwesomeIcon(text =  fa("person-biking"),iconColor="#6A5ACD",markerColor ="orange"),
-  "605" = makeAwesomeIcon(text =  fa("person-biking"),iconColor="#6A5ACD",markerColor ="orange"),
-  "606" = makeAwesomeIcon(text =  fa("person-biking"),iconColor="#6A5ACD",markerColor ="orange"),
+  "603" = makeAwesomeIcon(text =  fa("person-biking"),
+                          iconColor="#6A5ACD",markerColor ="orange"),
+  "604" = makeAwesomeIcon(text =  fa("person-biking"),
+                          iconColor="#6A5ACD",markerColor ="orange"),
+  "605" = makeAwesomeIcon(text =  fa("person-biking"),
+                          iconColor="#6A5ACD",markerColor ="orange"),
+  "606" = makeAwesomeIcon(text =  fa("person-biking"),
+                          iconColor="#6A5ACD",markerColor ="orange"),
   
-  "906" = makeAwesomeIcon(text =  fa("horse"),iconColor="#F4A460",markerColor ="black"),
-  "909" = makeAwesomeIcon(text =  fa("horse"),iconColor="#F4A460",markerColor ="black"),
+  "906" = makeAwesomeIcon(text =  fa("horse"),
+                          iconColor="#F4A460",markerColor ="black"),
+  "909" = makeAwesomeIcon(text =  fa("horse"),
+                          iconColor="#F4A460",markerColor ="black"),
   
-  "2401" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2402" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2403" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2404" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2405" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2406" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2407" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2408" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2409" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2410" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2414" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2416" = makeAwesomeIcon(text =  fa("person-swimming"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2417" = makeAwesomeIcon(text =  fa("anchor"),iconColor="#0000CD",markerColor ="lightblue"),
-  "2418" = makeAwesomeIcon(text =  fa("anchor"),iconColor="#0000CD",markerColor ="lightblue"),
-  "2419" = makeAwesomeIcon(text =  fa("water"),iconColor="#4169E1",markerColor ="lightblue"),
-  "2420" = makeAwesomeIcon(text =  fa("fish"),iconColor="#0000CD",markerColor ="lightblue"),
+  "2401" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2402" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2403" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2404" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2405" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2406" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2407" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2408" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2409" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2410" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2414" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2416" = makeAwesomeIcon(text =  fa("person-swimming"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2417" = makeAwesomeIcon(text =  fa("anchor"),
+                           iconColor="#0000CD",markerColor ="lightblue"),
+  "2418" = makeAwesomeIcon(text =  fa("anchor"),
+                           iconColor="#0000CD",markerColor ="lightblue"),
+  "2419" = makeAwesomeIcon(text =  fa("water"),
+                           iconColor="#4169E1",markerColor ="lightblue"),
+  "2420" = makeAwesomeIcon(text =  fa("fish"),
+                           iconColor="#0000CD",markerColor ="lightblue"),
   
-  "2301" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
-  "2302" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
-  "2303" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
-  "2305" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple"),
-  "2306" = makeAwesomeIcon(text =  fa("paper-plane"),iconColor="#FFFF00",markerColor ="purple") )
+  "2301" = makeAwesomeIcon(text =  fa("paper-plane"),
+                           iconColor="#FFFF00",markerColor ="purple"),
+  "2302" = makeAwesomeIcon(text =  fa("paper-plane"),
+                           iconColor="#FFFF00",markerColor ="purple"),
+  "2303" = makeAwesomeIcon(text =  fa("paper-plane"),
+                           iconColor="#FFFF00",markerColor ="purple"),
+  "2305" = makeAwesomeIcon(text =  fa("paper-plane"),
+                           iconColor="#FFFF00",markerColor ="purple"),
+  "2306" = makeAwesomeIcon(text =  fa("paper-plane"),
+                           iconColor="#FFFF00",markerColor ="purple") )
 
-
-pal2 <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 15, 20, 25, 30, 100) )
-
-pal1 <- colorBin(c("#d7191c","#fec981","#c4e687","#1a9641"), domain =0:100 ,bins= c(0, 19, 22, 25, 100) )
-
-depbfc <- c('21','25','39','58','70','71','89','90')
-
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
 ```
 
 Données {data-orientation="rows" data-icon="fa-signal"}
@@ -104,44 +142,36 @@ Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 nature %>% 
   group_by(REG) %>% 
   summarise(`sites de nature`=n() )  %>%
-  arrange(desc(`sites de nature`)) %>% 
-  adorn_totals("row") %>% 
-  left_join(.,appartenance %>% 
-              dplyr::filter (NIVGEO=="REG") %>% 
-              dplyr::select (2,3),
-            by=c("REG"="CODGEO")) %>%
-  relocate(région=LIBGEO,.after=REG) %>%
-  
- cc_kable("lcrrrrrrrrr") %>%
-#  row_spec(nrow(region_tab),bold = T,color = "navy") %>%
-  footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
-           general_title = "Source : ",
-           footnote_as_chunk = T)
+  arrange(desc(`sites de nature`)) %>%  
+  libelle(geo = REG) %>%
+  adorn_totals("row",name = "FM", fill = "France métro") %>% 
+ 
+ cc_kable("lcr") %>%
+ credits_res()
+
 ```
 ### Départements
 
 La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
 
 ```{r}
-
-hchart(nature %>% 
-         group_by(DEP) %>% 
-         summarise(`sites de nature`=n() )  %>%  
-         arrange(desc(`sites de nature`)) %>%
-         left_join(.,appartenance %>% 
-                     dplyr::filter (NIVGEO=="DEP") %>% 
-                     dplyr::select (2,3),
-                   by=c("DEP"="CODGEO")) %>%
-         relocate(département=LIBGEO,.after=DEP) ,
-"bar", hcaes(x=reorder(département,`sites de nature`),
-                    y=`sites de nature`,
-                    color=ifelse(DEP %in% depbfc,"#6a5acd",
-                          ifelse(DEP=="FR","#ff7f50","#ffd700") ) ), 
-       showInLegend = F, pointWidth = 1, 
-       name = "Sites de nature") %>%
+nature %>% 
+  group_by(DEP) %>% 
+  summarise(`sites de nature`=n() )  %>%  
+  arrange(desc(`sites de nature`)) %>%
+  libelle(geo=DEP) %>%
+  filter(!is.na(DEP)) %>%
+  hchart( "bar", 
+          hcaes(x=reorder(Libellé,`sites de nature`),
+                y=`sites de nature`,
+                color=ifelse(DEP %in% depbfc,"#6a5acd",
+                     ifelse(DEP=="FR","#ff7f50","#ffd700"))),
+          showInLegend = F, pointWidth = 1, 
+          name = "Sites de nature") %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="Nombre de sites de nature")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
 
@@ -152,17 +182,12 @@ nature %>%
   group_by(DEP) %>%  
   summarise(`sites de nature`=n() )  %>%
   arrange(desc(`sites de nature`)) %>% 
-  adorn_totals("row") %>%
-  left_join(.,appartenance %>% 
-              dplyr::filter (NIVGEO=="DEP") %>% 
-              dplyr::select (2,3),
-            by=c("DEP"="CODGEO")) %>%
-  relocate(département=LIBGEO,.after=DEP) %>%
+  adorn_totals("row",name = "BFC", fill = "Bourgogne-Franche-Comté") %>%
+  libelle(DEP) %>%
   
-  cc_kable("lcrrrrrrrrr") %>%
-  footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
-           general_title = "Source : ",
-           footnote_as_chunk = T)
+  cc_kable("lcr") %>%
+  credits_res()
+
 ```
 
 ### Sites de sport de nature
@@ -172,35 +197,44 @@ Une grande majorité de site de sport de nature de la région sont des boucles d
 ```{r}
 nature27 %>% 
   filter (REG=="27") %>% 
-  group_by(EquipementFamille,EquipementTypeLib) %>% 
+  group_by(`Famille d'équipements`= EquipementFamille,
+           `Type d'équipement`= EquipementTypeLib) %>% 
   summarise(`nombre de sites`=n()) %>% 
   arrange(desc(`nombre de sites`),.by_group = T) %>%
   
-  cc_kable("crrrrrrrrr") %>%
-  footnote(general = "MEDES, recensement des équipempents sportifs 2020", 
-           general_title = "Source : ",
-           footnote_as_chunk = T) %>%
-   scroll_box(height = "800px") 
+  cc_kable("ccr") %>%
+  credits_res() %>%
+  scroll_box(height = "800px") 
 
 ```
 
+Cartes {data-orientation="rows" data-icon="globe"}
+=======================================================================
 
+Row {data-height="100"}
+-----------------------------------------------------------------------
 
+Row {.tabset .tabset-fade .tabset-pills data-height="800"}
+-----------------------------------------------------------------------
 
-### Carte 
-
+### Carte filtrable
+clic sur l'équipement = détail ; clic sur le département = nombre d'équipement par catégorie
 ```{r}
 nature27.df <- split(nature27,nature27$EquipementFamille)
 
 depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
 depnature27 <- as.data.frame(addmargins(depnature27))
 depnature27 <- spread(depnature27,Var2,Freq)
-dep27carto <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
+carte <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
 
-l <- leaflet() %>% 
-        setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-        addProviderTiles(providers$OpenTopoMap) %>%
-        addProviderTiles(providers$WaymarkedTrails.hiking ) 
+l <- leaflet()  %>%
+  addPolygons(data = carte, stroke = F, fillOpacity = 0.01,
+              popup = popupTable(carte@data %>%
+                                   select(54:62),
+                                  row.numbers = F,feature.id = F) ) %>%
+  contour_depbfc() %>%
+  addProviderTiles(providers$OpenTopoMap) %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking )
 
 names(nature27.df) %>%
   purrr::walk( function(df) {
@@ -208,43 +242,32 @@ names(nature27.df) %>%
       addAwesomeMarkers(data=nature27.df[[df]],
                         lng=~EquGPSX, lat=~EquGPSY,
                         label=~as.character(EquipementFamille),
-                        icon = ~icons[(as.character(EquipementTypeCode) )],
-                        popup=~popupTable(nature27.df[[df]],row.numbers = F,feature.id = F),
+                        icon = ~icons[(as.character(EquipementTypeCode))],
+                        popup=~popupTable(nature27.df[[df]],
+                                          row.numbers = F,feature.id = F),
                         group = df,
-                        #clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
                         labelOptions = labelOptions(noHide = F,
                                                     direction = 'auto'))
   })
 
-
-l %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB", weight = 5, opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 2) %>%
+l  %>%
   addLayersControl(overlayGroups = names(nature27.df),
                    options = layersControlOptions(collapsed = FALSE)  )
-
 ```
 
 
 
-### Carte (cluster)
+### Carte regroupée
+clic sur l'équipement = détail ; clic sur le département = nombre d'équipement par catégorie
 ```{r}
-nature27.df <- split(nature27,nature27$EquipementFamille)
-
-depnature27 <- table(nature27$DEP,nature27$EquipementFamille) 
-depnature27 <- as.data.frame(addmargins(depnature27))
-depnature27 <- spread(depnature27,Var2,Freq)
-dep27carto <- merge(dep27carto,depnature27,by.x="DEP",by.y="Var1")
-
-l <- leaflet() %>% 
-        setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
-        addProviderTiles(providers$OpenTopoMap) %>%
-        addProviderTiles(providers$WaymarkedTrails.hiking) 
-
+l <- leaflet()  %>%
+  addPolygons(data = carte, stroke = F, fillOpacity = 0.01,
+              popup = popupTable(carte@data %>%
+                                   select(54:62),
+                                  row.numbers = F,feature.id = F) ) %>%
+  contour_depbfc() %>%
+  addProviderTiles(providers$OpenTopoMap) %>%
+  addProviderTiles(providers$WaymarkedTrails.hiking )
 
 names(nature27.df) %>%
   purrr::walk( function(df) {
@@ -252,7 +275,7 @@ names(nature27.df) %>%
       addAwesomeMarkers(data=nature27.df[[df]],
                         lng=~EquGPSX, lat=~EquGPSY,
                         label=~as.character(EquipementFamille),
-                        icon = ~icons[(as.character(EquipementTypeCode) )],
+                        icon = ~icons[(as.character(EquipementTypeCode))],
                         popup=~popupTable(nature27.df[[df]],row.numbers = F,feature.id = F),
                         group = df,
                         clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
@@ -260,17 +283,9 @@ names(nature27.df) %>%
                                                     direction = 'auto'))
   })
 
-
 l %>%
-  addPolygons(data=reg27carto,group  = "BFC",
-              color="#9370DB",weight = 5,opacity = 1, 
-              fill = F, smoothFactor = 5) %>%
-  addPolygons(data=dep27carto,group  = "départements",
-              color="#9370DB",weight = 3,opacity = 1, 
-              fill = F, smoothFactor = 2) %>%
   addLayersControl(overlayGroups = names(nature27.df),
                    options = layersControlOptions(collapsed = FALSE) )
-
 ```
 
 *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }

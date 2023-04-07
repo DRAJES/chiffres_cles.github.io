@@ -11,7 +11,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE}
+```{r}
 load("data/sport/JO.RData")
 ```
 
@@ -28,7 +28,8 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
               addPolygons(data=TDJepci,
                           weight=3,opacity = 1,color = "#87ceeb",
                           fillColor = "transparent",
-                          popup=~popupTable(TDJepci@data %>% select(CODE_EPCI,LIBGEO,P19_POP),
+                          popup=~popupTable(TDJepci@data %>% 
+                                              dplyr::select(CODE_EPCI,LIBGEO,P19_POP),
                                 row.numbers = F,feature.id = F),
                           group = "TDJ") %>% 
               addPolylines(data=TDJepcih,
@@ -36,7 +37,8 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
               addPolygons(data=TDJcom,
                           weight=3,opacity = 1,color = "#4682b4",
                           fillColor = "transparent",
-                          popup=~popupTable(TDJcom@data %>% select(INSEE_COM,NOM,POPULATION),
+                          popup=~popupTable(TDJcom@data %>% 
+                                              dplyr::select(INSEE_COM,NOM,POPULATION),
                                             row.numbers = F,feature.id = F),
                           group = "TDJ") %>% 
               addPolylines(data=TDJcomh,
@@ -46,9 +48,10 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
                         labels = c("Communes","EPCI"),
                         position = "bottomright",
                         group = "TDJ") %>%
-              addMarkers(data=CPJcarto,~x,~y,
-                         popup=~popupTable(CPJcarto %>%
-                                            select(INSEE_COM,LIBGEO,P19_POP,structure, sport, perimetre, label=enveloppe),
+              addMarkers(data=CPJcarto2,~x,~y,
+                         popup=~popupTable(CPJcarto2 %>%
+                                            dplyr::select(INSEE_COM,LIBGEO,P19_POP,
+                                                          structure, sports, perimetre),
                                            row.numbers = F,feature.id = F),
                          clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
                          labelOptions = labelOptions(noHide = F,direction = 'auto'),
@@ -63,7 +66,6 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
                                options= layersControlOptions( collapsed=F, autoZIndex=T) )
 
 ```
-
 
 
 

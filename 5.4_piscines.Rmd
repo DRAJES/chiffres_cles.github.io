@@ -11,7 +11,7 @@ output:
     theme: simplex
 ---
 
-```{r setup, include=FALSE ,echo=FALSE, cache=F}
+```{r}
 
 load("data/sport/piscines.RData")
 load("data/sport/bassins.RData")
@@ -19,21 +19,72 @@ load("data/BPE/ecoles.RData")
 
 load("data/sport/iso.RData")
 
-factPal <- colorFactor("Blues", iso_diff$drive_times,na.color = "#808080")
+#piscines
 
-appartenance <- rbind(appartenance,c("REG","FR","France","-"))
+piscine <- function(.tbl,geo) {
+  .tbl %>% 
+    group_by({{geo}}) %>% 
+    summarise_if(is.numeric,sum) %>%
+    libelle({{geo}}) %>%
+    arrange(desc(nbpiscines),desc(P19_POP)) %>%
+    adorn_totals("row",name = "Total", fill = "tot") %>%
+    mutate(baignade=round(10000*surfpiscines/P19_POP,1),
+           surfnat=color_bar("lightblue")
+                  (digits(10000*surfpiscines/P19_POP,1,decimal.mark=",") ),
+           surfnat_rec = cut(10000*surfpiscines/P19_POP,
+                             include.lowest = FALSE,
+                             right = FALSE,
+                             dig.lab = 4,
+                             breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
+                             labels = c("Absence de piscine" , 
+                                        "< 100 m² / 10 000" , 
+                                        "100 à 140 m² /10 000" ,
+                                        "140 à 170 m² / 10 000",
+                                        "170 à 200 m² / 10 000",
+                                        "200 à 250 m² / 10 000",
+                                        "250 à 350 m² / 10 000",
+                                        "> 350 m² / 10 000"  )  )) %>%
+      dplyr::select ({{geo}}, Libellé, 
+              `Nombre de bassins publics`=nbpiscines,
+              `Bassins couverts`=nbpiscines_couv,
+              `Bassins saisonniers`=nbpisc_saison,
+              Population=P19_POP,
+              `surface de baignade`=surfnat,
+              tranches=surfnat_rec,
+              baignade) 
 
+}
+
+
+#carto
 pal <- colorFactor(c("#006400","#228B22","#F5F5F5","#FF7F50","#B22222","#80000060"), 
-                   domain = sort(unique(piscines$tranches)  ),reverse = T )
+                   domain = piscines %>% 
+                     piscine(geo=EPCI) %>% 
+                     distinct(tranches) %>% 
+                     arrange(desc(tranches)) %>%
+                     pull,reverse = T )
 
 
+carto <- function(.map,var=NULL) {
 
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
+  .map %>%
+    addPolygons(data = carte,
+                color = "#2F4F4F", weight=2,opacity = 0.6, smoothFactor = 2,
+                fill=T, fillColor = ~pal(tranches), 
+                fillOpacity = ~ ifelse(is.na(tranches),0, 0.8  ) ) %>%
+    addCircles(centroid(carte)[,1],centroid(carte)[,2],
+               data = carte, 
+               radius=~5000*`Nombre de bassins publics`^(1/2),
+               color = "#4169E1", weight=2,  opacity = 0.8,
+               fillOpacity = 0.2,
+               highlight = highlightOptions (
+                             color = "#00FFFF",  weight = 5, fillOpacity =  0.1 ),
+             popup = popupTable(carte@data %>%
+                                  select(-baignade),
+                                feature.id=F,row.numbers = F)) %>%
+  addLegend(  pal = pal ,values = carte$tranches,
+              position = "bottomright",title = "surface natatoire pour 10000 habitants" )
+}
 ```
 
 # ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30"}
@@ -49,68 +100,47 @@ La région Bourgogne-Franche-Comté compte **283** bassins de natation publics a
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
-### Comparaisons régionales
+### Comparaisons
 
 Près de la moitié des piscines de la région ne sont pas ouvertes à l'année.
 
 ```{r}
-piscines %>% 
-  group_by(REG) %>% 
-  summarise_if(is.numeric,sum) %>%
-  adorn_totals("row",name = "FR") %>%
-  mutate(surfnat=color_bar("lightblue")
-                (digits(10000*surfpiscines/pop,1,decimal.mark=",") ),
-         surfnat_rec = cut(10000*surfpiscines/pop,
-                           include.lowest = FALSE,
-                           right = FALSE,
-                           dig.lab = 4,
-                           breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                           labels = c("Absence de piscine" , 
-                                      "< 100 m² / 10 000" , 
-                                      "100 à 140 m² /10 000" ,
-                                      "140 à 170 m² / 10 000",
-                                      "170 à 200 m² / 10 000",
-                                      "200 à 250 m² / 10 000",
-                                      "250 à 350 m² / 10 000",
-                                      "> 350 m² / 10 000"  )  )) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="REG") %>% 
-              dplyr::distinct(CODGEO,LIBGEO),
-            by=c("REG"="CODGEO") ) %>%
-  dplyr::select (région=REG, LIBGEO, `Nombre de bassins publics`=nbpiscines,
-                 `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
-                 Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
+tab <- piscines %>% 
+  piscine(geo=REG) %>%
+  mutate(REG=str_replace(REG,"Total",'FM'),
+         Libellé=str_replace(Libellé,"tot","France Métro")) 
+
+tab %>%
+  select(-baignade) %>%
+  arrange(REG) %>% 
   
   cc_kable("rcrrrrlrr") %>%
   column_spec(7, bold=T) %>%
-   footnote(general = " MEDES recensement des équipements sportifs 2020", 
-           general_title = "Source : ",
+  credits_res() %>%
+  footnote(general_title = "Surface de baignade :",
+           general = "pour 10 000 habitants",
            footnote_as_chunk = T)
+
 ```
 
-### Surface natatoire pour 10 000 habitants
+### Surface natatoire
 
 En lien avec la faible densité de population, la région est la mieux dotée en terme de surface de nage par habitant.
 
 ```{r}
-hchart(piscines %>% 
-         group_by(REG) %>% 
-         summarise_if(is.numeric,sum) %>%
-         adorn_totals("row",name = "FR") %>%
-         mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>% 
-         arrange(desc(surfnat)) %>%
-         left_join(.,appartenance %>% 
-                     filter(NIVGEO=="REG") %>% 
-                     dplyr::select(CODGEO,LIBGEO),
-                   by=c("REG"="CODGEO") ) ,
-"bar", hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
+tab %>%
+  arrange(desc(baignade)) %>%
+hchart( "bar", 
+        hcaes(x=reorder(Libellé,baignade),y=baignade,
                     color=ifelse(REG=="27","#6a5acd",
-                          ifelse(REG=="FR","#ff7f50","#ffd700") ) ) , 
+                          ifelse(REG=="FM","#ff7f50","#ffd700") ) ) , 
        showInLegend = F, pointWidth = 20, 
-       name = "surface natatoire /n pour 10 000 habitants") %>%
+       name = "<b>surface natatoire</b> <br> pour 10 000 habitants") %>%
     hc_xAxis(title=list(text="Régions")) %>%
     hc_yAxis(title=list(text="surface natatoire")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 ```
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="30"}
@@ -125,36 +155,18 @@ L'éloignement joue un rôle déterminant dans la surface de baignade. Le Jura, 
 
 ## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
 
-### Comparaisons départementales
+### Comparaisons
 
 ```{r}
-piscines %>% 
-  group_by(DEP) %>% 
-  filter(DEP %in% depbfc) %>% 
-  summarise_if(is.numeric,sum) %>%
-  adorn_totals("row",name = "BFC") %>%
-  mutate(surfnat=color_bar("lightblue")
-                (digits(10000*surfpiscines/pop,1,decimal.mark=",") ),
-         surfnat_rec = cut(10000*surfpiscines/pop,
-                           include.lowest = FALSE,
-                           right = FALSE,
-                           dig.lab = 4,
-                           breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                           labels = c("Absence de piscine" , 
-                                      "< 100 m² / 10 000" , 
-                                      "100 à 140 m² /10 000" ,
-                                      "140 à 170 m² / 10 000",
-                                      "170 à 200 m² / 10 000",
-                                      "200 à 250 m² / 10 000",
-                                      "250 à 350 m² / 10 000",
-                                      "> 350 m² / 10 000"  )  )) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="DEP") %>% 
-              dplyr::select(CODGEO,LIBGEO),
-            by=c("DEP"="CODGEO") ) %>%
-  select (Département=DEP, LIBGEO, `Nombre de bassins publics`=nbpiscines,
-          `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
-          Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
+tab <- piscines %>% 
+  filter(DEP %in% depbfc) %>%
+  piscine(geo=DEP) %>%
+  mutate(DEP=str_replace(DEP,"Total",'BFC'),
+         Libellé=str_replace(Libellé,"tot","Bourgogne-Franche-Comté")) 
+
+tab %>% 
+  select(-baignade) %>%
+  arrange(DEP) %>%
   
   cc_kable("rcrrrrlrr") %>%
   column_spec(7, bold=T) %>%
@@ -164,99 +176,52 @@ piscines %>%
 
 ```
 
-### Surface natatoire pour 10 000 habitants
+### Surface natatoire
 
 Le Jura est le **5e** département pour la surface natatoire disponible pour 10 000 habitants, l'Yonne le dixième. à l'inverse, le Territoire de Belfort est le 5e département le moins bien doté.
 
 ```{r}
-hchart(piscines %>% 
-         group_by(DEP) %>% 
-         summarise_if(is.numeric,sum) %>%
-         adorn_totals("row",name = "France") %>%
-         left_join(.,appartenance %>% 
-                     filter(NIVGEO=="DEP") %>% 
-                     select(CODGEO,LIBGEO),
-                   by=c("DEP"="CODGEO") ) %>%
-         mutate(LIBGEO=ifelse(DEP=="France","France",LIBGEO)) %>%
-         bind_rows(piscines %>% 
-                     filter (REG=="27") %>% 
-                     group_by(REG) %>%  
-                     summarise_if(is.numeric,sum) %>%
-                     rename(DEP=REG) %>% 
-                     mutate(LIBGEO="Bourgogne-Franche-Comté" ) ) %>%
-         mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>% 
-         arrange(desc(surfnat)) ,
-"bar", hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
+piscines %>% 
+  piscine(geo=DEP) %>%
+  mutate(DEP=str_replace(DEP,"Total",'FM'),
+         Libellé=str_replace(Libellé,"tot","France Métro")) %>%
+  arrange(desc(baignade)) %>%
+  hchart( "bar", 
+          hcaes(x=reorder(Libellé,baignade),y=baignade,
              color=ifelse(DEP %in% depbfc,"#6a5acd",
-                   ifelse(DEP=="France","#ff7f50","#ffd700") ) ),
+                   ifelse(DEP=="FM","#ff7f50","#ffd700") ) ),
        showInLegend = T,  pointWidth = 1,
        name = "surface natatoire <br/> pour 10 000 habitants" ) %>%
-  
-  hc_add_series(piscines %>% 
-                  group_by(DEP) %>% 
-                  filter (DEP %in% depbfc) %>% 
-                  summarise_if(is.numeric,sum) %>%
-                  adorn_totals("row",name = "BFC") %>%
-                  mutate(surfnat=round(10000*surfpiscines/pop,1) )  %>%
-                  arrange(desc(surfnat)) %>%
-                  left_join(.,appartenance %>% 
-                              filter(NIVGEO=="DEP") %>%
-                              select(CODGEO,LIBGEO),
-                            by=c("DEP"="CODGEO") ) ,
-         "bar", hcaes(x=reorder(LIBGEO,surfnat),y=surfnat,
+
+  hc_add_series(tab %>% 
+                  arrange(desc(baignade)) ,
+          "bar", hcaes(x=reorder(Libellé,baignade),y=baignade,
                       color=ifelse(DEP %in% depbfc,"#6a5acd","#ff7f50" )) , 
                 showInLegend = F, pointWidth = 3, 
                 name = "surface natatoire <br/> pour 10 000 habitants") %>%
   hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
   hc_xAxis(title=list(text="Départements")) %>%
   hc_yAxis(title=list(text="surface natatoire")) %>%
-  hc_add_theme(thm) 
+  hc_add_theme(thm) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+
 
 ```
 
 
-### Carte départementale
+### Carte
 
 ```{r}
+carte <- depwgs
+carte@data <- carte@data %>% select(Département=DEP)
+carte <- merge(carte, piscines %>%
+                   piscine(geo=DEP) %>% 
+                 rename(Département=DEP),
+               by="Département")
 
-piscinesdep <- sp::merge(depwgs,piscines %>% 
-                           group_by(DEP) %>%  
-                           summarise_if(is.numeric,sum) %>%
-                           mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>%
-                           mutate(surfnat=round(10000*surfpiscines/pop,1),
-                                  tranche = cut(surfnat,
-                                                include.lowest = FALSE,
-                                                right = FALSE,
-                                                dig.lab = 4,
-                                                breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                                                labels = c("Absence de piscine" , 
-                                                           "< 100 m² / 10 000" , 
-                                                           "100 à 140 m² /10 000" ,
-                                                           "140 à 170 m² / 10 000",
-                                                           "170 à 200 m² / 10 000",
-                                                           "200 à 250 m² / 10 000",
-                                                           "250 à 350 m² / 10 000",
-                                                           "> 350 m² / 10 000"  )  )) ,
-                         by="DEP")
-
-leaflet(piscinesdep) %>%
-  addPolygons(color = "#2F4F4F", weight=2,opacity = 0.6, smoothFactor = 2,
-              fill=T, fillColor = ~pal(tranche), fillOpacity = 0.8  ) %>%
-    contour_depbfc(zoom = 6) %>%
-  addCircles(centroid(piscinesdep)[,1],centroid(piscinesdep)[,2],
-             group = "region", 
-             radius=~5000*nbpiscines^(1/2),
-             color = "#4169E1", weight=4,  opacity = 0.8,
-             fillOpacity = 0.2,
-             highlight = highlightOptions (
-                             color = "#00FFFF",  weight = 5, fillOpacity =  0.1 ),
-             popup = popupTable(piscinesdep@data %>% 
-                                   select(Département=LIBGEO,pop.x,nbpiscines,
-                                          nbpiscines_couv,nbpisc_saison,surfnat,tranche),
-                                feature.id=F,row.numbers = F)) %>%
-  addLegend(  pal = pal ,values = piscinesdep$tranche,
-              position = "bottomright",title = "surface natatoire pour 10000 habitants" )
-
+leaflet(depwgs) %>% 
+  carto() %>%
+  contour_bfc() 
 ```
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="30"}
@@ -271,35 +236,11 @@ Les grandes agglomérations servent de centre de service pour les EPCI alentours
 31 EPCI n'ont aucune piscine publique accessible aux scolaires.
 
 ```{r,echo=F}
-piscines %>% 
-  filter(REG=='27')  %>% 
-  group_by(EPCI) %>% 
-  summarise_if(is.numeric,sum) %>%
-  arrange(desc(nbpiscines),desc(pop)) %>%
-  adorn_totals("row",name = "BFC") %>%
-  mutate(surfnat=color_bar("lightblue")
-                 (digits(10000*surfpiscines/pop,1,decimal.mark=",") ),
-         surfnat_rec = cut(10000*surfpiscines/pop,
-                           include.lowest = FALSE,
-                           right = FALSE,
-                           dig.lab = 4,
-                           breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                           labels = c("Absence de piscine" , 
-                                      "< 100 m² / 10 000" , 
-                                      "100 à 140 m² /10 000" ,
-                                      "140 à 170 m² / 10 000",
-                                      "170 à 200 m² / 10 000",
-                                      "200 à 250 m² / 10 000",
-                                      "250 à 350 m² / 10 000",
-                                      "> 350 m² / 10 000"  )  )) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="EPCI") %>% 
-              select(CODGEO,LIBGEO),
-            by=c("EPCI"="CODGEO") ) %>%
-  select (EPCI, LIBGEO, `Nombre de bassins publics`=nbpiscines,
-          `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
-          Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
+tab <- piscines %>% 
+  filter(EPCI %in% basecom$EPCI[basecom$REG=="27"] ) %>%
+  piscine(geo=EPCI) 
   
+tab %>%
   cc_kable("rcrrrrlrr") %>%
   column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
@@ -308,55 +249,36 @@ piscines %>%
    scroll_box(height = "800px") 
 ```
 
-### Carte de surface de baignade par EPCI {data-height="800"}
+### Tableau filtré
+```{r}
+tab <- tab %>% 
+  filter(!EPCI %in% c('BFC','METRO')) %>%
+  rename(LibEPCI=Libellé)
+
+sd <- tab_filtre(geo=EPCI)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
+```
+
+### Carte de surface de baignade {data-height="800"}
 
 ```{r}
+carte <- epcicarto
+carte@data <- carte@data %>% select(EPCI)
+carte <- merge(carte, piscines %>%
+                   piscine(geo=EPCI),
+               by="EPCI")
 
-piscinesepci <- sp::merge(epciwgs,piscines %>% 
-                            group_by(EPCI) %>%
-                            filter (EPCI %in% basecom$EPCI[basecom$REG=="27"] ) %>%
-                            summarise_if(is.numeric,sum) %>%
-                            mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>%
-                            mutate(surfnat=round(10000*surfpiscines/pop,1),
-                                   tranche = cut(surfnat,
-                                                 include.lowest = FALSE,
-                                                 right = FALSE,
-                                                 dig.lab = 4,
-                                                 breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                                                 labels = c("Absence de piscine" , 
-                                                            "< 100 m² / 10 000" , 
-                                                            "100 à 140 m² /10 000" ,
-                                                            "140 à 170 m² / 10 000",
-                                                            "170 à 200 m² / 10 000",
-                                                            "200 à 250 m² / 10 000",
-                                                            "250 à 350 m² / 10 000",
-                                                            "> 350 m² / 10 000"  )  )) ,
-                          by="EPCI")
-
-leaflet(piscinesepci) %>%
+leaflet(epcicarto) %>% 
+  carto() %>%
+  contour_depbfc() %>%
   addAwesomeMarkers(data=bassins,icon=icons,
-                    popup = popupTable(bassins,row.numbers = F,feature.id = F),
-                    group = "tous bassins") %>%
-  addPolygons(color = "#2F4F4F", weight=2,opacity = 0.6,
-              fill=T, fillColor = ~pal(tranche), fillOpacity = ~ifelse(is.na(tranche),0, 0.8 ),
-              popup = popupTable(piscinesepci@data %>% 
-                                   select(EPCI=NOM,pop,nbpiscines,
-                                          nbpiscines_couv,nbpisc_saison,surfnat,tranche),
-                                 feature.id=F,row.numbers = F)) %>%
-    contour_depbfc() %>%
-  addCircles(centroid(piscinesepci)[,1],centroid(piscinesepci)[,2],
-             group = "region", 
-             radius=~5000*nbpiscines^(1/2),
-             color = "#4169E1", weight=1,  opacity = 0.8,
-             fillOpacity = 0.2,
-             highlight = highlightOptions ( 
-                          color = "#00FFFF", weight = 5, fillOpacity =  0.1 ),
-             popup = popupTable(piscinesepci@data %>% 
-                                   select(EPCI=NOM,pop,nbpiscines,
-                                          nbpiscines_couv,nbpisc_saison,surfnat,tranche),
-                                feature.id=F,row.numbers = F)) %>%
-  addLegend( pal = pal ,values = piscinesepci$tranche,
-             position = "bottomright", title = "surface natatoire pour 10000 habitants" )
+                    popup = popupTable(bassins,
+                                       row.numbers = F,feature.id = F),
+                    group = "tous bassins") 
 
 ```
 
@@ -372,35 +294,11 @@ Les bassins de vie égalisent un peu le poids des grandes agglomération en mett
 42 bassins de vie n'ont pas de piscines publique accessible aux scolaires.
 
 ```{r,echo=F}
-piscines %>% 
-  filter(REG=='27')  %>% 
-  group_by(BV2012) %>% 
-  summarise_if(is.numeric,sum) %>%
-  arrange(desc(nbpiscines),desc(pop)) %>%
-  adorn_totals("row",name = "BFC") %>%
-  mutate(surfnat=color_bar("lightblue")
-                (digits(10000*surfpiscines/pop,1,decimal.mark=",") ),
-         surfnat_rec = cut(10000*surfpiscines/pop,
-                           include.lowest = FALSE,
-                           right = FALSE,
-                           dig.lab = 4,
-                           breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                           labels = c("Absence de piscine" , 
-                                      "< 100 m² / 10 000" , 
-                                      "100 à 140 m² /10 000" ,
-                                      "140 à 170 m² / 10 000",
-                                      "170 à 200 m² / 10 000",
-                                      "200 à 250 m² / 10 000",
-                                      "250 à 350 m² / 10 000",
-                                      "> 350 m² / 10 000"  )  )) %>%
-  left_join(.,appartenance %>% 
-              filter(NIVGEO=="BV2012") %>% 
-              select(CODGEO,LIBGEO),
-            by=c("BV2012"="CODGEO") ) %>%
-  select (BV2012, LIBGEO, `Nombre de bassins publics`=nbpiscines,
-          `Bassins couverts`=nbpiscines_couv,`Bassins saisonniers`=nbpisc_saison,
-          Population=pop,`surface de baignade pour 10 000 hab`=surfnat,tranches=surfnat_rec) %>%
-  
+tab <- piscines %>% 
+  filter(BV2022 %in% basecom$BV2022[basecom$REG=="27"] ) %>%
+  piscine(geo=BV2022) 
+
+tab %>%  
   cc_kable("rcrrrrlrr") %>%
   column_spec(7, bold=T) %>%
   footnote(general = " MEDES recensement des équipements sportifs 2020", 
@@ -409,55 +307,36 @@ piscines %>%
    scroll_box(height = "800px") 
 ```
 
-### Carte de surface de baignade par bassin de vie {data-height="800"}
+### Tableau filtré
+```{r}
+tab <- tab %>% 
+  filter(!BV2022 %in% c('BFC','METRO')) %>%
+  rename(LibBV=Libellé)
+
+sd <- tab_filtre(geo=BV2022)
+
+filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
+                inline=TRUE, allLevels = FALSE)
+
+sd %>% datafiltre()
+```
+
+### Carte de surface de baignade {data-height="800"}
 
 ```{r}
-piscinesbv <- sp::merge(bvwgs,piscines %>% 
-                          group_by(BV2012) %>%  
-                          filter(BV2012 %in% basecom$BV2012[basecom$REG=="27"] ) %>%
-                          summarise_if(is.numeric,sum) %>%
-                          mutate(surfnat=round(10000*surfpiscines/pop,1) ) %>%
-                          mutate(surfnat=round(10000*surfpiscines/pop,1),
-                                 tranche = cut(surfnat,
-                                               include.lowest = FALSE,
-                                               right = FALSE,
-                                               dig.lab = 4,
-                                               breaks = c(0, 1, 100, 140, 170, 200, 250, 350, Inf),
-                                               labels = c("Absence de piscine" , 
-                                                          "< 100 m² / 10 000" , 
-                                                          "100 à 140 m² /10 000" ,
-                                                          "140 à 170 m² / 10 000",
-                                                          "170 à 200 m² / 10 000",
-                                                          "200 à 250 m² / 10 000",
-                                                          "250 à 350 m² / 10 000",
-                                                          "> 350 m² / 10 000"  )  )) ,
-                        by="BV2012")
+carte <- bvcarto
+carte@data <- carte@data %>% select(BV2022)
+carte <- merge(carte, piscines %>%
+                   piscine(geo=BV2022),
+               by="BV2022")
 
-leaflet(piscinesbv) %>%
+leaflet(bvcarto) %>% 
+  carto() %>%
+  contour_depbfc() %>%
   addAwesomeMarkers(data=bassins,icon=icons,
-                    popup = popupTable(bassins,row.numbers = F,feature.id = F),
-                    group = "tous bassins") %>%
-  addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6,
-              fill=T, fillColor = ~pal(tranche), fillOpacity =  ~ifelse(is.na(tranche),0, 0.8 ),
-              popup = popupTable(piscinesbv@data %>% 
-                                   select(BV2012 ,pop,nbpiscines,nbpiscines_couv,
-                                          nbpisc_saison,surfnat,tranche),
-                                 feature.id=F,row.numbers = F))   %>%
-    contour_depbfc() %>%
-  addCircles(centroid(piscinesbv)[,1],centroid(piscinesbv)[,2],
-             group = "region", 
-             radius=~5000*nbpiscines^(1/2),
-             color = "#4169E1", weight=1,  opacity = 0.8,
-             fillOpacity = 0.2,
-             highlight = highlightOptions (
-                         color = "#00FFFF", weight = 5,  fillOpacity =  0.1 ),
-             popup = popupTable(piscinesbv@data %>% 
-                                   select(BV2012 ,pop,nbpiscines,nbpiscines_couv,
-                                          nbpisc_saison,surfnat,tranche),
-                                 feature.id=F,row.numbers = F)) %>%
-  addLegend( pal = pal ,values = piscinesbv$tranche ,
-             position = "bottomright",title = "surface natatoire pour 10000 habitants")
-
+                    popup = popupTable(bassins,
+                                       row.numbers = F,feature.id = F),
+                    group = "tous bassins") 
 ```
 
 # `r fa(name="fas fa-clock-rotate-left")` Temps d'accès {data-orientation="rows"}
@@ -476,6 +355,8 @@ Certains territoires sont éloignés des bassins de natation, particulièrement 
 
 
 ```{r}
+factPal <- colorFactor("Blues", iso_diff$drive_times,na.color = "#808080")
+
 leaflet() %>% 
   setView(mean(bassins$lon), mean(bassins$lat), zoom = 8) %>%
   addProviderTiles(providers$CartoDB.Positron) %>% 

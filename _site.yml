@@ -1,4 +1,5 @@
 name: "JES"
+output_dir: docs
 navbar:
   title: "Données JES"
   type: inverse

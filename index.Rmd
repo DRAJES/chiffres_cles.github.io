@@ -9,17 +9,11 @@ output:
 editor_options: 
   markdown: 
     wrap: 72
+
 ---
 
-```{r setup, include=F ,echo=FALSE, cache=F}
+```{r, include=F ,echo=FALSE, cache=F}
 
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
 ```
 
 La Délégation Régionale Académique à la Jeunesse, à l'Engagement et aux
@@ -60,7 +54,9 @@ $Région, Département, EPCI, BV$
 
 -   15-29 ans / + de 65 ans
 
--   Indice de jeunesse, carte
+-   Indice de jeunesse, pyramides des âges, carte
+
+-   [Structure par âge à façon](1.2_structure.html#structure-par-âge-à-façon)
 
 ### 1.3 [Évolution de la population](1.3_evol.html)
 

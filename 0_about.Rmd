@@ -4,10 +4,14 @@ author: "PSLèbre"
 output: html_document
 
 ---
-```{r setup, include=F ,echo=FALSE, cache=F}
-library(BAMMtools)
+```{r, setup, include=FALSE ,eval=TRUE, cache=FALSE}
+#library(BAMMtools)
+library(htmltools)
+library(htmlwidgets)
+library(paletteer)
 library(glue)
 library(HatchedPolygons)
+library(crosstalk)
 library(shiny)
 library(shinyWidgets)
 library(shinydashboard)
@@ -17,29 +21,30 @@ library(gghighlight)
 library(highcharter)
 library(janitor)
 library(DT)
+library(reactable)
 library(fontawesome)
 library(formattable)
 library(sparkline)
 library(rgdal)
 library(osrm)
 library(fontawesome)
+library(geosphere)
 library(leafpop)
 library(leaflet.providers) 
-library(readxl)
+library(downloadthis)
 library(leaflet.minicharts)
 library(leaflet)
 library(leaflegend)
 library(leaflet.extras2)
 library(tidyverse)
-source("librairies.R")
-
-#rmarkdown::render_site(encoding = 'UTF-8')
 
 #gitlabr::use_gitlab_ci(type = "bookdown")
 #usethis::use_github_action()
 
-
+sparkline(0)
 use_providers(get_providers())
+flexdashboard::flex_dashboard(self_contained = F)
+
 
 depbfc <- c('21','25','39','58','70','71','89','90')
 
@@ -70,8 +75,12 @@ source("R/data/fonctions_merge.R")
 knitr::opts_chunk$set(
  fig.width = 6,
  fig.asp = 0.8,
- out.width = "80%"
+ out.width = "80%",
+ collapse = TRUE
 )
+
+options(knitr.kable.NA = '')
+options(knitr.table.format = "html")
 ```
 
 

@@ -11,7 +11,7 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=F ,echo=FALSE, cache=F}
+```{r, include=F ,echo=FALSE, cache=F}
 library(flexdashboard)
 library(gghighlight)
 library(highcharter)
@@ -93,6 +93,8 @@ $Région, Département, EPCI, BV$
 -   15-29 ans / + de 65 ans
 
 -   Indice de jeunesse, carte
+
+-   [Structure par âge à façon]((1.2_structure.html#structure-par-âge-à-façon))
 
 ### 1.3 [Évolution de la population](1.3_evol.html)
 
