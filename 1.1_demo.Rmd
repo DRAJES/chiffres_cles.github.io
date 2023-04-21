@@ -2,15 +2,18 @@
 title: "Données générales"
 output: 
   flexdashboard::flex_dashboard:
-    self_contained : FALSE
     orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll
+    self_contained : false
     social: menu
    #source_code: embed
     navbar:
       - { title: "Accueil", href: index.html, align: right, icon: fa-home }
     theme: simplex
+#    rmdformats::downcute:
+#    lightbox: true
 runtime: shiny
-
 ---
 
 ```{r}
@@ -100,23 +103,9 @@ densite <- function(.map){
 
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="20"}
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="20" .storyboard}
 
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$pop[3]/1000,0)*1000,big.mark = " ")`** habitants au 1er janvier 2019 .
-
-Elle est la **`r rank(-region$densite)[3]`e** région la moins dense des 13 régions de France métropolitaine avec **`r prettyNum(round(region$densite,1)[3],decimal.mark=",")`** habitants par km²
-
-La région est très rurale : **`r prettyNum(round(region$partZRR,1)[3],decimal.mark=",")` %** de la population réside dans une commune classée en Zone de revitalisation rurale. A contrario, **`r prettyNum(round(region$partQPV,1)[3],decimal.mark=",")` %** des habitants résident dans un des **58** quartiers politique de la ville (QPV) de la région.
-
-## Row {.tabset .tabset-fade}
-
-### Comparaisons régionales
+### Comparaisons régionales 
 
 ```{r,echo=F}
 
@@ -141,6 +130,13 @@ tab %>%
 #               rownames = FALSE)
   
 ```
+***  
+
+La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$pop[3]/1000,0)*1000,big.mark = " ")`** habitants au 1er janvier 2019 .
+
+Elle est la **`r rank(-region$densite)[3]`e** région la moins dense des 13 régions de France métropolitaine avec **`r prettyNum(round(region$densite,1)[3],decimal.mark=",")`** habitants par km²
+
+La région est très rurale : **`r prettyNum(round(region$partZRR,1)[3],decimal.mark=",")` %** de la population réside dans une commune classée en Zone de revitalisation rurale. A contrario, **`r prettyNum(round(region$partQPV,1)[3],decimal.mark=",")` %** des habitants résident dans un des **58** quartiers politique de la ville (QPV) de la région.
 
 ### Carte régionale
 
@@ -153,22 +149,13 @@ leaflet() %>%
  carto_ZRR() %>%
  carto() %>%
  contour_bfc() 
-
- 
 ```
 
+***
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20"}
+en savoir plus sur les ZRR
 
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-La densité dépasse 230 habitants par km² dans le Territoire de Belfort et seulement 30 habitants par km² dans le Nièvre. La Bourgogne-Franche-Comté est une terre de contrastes dont la composante essentiellement rurale apparaît dans la forte part de communes classées en ZRR, et le faible taux de population en QPV. Le territoire de Belfort reste un département atypique.
-
-## Row {.tabset .tabset-fade}
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20" .storyboard}
 
 ### Comparaisons départementales
 
@@ -191,8 +178,11 @@ tab  %>%
   cc_kable(aligne = "cclrrrcccll") %>%
   credits()
 
-
 ```
+***
+
+La densité dépasse 230 habitants par km² dans le Territoire de Belfort et seulement 30 habitants par km² dans le Nièvre. La Bourgogne-Franche-Comté est une terre de contrastes dont la composante essentiellement rurale apparaît dans la forte part de communes classées en ZRR, et le faible taux de population en QPV. Le territoire de Belfort reste un département atypique.
+
 
 ### Carte départementale
 
@@ -215,15 +205,11 @@ leaflet() %>%
   carto() %>%
   contour_depbfc(zoom= 6) 
 
- 
-
 ```
+***
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="20"}
 
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="20" .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale
 
@@ -245,7 +231,11 @@ tab %>%
   credits()
 ```
 
+***
+Comparaison des établissements publics de comparaison intercommunale
+
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
 
@@ -257,8 +247,11 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 
-### Carte ECPI
+***
 
+Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+
+### Carte EPCI
 
 ```{r}
 carte <- epcicarto
@@ -271,16 +264,12 @@ leaflet() %>%
   carto() %>%
   contour_depbfc() %>% 
   QPV()
-
 ```
+***
 
-# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="20"}
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="20" .storyboard}
 
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
-
-### Comparaisons bassins de vie
+### Comparaisons bassins de vie 2022
 
 ```{r,echo=F}
 tab <- bv27_tab %>%  
@@ -298,11 +287,14 @@ tab <- bv27_tab %>%
 tab %>%  
   cc_kable(aligne = "clrrrccll") %>%
   credits()
-
 ```
 
+***
+
+Comparaison des bassins de vie 2022
 
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
 
@@ -313,8 +305,10 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
-### Carte BV
+### Carte BV 2022
 
 ```{r}
 carte <- bvcarto
@@ -326,19 +320,14 @@ leaflet() %>%
   carto() %>%
   contour_depbfc () %>%
   QPV()
-
-
 ```
+***
 
-# `r fa(name = "fas fa-layer-group")` Découpages administratifs {data-orientation="rows" height="20"}
-
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# `r fa(name = "fas fa-layer-group")` Découpages administratifs {data-orientation="rows" height="20" .storyboard}
 
 ### Appartenance communale
 
-```{r}
+```{r eval=FALSE}
 basecom %>% 
   filter(REG=='27') %>% 
   select(CODGEO:SUPERF) %>%
@@ -353,7 +342,7 @@ basecom %>%
 
 ### Géographie régionale
 
-```{r}
+```{r eval=FALSE}
 leaflet() %>% 
   addProviderTiles(providers$OpenStreetMap, 
                    group="OSM") %>%
@@ -394,15 +383,11 @@ leaflet() %>%
                                                  autoZIndex = F))
 ```
 
-# `r fa(name = "fas fa-tree")` CRTE {data-orientation="rows" height="20"}
-
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# `r fa(name = "fas fa-tree")` CRTE {data-orientation="rows" height="20" .storyboard}
 
 ### Contrats de relance et de transistion écologique
 
-```{r}
+```{r eval=FALSE}
 crte %>% 
   distinct(id_crte,lib_crte,SH_RUR_CRTE,TYPO_RURB_CRTE)%>% 
   arrange(id_crte)%>%
@@ -430,20 +415,15 @@ crte %>%
            number = c("Insee-grille de densité 2020, Insee-RP 2018, ANCT-CRTE au 19/01/2022"), 
            footnote_as_chunk = T)
 
-
 ```
+
+***
+
+Les Contrats de relance et de transition écologique (CRTE) viennent remplacer les ZRR à compter de 2023. Ce nouveau découpage s'appuie largement sur les ZRR dont il affine un peu les contours.
 
 ### Appartenance communale
 
-> Une commune est classée "IN" si au moins une des 3 conditions suivantes est vérifiée :
->
-> -   située en Zone de Revitalisation Rurale (ZRR)
->
-> -   située dans un basin de vie comprenant plus de 50 % de la population en ZRR
->
-> -   située en CRTE dit "rural"
-
-```{r}
+```{r eval=FALSE}
 crte %>% 
   select("Code commune au 1er janvier 2021"=CODGEO,
          "Nom de la commune"=LIBGEO,
@@ -467,10 +447,18 @@ crte %>%
                       "ANCT - traitements de l'Observatoire des territoires, 2022"), 
            footnote_as_chunk = T)
 ```
+***
+> Une commune est classée "IN" si au moins une des 3 conditions suivantes est vérifiée :
+>
+> -   située en Zone de Revitalisation Rurale (ZRR)
+>
+> -   située dans un basin de vie comprenant plus de 50 % de la population en ZRR
+>
+> -   située en CRTE dit "rural"
 
 ### carte CRTE
 
-```{r}
+```{r eval=FALSE}
 palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a",
                       "#43a047","#2e7d32"), 
                     domain =0:100 ,
@@ -503,10 +491,6 @@ leaflet(zonage_crte) %>%
 ```
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="60"}
 
 **Sources :**
 

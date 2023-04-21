@@ -2,7 +2,9 @@
 title: "Vie associative"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll
     social: menu
     #source_code: embed
     navbar:
@@ -105,25 +107,9 @@ return(cartasso)
 
 ```
 
-![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
 
-### Données générales
-
-En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire national des Associations. Si le répertoire est exhaustif, il est en revanche peu actualisé, en particulier pour les associations qui ont peu d'activité ou n'ont pas de besoin de subvention. On estime à un peu plus de la moitié les associations véritablement actives (entre 60 000 et 65 000 dans la région, sans clé de répartition).
-C'est la troisième région de France en nombre d'association par habitant derrière la Corse et l'Occitanie.
-Les associations sportives représentent près du quart des associations (plus grande proportion de France).
-
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
-
-### Comparaisons
-
-**9e** région française en nombre d'associations, **3e** en taux par habitant
+### Comparaisons régionales
 
 ```{r}
 tab <- RNApop %>% 
@@ -167,10 +153,16 @@ hw_grid(
   rowheight = 600 ) 
 
 ```
+***
+En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire national des Associations. Si le répertoire est exhaustif, il est en revanche peu actualisé, en particulier pour les associations qui ont peu d'activité ou n'ont pas de besoin de subvention. On estime à un peu plus de la moitié les associations véritablement actives (entre 60 000 et 65 000 dans la région, sans clé de répartition).
+C'est la troisième région de France en nombre d'association par habitant derrière la Corse et l'Occitanie.
+Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
-### Tableau 
 
-**Les domaines du sport, des loisirs et de l'économie fortement représentés**
+**9e** région française en nombre d'associations, **3e** en taux par habitant
+
+
+### Tableau régional
 
 ```{r}
 asso_tab(REG) %>%
@@ -181,9 +173,10 @@ asso_tab(REG) %>%
   credits() %>%
   footnote(general = "ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA"  ) 
 ```
+***
+**Les domaines du sport, des loisirs et de l'économie fortement représentés**
 
-### Thématiques
-
+### Thématiques par région
 
 ```{r}
 tab <- RNApop %>% 
@@ -238,8 +231,7 @@ hchart(RNA %>%
 ```
 
 
-### Evolution
-Créations d'associations par année
+### Evolution régionale
 ```{r}
 hw_grid(
   RNA %>% 
@@ -268,37 +260,24 @@ hw_grid(
   rowheight = 600 ) 
 #htmltools::browsable()
 ```
+***
+Créations d'associations par année
 
 
 
 
-### Carte 
-Hors Alsace-Moselle
+### Carte régionale
 ```{r}
 carte <- merge(regwgs,RNAcarto(geo=REG),by="REG")
 
 carte_asso() %>% contour_bfc()
 ```
+***
+Hors Alsace-Moselle
 
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard} 
 
-
-
-![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {.tabset .tabset-fade .tabset-pills data-height="100"}
------------------------------------------------------------------------
-
-
-### Données générales
-
-Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux où les associations sont les plus fréquentes
-
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
-
-### Comparaisons
+### Comparaisons départementales
 
 ```{r}
 tab <- RNApop %>% 
@@ -367,13 +346,11 @@ hw_grid(
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 rowheight = 600)
-
-
 ```
+***
+Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux où les associations sont les plus fréquentes
 
-### Tableau 
-
-Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
+### Tableau par départements
 
 ```{r}
 asso_tab(DEP) %>%
@@ -384,9 +361,10 @@ asso_tab(DEP) %>%
   credits()
   
 ```
+***
+Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
 
-### Thématiques
-de nombreuses associations sportives
+### Thématiques par département
 
 ```{r}
 tab <- RNApop %>% 
@@ -419,9 +397,10 @@ hw_grid(
 rowheight = 600)
 
 ```
+***
+de nombreuses associations sportives
 
-### Evolution
-Créations d'associations par année
+### Evolutions départementales
 
 ```{r}
 #```{r, figures-side, fig.show="hold", out.width="50%"}
@@ -454,25 +433,22 @@ hw_grid(
 #htmltools::browsable()
 
 ```
+***
+Créations d'associations par année
 
-### Carte 
-Hors Alsace-Moselle
+### Carte départementale
 ```{r}
 carte <- merge(depwgs,RNAcarto(geo=DEP),by="DEP")
 
 carte_asso() %>% contour_bfc()
 ```
+***
+Hors Alsace-Moselle
 
 
-![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
-
-### Tableau des associations 
+### Tableau des associations par EPCI
 ```{r}
 tab <- asso_tab(EPCI) %>% 
   filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
@@ -507,15 +483,9 @@ carte_asso() %>% contour_depbfc()
 
 ```
 
-![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
 
-
-### Tableau des associations 
+### Tableau des associations par bassin de vie 2022
 ```{r}
 tab <- asso_tab(BV2022) %>%
   filter(BV2022 %in% basecom$BV2022[basecom$REG=="27"]) %>%
@@ -542,7 +512,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 
-### carte BV
+### carte BV 2022
 
 ```{r}
 carte <- merge(bvcarto,RNAcarto(geo=BV2022),by="BV2022")
@@ -551,12 +521,7 @@ carte_asso() %>% contour_depbfc()
 ```
 
 
-*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 
 **Sources :**  
 

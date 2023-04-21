@@ -3,6 +3,8 @@ title: "Jeunesse"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll
     social: menu
     #source_code: embed
     navbar:
@@ -77,26 +79,10 @@ carto <- function(.map) {
 
 ```
 
-![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
 
-Row  {data-height=100}
------------------------------------------------------------------------
-### Données générales
-
-La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2019 .
-
-Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
-
-
-
-Row {.tabset .tabset-fade}
------------------------------------------------------------------------
-  
 ### Comparaisons régionales
-  
+
 ```{r,echo=F}
 tab <- region_tab %>% 
   demo(Région)
@@ -104,6 +90,10 @@ tab <- region_tab %>%
 tab %>%  
   credits()
 ```
+***
+La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2019 .
+
+Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
 
 ### Carte régionale
 
@@ -118,21 +108,9 @@ leaflet(regwgs) %>%
   carto() %>%
   contour_bfc() 
 ```
+***
 
-![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row  {data-height=100}
------------------------------------------------------------------------
-### Données générales
-
-Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail. 
-Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
-
-
-  Row {.tabset .tabset-fade}
------------------------------------------------------------------------
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons départementales 
 
@@ -145,6 +123,9 @@ tab <- dep27_tab[-10,-1] %>%
 tab %>%  
   credits()
 ```
+***
+Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail. 
+Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
 
 ### Carte départementale
 
@@ -160,16 +141,10 @@ leaflet(depwgs) %>%
   carto() %>%
  contour_depbfc(zoom= 6)
 ```
+***
 
 
-
-![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-
-  Row {.tabset .tabset-fade}
------------------------------------------------------------------------
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale
   
@@ -180,6 +155,7 @@ tab <- epci27_tab %>%
 tab %>%  
   credits()
 ```
+***
 
 ### Tableau filtré
 ```{r}
@@ -192,6 +168,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+
 
 ### Carte ECPI
   
@@ -207,15 +186,9 @@ leaflet(carte) %>%
   contour_depbfc()
 ```
 
-![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-  
-  Row {.tabset .tabset-fade}
------------------------------------------------------------------------
-  
-### Comparaisons bassins de vie
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
+
+### Comparaisons bassins de vie 2022
 ```{r,echo=F}
 tab <- bv27_tab %>%
   demo(geo=BV2022)
@@ -223,7 +196,8 @@ tab <- bv27_tab %>%
 tab %>%  
   credits()
 ```  
-  
+***
+
 ### Tableau filtré
 ```{r}
 tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO')) %>% select(-" ")
@@ -235,8 +209,10 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
-  
-### Carte BV
+***
+Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+
+### Carte BV 2022
 
 ```{r,echo=F}
 carte <- bvcarto
@@ -250,12 +226,7 @@ leaflet(carte) %>%
 ```
 
 
-*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 
 **Sources :**  
 
