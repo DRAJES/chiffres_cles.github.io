@@ -114,10 +114,11 @@ tab %>%
   credits()
 ```   
 ***
-La population de Bourgogne-Franche-Comté est plutôt âgée. L'indice de jeunesse s'établit à 
+
+-  La population de Bourgogne-Franche-Comté est plutôt âgée. L'indice de jeunesse s'établit à 
 **`r  prettyNum(round(region$ind_jeun[3],1),decimal.mark=",")`**, nettement en dessous de la valeur métropolitaine.
 
-Les **`r  prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark=" ")`** jeunes sont sous-représentés et les + de 65 ans sont surreprésentés.
+-  Les **`r  prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark=" ")`** jeunes sont sous-représentés et les + de 65 ans sont surreprésentés.
 
 ### Structure régionale
 ```{r}
@@ -133,6 +134,8 @@ region %>%
 hstructure("Région")
 ```
 ***
+
+-  La part de population de 21 à 59 est la seconde plus faoble de France derrière celle du Centre-Val de Loire (**48,9 %** de la population)
 
 ### Pyramide BFC
 ```{r}
@@ -156,6 +159,7 @@ pop_age_bfc %>%
 ```
 ***
 
+-  Un déficit de jeunes de 20 à 30 ans assez marqué
 
 ### Carte régionale
 ```{r}
@@ -169,7 +173,6 @@ leaflet(carte) %>%
   contour_bfc() 
    
 ```
-***
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
@@ -185,7 +188,9 @@ tab %>%
   credits()
 ```
 ***
-La Côte d'Or est le département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux. Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
+
+-  La Côte d'Or est le département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux. 
+-  Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
 
 ### Structure par départements
 ```{r}
@@ -202,6 +207,9 @@ departement %>%
   hstructure("Département")
 ```
 ***
+
+-  Le Doubs est le département où la part de jeunes est la plus importante.
+
 ### Pyramides départementales
 ```{r}
 list_of_plots <- map(depbfc, function(x) {
@@ -232,6 +240,10 @@ hw_grid(list_of_plots,ncol = 4, rowheight = 300) %>%
   htmltools::browsable()
 ```
 ***
+
+-  Le Doubs et surtout la Côte d'Or marquent des pics importants pour les étudiants.
+
+-  La pyramide de la Nièvre est très décalée verts le haut.
 
 ### Création de classes d'âges à façon
 
@@ -289,7 +301,14 @@ Soit **`r popbfc`** en Bourgogne-Franche-Comté dont **`r fembfc`** femmes.
 ### Outil interactif en ligne
 
 [![](images/ageD.PNG) </br>\
-population des territoires par âge à façon](https://pierre-stephanelebre.shinyapps.io/ageD/)
+population des territoires par âge à façon](https://pierre-stephanelebre.shinyapps.io/ageD/){size=90%}
+***
+
+Cet outil permet de définir ses propres classes d'âge, indique la part de la population concernée et le taux de femmes dans cette population.
+
+En prime, elle affiche une carte qui représente la sous ou surreprésentation de ces données. 
+
+Il est possible de filtrer sur la région uniquement.
 
 ### Carte départementale
 ```{r}
@@ -306,7 +325,6 @@ leaflet(carte) %>%
   carto() %>%
   contour_bfc() 
 ```
-***
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
@@ -332,6 +350,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
 ### Carte ECPI
@@ -371,6 +390,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
   
 ### Carte BV 2022

@@ -140,10 +140,13 @@ tab %>%
 
 ```
 ***
-**`r prettyNum(round(ACM_PMI[1,3]/100,0)*100,big.mark = " ")`** places en accueil collectif en Bourgogne-Franche-Comté soit **`r prettyNum(round(ACM_PMI[8,3],1),decimal.mark = ",")` %** places pour 100 enfants nés au cours des 3 dernières années.  
-**`r prettyNum(round(ACM_PMI[9,3]/10,0)*10,big.mark = ",")`** places en accueil familial.    
+
+-  **`r prettyNum(round(ACM_PMI[1,3]/100,0)*100,big.mark = " ")`** places en accueil collectif en Bourgogne-Franche-Comté soit **`r prettyNum(round(ACM_PMI[8,3],1),decimal.mark = ",")` %** places pour 100 enfants nés au cours des 3 dernières années.  
+
+-  **`r prettyNum(round(ACM_PMI[9,3]/10,0)*10,big.mark = ",")`** places en accueil familial.    
 **`r prettyNum(round(ACM_PMI[10,3],1),decimal.mark = ",")` %** des enfants de moins de ans sont scolarisés.  
-**`r prettyNum(round(ACM_PMI[12,3]/100,0)*100,big.mark = " ")`** assistantes maternelles et **`r prettyNum(round(ACM_PMI[13,3]/100,0)*100,big.mark = " ")`** gardes d'enfants à domicile.
+
+-  **`r prettyNum(round(ACM_PMI[12,3]/100,0)*100,big.mark = " ")`** assistantes maternelles et **`r prettyNum(round(ACM_PMI[13,3]/100,0)*100,big.mark = " ")`** gardes d'enfants à domicile.
 
 ### Comparaisons régionales
 
@@ -154,7 +157,10 @@ hPMI()
 
 ```
 ***
-7e région en taux d'accueils pour 100 enfants nés au cours des 3 dernières années, une très large majorité de multi-accueils en Bourgogne-Franche-Comté
+
+-  7e région en taux d'accueils pour 100 enfants nés au cours des 3 dernières années
+
+-  Une très large majorité de multi-accueils en Bourgogne-Franche-Comté
 
 ### Taux de scolarisation des enfants de 2 ans
 
@@ -173,7 +179,8 @@ tab %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 ***
-4e région pour le taux de scolarisation des enfants de 2 ans
+
+-  **4e** région pour le taux de scolarisation des enfants de 2 ans
 
 
 ### Carte régionale
@@ -199,7 +206,6 @@ leaflet(carte) %>%
 ***
 
   
-  
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
 ### Accueils d'enfants d'âge préscolaire par départements
@@ -216,10 +222,12 @@ tab %>%
   credits()
 ```
 ***
-La Côte d'Or mieux dotée en accueil collectif que le niveau national.
-Des écarts importants dans la région : moins de 11 places pour 100 enfants en Haute-Saône.
 
-Dans la Nièvre et la Saône et Loire, les taux de scolarisation des enfants de 2 ans sont bien supérieurs à la moyenne nationale.
+-  La Côte d'Or est mieux dotée en accueil collectif que le niveau national.
+
+-  Des écarts importants dans la région : moins de 11 places pour 100 enfants en Haute-Saône.
+
+-  Dans la Nièvre et la Saône et Loire, les taux de scolarisation des enfants de 2 ans sont bien supérieurs à la moyenne nationale.
 
 ### Comparaisons départementales
 
@@ -230,7 +238,10 @@ hPMI()
 
 ```
 ***
-Les crèches collectives bien plus représentées dans le Doubs. La Côte d'Or mieux équipée pour les accueils collectifs.
+
+-  Les crèches collectives sont bien plus présentes dans le Doubs. 
+
+-  La Côte d'Or est mieux dotée pour les accueils collectifs.
 
 ### Taux de scolarisation des enfants de 2 ans
 
@@ -249,7 +260,10 @@ tab %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 ***
-D'avantage d'enfants de 2 ans scolarisés dans la Nièvre et la Saône et Loire. Moins dans l'Yonne et le Doubs.
+
+-  D'avantage d'enfants de 2 ans scolarisés dans la Nièvre et la Saône et Loire.
+
+-  Moins dans l'Yonne et le Doubs.
 
 ### Carte départementale
 

@@ -91,9 +91,9 @@ tab %>%
   credits()
 ```
 ***
-La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2019 .
+-  La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2019 .
 
-Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
+-  Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
 
 ### Carte régionale
 
@@ -124,8 +124,9 @@ tab %>%
   credits()
 ```
 ***
-Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail. 
-Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
+-  Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail. 
+
+-  Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
 
 ### Carte départementale
 
@@ -143,6 +144,7 @@ leaflet(depwgs) %>%
 ```
 ***
 
+-  La baisse de population relative pour les jeunes de la Nièvre est la plus forte de France.
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
@@ -169,6 +171,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
 
@@ -210,6 +213,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
 ### Carte BV 2022

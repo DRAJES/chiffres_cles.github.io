@@ -90,10 +90,11 @@ tab %>%
 
 ```   
 ***
-La population, plutôt âgée, **baisse** en Bourgogne-Franche-Comté entre 2013 et 2018. 
-Cette baisse est particulièrement importante chez les jeunes (**`r prettyNum(round(region$evol1529,2)[3],decimal.mark=",")` %**).
 
-C'est la seule région de France métropolitaine à enregistrer une telle baisse. Elle est principalement dûe à la baisse rapide des populations rurales du Morvan, du Châtillonais et du nord Haute-Saône. L'arc jurassien et les métropoles régionales restent dynamiques
+-  La population, plutôt âgée, **baisse** en Bourgogne-Franche-Comté entre 2013 et 2018. 
+-  Cette baisse est particulièrement importante chez les jeunes (**`r prettyNum(round(region$evol1529,2)[3],decimal.mark=",")` %**).
+
+C'est la seule région de France métropolitaine à enregistrer une telle baisse. Elle est principalement dûe à la baisse rapide des populations rurales du Morvan, du Châtillonais et du nord Haute-Saône. L'arc jurassien et les métropoles régionales restent dynamiques.
 
 ### Carte régionale
 
@@ -108,6 +109,8 @@ leaflet(regwgs) %>%
   
 ```
 ***
+
+-  Seules 2 régions ont une baisse de leur population. C'est un BFC qu'elle baisse le plus.
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
@@ -125,7 +128,9 @@ tab %>%
 
 ```
 ***
-Seuls deux départements gagnent de la population entre 2013 et 2019 : la Côte d'Or et le Doubs, portés par l'attractivité de leurs capitales Dijon et Besançon.La Nièvre est le département où la population décroît le plus en 5 ans.
+-  Seuls deux départements gagnent de la population entre 2013 et 2019 : la Côte d'Or et le Doubs, portés par l'attractivité de leurs capitales Dijon et Besançon.
+
+-  La Nièvre est le département où la population décroît le plus en 5 ans.
 
 ### Carte départementale
 
@@ -142,7 +147,8 @@ leaflet(depwgs) %>%
   carto() %>%
   contour_bfc() 
 ```
-
+***
+-  Seuls 2 départements ont une augmentation de leur population : le Doubs et la Côte d'Or. Le Doubs est le territoire le plus dynamique de la région.
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
@@ -175,6 +181,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
 ### Carte ECPI
@@ -190,6 +197,9 @@ leaflet(carte) %>%
   contour_depbfc() 
 ```
 ***
+-  L'ancienne Bourgogne est coupée en deux par des territoires en forte perte de population.
+
+-  L'arc Jurassien reste dynamique ainsi que les grandes agglomérations de la région.
 
 # ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
 
@@ -222,6 +232,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
 ### Carte BV 2022
@@ -238,6 +249,9 @@ leaflet(carte) %>%
 ```
 ***
 
+-  L'ancienne Bourgogne est coupée en deux par des territoires en forte perte de population.
+
+-  L'arc Jurassien reste dynamique ainsi que les grandes agglomérations de la région.
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 

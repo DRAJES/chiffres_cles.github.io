@@ -103,9 +103,9 @@ densite <- function(.map){
 
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="20" .storyboard}
+# ![](images/BFC_s.svg) Régions {.storyboard data-orientation="rows" height="20"}
 
-### Comparaisons régionales 
+### Comparaisons régionales
 
 ```{r}
 
@@ -130,13 +130,13 @@ tab %>%
 #               rownames = FALSE)
   
 ```
-***  
+***
 
-La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$pop[3]/1000,0)*1000,big.mark = " ")`** habitants au 1er janvier 2019 .
+-   La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$pop[3]/1000,0)*1000,big.mark = " ")`** habitants au 1er janvier 2019 .
 
-Elle est la **`r rank(-region$densite)[3]`e** région la moins dense des 13 régions de France métropolitaine avec **`r prettyNum(round(region$densite,1)[3],decimal.mark=",")`** habitants par km²
+-   Elle est la **`r rank(-region$densite)[3]`e** région la moins dense des 13 régions de France métropolitaine avec **`r prettyNum(round(region$densite,1)[3],decimal.mark=",")`** habitants par km²
 
-La région est très rurale : **`r prettyNum(round(region$partZRR,1)[3],decimal.mark=",")` %** de la population réside dans une commune classée en Zone de revitalisation rurale. A contrario, **`r prettyNum(round(region$partQPV,1)[3],decimal.mark=",")` %** des habitants résident dans un des **58** quartiers politique de la ville (QPV) de la région.
+-   La région est très rurale : **`r prettyNum(round(region$partZRR,1)[3],decimal.mark=",")` %** de la population réside dans une commune classée en Zone de revitalisation rurale. A contrario, **`r prettyNum(round(region$partQPV,1)[3],decimal.mark=",")` %** des habitants résident dans un des **58** quartiers politique de la ville (QPV) de la région.
 
 ### Carte régionale
 
@@ -150,12 +150,13 @@ leaflet() %>%
  carto() %>%
  contour_bfc() 
 ```
-
 ***
 
-en savoir plus sur les ZRR
+-   Une grande partie du territoire de la région est classée en zone de revitalisation rurale.
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="20" .storyboard}
+-   En savoir plus sur les ZRR sur le site de l'observatoire des territoires (ANCT) : <https://www.observatoire-des-territoires.gouv.fr/>
+
+# ![](images/BFC_dep_s.svg) Départements {.storyboard data-orientation="rows" height="20"}
 
 ### Comparaisons départementales
 
@@ -183,7 +184,6 @@ tab  %>%
 
 La densité dépasse 230 habitants par km² dans le Territoire de Belfort et seulement 30 habitants par km² dans le Nièvre. La Bourgogne-Franche-Comté est une terre de contrastes dont la composante essentiellement rurale apparaît dans la forte part de communes classées en ZRR, et le faible taux de population en QPV. Le territoire de Belfort reste un département atypique.
 
-
 ### Carte départementale
 
 ```{r}
@@ -208,8 +208,9 @@ leaflet() %>%
 ```
 ***
 
+-   En savoir plus sur la grille densité sur insee.fr : <https://www.insee.fr/fr/statistiques/6686472>
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="20" .storyboard}
+# ![](images/BFC_EPCI_s.svg) EPCI {.storyboard data-orientation="rows" height="20"}
 
 ### Comparaisons établissements publics de coopération intercommunale
 
@@ -231,9 +232,6 @@ tab %>%
   credits()
 ```
 
-***
-Comparaison des établissements publics de comparaison intercommunale
-
 ### Tableau filtré
 
 ```{r}
@@ -246,7 +244,6 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
-
 ***
 
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
@@ -267,7 +264,9 @@ leaflet() %>%
 ```
 ***
 
-# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="20" .storyboard}
+-   En savoir plus sur la grille densité sur insee.fr : <https://www.insee.fr/fr/statistiques/6686472>
+
+# ![](images/BFC_BV_s.svg) Bassins de vie {.storyboard data-orientation="rows" height="20"}
 
 ### Comparaisons bassins de vie 2022
 
@@ -289,10 +288,6 @@ tab %>%
   credits()
 ```
 
-***
-
-Comparaison des bassins de vie 2022
-
 ### Tableau filtré
 
 ```{r}
@@ -306,6 +301,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 ***
+
 Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
 
 ### Carte BV 2022
@@ -323,11 +319,13 @@ leaflet() %>%
 ```
 ***
 
-# `r fa(name = "fas fa-layer-group")` Découpages administratifs {data-orientation="rows" height="20" .storyboard}
+-   En savoir plus sur les ZRR sur le site de l'observatoire des territoires (ANCT) : <https://www.observatoire-des-territoires.gouv.fr/>
+
+# `r fa(name = "fas fa-layer-group")` Découpages administratifs {.storyboard data-orientation="rows" height="20"}
 
 ### Appartenance communale
 
-```{r eval=FALSE}
+```{r}
 basecom %>% 
   filter(REG=='27') %>% 
   select(CODGEO:SUPERF) %>%
@@ -382,8 +380,11 @@ leaflet() %>%
                   options = layersControlOptions(collapsed = F,
                                                  autoZIndex = F))
 ```
+***
 
-# `r fa(name = "fas fa-tree")` CRTE {data-orientation="rows" height="20" .storyboard}
+Choisissez les couches à afficher ou à superposer à l'aide du menu ci-contre
+
+# `r fa(name = "fas fa-tree")` CRTE {.storyboard data-orientation="rows" height="20"}
 
 ### Contrats de relance et de transistion écologique
 
@@ -416,7 +417,6 @@ crte %>%
            footnote_as_chunk = T)
 
 ```
-
 ***
 
 Les Contrats de relance et de transition écologique (CRTE) viennent remplacer les ZRR à compter de 2023. Ce nouveau découpage s'appuie largement sur les ZRR dont il affine un peu les contours.
@@ -448,6 +448,7 @@ crte %>%
            footnote_as_chunk = T)
 ```
 ***
+
 > Une commune est classée "IN" si au moins une des 3 conditions suivantes est vérifiée :
 >
 > -   située en Zone de Revitalisation Rurale (ZRR)
@@ -489,6 +490,9 @@ leaflet(zonage_crte) %>%
             title= "Part de population rurale dans le CRTE d'appartenance ",
             opacity = 0.8) 
 ```
+***
+
+-   En savoir plus les CRTE sur le site de l'agence nationale de la cohésion des territoires : <https://agence-cohesion-territoires.gouv.fr/crte>
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
