@@ -2,7 +2,9 @@
 title: "Licences sportives"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll 
     social: menu
     #source_code: embed
     navbar:
@@ -93,27 +95,9 @@ carto <- function(.map,var=NULL) {
                title = "taux de pénétration sportive" ) }
 ```
 
-![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="120"}
------------------------------------------------------------------------
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
 
-### Données générales
-
-La région Bourgogne-Franche-Comté compte **499 100** licenciés en 2021.
-La pratique sportive est moins développée qu'au niveau national : le taux de pénétration sportive atteint **17,8 %** contre 18,6 % en France métropolitaine, après une forte chute due au covid.
-Mais la pratique féminine est plus fréquente : **38,3 %** des licences sont détenues par des femmes contre 37,4 % en France.  
-Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
-à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Comparaisons
-
-**11e** région de France en nombre de licenciés. **9e** région en licences par habitant (**0,8 points** de moins que la moyenne nationale)
+### Comparaisons régionales
 
 ```{r}
 licreg <- lic_reg %>% 
@@ -153,10 +137,18 @@ hchart(licreg %>%
 rowheight = 550)
 
 ```
+***
 
-### Licences par fédérations
+La région Bourgogne-Franche-Comté compte **499 100** licenciés en 2021.
+La pratique sportive est moins développée qu'au niveau national : le taux de pénétration sportive atteint **17,8 %** contre 18,6 % en France métropolitaine, après une forte chute due au covid.
+Mais la pratique féminine est plus fréquente : **38,3 %** des licences sont détenues par des femmes contre 37,4 % en France.  
+Le football est la discipline la plus pratiquée et parmi les moins mixte : seulement 10 % des licences de football sont détenues par des femmes.
+à l'inverse certaines fédérations sont très féminisées comme la gymnastique, l'équitation ou encore la danse.
 
-Environ **40 % ** de licences féminines. 
+**11e** région de France en nombre de licenciés. **9e** région en licences par habitant (**0,8 points** de moins que la moyenne nationale)
+
+
+### Tableau régional
 
 ```{r}
 sparkline(0)
@@ -205,11 +197,12 @@ tab %>%
 #     shiny::div() %>%
 #     sparkline::spk_add_deps()
 
-
 ```
+***
 
-### Répartition 
-Plus de la **moitié** des licences dans les fédérations unisport olympiques.
+Environ **40 % ** de licences féminines. 
+
+### Répartitions régionales 
 
 ```{r}
 hw_grid(
@@ -241,8 +234,11 @@ hw_grid(
 rowheight = 550)
 
 ```
+***
 
-### Carte
+Plus de la **moitié** des licences dans les fédérations unisport olympiques.
+
+### Carte régionale
 
 ```{r}
 carte <- regwgs
@@ -257,12 +253,7 @@ leaflet(regwgs) %>%
 
 ```
 
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Détail unisport olympique
-
-Le football représente près du **quart** des licences unisport olympiques. Celles-ci baissent pour la première fois en 2020.
+### Détail unisport olympique par région
 
 ```{r}
 tab <- 
@@ -301,10 +292,11 @@ tab %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
-### Détail unisport non olympique
+Le football représente près du **quart** des licences unisport olympiques. Celles-ci baissent pour la première fois en 2020.
 
-**1/5e** des  licences unisport non olympique en pétanque, <b>1/6e</b> en randonnée
+### Détail unisport non olympique par région
 
 ```{r}
 tab %>%
@@ -326,9 +318,12 @@ tab %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
-### Détail multisport
-Près d'un **quart** des licences multisport en UNSS
+**1/5e** des  licences unisport non olympique en pétanque, **1/6e** en randonnée
+
+### Détail multisport par région
+
 ```{r}
 tab %>%
   detail(type = "multisports") %>%
@@ -349,7 +344,9 @@ tab %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
+Près d'un **quart** des licences multisport en UNSS
 
 ### Poids des fédérations
 
@@ -398,11 +395,11 @@ hw_grid(
 
   ncol = 2, rowheight=550)
 ```
+***
 
+Un clic sur un type de fédération permet d'en obtenir le détail
 
 ### Sports les plus sexués
-
-**Fédérations les plus sexuées : plus de 80% de licences masculines ou féminines**
 
 ```{r}
 fede_sexe_dep %>% 
@@ -426,31 +423,20 @@ fede_sexe_dep %>%
                       color=ifelse(txfem > 80, "#ba55d380", "#6495ed80") ), 
                 showInLegend = T, pointWidth = 2,
                 name = "Taux de licences féminines France" ) %>%
-    hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
+   # hc_legend(title=list(text="Clic pour voir France ou BFC" )) %>%
     hc_xAxis(title=list(text="Fédérations taux de femmes <b> < ou > 80 % </b>")) %>%
     hc_yAxis(title=list(text="% de femmes (année 2021)")) %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
+***
+**Fédérations les plus sexuées : plus de 80% de licences masculines ou féminines**
 
+*Un clic sur la légende permet d'afficher uniquement la région ou la France*
 
-![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
-Row {data-height="100"}
------------------------------------------------------------------------
-
-### Données générales
-
-La pratique sportive est diverse en Bourgogne-Franche-Comté. Le Jura est le département où la pratique licenciées est la plus développée avec **21,2 %** de sa population licenciée en 2021, en partie en raison de l'importance des site de sports de nature - dont les massifs montagneux. à l'inverse, l'Yonne est un des départements français où la pratique sportive est la plus faible. Cela ne signifie pas que les habitants ne pratiquent pas (cyclisme, randonnée...) mais ils sont moins souvent dans une structure fédérale.
-
- Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Comparaisons
-**Le Jura et le Doubs au dessus de la moyenne nationale, les autres département de BFC en dessous.**
+### Comparaisons départementales
 
 ```{r}
 licdep <- lic_dep %>% 
@@ -510,11 +496,13 @@ hw_grid(
   
   rowheight = 550)
 ```
+***
 
+La pratique sportive est diverse en Bourgogne-Franche-Comté. Le Jura est le département où la pratique licenciées est la plus développée avec **21,2 %** de sa population licenciée en 2021, en partie en raison de l'importance des site de sports de nature - dont les massifs montagneux. à l'inverse, l'Yonne est un des départements français où la pratique sportive est la plus faible. Cela ne signifie pas que les habitants ne pratiquent pas (cyclisme, randonnée...) mais ils sont moins souvent dans une structure fédérale.
 
-### Licences par fédération
+**Le Jura et le Doubs au dessus de la moyenne nationale, les autres département de BFC en dessous.**
 
-**La pratique féminine plus développée dans le Jura.**
+### Tableau départemental
 
 ```{r}
 tab <- 
@@ -561,9 +549,11 @@ tabbfc %>%
 
 
 ```
+***
 
-### Répartition
-Plus de la moitié des licences dans les fédérations unisport olympiques.
+**La pratique féminine plus développée dans le Jura.**
+
+### Répartitions départementales
 
 ```{r}
 hw_grid(
@@ -598,8 +588,11 @@ rowheight = 550)
 
 
 ```
+***
 
-### Carte 
+Plus de la moitié des licences dans les fédérations unisport olympiques.
+
+### Carte départementale
 
 ```{r}
 carte <- depwgs
@@ -617,16 +610,7 @@ leaflet(depwgs) %>%
   contour_bfc() 
 ```
 
-
-
-
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Détail unisport olympique
-
-**Une baisse des licences unisport olympiques en 2020.**
+### Détail unisport olympique par département
 
 ```{r}
 tab <- 
@@ -663,9 +647,11 @@ tab %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
+**Une baisse des licences unisport olympiques en 2020.**
 
-### Détail unisport non olympique
+### Détail unisport non olympique par département
 
 ```{r}
 tab %>%
@@ -688,7 +674,7 @@ tab %>%
 ```
 
 
-### Détail des licences fédé multisport
+### Détail des licences fédé multisport par département
 
 ```{r}
 tab %>%
@@ -711,16 +697,11 @@ tab %>%
 ```
 
 
-![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {.tabset .tabset-fade }
------------------------------------------------------------------------
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale {vertical_layout=scroll}
 
-```{r,echo=F}
+```{r}
 
 tab <- 
   lic27epci %>%
@@ -766,12 +747,7 @@ leaflet(epcicarto) %>%
   contour_depbfc() 
 ```
 
-![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
- Row {.tabset .tabset-fade }
------------------------------------------------------------------------
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons bassins de vie {vertical_layout=scroll}
 
@@ -800,7 +776,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 
-### Carte BV {data-height="800"}
+### Carte BV2022 {data-height="800"}
 
 ```{r}
 carte <- bvcarto
@@ -821,12 +797,8 @@ leaflet(bvcarto) %>%
 ```
 
 
-*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+
 
 **Sources :**  
 

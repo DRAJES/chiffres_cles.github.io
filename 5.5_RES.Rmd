@@ -2,7 +2,9 @@
 title: "RES tous équipements hors nature"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll  
     social: menu
     #source_code: embed
     navbar:
@@ -230,19 +232,9 @@ popup <- carte@data %>% select(Libellé, Population = pop,
  
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30"}
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30" .storyboard}
 
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-La région Bourgogne-Franche-Comté compte **15 000** équipements en 2020.C'est la région la mieux dotée par habitant. Cependant, les contrastes sont importants entre les villes généralement bien équipées et certains territoires ruraux ou enclavés beaucoup plus éloignés de certains équipements.
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
-
-### Comparaisons
+### Comparaisons régionales
 
 ```{r}
 tab <- equip %>% 
@@ -260,10 +252,11 @@ tab %>%
   creditsRES()
 
 ```
+***
 
-### Répartition
+La région Bourgogne-Franche-Comté compte **15 000** équipements en 2020.C'est la région la mieux dotée par habitant. Cependant, les contrastes sont importants entre les villes généralement bien équipées et certains territoires ruraux ou enclavés beaucoup plus éloignés de certains équipements.
 
-La Bourgogne-Franche-Comté est la région française la mieux dotée en équipement. Cela est lié à la faible densité du territoire.
+### Répartitions régionales
 
 ```{r}
 hchart( tab %>%
@@ -278,8 +271,11 @@ hchart( tab %>%
   hc_add_theme(thm) %>%
    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
+***
 
-### Détail 
+La Bourgogne-Franche-Comté est la région française la mieux dotée en équipement. Cela est lié à la faible densité du territoire.
+
+### Détail des équipements de la région
 
 ```{r}
 equip %>% 
@@ -304,7 +300,7 @@ equip %>%
   scroll_box(height="800px")
 ```
 
-### Carte
+### Carte régionale
 
 ```{r}
 carte <- regwgs
@@ -321,19 +317,9 @@ leaflet(carte) %>%
 
 ```
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows"}
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" .storyboard}
 
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-La Haute-Saône est un des départements les mieux équipés de France. Le Doubs est le département le moins bien doté de la région.
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
-
-### Comparaisons
+### Comparaisons départementales
 
 ```{r}
 tab <- equip %>% 
@@ -351,10 +337,11 @@ tab %>%
                      "natation"=1, " ")) %>%  
   creditsRES()
 ```
+***
 
-### Taux d'équipements 
+La Haute-Saône est un des départements les mieux équipés de France. Le Doubs est le département le moins bien doté de la région.
 
-La Haute-Saône est particulièrement bien dotée en équipement. La plupart des départements bien dotés sont peu denses.
+### Taux d'équipements par département
 
 ```{r}
 hchart( equip %>% 
@@ -379,8 +366,13 @@ hchart( equip %>%
     hc_yAxis(title=list(text="Taux d'équipements pour 10 000 habitants")) %>%
     hc_add_theme(thm) 
 ```
+***
 
-### Répartition 
+La Haute-Saône est particulièrement bien dotée en équipement. La plupart des départements bien dotés sont peu denses.
+
+*un clic sur la légende permet de filtrer sur la Bourgogne-Franche-Comté*
+
+### Répartitions départementales
 
 ```{r}
 hchart( tab %>%
@@ -396,7 +388,7 @@ hchart( tab %>%
    hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
-### Détail
+### Détail des équipements par département
 
 ```{r}
 equip %>% 
@@ -450,7 +442,7 @@ equip %>%
 
 ```
 
-### Carte
+### Carte départementale
 
 ```{r}
 carte <- depwgs
@@ -468,11 +460,7 @@ leaflet(carte) %>%
 
 ```
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows"}
-
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale {vertical_layout="scroll"}
 
@@ -515,7 +503,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 
-### Carte  {data-height="800"}
+### Carte EPCI {data-height="800"}
 
 ```{r}
 carte <- epcicarto
@@ -531,11 +519,7 @@ leaflet(carte) %>%
   contour_depbfc() 
 ```
 
-# ![](images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows"}
-
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# ![](images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows" .storyboard}
 
 ### Comparaisons bassins de vie {vertical_layout="scroll"}
 
@@ -578,7 +562,7 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 sd %>% datafiltre()
 ```
 
-### Carte {data-height="800"}
+### Carte BV2022{data-height="800"}
 
 ```{r}
 carte <- bvcarto
@@ -594,10 +578,10 @@ leaflet(carte) %>%
   contour_depbfc() 
 ```
 
-Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
-========================================================================== 
-## Column {data-width="1000" align="left"}
---------------------------------------------------------------------------
+# Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
+
+## Column {data-width="300" align="left"}
+
 ### Méthodologie
 
 La DRAJES Bourgogne-Franche-Comté a développé une analyse des territoires pour comparer la présence en équipements.
@@ -649,9 +633,6 @@ Analyse de la dotation des territoires](https://pierre-stephanelebre.shinyapps.i
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-## Row {data-height="20"}
-
-## Row {data-height="60"}
 
 **Sources :**
 

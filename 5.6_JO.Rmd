@@ -2,8 +2,9 @@
 title: "Jeux Olympiques"
 output: 
   flexdashboard::flex_dashboard:
-    self_contained : FALSE
     orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll  
     social: menu
    #source_code: embed
     navbar:
@@ -16,9 +17,11 @@ load("data/sport/JO.RData")
 ```
 
 
-Territoires et communes labellisés Terres de Jeux et Centres de préparation aux Jeux Olympiques (possibilité de superposer les deux)
+# Cartographie interactive {.storyboard}
 
-```{r, echo=F}
+### Carte interactive
+
+```{r}
 
 leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% 
               setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
@@ -66,6 +69,50 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
                                options= layersControlOptions( collapsed=F, autoZIndex=T) )
 
 ```
+***
+
+Territoires et communes labellisés Terres de Jeux et Centres de préparation aux Jeux Olympiques (possibilité de superposer les deux)
 
 
+# Cartes statiques {.storyboard}
 
+### Terres de Jeux
+```{r, out.width = "800px"}
+knitr::include_graphics("images/JO_tdjbfc.jpg")
+```
+***
+
+Traitements DRAJES BFC (voir *En savoir +*)
+
+### Centres de préparation aux Jeux
+```{r, out.width = "800px"}
+knitr::include_graphics("images/JO_cpjbfc.jpg")
+```
+***
+
+Traitements DRAJES BFC (voir *En savoir +*)
+
+### établissements labellisés générations 2024
+```{r, out.width = "800px"}
+knitr::include_graphics("images/JO_gene2024bfc.jpg")
+```
+***
+
+Traitements DRAJES BFC (voir *En savoir +*)
+
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
+
+
+**Sources**
+
+-   établissements labellisés Génération 2024 (data-éducation)
+
+    -   <https://data.education.gouv.fr/pages/accueil/>
+
+-   Centres de préparation aux Jeux (JOP2024 site officiel des JO de Paris 2024)
+
+    -   <https://www.paris2024.org/fr/centre-preparation-jeux/>
+
+-   Terres de Jeux (data-culture)
+
+    -   <https://data.culture.gouv.fr/explore>

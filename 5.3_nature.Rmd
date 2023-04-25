@@ -2,12 +2,15 @@
 title: "Sports de nature"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll  
     social: menu
     #source_code: embed
     navbar:
       - { title: "Accueil", href: index.html, align: right, icon: fa-home }
     theme: simplex
+    
 ---
 
 ```{r}
@@ -120,23 +123,9 @@ icons <- awesomeIconList (
 
 ```
 
-Données {data-orientation="rows" data-icon="fa-signal"}
-=======================================================================
+# Données {data-orientation="rows" data-icon="fa-signal" .storyboard}
 
-Row {data-height="100"}
------------------------------------------------------------------------
-
-### Données générales
-
-La région Bourgogne-Franche-Comté compte **1 400** sites de sport de nature en 2020.
-La présence de sites de nature est fortement liée au relief. Les massifs montagneux sont plus dotés que la plaine.
-
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
-
-### Régions
-
-**9e** région de France en nombre de sites de sport de nature.
+### Tableau régional
 
 ```{r}
 nature %>% 
@@ -150,9 +139,14 @@ nature %>%
  credits_res()
 
 ```
-### Départements
+***
 
-La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
+La région Bourgogne-Franche-Comté compte **1 400** sites de sport de nature en 2020.
+La présence de sites de nature est fortement liée au relief. Les massifs montagneux sont plus dotés que la plaine.
+
+**9e** région de France en nombre de sites de sport de nature.
+
+### Comparaisons départementales
 
 ```{r}
 nature %>% 
@@ -174,8 +168,13 @@ nature %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
 
-### Dép BFC
+La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
+
+
+### Tableau départemental (Bourgogne-Franche-Comté)
+
 ```{r}
 nature %>% 
   filter(REG=='27') %>% 
@@ -190,9 +189,7 @@ nature %>%
 
 ```
 
-### Sites de sport de nature
-
-Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
+### Détail des sites de sport de nature
 
 ```{r}
 nature27 %>% 
@@ -207,18 +204,14 @@ nature27 %>%
   scroll_box(height = "800px") 
 
 ```
+***
 
-Cartes {data-orientation="rows" data-icon="globe"}
-=======================================================================
+Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
 
-Row {data-height="100"}
------------------------------------------------------------------------
-
-Row {.tabset .tabset-fade .tabset-pills data-height="800"}
------------------------------------------------------------------------
+# Cartes {data-orientation="rows" data-icon="globe" .storyboard}
 
 ### Carte filtrable
-clic sur l'équipement = détail ; clic sur le département = nombre d'équipement par catégorie
+
 ```{r}
 nature27.df <- split(nature27,nature27$EquipementFamille)
 
@@ -254,11 +247,14 @@ l  %>%
   addLayersControl(overlayGroups = names(nature27.df),
                    options = layersControlOptions(collapsed = FALSE)  )
 ```
+***
 
+clic sur l'équipement = détail  
 
+clic sur le département = nombre d'équipement par catégorie
 
-### Carte regroupée
-clic sur l'équipement = détail ; clic sur le département = nombre d'équipement par catégorie
+### Carte regroupée (cluster)
+
 ```{r}
 l <- leaflet()  %>%
   addPolygons(data = carte, stroke = F, fillOpacity = 0.01,
@@ -287,13 +283,15 @@ l %>%
   addLayersControl(overlayGroups = names(nature27.df),
                    options = layersControlOptions(collapsed = FALSE) )
 ```
+***
 
-*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+clic sur l'équipement = détail 
+
+clic sur le département = nombre d'équipement par catégorie
+
+
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+
 
 **Sources :**  
 

@@ -107,7 +107,7 @@ densite <- function(.map){
 
 ### Comparaisons régionales 
 
-```{r,echo=F}
+```{r}
 
 tab <-  region_tab %>%   
    left_join(.,pop_basecom(REG) %>% 
@@ -159,7 +159,7 @@ en savoir plus sur les ZRR
 
 ### Comparaisons départementales
 
-```{r,echo=F}
+```{r}
 
 tab <- dep27_tab %>%  
   left_join(.,pop_basecom(DEP) %>% 
@@ -213,7 +213,7 @@ leaflet() %>%
 
 ### Comparaisons établissements publics de coopération intercommunale
 
-```{r,echo=F}
+```{r}
 tab <- epci27_tab %>%
   left_join(.,pop_basecom(EPCI)  %>%
               bind_rows(.,basecom %>% 
@@ -271,7 +271,7 @@ leaflet() %>%
 
 ### Comparaisons bassins de vie 2022
 
-```{r,echo=F}
+```{r}
 tab <- bv27_tab %>%  
   left_join(.,pop_basecom(BV2022) %>%
               bind_rows(.,basecom %>% 
@@ -342,7 +342,7 @@ basecom %>%
 
 ### Géographie régionale
 
-```{r eval=FALSE}
+```{r}
 leaflet() %>% 
   addProviderTiles(providers$OpenStreetMap, 
                    group="OSM") %>%
@@ -387,7 +387,7 @@ leaflet() %>%
 
 ### Contrats de relance et de transistion écologique
 
-```{r eval=FALSE}
+```{r}
 crte %>% 
   distinct(id_crte,lib_crte,SH_RUR_CRTE,TYPO_RURB_CRTE)%>% 
   arrange(id_crte)%>%
@@ -423,7 +423,7 @@ Les Contrats de relance et de transition écologique (CRTE) viennent remplacer l
 
 ### Appartenance communale
 
-```{r eval=FALSE}
+```{r}
 crte %>% 
   select("Code commune au 1er janvier 2021"=CODGEO,
          "Nom de la commune"=LIBGEO,
@@ -458,7 +458,7 @@ crte %>%
 
 ### carte CRTE
 
-```{r eval=FALSE}
+```{r}
 palcrte <- colorBin(c("#90a4ae","#a5d6a7","#66bb6a",
                       "#43a047","#2e7d32"), 
                     domain =0:100 ,

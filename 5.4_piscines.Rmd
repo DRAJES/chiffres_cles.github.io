@@ -2,8 +2,9 @@
 title: "Piscines publiques accessibles aux scolaires"
 output: 
   flexdashboard::flex_dashboard:
-    self_contained : false
     orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll  
     social: menu
     #source_code: embed
     navbar:
@@ -87,22 +88,9 @@ carto <- function(.map,var=NULL) {
 }
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30"}
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height="30" .storyboard}
 
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-La région Bourgogne-Franche-Comté compte **283** bassins de natation publics accessibles aux scolaires en 2020 pour une surface de nage par habitant de **190 m²**.\
-**124** d'entre eux sont couvertes.
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
-
-### Comparaisons
-
-Près de la moitié des piscines de la région ne sont pas ouvertes à l'année.
+### Comparaisons régionales
 
 ```{r}
 tab <- piscines %>% 
@@ -122,10 +110,14 @@ tab %>%
            footnote_as_chunk = T)
 
 ```
+***
+
+La région Bourgogne-Franche-Comté compte **283** bassins de natation publics accessibles aux scolaires en 2020 pour une surface de nage par habitant de **190 m²**.\
+**124** d'entre eux sont couverts.
+
+Près de la moitié des piscines de la région ne sont pas ouvertes à l'année.
 
 ### Surface natatoire
-
-En lien avec la faible densité de population, la région est la mieux dotée en terme de surface de nage par habitant.
 
 ```{r}
 tab %>%
@@ -142,20 +134,13 @@ hchart( "bar",
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="30"}
+En lien avec la faible densité de population, la région est la mieux dotée en terme de surface de nage par habitant.
 
-## Row {data-height="20"}
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height="30" .storyboard}
 
-## Row {data-height="100"}
-
-### Données générales
-
-L'éloignement joue un rôle déterminant dans la surface de baignade. Le Jura, département montagneux, la Saône et Loire et l'Yonne, départements peu denses, sont bien dotées. à l'Inverse, les départements plus denses ou ceux où la population se concentre dans les grandes villes sont moins dotés. Le territoire de Belfort est ainsi le moins bien équipé sur la surface natatoire pour 10 000 habitants.
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
-
-### Comparaisons
+### Comparaisons départementales
 
 ```{r}
 tab <- piscines %>% 
@@ -175,10 +160,11 @@ tab %>%
            footnote_as_chunk = T)
 
 ```
+***
+
+L'éloignement joue un rôle déterminant dans la surface de baignade. Le Jura, département montagneux, la Saône et Loire et l'Yonne, départements peu denses, sont bien dotées. à l'Inverse, les départements plus denses ou ceux où la population se concentre dans les grandes villes sont moins dotés. Le territoire de Belfort est ainsi le moins bien équipé sur la surface natatoire pour 10 000 habitants.
 
 ### Surface natatoire
-
-Le Jura est le **5e** département pour la surface natatoire disponible pour 10 000 habitants, l'Yonne le dixième. à l'inverse, le Territoire de Belfort est le 5e département le moins bien doté.
 
 ```{r}
 piscines %>% 
@@ -207,9 +193,11 @@ piscines %>%
 
 
 ```
+***
 
+Le Jura est le **5e** département pour la surface natatoire disponible pour 10 000 habitants, l'Yonne le dixième. à l'inverse, le Territoire de Belfort est le 5e département le moins bien doté.
 
-### Carte
+### Carte départementale
 
 ```{r}
 carte <- depwgs
@@ -224,18 +212,11 @@ leaflet(depwgs) %>%
   contour_bfc() 
 ```
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="30"}
-
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height="30" .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale {vertical_layout="scroll"}
 
-Les grandes agglomérations servent de centre de service pour les EPCI alentours. Les piscines y sont plus nombreuses.\
-31 EPCI n'ont aucune piscine publique accessible aux scolaires.
-
-```{r,echo=F}
+```{r}
 tab <- piscines %>% 
   filter(EPCI %in% basecom$EPCI[basecom$REG=="27"] ) %>%
   piscine(geo=EPCI) 
@@ -248,6 +229,10 @@ tab %>%
            footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
+***
+
+Les grandes agglomérations servent de centre de service pour les EPCI alentours. Les piscines y sont plus nombreuses.\
+**31 EPCI n'ont aucune piscine publique accessible aux scolaires.**
 
 ### Tableau filtré
 ```{r}
@@ -282,18 +267,11 @@ leaflet(epcicarto) %>%
 
 ```
 
-# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="30"}
-
-## Row {data-height="20"}
-
-## Row {.tabset .tabset-fade}
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height="30" .storyboard}
 
 ### Comparaisons bassins de vie {vertical_layout="scroll"}
 
-Les bassins de vie égalisent un peu le poids des grandes agglomération en mettant les piscines en rapport avec la population. Toutefois, certaines sortent du lot comme Vesoul qui est très bien doté, et les bassins de vie des montagne du Jura qui proposent des infrastructures nombreuses (Champagnole, Saint-Claude).\
-42 bassins de vie n'ont pas de piscines publique accessible aux scolaires.
-
-```{r,echo=F}
+```{r}
 tab <- piscines %>% 
   filter(BV2022 %in% basecom$BV2022[basecom$REG=="27"] ) %>%
   piscine(geo=BV2022) 
@@ -306,6 +284,10 @@ tab %>%
            footnote_as_chunk = T) %>%
    scroll_box(height = "800px") 
 ```
+***
+
+Les bassins de vie égalisent un peu le poids des grandes agglomération en mettant les piscines en rapport avec la population. Toutefois, certaines sortent du lot comme Vesoul qui est très bien doté, et les bassins de vie des montagne du Jura qui proposent des infrastructures nombreuses (Champagnole, Saint-Claude).\
+**42 bassins de vie n'ont pas de piscines publique accessible aux scolaires.**
 
 ### Tableau filtré
 ```{r}
@@ -339,20 +321,9 @@ leaflet(bvcarto) %>%
                     group = "tous bassins") 
 ```
 
-# `r fa(name="fas fa-clock-rotate-left")` Temps d'accès {data-orientation="rows"}
+# `r fa(name="fas fa-clock-rotate-left")` Temps d'accès {data-orientation="rows" .storyboard}
 
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-Certains territoires sont éloignés des bassins de natation, particulièrement les bassins couverts, y compris des communes équipées d'écoles primaires : dans le Morvan, le nord Côte-d'Or, entre Pouilly en Auxois et Arnay le Duc ou encore autour de Pierre de Bresse.
-
-## Row {data-height="700"}
-
-### Temps d'accès aux piscines de la région (©[OpenStreetMap](https://www.openstreetmap.org/copyright) et ©[OSRM](http://project-osrm.org/) ) {data-height="700"}
-
+### Temps communaux d'accès aux piscines de la région {data-height="700"}
 
 ```{r}
 factPal <- colorFactor("Blues", iso_diff$drive_times,na.color = "#808080")
@@ -422,12 +393,17 @@ leaflet() %>%
   addLegend( pal = factPal, values = iso_diff$drive_times,   
              "bottomright", title = "temps d'accès") 
 ```
+***
+
+Certains territoires sont éloignés des bassins de natation, particulièrement les bassins couverts, y compris des communes équipées d'écoles primaires : dans le Morvan, le nord Côte-d'Or, entre Pouilly en Auxois et Arnay le Duc ou encore autour de Pierre de Bresse.
+
+
+©[OpenStreetMap](https://www.openstreetmap.org/copyright) 
+
+©[OSRM](http://project-osrm.org/)
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-## Row {data-height="20"}
-
-## Row {data-height="60"}
 
 **Sources :**
 

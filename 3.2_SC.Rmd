@@ -57,20 +57,27 @@ tab_sc <- function(.tbl){
 
 # ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
 
-### Définition du **Service civique**
-
-**3 100** missions de service civique en Bourgogne-Franche-Comté en 2022.  
-**3 000** volontaires originaires de la région.  
-Des missions tournées principalement vers l'éducation pour tous et la solidarité.
-```{r}
-#créer des value box pour les données au dessus
-```
-
-***
+### Définition du **Service civique** 
 
 Créé par la loi du 10 mars 2010, le service civique est un engagement volontaire au service de l’intérêt général, parce que chaque individu a quelque chose à apporter à la collectivité. Il s’adresse aux jeunes de 16 à 25 ans, et jusqu’à 30 ans pour les jeunes en situation de handicap, et sans condition de diplôme.
 Les volontaires ne sont pas rémunérés puisque le service civique n’est pas un emploi. Ils sont indemnisés à hauteur de 580,55 € net par mois, dont 472,97 € sont pris en charge par l’État et 107,58 € par la structure d’accueil.
 Les missions  s’effectuent pendant 6 à 12 mois  et  sur une durée hebdomadaire de 24h à 48h, réparties sur 6 jours maximum. Elles peuvent avoir lieu  dans  des associations, des établissement publics, des services de l'Etat ou encore dans des collectivités territoriales.
+
+***
+
+**Missions réalisées en BFC**
+
+```{r}
+gauge(3100,min = 0,max=3500,label = "missions",
+      gaugeSectors(colors = "orange"))
+```
+
+**Volontaires originaires de BFC**
+
+```{r}
+gauge(3000,min = 0,max=3500,label = "volontaires",
+      gaugeSectors(colors = "aqua") )
+```
 
 ### évolution annuelle des missions et volontaires
 
@@ -359,7 +366,7 @@ flux de nouveaux volontaires par année](https://pierre-stephanelebre.shinyapps.
 ```{r, eval=FALSE}
 library(mapdeck)
 
-mapdeck( style = mapdeck_style("dark"), pitch = 45 ) %>%
+fluxarc <- mapdeck( style = mapdeck_style("dark"), pitch = 45 ) %>%
    add_animated_arc(
     data = oursinxy[oursinxy$nombre>4,] ,
        layer_id = "arc_layer",
@@ -376,6 +383,9 @@ mapdeck( style = mapdeck_style("dark"), pitch = 45 ) %>%
                    lat = "destination.y",
                    radius = "missions",
                    fill_colour = "country" )
+
+saveWidget(fluxarc,file = "fluxarc_html",selfcontained =TRUE)
+fluxarc_html
 
 ```
 

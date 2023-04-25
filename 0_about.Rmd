@@ -4,7 +4,7 @@ author: "PSLèbre"
 output: html_document
 
 ---
-```{r, setup, include=FALSE ,eval=TRUE, cache=FALSE}
+```{r, setup, include=FALSE ,eval=TRUE, cache=FALSE,echo=FALSE}
 #library(BAMMtools)
 library(htmltools)
 library(htmlwidgets)
