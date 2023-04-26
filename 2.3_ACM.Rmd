@@ -2,7 +2,9 @@
 title: "Accueils collectifs de mineurs"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll
     social: menu
     #source_code: embed
     navbar:
@@ -36,20 +38,7 @@ filtreACM <- function(tab=tab) {
 ```
 
 
-# Avec hébergement {data-orientation="rows" height="30" data-icon="fa-bed" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="150"}
-
-### Données générales des accueils collectifs de mineurs avec hébergement selon la destination
-
-Les Accueils collectifs de mineurs avec hébergement regroupent les centres de vacances, les colonies de vacances...\
-**1 400** séjours avec hébergement en BFC, dont deux tiers de plus de 5 jours, ont permis de faire partir plus de 46 000 mineurs. Le Jura et l'Yonne accueillent le plus d'enfants.
-
-**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+# Avec hébergement {data-orientation="rows" height="30" data-icon="fa-bed" font-size="25px" .storyboard}
 
 ### Tableaux régionaux
 
@@ -69,8 +58,18 @@ filter_checkbox("sejour","Séjour",tab,group=~séjour,
 tab %>% filtreACM()
 
 ```
+***
 
-### Evolutions 
+Les Accueils collectifs de mineurs avec hébergement regroupent les centres de vacances, les colonies de vacances...\
+
+-  **1 400** séjours avec hébergement en BFC, dont deux tiers de plus de 5 jours, ont permis de faire partir plus de 46 000 mineurs. 
+-  Le Jura et l'Yonne accueillent le plus d'enfants.
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
+
+### Evolutions régionales
 
 ```{r}
 sparkline(0)
@@ -91,11 +90,11 @@ filter_checkbox("sejour","Séjour",tab,group=~séjour,
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
+***
 
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
 
-### Comparaisons
-
-**9e** région de France en nombre de lieux d'accueils avec hébergement
+### Comparaisons régionales
 
 ```{r}
 hw_grid(
@@ -131,10 +130,12 @@ hw_grid(
   ncol = 2, rowheight =500)
   
 ```
+***
+
+-  **9e** région de France en nombre de lieux d'accueils avec hébergement
+
 
 ### Places ouvertes par séjour
-
-Une large majorité de séjours de vacances.
 
 ```{r}
 hw_grid(
@@ -202,13 +203,12 @@ hw_grid(
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
   ncol=2, rowheight =500 )
-
-
 ```
+***
+
+-  Une large majorité de séjours de vacances.
 
 ### Ages des mineurs par séjour
-
-Une large majorité de mineurs de 6 à 13 ans.
 
 ```{r}
 tab <- ACMH %>%
@@ -278,9 +278,9 @@ hw_grid(
   ncol=3, rowheight =500 )
   
 ```
+***
 
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-  Une large majorité de mineurs de 6 à 13 ans.
 
 ### Tableaux départementaux
 
@@ -300,8 +300,11 @@ filter_checkbox("sejour","Séjour",tab,group=~séjour,
 tab %>% filtreACM()
 
 ```
+***
 
-### Evolutions 
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
+
+### Evolutions départementales
 
 ```{r}
 tab <- ACMH_dep %>% 
@@ -321,10 +324,11 @@ tab %>% filtreACM() %>%
 
 
 ```
+***
 
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
 
-### Comparaisons
-Des accueils avec hébergement plus nombreux dans le Jura et l’Yonne.
+### Comparaisons départementales
 
 ```{r}
 hw_grid(
@@ -359,6 +363,9 @@ hw_grid(
   ncol = 2, rowheight =500)
   
 ```
+***
+
+-  Des accueils avec hébergement plus nombreux dans le Jura et l’Yonne.
 
 
 ### Ages des mineurs par départements
@@ -383,25 +390,7 @@ tab %>%
 
 ```
 
-
-
-
-
-# Sans hébergement {data-orientation="rows" height="30" data-icon="fa-child" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="150"}
-
-### Données générales des accueils de loisirs et jeunesse sans hébergement
-
-Les Accueils collectifs de mineurs sans hébergement regroupent les accueils périscolaires, les centres de loisirs...\
-**1 300** lieux d'accueils sans hébergement en BFC\
-De nombreuses place dans le Doubs et en Côte-d'Or
-
-**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+# Sans hébergement {data-orientation="rows" height="30" data-icon="fa-child" font-size="25px" .storyboard}
 
 ### Tableaux régionaux
 
@@ -425,8 +414,19 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
 tab %>% filtreACM()
 
 ```
+***
 
-### Evolutions 
+Les Accueils collectifs de mineurs sans hébergement regroupent les accueils périscolaires, les centres de loisirs...\
+
+-  **1 300** lieux d'accueils sans hébergement en BFC\
+
+-  De nombreuses place dans le Doubs et en Côte-d'Or
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
+
+### Evolutions régionales
 
 ```{r}
 sparkline(0)
@@ -449,10 +449,11 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
+***
+
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
 
 ### Comparaisons
-
-**11e** région de France en nombre de lieux d’accueils de loisir ou jeunesse sans hébergement
 
 ```{r}
 hw_grid(
@@ -492,6 +493,10 @@ hw_grid(
   ncol = 2, rowheight =500)
   
 ```
+***
+
+-  **11e** région de France en nombre de lieux d’accueils de loisir ou jeunesse sans hébergement
+
 
 ### Places ouvertes par période d'activité
 
@@ -578,8 +583,6 @@ hw_grid(
 
 ### Ages des mineurs par séjour
 
-Une large majorité de mineurs de 6 à 13 ans.
-
 ```{r}
 tab <- ALJSH %>%
   select(1,2,8:10,12,13) %>%
@@ -652,9 +655,9 @@ hw_grid(
   ncol=3, rowheight =500 )
   
 ```
+***
 
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-  Une large majorité de mineurs de 6 à 13 ans.
 
 ### Tableaux départementaux
 
@@ -676,8 +679,11 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
 tab %>% filtreACM()
 
 ```
+***
 
-### Evolutions 
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
+
+### Evolutions départementales
 
 ```{r}
 tab <- ALJSH_dep %>% 
@@ -698,10 +704,11 @@ tab %>% filtreACM() %>%
   spk_add_deps() 
 
 ```
+***
 
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
 
-### Comparaisons
-Des accueils sans hébergement plus nombreux dans le Doubs.
+### Comparaisons départementales
 
 ```{r}
 hw_grid(
@@ -739,6 +746,9 @@ hw_grid(
   ncol = 2, rowheight =500)
   
 ```
+***
+
+-  Des accueils sans hébergement plus nombreux dans le Doubs.
 
 
 ### Ages des mineurs par départements
@@ -791,23 +801,7 @@ hw_grid(
 
 ```
 
-
-
-
-
-# `r fa(name = "fas fa-campground")` Scoutisme {data-orientation="rows" height="30" data-icon="fas fa-campground" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="150"}
-
-### Données générales des accueils de scoutisme selon la destination
-
-**4 100** places de scoutisme en Bourgogne-Franche-Comté, principalement réparties entre la Saône-et-Loire, la Côte d'Or et le Doubs.
-
-**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+# Scoutisme {data-orientation="rows" height="30" data-icon="fas fa-campground" font-size="25px" .storyboard}
 
 ### Tableaux régionaux
 
@@ -825,8 +819,13 @@ AS <- AS_reg %>%
 AS %>% filtreACM()
 
 ```
+***
 
-### Evolutions 
+-  **4 100** places de scoutisme en Bourgogne-Franche-Comté, principalement réparties entre la Saône-et-Loire, la Côte d'Or et le Doubs.
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+
+### Evolutions régionales
 
 ```{r}
 sparkline(0)
@@ -842,8 +841,7 @@ tab <- AS_reg %>%
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
 
-### Comparaisons
-**11e** région pour les places de scoutisme ouvertes
+### Comparaisons régionales
 
 ```{r}
 hw_grid(
@@ -878,10 +876,11 @@ hw_grid(
   ncol = 2, rowheight =500)
   
 ```
+***
+
+-  **11e** région pour les places de scoutisme ouvertes
 
 ### Places de scoutisme par âges
-
-Une majorité de mineurs de 6 à 13 ans.
 
 ```{r}
 tab <- AS %>%
@@ -921,9 +920,9 @@ tab %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
 
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="600"}
+-  Une majorité de mineurs de 6 à 13 ans.
 
 ### Tableaux départementaux
 
@@ -939,7 +938,7 @@ ASdep %>% filtreACM()
 
 ```
 
-### Evolutions 
+### Evolutions départementales
 
 ```{r}
 tab <- AS_dep %>% 
@@ -956,8 +955,7 @@ tab %>% filtreACM() %>%
 ```
 
 
-### Comparaisons
-Des places de scoutisme plus nombreuses en Côte-d’Or, le Doubs et la Saône et Loire.
+### Comparaisons départementales
 
 ```{r}
 hw_grid(
@@ -991,7 +989,9 @@ hw_grid(
   
   ncol = 2, rowheight =500)
 ```
+***
 
+-  Des places de scoutisme plus nombreuses en Côte-d’Or, le Doubs et la Saône et Loire.
 
 ### Ages des mineurs par départements
 
@@ -1016,19 +1016,11 @@ tab %>%
 
 # `r fa(name = "fas fa-map-location-dot")` Cartographie interactive {data-orientation="rows" font-size="25px"}
 
-## Row {data-height="20"}
-
-## Row {data-height="200"}
-
 **Cartographie interactive**\
 [![](images/ACM.PNG) </br>\
 Visualisation des ACM de la région](https://pierre-stephanelebre.shinyapps.io/ACMshiny/)
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="60"}
 
 **Sources :**
 

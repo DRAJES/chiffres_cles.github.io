@@ -2,7 +2,9 @@
 title: "Clubs sportifs"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll    
     social: menu
     #source_code: embed
     navbar:
@@ -117,23 +119,9 @@ addLegend( pal = pallic ,values = ~`Taux de clubs`,
 
 ```
 
-![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="100"}
------------------------------------------------------------------------
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
 
-### Données générales
-La région Bourgogne-Franche-Comté compte **7 500** clubs en 2021.
-La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Comparaisons 
-
-**11e** région de France en nombre de clubs, **6e** en clubs par habitant.
+### Comparaisons régionales
 
 ```{r}
 clubreg <- club_reg %>% 
@@ -154,6 +142,7 @@ hw_grid(
            hcaes(x=reorder(Libellé,clubs),y=clubs,
                  color=ifelse(REG=="27","#6a5acd","#ffd700") ), 
            showInLegend = F, pointWidth = 20,
+           opacity=1,
            name = "Clubs" ) %>%
     hc_yAxis(title=list(text="Nombre de clubs")) %>%
     hc_add_theme(thm) %>%
@@ -173,10 +162,17 @@ hw_grid(
   
   rowheight = 550)
 ```
+***
+
+-  La région Bourgogne-Franche-Comté compte **7 500** clubs en 2021.
+
+-  La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
+
+
+-  **6e** région en nombre de clubs par habitants, **11e** région de France en nombre de clubs 
+
 
 ### Clubs par fédérations
-
-**La moitié des clubs sont affiliés à une fédération unisport olympique.**
 
 ```{r}
 tab <- 
@@ -209,8 +205,13 @@ tab %>%
   credits()
 
 ```
+***
 
-### Répartition 
+-  La moitié des clubs sont affiliés à une fédération unisport olympique.
+
+-  Les clubs sont de plus petite taille qu'au niveau national (**66** licences par club en moyenne)
+
+### Répartitions régionales
 
 ```{r}
 hw_grid(
@@ -243,7 +244,7 @@ rowheight = 550)
 
 ```
 
-### Carte 
+### Carte régionale
 
 ```{r}
 carte <- regwgs
@@ -257,15 +258,7 @@ leaflet(regwgs) %>%
   contour_bfc() 
 ```
 
-
-
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Détail unisport olympique
-
-**Des clubs de grande taille en football, handball, golf, gymnastique ou encore en natation.**
+### Détail unisport olympique par région
 
 ```{r}
 tab <- 
@@ -292,10 +285,11 @@ tab %>%
  
 
 ```
+***
 
-### Détail unisport non olympique
+-  Des clubs de grande taille en football, handball, golf, gymnastique ou encore en natation.
 
-**Des clubs de plus petite taille pour les fédérations unisport non olympiques.**
+### Détail unisport non olympique par région
 
 ```{r}
 tab %>%
@@ -310,10 +304,11 @@ tab %>%
    footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
-### Détail multisport
+-  Des clubs de plus petite taille pour les fédérations unisport non olympiques.
 
-**Une part importante du sport scolaire dans les fédérations multisports.**
+### Détail multisport par région
 
 ```{r}
 tab %>%
@@ -330,6 +325,9 @@ tab %>%
    footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
+
+-  Une part importante du sport scolaire dans les fédérations multisports.
 
 ### Poids des fédérations 
 ```{r}
@@ -367,26 +365,14 @@ hw_grid(
   
 rowheight = 550)
 ```
+***
+
+*Un clic sur un type de fédération permet d'en obtenir le détail*
 
 
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
-![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-
-Row {data-height="100"}
------------------------------------------------------------------------
-
-### Données générales
-
-La Nièvre et le Jura comptent plus de **30 clubs sportifs** pour 10 000 habitants. Les  clubs sont plus petits dans la Nièvre et dans l'Yonne.
-
- Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Comparaisons 
-**La Nièvre et le Jura fortement dotées en clubs par habitant.**
+### Comparaisons départementales
 
 ```{r}
 clubdep <- club_dep %>% 
@@ -414,7 +400,7 @@ hw_grid(
                   color="#6a5acd" , 
                   showInLegend = F, pointWidth = 3,
                   name = "Nombre de clubs") %>%
-    hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
+  #  hc_legend(title=list(text=" France/BFC (Clic pour zoomer) " )) %>%
     hc_yAxis(title=list(text="Nombre de clubs sportifs")) %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
@@ -442,10 +428,11 @@ clubdep %>%
 rowheight = 550)
 
 ```
+***
 
-### Clubs par fédération
+-  La Nièvre et le Jura comptent plus de **30 clubs sportifs** pour 10 000 habitants. 
 
-**Des clubs plus petits dans le Nièvre et dans l'Yonne.**
+### Détail départemental par type de fédération
 
 ```{r}
 tab <- 
@@ -476,8 +463,11 @@ tab %>%
   credits()
 
 ```
+***
 
-### Répartition
+-  Des clubs plus petits dans la Nièvre et dans l'Yonne.
+
+### Répartitions départementales
 
 ```{r}
 hw_grid(
@@ -509,7 +499,7 @@ hw_grid(
 rowheight = 550)
 ```
 
-### Carte 
+### Carte départementale
 
 ```{r}
 
@@ -554,14 +544,7 @@ leaflet(depwgs) %>%
 
 ```
 
-
-
-Row {.tabset .tabset-fade .tabset-pills data-height="600"}
------------------------------------------------------------------------
-
-### Détail unisport olympique
-
-**Des clubs de football nombreux et de grande taille : près de 3x fois plus de licenciés par club qu'en équitation, 2x plus qu'au tennis. (Importance des sections jeunes ?)**
+### Détail unisport olympique par département
 
 ```{r}
 tab <- 
@@ -585,11 +568,11 @@ tab %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
+-  Des clubs de football nombreux et de grande taille : près de 3x fois plus de licenciés par club qu'en équitation, 2x plus qu'au tennis.
 
-### Détail unisport non olympique
-
-**Les clubs de fédérations unisport non olympiques de très petite taille dans la région.**
+### Détail unisport non olympique par département
 
 ```{r}
 tab %>%
@@ -603,9 +586,11 @@ tab %>%
   footnote(number = c("F= Fédération \n","FF = Fédération Française") )
 
 ```
+***
 
+-  Les clubs de fédérations unisport non olympiques de très petite taille dans la région.
 
-### Détail multisport
+### Détail multisport par département
 
 ```{r}
 tab %>%
@@ -621,16 +606,11 @@ tab %>%
 ```
 
 
-![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {.tabset .tabset-fade }
------------------------------------------------------------------------
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale {vertical_layout=scroll}
 
-```{r,echo=F}
+```{r}
 tab <- 
   lic27epci %>% 
   tab_club(geo=EPCI) %>% 
@@ -657,8 +637,12 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
 
-### Carte ECPI taux de clubs pour 10 000 habitants {data-height="800"}
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
+
+
+### Carte ECPI taux de clubs pour 10 000 habitants 
 
 ```{r}
  tab <- 
@@ -678,27 +662,25 @@ leaflet(epcicarto) %>%
   contour_depbfc() 
 
 ```
+***
 
-### Carte ECPI licences et clubs {data-height="800"}
+> Cette carte montre le nombre de clubs par territoire et le taux de clubs rapporté à la population.
 
-**Nombre de clubs et taux de pénétration sportive**
+### Carte ECPI taux de licences et nombre de clubs 
 
 ```{r}
 carto2()
 
 ```
+***
 
+> Cette carte montre le nombre de clubs par territoire et le taux de pénétration sportive, c'est à dire le niveau de pratique sportive de la population des territoires.
 
-![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
- Row {.tabset .tabset-fade }
------------------------------------------------------------------------
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons bassins de vie {vertical_layout=scroll}
 
-```{r,echo=F}
+```{r}
 tab <- 
   lic27bv %>%
   tab_club(geo=BV2022) %>% 
@@ -723,8 +705,11 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
 
-### Carte BV taux de clubs pour 10 000 habitants {data-height="800"}
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
+
+### Carte BV2022 taux de clubs pour 10 000 habitants 
 
 ```{r}
 tab <- 
@@ -744,22 +729,21 @@ leaflet(bvcarto) %>%
   contour_depbfc() 
 
 ```
+***
 
-### Carte BV licences et clubs {data-height="800"}
+> Cette carte montre le nombre de clubs par territoire et le taux de clubs rapporté à la population.
 
-**Nombre de clubs et taux de pénétration sportive**
+### Carte BV2022 taux de licences et nombre de clubs 
+
 
 ```{r}
 carto2()
 ```
+***
 
+> Cette carte montre le nombre de clubs par territoire et le taux de pénétration sportive, c'est à dire le niveau de pratique sportive de la population des territoires.
 
-*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 
 **Sources :**  
 

@@ -3,6 +3,8 @@ title: "Evolution"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll
     social: menu
     #source_code: embed
     navbar:
@@ -68,24 +70,9 @@ carto <- function(.map) {
 }
 ```
 
-![](images/BFC_s.svg) Régions {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
+# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
 
-Row  {data-height=100}
------------------------------------------------------------------------
-### Données générales
-
-La population, plutôt âgée, **baisse** en Bourgogne-Franche-Comté entre 2013 et 2018. 
-Cette baisse est particulièrement importante chez les jeunes (**`r prettyNum(round(region$evol1529,2)[3],decimal.mark=",")` %**).
-
-C'est la seule région de France métropolitaine à enregistrer une telle baisse. Elle est principalement dûe à la baisse rapide des populations rurales du Morvan, du Châtillonais et du nord Haute-Saône. L'arc jurassien et les métropoles régionales restent dynamiques
-
-Row {.tabset .tabset-fade}
------------------------------------------------------------------------
-  
-### Comparaisons régionales
+### Comparaisons régionales 
   
 ```{r,echo=F}
 sparkline(0)
@@ -102,6 +89,12 @@ tab %>%
   # sparkline::spk_add_deps()
 
 ```   
+***
+
+-  La population, plutôt âgée, **baisse** en Bourgogne-Franche-Comté entre 2013 et 2018. 
+-  Cette baisse est particulièrement importante chez les jeunes (**`r prettyNum(round(region$evol1529,2)[3],decimal.mark=",")` %**).
+
+> C'est la seule région de France métropolitaine à enregistrer une telle baisse. Elle est principalement dûe à la baisse rapide des populations rurales du Morvan, du Châtillonais et du nord Haute-Saône. L'arc jurassien et les métropoles régionales restent dynamiques.
 
 ### Carte régionale
 
@@ -115,19 +108,11 @@ leaflet(regwgs) %>%
   contour_bfc() 
   
 ```
+***
 
-![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row  {data-height=100}
------------------------------------------------------------------------
-### Données générales
+-  Seules 2 régions ont une baisse de leur population. C'est en BFC qu'elle baisse le plus.
 
-Seuls deux départements gagnent de la population entre 2013 et 2019 : la Côte d'Or et le Doubs, portés par l'attractivité de leurs capitales Dijon et Besançon.La Nièvre est le département où la population décroît le plus en 5 ans.
-
-  Row {.tabset .tabset-fade}
------------------------------------------------------------------------
+# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons départementales 
 
@@ -142,7 +127,10 @@ tab %>%
   credits()
 
 ```
+***
+-  Seuls deux départements gagnent de la population entre 2013 et 2019 : la Côte d'Or et le Doubs, portés par l'attractivité de leurs capitales Dijon et Besançon.
 
+-  La Nièvre est le département où la population décroît le plus en 5 ans.
 
 ### Carte départementale
 
@@ -159,15 +147,10 @@ leaflet(depwgs) %>%
   carto() %>%
   contour_bfc() 
 ```
+***
+-  Seuls 2 départements ont une augmentation de leur population : le Doubs et la Côte d'Or. Le Doubs est le territoire le plus dynamique de la région.
 
-
-![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-
-  Row {.tabset .tabset-fade}
------------------------------------------------------------------------
+# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
 
 ### Comparaisons établissements publics de coopération intercommunale
   
@@ -180,6 +163,7 @@ tab <- epci27_tab %>%
 tab %>%  
   credits()
 ```
+
 
 ### Tableau filtré
 ```{r}
@@ -196,6 +180,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte ECPI
   
@@ -209,16 +196,14 @@ leaflet(carte) %>%
   carto() %>%
   contour_depbfc() 
 ```
+***
+-  L'ancienne Bourgogne est coupée en deux par des territoires en forte perte de population.
 
-![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30}
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-  
-  Row {.tabset .tabset-fade}
------------------------------------------------------------------------
-  
-### Comparaisons bassins de vie
+-  L'arc Jurassien reste dynamique ainsi que les grandes agglomérations de la région.
+
+# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
+
+### Comparaisons bassins de vie 2022
 ```{r,echo=F}
 tab <- bv27_tab %>%
   demo(geo=BV2022) %>%
@@ -228,7 +213,8 @@ tab <- bv27_tab %>%
 tab %>%  
   credits()
 ```  
-  
+
+
 ### Tableau filtré
 ```{r}
 sparkline(0)
@@ -245,8 +231,11 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
-  
-### Carte BV
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
+
+### Carte BV 2022
 
 ```{r,echo=F}
 carte <- bvcarto
@@ -258,15 +247,13 @@ leaflet(carte) %>%
   carto() %>%
   contour_depbfc() 
 ```
+***
 
+-  L'ancienne Bourgogne est coupée en deux par des territoires en forte perte de population.
 
+-  L'arc Jurassien reste dynamique ainsi que les grandes agglomérations de la région.
 
-*En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-=======================================================================
-Row {data-height="20"}
------------------------------------------------------------------------
-Row {data-height="60"}
------------------------------------------------------------------------
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 
 **Sources :**  
 

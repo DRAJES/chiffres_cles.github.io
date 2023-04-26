@@ -2,8 +2,9 @@
 title: "Diplômes du sport et de l'animation"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
-    href: index.html
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll    
     social: menu
     #source_code: embed
     navbar:
@@ -60,21 +61,9 @@ idjeps <- function(.tbl){
 
 ```
 
-# Diplômes professionnels {data-orientation="rows" height="30" data-icon="fa-graduation-cap"}
-
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales sur les diplômes professionnels délivrés en Bourgogne-Franche-Comté en 2019
-
-**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS. **8e** région de France en nombre de diplômes délivrés. La moitié des diplômes sont issus de la filière STAPS.
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
+# Diplômes professionnels {data-orientation="rows" height="30" data-icon="fa-graduation-cap" .storyboard}
 
 ### Diplômes du sport et de l'animation
-
-**Près de 1 000 diplômés de STAPS, Une large part de BPJEPS pour le reste des diplômes délivrés en 2019**
 
 ```{r}
 tab <- diplreg %>% 
@@ -106,10 +95,15 @@ tab %>%
 
 
 ```
+***
+
+-  **`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
+
+-  **8e** région de France en nombre de diplômes délivrés. 
+
+-  La moitié des diplômes sont issus de la filière STAPS.
 
 ### Comparaisons régionales
-
-**8e région de France en nombre de diplômes délivrés**
 
 ```{r}
 tab %>%
@@ -126,6 +120,9 @@ hchart("bar",
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
+
+-  **8e** région de France en nombre de diplômes délivrés.
 
 ### Répartition des diplômes
 
@@ -154,10 +151,13 @@ hchart(tab %>% filter(str_detect(Région,"Bourgogne") ),
   hc_add_theme(thm) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
+***
+
+-  Près de **1 000** diplômés de STAPS 
+
+-  Une large part de **BPJEPS** pour le reste des diplômes délivrés en 2019.
 
 ### Répartition par sexe (hors STAPS)
-
-**Taux de femmes en formation `r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**
 
 ```{r}
 forome %>% 
@@ -175,10 +175,13 @@ hchart("bar",
         
   
 ```
+***
+
+Taux de femmes dans les formations :<br>
+**`r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**.
 
 ### Répartition par âge (hors STAPS)
 
-**âge moyen des diplômés `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%  group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans le sport : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>% filter (!Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans l'animation : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%   filter (Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans.**
 
 ```{r}
 hchart(density(forome$age ),    
@@ -199,6 +202,13 @@ hchart(density(forome$age ),
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
+
+-  âge moyen des diplômés : **`r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%  group_by () %>% summarise(mage=round(mean(age),1))`** ans  
+ 
+-  Dans le sport : **`r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>% filter (!Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))`** ans  
+
+-  Dans l'animation : **`r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%   filter (Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))`** ans  
 
 ### âge moyen par diplôme (hors STAPS)
 
@@ -214,21 +224,7 @@ hchart("column",
  
 ```
 
-# Diplômes non professionnels (BAFA/BAFD) {data-orientation="rows" height="30" data-icon="fa-users"}
-
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-### Données générales
-
-**`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2021
-
-Les femmes représentent plus de 2/3 des effectifs.
-
-Les recrutements baissent fortement dans les départements de la région, comme au national.
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="700"}
+# Diplômes non professionnels (BAFA/BAFD) {data-orientation="rows" height="30" data-icon="fa-users" .storyboard}
 
 ### Tableau des diplômes non professionnels
 
@@ -321,10 +317,15 @@ bafaregm %>%
 
 
 ```
+***
+
+-  **`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplômes non professionnels délivrés en Bourgogne-Franche-Comté en 2021.
+
+-  Les femmes représentent plus de **2/3** des effectifs.
+
+-  Les recrutements baissent fortement dans les départements de la région, comme au national.
 
 ### Diplômes non professionnels par région
-
-**12e** région de France pour le nombre de BAFA/BAFD
 
 ```{r}
 
@@ -346,6 +347,9 @@ hchart(bafaregm %>%
   hc_add_theme(thm)  %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
+***
+
+-  **12e** région de France pour le nombre de BAFA/BAFD
 
 ### évolution du poids des régions
 
@@ -361,8 +365,9 @@ hchart(bafaregm %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
 
-## Row {.tabset .tabset-fade .tabset-pills data-height="1000"}
+-  Un léger rebond en 2021 après 4 années de forte baisse.
 
 ### Diplômes non professionnels délivrés par département
 
@@ -423,6 +428,11 @@ bafadepm %>%
            footnote_as_chunk = T) 
 
 ```
+***
+
+-  des baisses très importantes dans les départements de la région.
+
+-  un fort rebond dans l'Yonne en 2021
 
 ### évolution des BAFA de Bourgogne-Franche-Comté
 
@@ -462,20 +472,7 @@ hw_grid(list_of_plots,ncol=4, rowheight = 300) %>%
 
 ```
 
-# Insertion des diplômés {data-orientation="rows" height="30" data-icon="fa-user-tie"}
-
-## Row {data-height="20"}
-
-## Row {data-height="600"}
-
-Le ministère des Sports et l'Injep réalisent chaque année une enquête sur l'insertion professionnelle des diplômés Jeunesse et Sports sept mois après l'obtention de leur diplôme. Les résultats peuvent être consultés sur les fiches régionales réalisées chaque année :
-
-[![](images/IDJEPS.PNG) </br>\
-Insertion Professionnelle des diplômés de l'animation et du sport](https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf)
-
-En raison des effectifs assez faibles, les profils sont établis sur la base de plusieurs années consécutives
-
-## Row {.tabset .tabset-fade .tabset-pills data-height="800"}
+# Insertion des diplômés {data-orientation="rows" height="30" data-icon="fa-user-tie" .storyboard}
 
 ### Taux d'emploi et Taux d'insertion par régions
 
@@ -501,9 +498,14 @@ IDJEPSg %>%
   footnote(general =  "Enquête IDJEPS 2022 INJEP-MEDES, Direction des Sports, DRAJES (ex-DRJSCS) - Collecte par les DRAJES (ex-DRJSCS), traitements INJEP-MEDES", 
            general_title = "Source : ",
            footnote_as_chunk = T)  
-  
-
 ```
+***
+
+-  **88 %** des diplômés sport et animation de BFC sont en emploi 7 mois après leur diplôme.
+
+-   **71,5 %** des diplômés occupent un emploi en lien direct avec leur diplôme.
+    
+      -   légèrement supérieur à la moyenne nationale.
 
 ### Détail par diplôme
 
@@ -524,8 +526,6 @@ IDJEPSg %>%
   footnote(general =  "Enquête IDJEPS 2022 INJEP-MEDES, Direction des Sports, DRAJES (ex-DRJSCS) - Collecte par les DRAJES (ex-DRJSCS), traitements INJEP-MEDES", 
            general_title = "Source : ",
            footnote_as_chunk = T) 
-  
-  
 ```
 
 ### Profils d'emploi des diplômés de BFC
@@ -533,17 +533,29 @@ IDJEPSg %>%
 ```{r}
 
 ```
+***
+
+En raison des effectifs assez faibles, les profils sont établis sur la base de plusieurs années consécutives
+
+### Fiches régionales
+
+[![](images/IDJEPS.PNG) </br>\
+Insertion Professionnelle des diplômés de l'animation et du sport](https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf)
+
+***
+Le ministère des Sports et l'Injep réalisent chaque année une enquête sur l'insertion professionnelle des diplômés Jeunesse et Sports sept mois après l'obtention de leur diplôme. Les résultats peuvent être consultés sur les fiches régionales réalisées chaque année 
+
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="300"}
 
 **Sources :**
 
 -   Ministère en charge de l'enseignement supérieur et ministère en charge de la jeunesse et des sports
--   Données BAFA/BAFD <https://injep.fr/donnee/bafa-bafd-2011-2021/> Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
+-   Données BAFA/BAFD 
+    -   <https://injep.fr/donnee/bafa-bafd-2011-2021/>
+
+Note : les données ont été révisées pour supprimer les double-comptes, quelques diplômés apparaissant deux fois dans la base de données.
+
 
 Le dispositif régional d'observation de l'emploi et de la formation (DROEF) est un réseau de correspondants régionaux animé par la direction des Sports et chargé de suivre la formation et l'insertion des diplômés, en particulier à travers une enquête d'insertion des diplômés Jeunesse et Sports :\
 
