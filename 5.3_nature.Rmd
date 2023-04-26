@@ -141,10 +141,11 @@ nature %>%
 ```
 ***
 
-La région Bourgogne-Franche-Comté compte **1 400** sites de sport de nature en 2020.
-La présence de sites de nature est fortement liée au relief. Les massifs montagneux sont plus dotés que la plaine.
+-  La région Bourgogne-Franche-Comté compte **1 400** sites de sport de nature en 2020.
 
-**9e** région de France en nombre de sites de sport de nature.
+-  La présence de sites de nature est fortement liée au relief. Les massifs montagneux sont plus dotés que la plaine.
+
+-  **9e** région de France en nombre de sites de sport de nature.
 
 ### Comparaisons départementales
 
@@ -170,7 +171,7 @@ nature %>%
 ```
 ***
 
-La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort peu dotées en sites de sport de nature.
+-  La Côte-d'Or, la Saône et Loire, l'Yonne et le Territoire de Belfort sont peu dotés en sites de sport de nature.
 
 
 ### Tableau départemental (Bourgogne-Franche-Comté)
@@ -206,7 +207,7 @@ nature27 %>%
 ```
 ***
 
-Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
+-  Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
 
 # Cartes {data-orientation="rows" data-icon="globe" .storyboard}
 
@@ -249,9 +250,9 @@ l  %>%
 ```
 ***
 
-clic sur l'équipement = détail  
+*clic sur l'équipement = détail*
 
-clic sur le département = nombre d'équipement par catégorie
+*clic sur le département = nombre d'équipement par catégorie*
 
 ### Carte regroupée (cluster)
 
@@ -285,9 +286,9 @@ l %>%
 ```
 ***
 
-clic sur l'équipement = détail 
+*clic sur l'équipement = détail*
 
-clic sur le département = nombre d'équipement par catégorie
+*clic sur le département = nombre d'équipement par catégorie*
 
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }

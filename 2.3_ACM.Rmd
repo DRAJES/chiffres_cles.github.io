@@ -67,7 +67,7 @@ Les Accueils collectifs de mineurs avec hébergement regroupent les centres de v
 
 **(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
-sélectionnez un type de séjour pour voir une comparaison régionale
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
 
 ### Evolutions régionales
 
@@ -92,7 +92,7 @@ tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
 ***
 
-sélectionnez un type de séjour pour voir une comparaison régionale
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
 
 ### Comparaisons régionales
 
@@ -302,7 +302,7 @@ tab %>% filtreACM()
 ```
 ***
 
-sélectionnez un type de séjour pour voir une comparaison départementale
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
 
 ### Evolutions départementales
 
@@ -326,7 +326,7 @@ tab %>% filtreACM() %>%
 ```
 ***
 
-sélectionnez un type de séjour pour voir une comparaison départementale
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
 
 ### Comparaisons départementales
 
@@ -424,7 +424,7 @@ Les Accueils collectifs de mineurs sans hébergement regroupent les accueils pé
 
 **(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
-sélectionnez un type de séjour pour voir une comparaison régionale
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
 
 ### Evolutions régionales
 
@@ -451,7 +451,7 @@ tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
 ***
 
-sélectionnez un type de séjour pour voir une comparaison régionale
+*Sélectionnez un type de séjour pour voir une comparaison régionale*
 
 ### Comparaisons
 
@@ -681,7 +681,7 @@ tab %>% filtreACM()
 ```
 ***
 
-sélectionnez un type de séjour pour voir une comparaison départementale
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
 
 ### Evolutions départementales
 
@@ -706,7 +706,7 @@ tab %>% filtreACM() %>%
 ```
 ***
 
-sélectionnez un type de séjour pour voir une comparaison départementale
+*Sélectionnez un type de séjour pour voir une comparaison départementale*
 
 ### Comparaisons départementales
 

@@ -246,7 +246,7 @@ sd %>% datafiltre()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte EPCI
 
@@ -302,7 +302,7 @@ sd %>% datafiltre()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte BV 2022
 
@@ -382,7 +382,7 @@ leaflet() %>%
 ```
 ***
 
-Choisissez les couches à afficher ou à superposer à l'aide du menu ci-contre
+> Choisissez les couches à afficher ou à superposer à l'aide du menu ci-contre
 
 # `r fa(name = "fas fa-tree")` CRTE {.storyboard data-orientation="rows" height="20"}
 

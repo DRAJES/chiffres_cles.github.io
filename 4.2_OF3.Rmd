@@ -2,7 +2,9 @@
 title: "Organismes de formation"
 output: 
   flexdashboard::flex_dashboard:
-    vertical_layout: scroll
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: scroll   
     social: menu
     #source_code: embed
     navbar:
@@ -10,53 +12,48 @@ output:
     theme: simplex
 ---
 
-# `r fa(name = "fas fa-calendar-check")` Calendrier des formations {data-orientation="rows" font-size="25px"}
+# `r fa(name = "fas fa-calendar-check")` Organismes de formations du sport et de l'animation {data-orientation="rows" font-size="25px" .storyboard}
 
-## Row {data-height="20"}
+### Calendrier des formations
 
-## Row {data-height="100"}
-
-**Cartographie interactive**\
 [![](images/calendrier.png) </br>\
 Calendrier des formations du ministère des Sports](https://foromes.calendrier.sports.gouv.fr/#/formation)
 
+***
 
-# `r fa(name = "fas fa-map-pin")` Cartographie nationale des OF {data-orientation="rows" font-size="25px"}
+*Cartographie interactive*
 
-## Row {data-height="20"}
 
-## Row {data-height="100"}
 
-Forômes-Exploit est une cartographie interactive des formations en cours ou à venir en France métropolitaine et Outre-mer pour les diplômes d'Etat professionnels délivrés par les ministères chargés de la Jeunesse et des Sports.
+### `r fa(name = "fas fa-map-pin")` Cartographie nationale des OF
 
-**Cartographie Foromes-exploit**\
 [![](images/exploit.PNG) </br>\
 Cartographie nationale des formations en cours ou à venir](https://donnees-formation-js.social.gouv.fr/)
 
+***
+
+**Forômes-Exploit** est une cartographie interactive des formations en cours ou à venir en France métropolitaine et Outre-mer pour les diplômes d’État professionnels délivrés par les ministères chargés de la Jeunesse et des Sports.
 
 
+### `r fa(name = "fas fa-map-location-dot")` Cartographie régionale des OF 
 
 
-# `r fa(name = "fas fa-map-location-dot")` Cartographie des OF {data-orientation="rows" font-size="25px"}
-
-## Row {data-height="20"}
-
-## Row {data-height="100"}
-
-**Cartographie interactive**\
 [![](images/FCE.PNG) </br>\
 Visualisation des Oragnismes de Formation de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
 
+***
+
+*Cartographie interactive millésimée 2022*
+
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-## Row {data-height="20"}
+-  Sur le site du ministère des Sports rubrique Emplois et métiers :
 
-## Row {data-height="200"}
-
-Sur le site du ministère des Sports rubrique Emplois et métiers : https://www.sports.gouv.fr/emplois-metiers/offres-de-formations/calendrier-des-formations/Calendrier-des-formations-15145
+    -  <https://www.sports.gouv.fr/emplois-metiers/offres-de-formations/calendrier-des-formations/Calendrier-des-formations-15145>
 
 
-L'exploitation de l'outil de gestion des formations et des diplômes (Voir rubrique Aide et à propos) :
-https://donnees-formation-js.social.gouv.fr/
+-  L'exploitation de l'outil de gestion des formations et des diplômes (Voir rubrique Aide et à propos) :
+    
+    -  <https://donnees-formation-js.social.gouv.fr/>
 
 

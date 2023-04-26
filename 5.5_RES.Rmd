@@ -168,7 +168,8 @@ popup <- carte@data %>% select(Libellé, Population = pop,
               popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[1]) %>%
     addLegend( pal = paleq, values = ~txequi,   
-               "bottomright",title = "taux d'équipements<br>pour 10 000 habitants",
+               "bottomright",
+               title = "taux d'équipements<br>pour 10 000 habitants",
                group = groupes[1]) %>%
     
    addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
@@ -176,7 +177,8 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[2]) %>%
     addLegend( pal = palstr, values = ~`taux structurant`,   
-               "bottomright",title = "taux d'équipements structurants<br>pour 10 000 habitants",
+               "bottomright",
+               title = "taux d'équipements structurants<br>pour 10 000 habitants",
                group = groupes[2]) %>%
     
    addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
@@ -184,7 +186,8 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[3]) %>%
     addLegend( pal = paljx, values = ~`taux grands jeux`,   
-               "bottomright",title = "taux de terrains de grands jeux<br>pour 10 000 habitants",
+               "bottomright",
+               title = "taux de terrains de grands jeux<br>pour 10 000 habitants",
                group = groupes[3]) %>% 
     
     addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
@@ -192,7 +195,8 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                 popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[4]) %>%
     addLegend( pal = palpro, values = ~`taux proximité`,   
-               "bottomright",title = "taux d'équipements de proximité<br>pour 10 000 habitants",
+               "bottomright",
+               title = "taux d'équipements de proximité<br>pour 10 000 habitants",
                group = groupes[4]) %>% 
     
    addPolygons(stroke = FALSE, fill = TRUE ,smoothFactor = 2,
@@ -200,7 +204,8 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                popup = popupTable(popup, feature.id=F,row.numbers = F),
               group =  groupes[5]) %>%
     addLegend( pal = palb, values = ~`taux bassins`,   
-               "bottomright",title = "taux de bassins<br>pour 10 000 habitants",
+               "bottomright",
+               title = "taux de bassins<br>pour 10 000 habitants",
                group =  groupes[5]) %>% 
     
   addMinicharts(centroid(carte)[,1],centroid(carte)[,2] ,
@@ -225,7 +230,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                 ) %>% 
     syncWith("minicharts") %>%
     addLayersControl( overlayGroups = groupes,
-                      baseGroups = c("minicharts"),
+                      baseGroups= c("minicharts"),
                       options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%
   hideGroup(groupes[2:5])
   }
@@ -254,7 +259,11 @@ tab %>%
 ```
 ***
 
-La région Bourgogne-Franche-Comté compte **15 000** équipements en 2020.C'est la région la mieux dotée par habitant. Cependant, les contrastes sont importants entre les villes généralement bien équipées et certains territoires ruraux ou enclavés beaucoup plus éloignés de certains équipements.
+-  La région Bourgogne-Franche-Comté compte **15 000** équipements en 2020.
+
+-  C'est la région la mieux dotée par habitant. 
+
+-  Cependant, les contrastes sont importants entre les villes généralement bien équipées et certains territoires ruraux ou enclavés beaucoup plus éloignés de certains équipements.
 
 ### Répartitions régionales
 
@@ -273,7 +282,9 @@ hchart( tab %>%
 ```
 ***
 
-La Bourgogne-Franche-Comté est la région française la mieux dotée en équipement. Cela est lié à la faible densité du territoire.
+-  La Bourgogne-Franche-Comté est la région française la mieux dotée en équipement.
+
+    -  Cela est lié à la faible densité du territoire.
 
 ### Détail des équipements de la région
 
@@ -316,6 +327,12 @@ leaflet(carte) %>%
   contour_bfc() 
 
 ```
+***
+
+>  Les équipement ont été regroupés par grande famille
+
+>  Ne pas empiler les couches afin de conserver une vue correcte
+
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" .storyboard}
 
@@ -339,7 +356,9 @@ tab %>%
 ```
 ***
 
-La Haute-Saône est un des départements les mieux équipés de France. Le Doubs est le département le moins bien doté de la région.
+-  La Haute-Saône est un des départements les mieux équipés de France. 
+
+-  Le Doubs est le département le moins bien doté de la région.
 
 ### Taux d'équipements par département
 
@@ -368,9 +387,11 @@ hchart( equip %>%
 ```
 ***
 
-La Haute-Saône est particulièrement bien dotée en équipement. La plupart des départements bien dotés sont peu denses.
+-  La Haute-Saône est particulièrement bien dotée en équipement. 
 
-*un clic sur la légende permet de filtrer sur la Bourgogne-Franche-Comté*
+-  La plupart des départements bien dotés sont peu denses.
+
+*Un clic sur la légende permet de filtrer sur la Bourgogne-Franche-Comté*
 
 ### Répartitions départementales
 
@@ -459,6 +480,11 @@ leaflet(carte) %>%
   contour_bfc() 
 
 ```
+***
+
+>  Les équipement ont été regroupés par grande famille
+
+>  Ne pas empiler les couches afin de conserver une vue correcte
 
 # ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" .storyboard}
 
@@ -481,6 +507,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Taux d'équipements
 
@@ -502,6 +531,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte EPCI {data-height="800"}
 
@@ -518,6 +550,11 @@ leaflet(carte) %>%
   carto(x=10) %>%
   contour_depbfc() 
 ```
+***
+
+>  Les équipement ont été regroupés par grande famille
+
+>  Ne pas empiler les couches afin de conserver une vue correcte
 
 # ![](images/BFC_BV_s.svg) Bassins de Vie {data-orientation="rows" .storyboard}
 
@@ -540,7 +577,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
 
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Taux d'équipements 
 
@@ -561,6 +600,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte BV2022{data-height="800"}
 
@@ -577,6 +619,11 @@ leaflet(carte) %>%
   carto(x=10) %>%
   contour_depbfc() 
 ```
+***
+
+>  Les équipement ont été regroupés par grande famille
+
+>  Ne pas empiler les couches afin de conserver une vue correcte
 
 # Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
 
@@ -598,7 +645,7 @@ La représentation dans le plan des équipements en fonction des équipements fa
 Si le nombre réel est proche du nombre d'attendu avec une marge d'erreur de 90% alors on considère que le territoire est normalement doté. L'écart est alors nul.\
 Si le nombre d'équipement est supérieur au nombre attendu, alors le territoire est surdoté par rapport aux territoires de taille comparable.\
 Si le nombre d'équipement est inférieur au nombre attendu, alors le territoire est sous-doté par rapport aux territoires de taille comparable.\
-On mesure ensuite l'intesité de cet écart pour caractériser la dotation.
+On mesure ensuite l'intensité de cet écart pour caractériser la dotation.
 
 ### Apports
 
@@ -613,7 +660,7 @@ Pour une vision plus complète de tous ces aspects, on pourra se reporter aux tr
 
 ## Column {data-width="800" align="left"}
 
-### Modèle
+### Modèle 
 
 Le modèle retenu est un modèle non linéaire calculé dans R grâce aux modèles additifs généralisés avec estimation de lissage intégrée.
 
@@ -624,7 +671,7 @@ Le modèle a été lissé selon un spline de régression cubique et une précisi
     library (mgcv)
     gam ( equipements ~ s(population, bs="cs",k=40), data )
 
-### Représentation
+### Représentation {height=800px}
 
 > schématisation
 

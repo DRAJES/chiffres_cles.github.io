@@ -96,10 +96,14 @@ tab %>%
 
 ```
 ***
-**`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS. **8e** région de France en nombre de diplômes délivrés. La moitié des diplômes sont issus de la filière STAPS.
+
+-  **`r prettyNum(round(diplreg[14,3]/100,0)*100,big.mark = " ")`** diplômes des professions du sport et de l'animation délivrés en 2019 dont la moitié en STAPS.
+
+-  **8e** région de France en nombre de diplômes délivrés. 
+
+-  La moitié des diplômes sont issus de la filière STAPS.
 
 ### Comparaisons régionales
-
 
 ```{r}
 tab %>%
@@ -117,7 +121,8 @@ hchart("bar",
 
 ```
 ***
-**8e région de France en nombre de diplômes délivrés**
+
+-  **8e** région de France en nombre de diplômes délivrés.
 
 ### Répartition des diplômes
 
@@ -147,10 +152,12 @@ hchart(tab %>% filter(str_detect(Région,"Bourgogne") ),
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 ***
-**Près de 1 000 diplômés de STAPS, Une large part de BPJEPS pour le reste des diplômes délivrés en 2019**
+
+-  Près de **1 000** diplômés de STAPS 
+
+-  Une large part de **BPJEPS** pour le reste des diplômes délivrés en 2019.
 
 ### Répartition par sexe (hors STAPS)
-
 
 ```{r}
 forome %>% 
@@ -169,7 +176,9 @@ hchart("bar",
   
 ```
 ***
-**Taux de femmes en formation `r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**
+
+Taux de femmes dans les formations :<br>
+**`r forome %>% group_by ()%>% summarise(total=n(), femmes=sum(Sexe=="Femme")) %>%mutate(txfem=round(100*femmes/total,1)) %>% pull(3)` %**.
 
 ### Répartition par âge (hors STAPS)
 
@@ -194,7 +203,12 @@ hchart(density(forome$age ),
 
 ```
 ***
-**âge moyen des diplômés `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%  group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans le sport : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>% filter (!Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans. Dans l'animation : `r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%   filter (Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))` ans.**
+
+-  âge moyen des diplômés : **`r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%  group_by () %>% summarise(mage=round(mean(age),1))`** ans  
+ 
+-  Dans le sport : **`r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>% filter (!Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))`** ans  
+
+-  Dans l'animation : **`r forome %>%  mutate(age= time_length(dmy(Date.de.naissance) %--% dmy(Date.d.arrêté),"years")) %>%   filter (Spécialité %in% c('Animateur','Animation socio-éducative ou culturelle')) %>% group_by () %>% summarise(mage=round(mean(age),1))`** ans  
 
 ### âge moyen par diplôme (hors STAPS)
 
@@ -304,11 +318,12 @@ bafaregm %>%
 
 ```
 ***
-**`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplomes non professionels délivrés en Bourgogne-Franche-Comté en 2021
 
-Les femmes représentent plus de 2/3 des effectifs.
+-  **`r prettyNum(round(bafaregm %>% filter (CODGEO=='27' & sexe == 'Ensemble' & année == 2021 ) %>% pull /100,0)*100,big.mark = ",")`** diplômes non professionnels délivrés en Bourgogne-Franche-Comté en 2021.
 
-Les recrutements baissent fortement dans les départements de la région, comme au national.
+-  Les femmes représentent plus de **2/3** des effectifs.
+
+-  Les recrutements baissent fortement dans les départements de la région, comme au national.
 
 ### Diplômes non professionnels par région
 
@@ -333,7 +348,8 @@ hchart(bafaregm %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 ***
-**12e** région de France pour le nombre de BAFA/BAFD
+
+-  **12e** région de France pour le nombre de BAFA/BAFD
 
 ### évolution du poids des régions
 
@@ -349,6 +365,9 @@ hchart(bafaregm %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
+***
+
+-  Un léger rebond en 2021 après 4 années de forte baisse.
 
 ### Diplômes non professionnels délivrés par département
 
@@ -409,6 +428,11 @@ bafadepm %>%
            footnote_as_chunk = T) 
 
 ```
+***
+
+-  des baisses très importantes dans les départements de la région.
+
+-  un fort rebond dans l'Yonne en 2021
 
 ### évolution des BAFA de Bourgogne-Franche-Comté
 
@@ -475,6 +499,13 @@ IDJEPSg %>%
            general_title = "Source : ",
            footnote_as_chunk = T)  
 ```
+***
+
+-  **88 %** des diplômés sport et animation de BFC sont en emploi 7 mois après leur diplôme.
+
+-   **71,5 %** des diplômés occupent un emploi en lien direct avec leur diplôme.
+    
+      -   légèrement supérieur à la moyenne nationale.
 
 ### Détail par diplôme
 

@@ -107,7 +107,7 @@ return(cartasso)
 
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_s.svg) Régions {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons régionales
 
@@ -154,13 +154,19 @@ hw_grid(
 
 ```
 ***
-En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire national des Associations. Si le répertoire est exhaustif, il est en revanche peu actualisé, en particulier pour les associations qui ont peu d'activité ou n'ont pas de besoin de subvention. On estime à un peu plus de la moitié les associations véritablement actives (entre 60 000 et 65 000 dans la région, sans clé de répartition).
-C'est la troisième région de France en nombre d'association par habitant derrière la Corse et l'Occitanie.
-Les associations sportives représentent près du quart des associations (plus grande proportion de France).
+
+-   En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire National des Associations (RNA).
+
+-   C'est la **troisième** région de France en nombre d'association par habitant derrière la Corse et l'Occitanie, **9e** région française en nombre d'associations
+
+-   Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
 
-**9e** région française en nombre d'associations, **3e** en taux par habitant
+    -   Si le répertoire est exhaustif, il est en revanche peu actualisé, en particulier pour les associations qui ont peu d'activité ou ne font pas de demande de subvention. On estime à un peu plus de la moitié les associations véritablement actives (entre **60 000 et 65 000** dans la région, sans clé de répartition).
+    
 
+
+**Hors Alsace-Moselle**
 
 ### Tableau régional
 
@@ -174,7 +180,10 @@ asso_tab(REG) %>%
   footnote(general = "ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA"  ) 
 ```
 ***
-**Les domaines du sport, des loisirs et de l'économie fortement représentés**
+
+-  Les domaines du sport, des loisirs et de l'économie fortement représentés.
+
+**Hors Alsace-Moselle**
 
 ### Thématiques par région
 
@@ -207,18 +216,18 @@ hw_grid(
 
 rowheight = 600)
 
-
-
 ```
+***
+
+**Hors Alsace-Moselle**
+
 
 ```{r}
 ### Nombre de femmes
 
 ```
 
-
-
-```{r, include=FALSE}
+```{r, eval=FALSE}
 hchart(RNA %>%
          filter(position=="A") %>% 
          filter(observation!="DISSOUTE")%>%
@@ -232,6 +241,7 @@ hchart(RNA %>%
 
 
 ### Evolution régionale
+
 ```{r}
 hw_grid(
   RNA %>% 
@@ -261,21 +271,23 @@ hw_grid(
 #htmltools::browsable()
 ```
 ***
-Créations d'associations par année
 
+- Créations d'associations par année : une forte baisse suite au Covid.
 
-
+**Hors Alsace-Moselle**
 
 ### Carte régionale
+
 ```{r}
 carte <- merge(regwgs,RNAcarto(geo=REG),by="REG")
 
 carte_asso() %>% contour_bfc()
 ```
 ***
-Hors Alsace-Moselle
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard} 
+**Hors Alsace-Moselle**
+
+# ![](images/BFC_dep_s.svg) Départements {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons départementales
 
@@ -348,7 +360,10 @@ hw_grid(
 rowheight = 600)
 ```
 ***
-Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux où les associations sont les plus fréquentes
+
+-  Jura, Nièvre et Haute-Saône : les départements les moins peuplés sont ceux où les associations sont les plus fréquentes
+
+**Hors Alsace-Moselle**
 
 ### Tableau par départements
 
@@ -362,7 +377,8 @@ asso_tab(DEP) %>%
   
 ```
 ***
-Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
+
+-  Plus de 20 000 associations dans le Doubs, la Côte d'Or et le Saône et Loire
 
 ### Thématiques par département
 
@@ -398,7 +414,8 @@ rowheight = 600)
 
 ```
 ***
-de nombreuses associations sportives
+
+-  de nombreuses associations sportives
 
 ### Evolutions départementales
 
@@ -434,21 +451,24 @@ hw_grid(
 
 ```
 ***
+
 Créations d'associations par année
 
 ### Carte départementale
+
 ```{r}
 carte <- merge(depwgs,RNAcarto(geo=DEP),by="DEP")
 
 carte_asso() %>% contour_bfc()
 ```
 ***
-Hors Alsace-Moselle
 
+**Hors Alsace-Moselle**
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_EPCI_s.svg) EPCI {.storyboard data-orientation="rows" height="30"}
 
 ### Tableau des associations par EPCI
+
 ```{r}
 tab <- asso_tab(EPCI) %>% 
   filter(EPCI %in% basecom$EPCI[basecom$REG=="27"]) %>%
@@ -461,6 +481,7 @@ tab %>%
 ```
 
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% 
   filter(!EPCI %in% c('BFC','METRO')) %>% 
@@ -473,6 +494,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte EPCI
 
@@ -483,9 +507,10 @@ carte_asso() %>% contour_depbfc()
 
 ```
 
-# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_BV_s.svg) Bassins de vie {.storyboard data-orientation="rows" height="30"}
 
 ### Tableau des associations par bassin de vie 2022
+
 ```{r}
 tab <- asso_tab(BV2022) %>%
   filter(BV2022 %in% basecom$BV2022[basecom$REG=="27"]) %>%
@@ -498,6 +523,7 @@ tab %>%
 ```
 
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% 
   filter(!BV2022 %in% c('BFC','METRO')) %>%
@@ -511,6 +537,9 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
+
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### carte BV 2022
 
@@ -520,20 +549,16 @@ carte <- merge(bvcarto,RNAcarto(geo=BV2022),by="BV2022")
 carte_asso() %>% contour_depbfc()
 ```
 
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
-
-**Sources :**  
+**Sources :**
 
 **ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA.**
 
+-   Répertoire National des Associations (RNA)
 
-* Répertoire National des Associations (RNA)  
+    -   <https://www.data.gouv.fr/fr/datasets/repertoire-national-des-associations/>
 
-  + https://www.data.gouv.fr/fr/datasets/repertoire-national-des-associations/  
-  
-* Recherche et solidarités  
+-   Recherche et solidarités
 
-  + https://recherches-solidarites.org/dans-les-regions-liste/#Bourgogne
-
-
+    -   <https://recherches-solidarites.org/dans-les-regions-liste/#Bourgogne>

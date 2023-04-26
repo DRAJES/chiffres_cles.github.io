@@ -94,7 +94,7 @@ tab %>%
 -  La population, plutôt âgée, **baisse** en Bourgogne-Franche-Comté entre 2013 et 2018. 
 -  Cette baisse est particulièrement importante chez les jeunes (**`r prettyNum(round(region$evol1529,2)[3],decimal.mark=",")` %**).
 
-C'est la seule région de France métropolitaine à enregistrer une telle baisse. Elle est principalement dûe à la baisse rapide des populations rurales du Morvan, du Châtillonais et du nord Haute-Saône. L'arc jurassien et les métropoles régionales restent dynamiques.
+> C'est la seule région de France métropolitaine à enregistrer une telle baisse. Elle est principalement dûe à la baisse rapide des populations rurales du Morvan, du Châtillonais et du nord Haute-Saône. L'arc jurassien et les métropoles régionales restent dynamiques.
 
 ### Carte régionale
 
@@ -110,7 +110,7 @@ leaflet(regwgs) %>%
 ```
 ***
 
--  Seules 2 régions ont une baisse de leur population. C'est un BFC qu'elle baisse le plus.
+-  Seules 2 régions ont une baisse de leur population. C'est en BFC qu'elle baisse le plus.
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
@@ -163,7 +163,7 @@ tab <- epci27_tab %>%
 tab %>%  
   credits()
 ```
-***
+
 
 ### Tableau filtré
 ```{r}
@@ -182,7 +182,7 @@ sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte ECPI
   
@@ -213,7 +213,7 @@ tab <- bv27_tab %>%
 tab %>%  
   credits()
 ```  
-***
+
 
 ### Tableau filtré
 ```{r}
@@ -233,7 +233,7 @@ sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte BV 2022
 

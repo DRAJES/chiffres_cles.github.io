@@ -65,17 +65,17 @@ Les missions  s’effectuent pendant 6 à 12 mois  et  sur une durée hebdomadai
 
 ***
 
-**Missions réalisées en BFC**
+**Missions réalisées en BFC en 2022**
 
 ```{r}
-gauge(3100,min = 0,max=3500,label = "missions",
+flexdashboard::gauge(3100,min = 0,max=3500,label = "missions",
       gaugeSectors(colors = "orange"))
 ```
 
-**Volontaires originaires de BFC**
+**Volontaires originaires de BFC en 2022**
 
 ```{r}
-gauge(3000,min = 0,max=3500,label = "volontaires",
+flexdashboard::gauge(3000,min = 0,max=3500,label = "volontaires",
       gaugeSectors(colors = "aqua") )
 ```
 
@@ -88,8 +88,11 @@ baseSC %>%
   summarise(tot=n()) %>%
   hchart("areaspline", 
          hcaes(x=debut,y=tot), 
-         #color="#f0808060",
-         showInLegend = T, pointWidth = 20,
+         #color="#f0808010",
+         fillOpacity=0.2,
+         lineWidth = 3,
+         showInLegend = T, 
+         marker = FALSE,
          name = "Nouveaux volontaires" ) %>%
   
   hc_add_series(baseSC %>% 
@@ -97,14 +100,18 @@ baseSC %>%
                   group_by(debut) %>% 
                   summarise(tot=n()),
                 "areaspline", hcaes(x=debut,y=tot), 
-                #color = "#4682b460" , 
-                showInLegend = T, pointWidth = 50 ,
+                #fillcolor = "#4682b410" , 
+                fillOpacity=0.2,
+                lineWidth = 3,
+                showInLegend = T, 
+                marker = FALSE ,
                 name = "Nouvelles missions") %>%
   hc_add_theme(thm) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 ***
-**Légèrement plus de missions que de volontaires dans la région.**
+
+-  Légèrement plus de missions que de volontaires dans la région.
 
 ### Domaines de mission
 
@@ -124,7 +131,8 @@ baseSC %>%
 
 ```
 ***
-**Une majorité de missions dans l'éducation populaire et la solidarité. **
+
+-  Une majorité de missions dans l'éducation populaire et la solidarité. 
 
 ### Origine de l'agrément
 
@@ -146,7 +154,8 @@ baseSC %>%
 
 ```
 ***
-**Une part prépondérante des agréments nationaux.**
+
+-  Une part prépondérante des agréments nationaux.
 
 ### Répartition par âge
 
@@ -162,7 +171,8 @@ hchart( density( baseSC[baseSC$depvol %in% depbfc,]$age ) ,
 
 ```
 ***
-**Un pic de volontaires entre 19 et 20 ans.**
+
+-  Un pic de volontaires entre 19 et 20 ans.
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
@@ -180,7 +190,8 @@ baseSC %>%
             by=c("depvol"="CODGEO") ) %>%
   hchart("spline",
          hcaes(x=debut,y=volresid,group=département),
-         showInLegend = T,  pointWidth = 20,
+         showInLegend = T,  
+         lineWidth = 2,
          marker = FALSE) %>%
   hc_xAxis(title=list(text="Année")) %>%
   hc_yAxis(title=list(text="Nombre de volontaires")) %>%
@@ -189,7 +200,8 @@ baseSC %>%
 
 ```
 ***
-**Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020, un rebond en 2021 et à nouveau une baisse en 2022.**
+
+-  Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020, un rebond en 2021 et à nouveau une baisse en 2022.
 
 
 ### Caractéristiques des volontaires de la région
@@ -243,7 +255,14 @@ tab %>%
 
 ```
 ***
-**Une large majorité de femmes parmi les volontaires, près d'un tiers de peu diplômés, 30% étaient chômeurs auparavant, un contrat sur cinq rompu avant son terme dont 9% pour embauche.**
+
+-  Une large majorité de femmes parmi les volontaires
+
+-  près d'un tiers de peu diplômés 
+
+-  30% étaient chômeurs auparavant 
+
+-  un contrat sur cinq rompu avant son terme dont 9% pour embauche
 
 ### Carte départementale
 
@@ -327,7 +346,7 @@ leaflet() %>%
 
 ```
 
-### Flux 2
+### Flux et stocks
 
 ```{r}
 
@@ -360,8 +379,10 @@ leaflet() %>%
 [![](images/fluxSC.PNG)</br>\
 flux de nouveaux volontaires par année](https://pierre-stephanelebre.shinyapps.io/fluxSC/)
 
+***
 
-### Flux arc
+> Cet outil permet de suivre année après année ou sur une période les flux de volontaires entre leur lieu de résidence et leur lieu de mission
+
 
 ```{r, eval=FALSE}
 library(mapdeck)
@@ -414,7 +435,8 @@ baseSC %>%
 
 ```
 ***
-**Des liens privilégiés avec l'Allemagne**
+
+-  Des liens privilégiés avec l'Allemagne.
 
 # `r fa(name = "fas fa-city")` Quartier politique de la ville {data-orientation="rows" .storyboard}
 
@@ -468,7 +490,10 @@ baseSC %>%
 
 ```
 ***
-**Environ un jeune de 16 à 25 ans sur 100 s'engage dans une mission de Service civique, y compris dans les QPV, presque un volontaire sur cinq issus de quartier prioritaire dans le Territoire de Belfort et le Doubs.**
+
+-  Environ un jeune de 16 à 25 ans sur 100 s'engage dans une mission de Service civique, y compris dans les QPV 
+
+-  Près d'un volontaire sur cinq est issu de quartier prioritaire dans le Territoire de Belfort et dans le Doubs.
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 
@@ -476,7 +501,6 @@ baseSC %>%
 
 * Agence du Service Civique, Elisa, traitement DRAJES BFC
 
-  + https://injep.fr/donnee/accueils-collectifs-de-mineurs-colonies-et-centres-de-vacances-centres-aeres-et-de-loisirs-scoutisme-2020-2021/
 
 
 

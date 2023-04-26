@@ -108,7 +108,7 @@ leaflet(regwgs) %>%
   carto() %>%
   contour_bfc() 
 ```
-***
+
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
 
@@ -157,7 +157,7 @@ tab <- epci27_tab %>%
 tab %>%  
   credits()
 ```
-***
+
 
 ### Tableau filtré
 ```{r}
@@ -172,7 +172,7 @@ sd %>% datafiltre()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 
 ### Carte ECPI
@@ -199,7 +199,7 @@ tab <- bv27_tab %>%
 tab %>%  
   credits()
 ```  
-***
+
 
 ### Tableau filtré
 ```{r}
@@ -214,7 +214,7 @@ sd %>% datafiltre()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte BV 2022
 

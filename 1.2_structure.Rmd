@@ -300,15 +300,16 @@ Soit **`r popbfc`** en Bourgogne-Franche-Comté dont **`r fembfc`** femmes.
 
 ### Outil interactif en ligne
 
-[![](images/ageD.PNG) </br>\
-population des territoires par âge à façon](https://pierre-stephanelebre.shinyapps.io/ageD/){size=90%}
+[![](images/ageD.PNG){size=90%} </br>\
+population des territoires par âge à façon](https://pierre-stephanelebre.shinyapps.io/ageD/)
+
 ***
 
-Cet outil permet de définir ses propres classes d'âge, indique la part de la population concernée et le taux de femmes dans cette population.
+> Cet outil permet de définir ses propres classes d'âge, indique la part de la population concernée et le taux de femmes dans cette population.
 
-En prime, elle affiche une carte qui représente la sous ou surreprésentation de ces données. 
+> En prime, il affiche une carte qui représente la sous ou surreprésentation de ces données. 
 
-Il est possible de filtrer sur la région uniquement.
+> Il est possible de filtrer sur la région uniquement.
 
 ### Carte départementale
 ```{r}
@@ -351,7 +352,7 @@ sd %>% datafiltre()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte ECPI
 ```{r}
@@ -391,7 +392,7 @@ sd %>% datafiltre()
 ```
 ***
 
-Sélectionnez un ou plusieurs départements pour voir les territoires correspondant
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
   
 ### Carte BV 2022
 ```{r}

@@ -27,11 +27,11 @@ Les thématiques sont abordées sous l'angle territorial et proposent, le plus s
 
 La plupart des pages présentent un bandeau supérieur permettant de choisir l'échelon territorial (région, département, EPCI et bassins de vie), et, selon les sujets, des pages supplémentaires. On y trouve également une rubrique « En savoir +» qui pointe vers d'autres sites externes et à droite se trouve un renvoi à « Accueil » qui vous permettra de naviguer dans les différents thèmes.
 
-Dans chaque page, un bloc « Données générales » apporte quelques informations générales à retenir. Les autres blocs présentent les données selon un système d'onglets explicites : tableaux de données, graphiques de comparaisons et cartes. Les cartes sont dynamiques et cliquables, la plupart des graphiques également.
+Dans chaque page, un système de diapositives permet de naviguer dans les données et ajoute un petit commentaire : tableaux de données, graphiques de comparaisons et cartes. Les cartes sont dynamiques et cliquables, la plupart des graphiques également.
 
 ## Maintenance et mises à jour
 
-Elles se font au fil de l'eau en fonction des disponibilités des données open source et de la charge de travail. Il ne saurait y avoir de roadmap pour l'instant.
+Elles se font au fil de l'eau en fonction des disponibilités des données open source et de la charge de travail. Il ne saurait y avoir de roadmap pour l'instant.  Les notes de version et les nouveautés sont consultables sur la page github du projet (releases).
 
 ## Contributions
 

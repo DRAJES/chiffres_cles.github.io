@@ -142,6 +142,7 @@ hw_grid(
            hcaes(x=reorder(Libellé,clubs),y=clubs,
                  color=ifelse(REG=="27","#6a5acd","#ffd700") ), 
            showInLegend = F, pointWidth = 20,
+           opacity=1,
            name = "Clubs" ) %>%
     hc_yAxis(title=list(text="Nombre de clubs")) %>%
     hc_add_theme(thm) %>%
@@ -163,10 +164,12 @@ hw_grid(
 ```
 ***
 
-La région Bourgogne-Franche-Comté compte **7 500** clubs en 2021.
-La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
+-  La région Bourgogne-Franche-Comté compte **7 500** clubs en 2021.
 
-**11e** région de France en nombre de clubs, **6e** en clubs par habitant.
+-  La moitié de ces clubs sont affiliés à une fédération unisport olympique. Parmi eux, **1 sur 6** sont des clubs de foot.
+
+
+-  **6e** région en nombre de clubs par habitants, **11e** région de France en nombre de clubs 
 
 
 ### Clubs par fédérations
@@ -204,7 +207,9 @@ tab %>%
 ```
 ***
 
-**La moitié des clubs sont affiliés à une fédération unisport olympique.**
+-  La moitié des clubs sont affiliés à une fédération unisport olympique.
+
+-  Les clubs sont de plus petite taille qu'au niveau national (**66** licences par club en moyenne)
 
 ### Répartitions régionales
 
@@ -282,7 +287,7 @@ tab %>%
 ```
 ***
 
-**Des clubs de grande taille en football, handball, golf, gymnastique ou encore en natation.**
+-  Des clubs de grande taille en football, handball, golf, gymnastique ou encore en natation.
 
 ### Détail unisport non olympique par région
 
@@ -301,7 +306,7 @@ tab %>%
 ```
 ***
 
-**Des clubs de plus petite taille pour les fédérations unisport non olympiques.**
+-  Des clubs de plus petite taille pour les fédérations unisport non olympiques.
 
 ### Détail multisport par région
 
@@ -322,7 +327,7 @@ tab %>%
 ```
 ***
 
-**Une part importante du sport scolaire dans les fédérations multisports.**
+-  Une part importante du sport scolaire dans les fédérations multisports.
 
 ### Poids des fédérations 
 ```{r}
@@ -362,7 +367,7 @@ rowheight = 550)
 ```
 ***
 
-Un clic sur un type de fédération permet d'en obtenir le détail
+*Un clic sur un type de fédération permet d'en obtenir le détail*
 
 
 # ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
@@ -425,9 +430,7 @@ rowheight = 550)
 ```
 ***
 
-La Nièvre et le Jura comptent plus de **30 clubs sportifs** pour 10 000 habitants. Les  clubs sont plus petits dans la Nièvre et dans l'Yonne.
-
-**La Nièvre et le Jura fortement dotées en clubs par habitant.**
+-  La Nièvre et le Jura comptent plus de **30 clubs sportifs** pour 10 000 habitants. 
 
 ### Détail départemental par type de fédération
 
@@ -462,7 +465,7 @@ tab %>%
 ```
 ***
 
-**Des clubs plus petits dans le Nièvre et dans l'Yonne.**
+-  Des clubs plus petits dans la Nièvre et dans l'Yonne.
 
 ### Répartitions départementales
 
@@ -567,7 +570,7 @@ tab %>%
 ```
 ***
 
-**Des clubs de football nombreux et de grande taille : près de 3x fois plus de licenciés par club qu'en équitation, 2x plus qu'au tennis. (Importance des sections jeunes ?)**
+-  Des clubs de football nombreux et de grande taille : près de 3x fois plus de licenciés par club qu'en équitation, 2x plus qu'au tennis.
 
 ### Détail unisport non olympique par département
 
@@ -585,7 +588,7 @@ tab %>%
 ```
 ***
 
-**Les clubs de fédérations unisport non olympiques de très petite taille dans la région.**
+-  Les clubs de fédérations unisport non olympiques de très petite taille dans la région.
 
 ### Détail multisport par département
 
@@ -634,8 +637,12 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
 
-### Carte ECPI taux de clubs pour 10 000 habitants {data-height="800"}
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
+
+
+### Carte ECPI taux de clubs pour 10 000 habitants 
 
 ```{r}
  tab <- 
@@ -655,8 +662,11 @@ leaflet(epcicarto) %>%
   contour_depbfc() 
 
 ```
+***
 
-### Carte ECPI licences et clubs {data-height="800"}
+> Cette carte montre le nombre de clubs par territoire et le taux de clubs rapporté à la population.
+
+### Carte ECPI taux de licences et nombre de clubs 
 
 ```{r}
 carto2()
@@ -664,7 +674,7 @@ carto2()
 ```
 ***
 
-**Nombre de clubs et taux de pénétration sportive**
+> Cette carte montre le nombre de clubs par territoire et le taux de pénétration sportive, c'est à dire le niveau de pratique sportive de la population des territoires.
 
 # ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
 
@@ -695,8 +705,11 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
+***
 
-### Carte BV2022 taux de clubs pour 10 000 habitants {data-height="800"}
+*Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
+
+### Carte BV2022 taux de clubs pour 10 000 habitants 
 
 ```{r}
 tab <- 
@@ -716,8 +729,11 @@ leaflet(bvcarto) %>%
   contour_depbfc() 
 
 ```
+***
 
-### Carte BV2022 licences et clubs {data-height="800"}
+> Cette carte montre le nombre de clubs par territoire et le taux de clubs rapporté à la population.
+
+### Carte BV2022 taux de licences et nombre de clubs 
 
 
 ```{r}
@@ -725,7 +741,7 @@ carto2()
 ```
 ***
 
-**Nombre de clubs et taux de pénétration sportive**
+> Cette carte montre le nombre de clubs par territoire et le taux de pénétration sportive, c'est à dire le niveau de pratique sportive de la population des territoires.
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 

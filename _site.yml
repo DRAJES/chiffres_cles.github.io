@@ -53,7 +53,7 @@ navbar:
         - text: "équipements sportifs"
           href: 5.5_RES.html
         - text: "Jeux Olympiques"
-          href: 5.5_JO.html
+          href: 5.6_JO.html
           
   right:
     - icon: fa-question fa-lg

@@ -71,7 +71,9 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
 ```
 ***
 
-Territoires et communes labellisés Terres de Jeux et Centres de préparation aux Jeux Olympiques (possibilité de superposer les deux)
+> Territoires et communes labellisés Terres de Jeux et Centres de préparation aux Jeux Olympiques
+
+*Possibilité de superposer les deux*
 
 
 # Cartes statiques {.storyboard}
@@ -82,7 +84,7 @@ knitr::include_graphics("images/JO_tdjbfc.jpg")
 ```
 ***
 
-Traitements DRAJES BFC (voir *En savoir +*)
+> Traitements DRAJES BFC (voir *En savoir +*)
 
 ### Centres de préparation aux Jeux
 ```{r, out.width = "800px"}
@@ -90,15 +92,15 @@ knitr::include_graphics("images/JO_cpjbfc.jpg")
 ```
 ***
 
-Traitements DRAJES BFC (voir *En savoir +*)
+> Traitements DRAJES BFC (voir *En savoir +*)
 
-### établissements labellisés générations 2024
+### établissements labellisés génération 2024
 ```{r, out.width = "800px"}
 knitr::include_graphics("images/JO_gene2024bfc.jpg")
 ```
 ***
 
-Traitements DRAJES BFC (voir *En savoir +*)
+> Traitements DRAJES BFC (voir *En savoir +*)
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
