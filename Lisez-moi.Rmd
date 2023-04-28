@@ -1,7 +1,7 @@
 ---
 title: "Lisez-moi" 
 author: "PSLèbre"
-date: "30/03/2022"
+date: "28/04/2023"
 output: html_document
 ---
 
@@ -19,7 +19,7 @@ Les thématiques sont abordées sous l'angle territorial et proposent, le plus s
 
 ## Fonctionnement
 
-Le bandeau supérieur permet des pages de choisir l'échelon territorial (région, département, EPCI et bassins de vie), et, selon les sujets, des pages supplémentaires. On y trouve également une rubrique « En savoir +» qui pointe vers d'autres sites externes et à droite se trouve un renvoi à « Accueil » qui vous permettra de naviguer dans les différents thèmes.
+Le bandeau supérieur des pages permet de choisir l'échelon territorial (région, département, EPCI et bassins de vie), et, selon les sujets, des pages supplémentaires. On y trouve également une rubrique « En savoir +» qui pointe vers d'autres sites externes et à droite se trouve un renvoi à « Accueil » qui vous permettra de naviguer dans les différents thèmes.
 
 Dans chaque page, un système de diapositives permet de naviguer dans les données et d'en trouver un rapide commentaire : tableaux de données, graphiques de comparaisons et cartes. Les cartes sont dynamiques et cliquables, la plupart des graphiques également. Certains tableaux sont filtrables et exportables en csv.
 
