@@ -625,7 +625,7 @@ leaflet(carte) %>%
 
 >  Ne pas empiler les couches afin de conserver une vue correcte
 
-# Analyse des territoires {data-orientation="columns" data-icon="fa-signal"}
+# Analyse des territoires {data-orientation="columns" data-icon="fa-signal" vertical_layout="scroll"}
 
 ## Column {data-width="300" align="left"}
 
@@ -660,7 +660,7 @@ Pour une vision plus complète de tous ces aspects, on pourra se reporter aux tr
 
 ## Column {data-width="800" align="left"}
 
-### Modèle 
+### Modèle {data-height=400}
 
 Le modèle retenu est un modèle non linéaire calculé dans R grâce aux modèles additifs généralisés avec estimation de lissage intégrée.
 
@@ -671,11 +671,11 @@ Le modèle a été lissé selon un spline de régression cubique et une précisi
     library (mgcv)
     gam ( equipements ~ s(population, bs="cs",k=40), data )
 
-### Représentation {height=800px}
+### Représentation {data-height=800}
 
 > schématisation
 
-[![](images/GAM.PNG) </br>\
+[![](images/GAM.png){height=500px} </br>\
 Analyse de la dotation des territoires](https://pierre-stephanelebre.shinyapps.io/ANS_carence/)
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}

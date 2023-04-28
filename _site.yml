@@ -4,7 +4,7 @@ navbar:
   title: "Données JES"
   type: inverse
   left:
-    - text: "Home"
+    - text: "Accueil"
       icon: fa-home
       href: index.html
     - text: "A propos"

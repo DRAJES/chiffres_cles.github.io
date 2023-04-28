@@ -82,6 +82,7 @@ leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>%
 ```{r, out.width = "800px"}
 knitr::include_graphics("images/JO_tdjbfc.jpg")
 ```
+
 ***
 
 > Traitements DRAJES BFC (voir *En savoir +*)
@@ -90,6 +91,7 @@ knitr::include_graphics("images/JO_tdjbfc.jpg")
 ```{r, out.width = "800px"}
 knitr::include_graphics("images/JO_cpjbfc.jpg")
 ```
+
 ***
 
 > Traitements DRAJES BFC (voir *En savoir +*)
@@ -98,6 +100,7 @@ knitr::include_graphics("images/JO_cpjbfc.jpg")
 ```{r, out.width = "800px"}
 knitr::include_graphics("images/JO_gene2024bfc.jpg")
 ```
+
 ***
 
 > Traitements DRAJES BFC (voir *En savoir +*)
