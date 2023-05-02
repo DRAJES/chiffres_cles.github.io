@@ -12,8 +12,7 @@ output:
     theme: simplex
 ---
 
- 
-```{r} 
+```{r}
 
 #défintion des variables des tableaux
 demo <- function(.tbl,geo) {.tbl %>%
@@ -79,7 +78,7 @@ carto <- function(.map) {
 
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_s.svg) Régions {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons régionales
 
@@ -90,10 +89,12 @@ tab <- region_tab %>%
 tab %>%  
   credits()
 ```
-***
--  La région Bourgogne-Franche-Comté compte  **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ") `** jeunes de 15 à 29 ans au 1er janvier 2019 .
 
--  Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ") `)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO) `.
+------------------------------------------------------------------------
+
+-   La région Bourgogne-Franche-Comté compte **`r prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark = " ")`** jeunes de 15 à 29 ans au 1er janvier 2019 .
+
+-   Le nombre de jeunes diminue entre 2013 et 2019 (**`r prettyNum(round((region$p1529[3]-region$p1529_ante[3])/100,0)*100,big.mark = " ")`)**. C'est la **`r rank(region$evol1529)[3]`e** baisse la plus forte de France derrière `r region %>% filter(evol1529==min(evol1529)) %>% select(LIBGEO)`.
 
 ### Carte régionale
 
@@ -109,11 +110,20 @@ leaflet(regwgs) %>%
   contour_bfc() 
 ```
 
+### Baromètre jeunesse
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
+[![](img/barometre_jeune.PNG){height="500px"} </br>\
+Baromètre Jeunesse Injep](https://injep.fr/wp-content/uploads/2022/07/2_Fiche_Jeunesse_Bourg_Fr_Comte_2021.pdf)
 
-### Comparaisons départementales 
+------------------------------------------------------------------------
 
+Le baromètre DJEPVA sur la jeunesse est une enquête nationale réalisée en ligne auprès de 4600 jeunes de métropole et d'outre-mer âgés de 18 à 30 ans, et sélectionnés selon la méthode des quotas. Ce baromètre annuel vise à améliorer la connaissance sur les conditions et modes de vie des jeunes ainsi que sur leurs aspirations. Plusieurs thèmes ont été abordés dans cette 6e édition du Baromètre jeunesse : les aspirations des jeunes, l'accès aux droits sociaux, la mobilité quotidienne, l'engagement citoyen, les projets d'avenir et l'emploi, et la mobilité et l'expérience internationale.
+
+L'exploitation territoriale des résultats permet d'éditer en complément des fiches régionales qui présentent les indicateurs clés et les spécificités des régions.
+
+# ![](images/BFC_dep_s.svg) Départements {.storyboard data-orientation="rows" height="30"}
+
+### Comparaisons départementales
 
 ```{r,echo=F}
 tab <- dep27_tab[-10,-1] %>%  
@@ -123,10 +133,12 @@ tab <- dep27_tab[-10,-1] %>%
 tab %>%  
   credits()
 ```
-***
--  Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail. 
 
--  Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
+------------------------------------------------------------------------
+
+-   Tous les départements de Bourgogne-Franche-Comté perdent des jeunes de 15 à 29 ans entre 2013 et 2019. Les jeunes quittent la région pour les études ou pour trouver un travail.
+
+-   Seule la Côte d'Or progresse faiblement sur les 16/25 ans, ce qui est mieux qu'au niveau national où le vieillissement de population se fait sentir lui aussi.
 
 ### Carte départementale
 
@@ -142,14 +154,15 @@ leaflet(depwgs) %>%
   carto() %>%
  contour_depbfc(zoom= 6)
 ```
-***
 
--  La baisse de population relative pour les jeunes de la Nièvre est la plus forte de France.
+------------------------------------------------------------------------
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
+-   La baisse de population relative pour les jeunes de la Nièvre est la plus forte de France.
+
+# ![](images/BFC_EPCI_s.svg) EPCI {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons établissements publics de coopération intercommunale
-  
+
 ```{r,echo=F}
 tab <- epci27_tab %>%
   demo(geo=EPCI) 
@@ -158,8 +171,8 @@ tab %>%
   credits()
 ```
 
-
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% filter(!EPCI %in% c('BFC','METRO')) %>% select(-" ")
 
@@ -170,13 +183,13 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
-***
+
+------------------------------------------------------------------------
 
 *Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
-
 ### Carte ECPI
-  
+
 ```{r,echo=F}
 
 carte <- epcicarto
@@ -189,19 +202,20 @@ leaflet(carte) %>%
   contour_depbfc()
 ```
 
-# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_BV_s.svg) Bassins de vie {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons bassins de vie 2022
+
 ```{r,echo=F}
 tab <- bv27_tab %>%
   demo(geo=BV2022)
   
 tab %>%  
   credits()
-```  
-
+```
 
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO')) %>% select(-" ")
 
@@ -212,7 +226,8 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
-***
+
+------------------------------------------------------------------------
 
 *Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
@@ -229,14 +244,11 @@ leaflet(carte) %>%
   contour_depbfc()
 ```
 
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+**Sources :**
 
-**Sources :**  
+-   Insee, Recensement de la population 2018
 
-* Insee, Recensement de la population 2018
-
-  + https://www.insee.fr/fr/information/5369871
-  + https://www.insee.fr/fr/information/2409289
-
-
+    -   <https://www.insee.fr/fr/information/5369871>
+    -   <https://www.insee.fr/fr/information/2409289>
