@@ -1,4 +1,11 @@
-library(rmarkdown)
+#renv::snapshot()
+
+if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+
+renv::restore()
+
+#library(rmarkdown)
+
 rmarkdown::clean_site(encoding = 'UTF-8')
 rmarkdown::render_site(encoding = 'UTF-8')
 

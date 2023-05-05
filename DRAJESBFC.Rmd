@@ -11,48 +11,6 @@ editor_options:
     wrap: 72
 ---
 
-```{r, include=F ,echo=FALSE, cache=F}
-library(flexdashboard)
-library(gghighlight)
-library(highcharter)
-library(janitor)
-library(DT)
-library(formattable)
-library(rgdal)
-library(osrm)
-library(fontawesome)
-library(leafpop)
-library(leaflet.providers) 
-library(readxl)
-library(leaflet.minicharts)
-library(leaflet)
-library(leaflet.extras2)
-source("C:/Users/plebre/Documents/projets R/DRAJES/librairies.R")
-
-
-depbfc <- c('21','25','39','58','70','71','89','90')
-
-thm <- hc_theme_merge(
-  hc_theme_gridlight(),
-  hc_theme(
-#    colors = c("#1a6ecc", "#434348", "#90ed7d"),
-    chart = list(
-      backgroundColor = "transparent",
-      style = list(fontFamily = "Source Sans Pro")
-    ),
-    xAxis = list(
-      gridLineWidth = 1
-    )
-  )
-)
-
-# Option de chunk
-knitr::opts_chunk$set(
- fig.width = 6,
- fig.asp = 0.8,
- out.width = "80%"
-)
-```
 
 La Délégation Régionale Académique à la Jeunesse, à l'Engagement et aux
 Sports (**DRAJES**) anime et coordonne les politiques publiques **du
