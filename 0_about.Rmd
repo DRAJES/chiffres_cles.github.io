@@ -48,28 +48,14 @@ flexdashboard::flex_dashboard(self_contained = F)
 
 depbfc <- c('21','25','39','58','70','71','89','90')
 
-thm <- hc_theme_merge(
-  hc_theme_gridlight( yAxis = list(
-        title = list(
-          style = list(
-            textTransform = "normal") ) ) ),
-  hc_theme(
-#    colors = c("#1a6ecc", "#434348", "#90ed7d"),
-    chart = list(
-      backgroundColor = "transparent",
-      style = list(fontFamily = "Source Sans Pro")
-    ),
-    xAxis = list(
-      gridLineWidth = 1
-    )
-  ) 
-)
+
 
 load("data/demo/basecom.RData")
 load("data/demo/cartes.RData")
 
-source("R/data/fonctions_carto.R")
-source("R/data/fonctions_merge.R")
+source("R/fonctions/theme.R")
+source("R/fonctions/fonctions_carto.R")
+source("R/fonctions/fonctions_merge.R")
 
 # Option de chunk
 knitr::opts_chunk$set(

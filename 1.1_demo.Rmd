@@ -119,15 +119,6 @@ tab %>%
   cc_kable(aligne = "clrrrccll") %>%
   credits()
 
-#tab %>%          passage en datatable si besoin de tri/filtre
-#  formattable() %>%
-#  as.datatable(escape = FALSE,
-#               extensions = 'Buttons',
-#               options = list(
-#                 dom = 'Bfrtip',
-#                 buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-#                 scrollX = FALSE),
-#               rownames = FALSE)
   
 ```
 ***
