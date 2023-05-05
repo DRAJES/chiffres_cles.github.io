@@ -1,8 +1,8 @@
 #renv::snapshot()
+ #renv sert à installer les packages lors du déployment github actions
+if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv") 
 
-if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-
-renv::restore()
+renv::restore() #on restaure les packages qu'on va utiliser pour construire (voir gh-pages.yml)
 
 #library(rmarkdown)
 
