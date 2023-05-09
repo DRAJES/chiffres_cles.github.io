@@ -79,11 +79,16 @@ RNAcarto <- function(geo=REG){
            Economie,Environnement,Autres,NR)
 }
 
-pal <- colorBin("YlOrBr", domain =0:10 ,
-                bins= c(0, 3, 3.5, 4, 4.5, 5,5.5,6,10) )
-coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" , "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")
+
 
 carte_asso <- function(){
+  
+pal <- colorBin("YlOrBr", domain =100*carte$total/carte$pop ,
+                bins= unique(classIntervals(100*carte$total/carte$pop,
+                                     n=8,style = "jenks")$brks) )
+
+coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" , "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")  
+  
 cartasso <-   leaflet(carte) %>%  
     addPolygons(data=carte,group  = "régions",
                 color = "#2F4F4F", weight = 2, smoothFactor = 2,

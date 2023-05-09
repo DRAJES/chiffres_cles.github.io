@@ -33,6 +33,10 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
+        #on a besoin d'installer les library geos sur la machine avant
+      - name: install geos
+        run: |        
+          sudo apt install libgeos-dev   
       - name: Build 
         run: |
           Rscript 'dev/render_site.R'

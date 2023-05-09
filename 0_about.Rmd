@@ -6,6 +6,8 @@ output: html_document
 ---
 ```{r, setup, include=FALSE ,eval=TRUE, cache=FALSE,echo=FALSE}
 #library(BAMMtools)
+library(sp)
+library(sf)
 library(htmltools)
 library(htmlwidgets)
 library(paletteer)
@@ -29,6 +31,7 @@ library(rgdal)
 library(osrm)
 library(fontawesome)
 library(geosphere)
+library(classInt)
 library(leafpop)
 library(leaflet.providers) 
 library(downloadthis)

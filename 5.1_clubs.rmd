@@ -70,14 +70,13 @@ tab_club <- function(.tbl,geo){
  }
 
 #cartographie
-pal <- colorBin("YlOrBr", domain =0:100 ,
-                 bins= c(0, 15, 20, 25, 30,35, 100) )
 
-pallic <- colorBin("RdYlBu", domain =0:100 , reverse = TRUE,
-                    bins= c(0, 15,17.5, 20, 22.5, 25, 30, 100) )
 
 carto <- function(.map,var=NULL) {
-
+  
+pal <- colorBin("YlOrBr", domain =10000*carte$`Total clubs`/carte$Population ,
+                 bins= unique(classIntervals(10000*carte$`Total clubs`/carte$Population,
+                                      n=6,style = "jenks")$brks) )
   .map %>%
     addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6,
                 fill=F, smoothFactor = 2 ) %>%
@@ -95,13 +94,19 @@ carto <- function(.map,var=NULL) {
                                     select(-1,-all_of(var)) %>% 
                                     mutate(`Taux de clubs`=round(10000*`Total clubs`/Population,1) ),
                                   feature.id=F,row.numbers = F)) %>%
-    addLegend( pal = pal , values = carte$`Taux de clubs`,
+    addLegend( pal = pal , values = 10000*carte$`Total clubs`/carte$Population,
                position = "bottomright", 
                title = "taux de clubs sportifs <br> pour 10 000 habitants" ) }
 
 
 carto2 <- function(){
-leaflet(carte) %>%  
+
+pallic <- colorBin("RdYlBu", domain =carte$`Taux de licences` , 
+                   bins= unique(classIntervals(carte$`Taux de licences`,
+                                        n=7,style = "jenks")$brks) ,
+                   reverse = TRUE)
+  
+  leaflet(carte) %>%  
   addPolygons( color = "#2F4F4F" , weight = 2,opacity = 0.6,
               fill = F ) %>%
     contour_depbfc() %>%
@@ -253,7 +258,7 @@ carte <- merge(carte,tab %>% rename(Région=REG),
                by="Région")
 
 
-leaflet(regwgs) %>% 
+leaflet(carte) %>% 
   carto() %>%
   contour_bfc() 
 ```
@@ -538,7 +543,7 @@ carte@data <- carte@data %>% left_join(tab %>%
                                          select(1,3:5,7:8),
                                        by=c("Département"="DEP")) 
 
-leaflet(depwgs) %>% 
+leaflet(carte) %>% 
   carto() %>%
   contour_bfc() 
 
@@ -657,7 +662,7 @@ carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                                     `Taux de licences` = txlic) ,
                by="EPCI")
 
-leaflet(epcicarto) %>% 
+leaflet(carte) %>% 
   carto(var = c("Taux de clubs", "Taux de licences","liclub") ) %>%
   contour_depbfc() 
 
@@ -724,7 +729,7 @@ carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                                     `Taux de licences` = txlic),
                by="BV2022")
 
-leaflet(bvcarto) %>% 
+leaflet(carte) %>% 
   carto(var = c("Taux de clubs", "Taux de licences","liclub") ) %>%
   contour_depbfc() 
 

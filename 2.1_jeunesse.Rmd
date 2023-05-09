@@ -39,22 +39,25 @@ credits <- function(.tbl){
            number = "Nombre de -20 ans / nombre de + 60 ans",
            footnote_as_chunk = T)  }
 
+var <- c("pop","p1529","evol1529","prop1529") #définition des variables de la carte
 
 #définition des ronds proportionnels et choroplèthe
 
-pal <- colorBin("YlOrBr", domain =0:100 ,
-                bins= c(0, 12.5, 15, 17.5, 20,22.5, 100) )
+carto <- function(.map) {
+  
+pal <- colorBin("YlOrBr", domain =carte$prop1529 ,
+                bins= classIntervals(carte$prop1529,
+                                     n=6,style="pretty")$brks )
+
 palevo <- colorBin("RdYlBu", domain =-10:10 ,
                  bins=c(-Inf,-2, -1, -0.5,0,0.5, 1 ,2, Inf), reverse = T)
 
-var <- c("pop","p1529","evol1529","prop1529") #définition des variables de la carte
 
-carto <- function(.map) {
   .map %>%
      addPolygons(fillColor = ~pal(prop1529), fillOpacity = 0.6, 
               color = "#2F4F4F",weight = 2,opacity = 0.6, 
               smoothFactor = 2 ) %>% 
-    addLegend(pal = pal,values = regwgs$prop1529,
+    addLegend(pal = pal,values = carte$prop1529,
               opacity = 0.7,
               title = "taux de 15/29 ans",
               labFormat = labelFormat(suffix =  " %"),
@@ -70,7 +73,7 @@ carto <- function(.map) {
              popup = popupTable(carte@data %>% 
                                    select(-var) ,
                                 feature.id=F,row.numbers = F) ) %>%
-    addLegend(pal = palevo, values =  regwgs$evol1529, 
+    addLegend(pal = palevo, values =  carte$evol1529, 
               opacity = 0.7, 
               title = "évolution des 15/29 ans", 
               position = "bottomright") 
@@ -105,7 +108,7 @@ carte <- regwgs
 carte@data <- carte@data %>% select(Région=REG,var)
 carte <- merge(carte,tab,by="Région")
 
-leaflet(regwgs) %>%  
+leaflet(carte) %>%  
   carto() %>%
   contour_bfc() 
 ```
@@ -150,7 +153,7 @@ carte <- merge(carte,dep_tab[-10,-1] %>%
                by="Département")
 
 
-leaflet(depwgs) %>%  
+leaflet(carte) %>%  
   carto() %>%
  contour_depbfc(zoom= 6)
 ```

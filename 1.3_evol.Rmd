@@ -39,16 +39,17 @@ credits <- function(.tbl){
            general_title = "Source : ", 
            footnote_as_chunk = T) }
 
+var <- c("pop","evol") #définition des variables de la carte  
+
 #définition des ronds proportionnels et choroplèthe
 
-pal <- colorBin("RdYlBu", domain =-5:5 ,
-                bins=c(-Inf, -1, -0.5,0,0.5, 1 , Inf), 
-                reverse = T)
-
-var <- c("pop","evol") #définition des variables de la carte
-
-
 carto <- function(.map) {
+  
+pal <- colorBin("RdYlGn", domain =-5:5 ,
+                bins=c(-Inf,-1.5, -1, -0.5,0,0.5, 1 ,1.5, Inf), 
+                reverse = FALSE)
+
+  
   .map %>%
     addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
                 fill =F, smoothFactor = 2 ) %>%
@@ -103,7 +104,7 @@ carte <- regwgs
 carte@data <- carte@data %>% select(Région=REG,var)
 carte <- merge(carte,tab,by="Région")
 
-leaflet(regwgs) %>%  
+leaflet(carte) %>%  
   carto() %>%
   contour_bfc() 
   
@@ -143,7 +144,7 @@ carte <- merge(carte,dep_tab[-10,-1] %>%
                            by=c("Département" = "DEP") ),
                by="Département")
 
-leaflet(depwgs) %>%  
+leaflet(carte) %>%  
   carto() %>%
   contour_bfc() 
 ```

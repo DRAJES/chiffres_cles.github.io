@@ -25,8 +25,8 @@ demo <- function(.tbl,geo) {.tbl %>%
     dplyr::select({{geo}},Nom,Population,
                   Densité,rang,`Taux femmes`,
                   partZRR,partQPV,comm) %>%
-    dplyr::rename( "partZRR<sup>1</sup>" = partZRR ,
-                   "partQPV<sup>2</sup>" = partQPV,
+    dplyr::rename( "Population en ZRR<sup>1</sup>" = partZRR ,
+                   "Population en QPV<sup>2</sup>" = partQPV,
                    "Nombre de communes" = comm)  %>%
     dplyr::relocate("Nombre de communes",.after="Population") 
 
@@ -86,11 +86,13 @@ carto_ZRR <- function(.map){
 }
 
 #définition de la couche densité    
-pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c",
-                     "#e98e8b","#bfef94","#a0d27b","#006a49"),
-                   domain = NULL)
+
 
 densite <- function(.map){
+  
+pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c",
+                     "#e98e8b","#bfef94","#a0d27b","#006a49"),
+                   domain = NULL)  
   .map %>%
       addPolygons(data=densitewgs,
               fillColor = ~pal(Typdgrd), fillOpacity = 0.5,

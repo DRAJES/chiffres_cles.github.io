@@ -64,23 +64,27 @@ hstructure <- function(.tbl,geo) {
     hc_exporting(enabled = TRUE, filename = "custom-file-name")
 }
 
-#définition des ronds proportionnels et choroplèthe
-pal <- colorBin("Purples", domain =0:200 ,
-                bins=c(0, 50, 75, 100 , 125, Inf), 
-                reverse = T)
-
-pal2 <- colorBin("YlOrBr", domain =0:100 ,
-                 bins= c(0, 12.5, 15, 17.5, 20, 22.5, 100) )
-
 var <- c("pop","ind_jeun","p1529") #définition des variables de la carte
 
+#définition des ronds proportionnels et choroplèthe
+
 carto <- function(.map) {
+  
+pal <- colorBin("Purples", domain =carte$ind_jeun ,
+                bins=classIntervals(carte$ind_jeun,n=5,style="pretty")$brks, 
+                reverse = T)
+
+pal2 <- colorBin("YlOrBr", domain =100*carte$p1529/carte$pop ,
+                 bins= classIntervals(100*carte$p1529/carte$pop,
+                                      n=6,style="pretty")$brks )
+  
+
   .map %>%
   addPolygons(data = carte,
               fillColor = ~pal(ind_jeun), fillOpacity = 0.7,
               color = "#2F4F4F", weight = 2,opacity = 0.6, 
               smoothFactor = 2 ) %>%
-  addLegend(pal = pal, values =  regwgs$ind_jeun, opacity = 0.7, 
+  addLegend(pal = pal, values =  carte$ind_jeun, opacity = 0.7, 
             title = "indice de jeunesse", position = "bottomright") %>%
   
   addCircles(centroid(carte)[,1],centroid(carte)[,2],
@@ -93,7 +97,7 @@ carto <- function(.map) {
              popup = popupTable(carte@data %>%
                                   select(-var),
                                 feature.id=F,row.numbers = F) ) %>%
-  addLegend(pal = pal2,values = regwgs$prop1529,
+  addLegend(pal = pal2,values = 100*carte$p1529/carte$pop,
             opacity = 0.7,
             title = "taux de 15/29 ans",
             labFormat = labelFormat(suffix =  " %"),

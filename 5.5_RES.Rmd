@@ -135,18 +135,13 @@ res_infra <- function(geo) {
 }
 
 #carto
- paleq <- colorBin("YlOrBr", domain =0:100 ,bins= c(0, 20, 30, 40, 50, 60, 100) )
- palstr <- colorBin("YlOrBr", domain =0:25 ,bins= c(0, 5, 10, 15, 20, 25) )
- paljx <- colorBin("YlOrBr", domain =0:20 ,bins= c(0, 4, 8, 12, 16, 20) )
- palpro <- colorBin("YlOrBr", domain =0:50 ,bins= c(0, 10, 20, 30, 40, 50) )
- palb <- colorBin("YlOrBr", domain =0:10 ,bins= c(0, 2, 4, 6, 8, 10) )
 
+carto <- function(.map,x=1) {
+  
+groupes <- c("taux équipements","taux structurant","taux grands jeux","taux proximité", "taux bassins")
 
 coul <- c("#4876FF", "#008B00", "#32CD32","#CD69C9", "#CD96CD", "#FFB5C5" ,
                    "#00BFFF","#FF7F50","#ADFF2F","#C0C0C0","#DCDCDC")
- 
-carto <- function(.map,x=1) {
-groupes <- c("taux équipements","taux structurant","taux grands jeux","taux proximité", "taux bassins")
 
 popup <- carte@data %>% select(Libellé, Population = pop,
                                `Nombre d'équipements`= équipements,
@@ -159,7 +154,17 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                                `Taux de tennis couverts`=txtennis_couv,
                                `Taux d'équipements de proximité`=txproxi)
                 
-  
+paleq <- colorBin("YlOrBr", domain =carte$txequi ,
+                  bins= unique(classIntervals(carte$txequi,n=6,style = "jenks")$brks) )
+palstr <- colorBin("YlOrBr", domain =carte$`taux structurant` ,
+                  bins= unique(classIntervals(carte$`taux structurant`,n=6,style = "jenks")$brks) )
+paljx <- colorBin("YlOrBr", domain =carte$`taux grands jeux` ,
+                  bins= unique(classIntervals(carte$`taux grands jeux`,n=6,style = "jenks")$brks) )
+palpro <- colorBin("YlOrBr", domain =carte$`taux proximité` ,
+                  bins= unique(classIntervals(carte$`taux proximité`,n=6,style = "jenks")$brks) )
+palb <- colorBin("YlOrBr", domain =carte$`taux bassins` ,
+                  bins= unique(classIntervals(carte$`taux bassins`,n=6,style = "jenks")$brks) )
+
 .map %>%
   addPolygons(color = "#2F4F4F",  weight = 2, opacity = 0.7, 
               fill = FALSE, smoothFactor = 2) %>%
@@ -168,7 +173,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
               popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[1]) %>%
     addLegend( pal = paleq, values = ~txequi,   
-               "bottomright",
+               "bottomleft",
                title = "taux d'équipements<br>pour 10 000 habitants",
                group = groupes[1]) %>%
     
@@ -177,7 +182,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[2]) %>%
     addLegend( pal = palstr, values = ~`taux structurant`,   
-               "bottomright",
+               "bottomleft",
                title = "taux d'équipements structurants<br>pour 10 000 habitants",
                group = groupes[2]) %>%
     
@@ -186,7 +191,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[3]) %>%
     addLegend( pal = paljx, values = ~`taux grands jeux`,   
-               "bottomright",
+               "bottomleft",
                title = "taux de terrains de grands jeux<br>pour 10 000 habitants",
                group = groupes[3]) %>% 
     
@@ -195,7 +200,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                 popup = popupTable(popup, feature.id=F,row.numbers = F),
               group = groupes[4]) %>%
     addLegend( pal = palpro, values = ~`taux proximité`,   
-               "bottomright",
+               "bottomleft",
                title = "taux d'équipements de proximité<br>pour 10 000 habitants",
                group = groupes[4]) %>% 
     
@@ -204,7 +209,7 @@ popup <- carte@data %>% select(Libellé, Population = pop,
                popup = popupTable(popup, feature.id=F,row.numbers = F),
               group =  groupes[5]) %>%
     addLegend( pal = palb, values = ~`taux bassins`,   
-               "bottomright",
+               "bottomleft",
                title = "taux de bassins<br>pour 10 000 habitants",
                group =  groupes[5]) %>% 
     

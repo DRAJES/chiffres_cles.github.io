@@ -69,11 +69,14 @@ tab_lic <- function(.tbl,geo){
 
 
 #cartographie
-pallic <- colorBin("RdYlBu", domain =0:100 , reverse = TRUE,
-                   bins= c(0, 15,17.5, 20, 22.5, 25, 30, 100) )
 
 carto <- function(.map,var=NULL) {
 
+pallic <- colorBin("RdYlBu", domain =carte$`Taux de licences (%)` , 
+                   bins= unique(classIntervals(carte$`Taux de licences (%)`,
+                                        n=7,style = "jenks")$brks) ,
+                   reverse = TRUE)  
+  
   .map %>%
     addPolygons(color = "#2F4F4F", weight=2, opacity = 0.6,
                 fill=F, smoothFactor = 2 ) %>%
@@ -90,7 +93,7 @@ carto <- function(.map,var=NULL) {
                                     relocate(Libellé,.before = Population) %>%
                                     select(-1,-var),
                                   feature.id=F,row.numbers = F)) %>%
-    addLegend( pal = pallic , values = carte$`Taux de licences`,
+    addLegend( pal = pallic , values = ~`Taux de licences (%)`,
                position = "bottomright", 
                title = "taux de pénétration sportive" ) }
 ```
@@ -253,7 +256,7 @@ carte <- merge(carte,tab %>% rename(Région=REG),
                by="Région")
 
 
-leaflet(regwgs) %>% 
+leaflet(carte) %>% 
   carto() %>%
   contour_bfc() 
 
@@ -617,7 +620,7 @@ carte <- merge(carte,tab %>%
                  relocate(c(Libellé,Population),.before = 1),
                by="Département")
 
-leaflet(depwgs) %>% 
+leaflet(carte) %>% 
   carto() %>%
   contour_bfc() 
 ```
@@ -756,7 +759,7 @@ carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                by="EPCI")
 carte@data <- carte@data %>% mutate(`Taux de licences (%)`=round(100*`Total licences`/Population,1))
   
-leaflet(epcicarto) %>% 
+leaflet(carte) %>% 
   carto(var = c("totales") ) %>%
   contour_depbfc() 
 ```
@@ -808,7 +811,7 @@ carte <- merge(carte,tab %>% rename(Libellé=LIBGEO,
                by="BV2022")
 carte@data <- carte@data %>% mutate(`Taux de licences (%)`=round(100*`Total licences`/Population,1))
   
-leaflet(bvcarto) %>% 
+leaflet(carte) %>% 
   carto(var = c("totales") ) %>%
   contour_depbfc() 
 ```
