@@ -32,9 +32,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: r-lib/actions/setup-r@v2    #install R      
+      - uses: r-lib/actions/setup-pandoc@v2   #install pandoc pour Rmd
+      - uses: r-lib/actions/setup-tinytex@v2    # latex au cas où...
       
-      - name: install geos    #on a besoin d'installer les library geos et rgdal units textshaping  sur la machine avant renv
-        run:  sudo apt-get install -y libgeos-dev libgdal-dev libudunits2-dev libharfbuzz-dev libfribidi-dev
+      - name: install geos    #on a besoin d'installer les library geos et rgdal units textshaping sur la machine avant renv
+        run:  sudo apt-get install -y libgeos-dev libgdal-dev libudunits2-dev libharfbuzz-dev libfribidi-dev 
 
       - uses: r-lib/actions/setup-renv@v2   #install renv
         
