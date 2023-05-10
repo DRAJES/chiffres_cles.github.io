@@ -38,9 +38,9 @@ jobs:
         uses: actions/configure-pages@v3
         
       - name: install geos    #on a besoin d'installer les library geos sur la machine avant
-        run: |        
-          sudo apt install libgeos-dev   
-      - name: Build 
+        run:  sudo apt-get install libgeos-dev   
+        
+      - name: Build     #install depuis R
         run: |
           Rscript 'dev/render_site.R'
 
