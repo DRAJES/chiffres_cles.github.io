@@ -3,7 +3,7 @@ name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
   # Événements sur lesquels il doit être déclenché
-  push:        # <- Déclenché lorsque l'on pousse du code...
+  push:           # <- Déclenché lorsque l'on pousse du code...
     branches: ["main"] # <- ... mais seulement sur la branche "master"
 
   # Allows you to run this workflow manually from the Actions tab
@@ -35,10 +35,10 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2   #install pandoc pour Rmd
       - uses: r-lib/actions/setup-tinytex@v2    # latex au cas où...
       
-      - name: install geos    #on a besoin d'installer les library geos et rgdal units textshaping sur la machine avant renv
+      - name: install librairies manquantes    #on a besoin d'installer les library geos et rgdal units textshaping sur la machine avant renv
         run:  sudo apt-get install -y libgeos-dev libgdal-dev libudunits2-dev libharfbuzz-dev libfribidi-dev 
 
-      - uses: r-lib/actions/setup-renv@v2   #install renv
+      - uses: r-lib/actions/setup-renv@v2   #install renv et packages
         
       - name: Setup Pages
         uses: actions/configure-pages@v3
