@@ -65,7 +65,7 @@ tab_sc <- function(.tbl){
 <div class = "col-md-6">
 <center>
 ```{r}
-flexdashboard::gauge(3100,min = 0,max=3500,label = "missions",
+flexdashboard::gauge(3100,min = 0,max=3500,label = "Missions",
       gaugeSectors(colors = "orange"))
 ```
 </center>
@@ -74,7 +74,7 @@ flexdashboard::gauge(3100,min = 0,max=3500,label = "missions",
 <div class = "col-md-6">
 <center>  
 ```{r}
-flexdashboard::gauge(3000,min = 0,max=3500,label = "volontaires",
+flexdashboard::gauge(3000,min = 0,max=3500,label = "Volontaires",
       gaugeSectors(colors = "aqua") )
 ```
 </center>
