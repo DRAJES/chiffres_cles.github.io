@@ -205,7 +205,9 @@ hw_grid(
     hchart("bar", 
            hcaes(x=Libellé,y=asso,group=objr),
            stacking = "normal",
-           showInlegend=T, pointWidth = 20)  %>%
+           showInlegend=T, pointWidth = 20)  %>%    
+    hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
   hc_add_theme(thm) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name"),
@@ -216,6 +218,8 @@ hw_grid(
            hcaes(x=Libellé,y=txasso,group=objr),
            stacking = "percent",
            showInlegend=T, pointWidth = 20)  %>%
+    hc_xAxis(title=list(text="Régions")) %>%
+    hc_yAxis(title=list(text="Part des associations")) %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
@@ -257,6 +261,7 @@ hw_grid(
     hchart("spline",
            hcaes(x=année,y=`nb associations`),
            marker = FALSE) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_caption(text = "<b>ATTENTION : Les associations d'Alsace-Moselle relèvent du droit local, indépendant de la loi de 1901, et ne sont pas enregistrées dans le RNA</b>"  ) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   
@@ -271,6 +276,7 @@ hw_grid(
          hcaes(x=année,y=`nb associations`,group=Libellé),
          stacking = "normal", 
          marker = FALSE) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   rowheight = 600 ) 
 #htmltools::browsable()
@@ -405,6 +411,8 @@ hw_grid(
            hcaes(x=Libellé,y=asso,group=objr),
            stacking = "normal",
            showInlegend=T, pointWidth = 20)  %>%
+    hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   tab %>%
@@ -412,6 +420,8 @@ hw_grid(
            hcaes(x=Libellé,y=txasso,group=objr),
            stacking = "percent",
            showInlegend=T, pointWidth = 20)  %>%
+    hc_xAxis(title=list(text="Départements")) %>%
+    hc_yAxis(title=list(text="Part des associations")) %>%
     hc_add_theme(thm) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
@@ -443,12 +453,14 @@ hw_grid(
            hcaes(x=année,y=`nb associations`,group=LIBGEO),
            # stacking = "normal", 
            marker = FALSE ) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
   tab %>%
     hchart("areaspline",
            hcaes(x=année,y=`nb associations`,group=LIBGEO),
            stacking = "normal", 
            marker = FALSE ) %>%
+    hc_yAxis(title=list(text="Nombre d'associations")) %>%
     hc_exporting(enabled = TRUE, filename = "custom-file-name"),
 
  rowheight = 600) 
