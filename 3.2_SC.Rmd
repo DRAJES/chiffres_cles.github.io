@@ -55,29 +55,35 @@ tab_sc <- function(.tbl){
 
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_s.svg) Régions {.storyboard data-orientation="rows" height="30"}
 
-### Définition du **Service civique** 
+### Définition du **Service civique**
 
-Créé par la loi du 10 mars 2010, le service civique est un engagement volontaire au service de l’intérêt général, parce que chaque individu a quelque chose à apporter à la collectivité. Il s’adresse aux jeunes de 16 à 25 ans, et jusqu’à 30 ans pour les jeunes en situation de handicap, et sans condition de diplôme.
-Les volontaires ne sont pas rémunérés puisque le service civique n’est pas un emploi. Ils sont indemnisés à hauteur de 580,55 € net par mois, dont 472,97 € sont pris en charge par l’État et 107,58 € par la structure d’accueil.
-Les missions  s’effectuent pendant 6 à 12 mois  et  sur une durée hebdomadaire de 24h à 48h, réparties sur 6 jours maximum. Elles peuvent avoir lieu  dans  des associations, des établissement publics, des services de l'Etat ou encore dans des collectivités territoriales.
+**Missions réalisées en Bourgogne-Franche-Comté en 2022 et volontaires originaires de la région**
 
-***
-
-**Missions réalisées en BFC en 2022**
-
+<div class = "row">
+<div class = "col-md-6">
+<center>
 ```{r}
 flexdashboard::gauge(3100,min = 0,max=3500,label = "missions",
       gaugeSectors(colors = "orange"))
 ```
+</center>
+</div>
 
-**Volontaires originaires de BFC en 2022**
-
+<div class = "col-md-6">
+<center>  
 ```{r}
 flexdashboard::gauge(3000,min = 0,max=3500,label = "volontaires",
       gaugeSectors(colors = "aqua") )
 ```
+</center>
+</div>
+</div>
+
+------------------------------------------------------------------------
+
+Créé par la loi du 10 mars 2010, le *service civique* est un engagement *volontaire* au service de l'intérêt général, parce que chaque individu a quelque chose à apporter à la collectivité. Il s'adresse aux jeunes de *16 à 25 ans*, et jusqu'à 30 ans pour les jeunes en situation de handicap, et sans condition de diplôme. Les volontaires ne sont pas rémunérés puisque le service civique n'est pas un emploi. Ils sont indemnisés à hauteur de 580,55 € net par mois, dont 472,97 € sont pris en charge par l'État et 107,58 € par la structure d'accueil. Les missions s'effectuent pendant 6 à 12 mois et sur une durée hebdomadaire de 24h à 48h, réparties sur 6 jours maximum. Elles peuvent avoir lieu dans des associations, des établissement publics, des services de l'Etat ou encore dans des collectivités territoriales.
 
 ### évolution annuelle des missions et volontaires
 
@@ -109,9 +115,10 @@ baseSC %>%
   hc_add_theme(thm) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
-***
 
--  Légèrement plus de missions que de volontaires dans la région.
+------------------------------------------------------------------------
+
+-   Légèrement plus de missions que de volontaires dans la région.
 
 ### Domaines de mission
 
@@ -130,9 +137,10 @@ baseSC %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
-***
 
--  Une majorité de missions dans l'éducation populaire et la solidarité. 
+------------------------------------------------------------------------
+
+-   Une majorité de missions dans l'éducation populaire et la solidarité.
 
 ### Origine de l'agrément
 
@@ -153,9 +161,10 @@ baseSC %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
-***
 
--  Une part prépondérante des agréments nationaux.
+------------------------------------------------------------------------
+
+-   Une part prépondérante des agréments nationaux.
 
 ### Répartition par âge
 
@@ -170,11 +179,12 @@ hchart( density( baseSC[baseSC$depvol %in% depbfc,]$age ) ,
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
-***
 
--  Un pic de volontaires entre 19 et 20 ans.
+------------------------------------------------------------------------
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
+-   Un pic de volontaires entre 19 et 20 ans.
+
+# ![](images/BFC_dep_s.svg) Départements {.storyboard data-orientation="rows" height="30"}
 
 ### évolutions départementales
 
@@ -199,10 +209,10 @@ baseSC %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 
 ```
-***
 
--  Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020, un rebond en 2021 et à nouveau une baisse en 2022.
+------------------------------------------------------------------------
 
+-   Une forte progression jusqu'en 2017 puis un recul lié à la crise sanitaire en 2020, un rebond en 2021 et à nouveau une baisse en 2022.
 
 ### Caractéristiques des volontaires de la région
 
@@ -254,15 +264,16 @@ tab %>%
 
 
 ```
-***
 
--  Une large majorité de femmes parmi les volontaires
+------------------------------------------------------------------------
 
--  près d'un tiers de peu diplômés 
+-   Une large majorité de femmes parmi les volontaires
 
--  30% étaient chômeurs auparavant 
+-   près d'un tiers de peu diplômés
 
--  un contrat sur cinq rompu avant son terme dont 9% pour embauche
+-   30% étaient chômeurs auparavant
+
+-   un contrat sur cinq rompu avant son terme dont 9% pour embauche
 
 ### Carte départementale
 
@@ -309,7 +320,7 @@ leaflet(cartedep) %>%
 
 ```
 
-### Flux (volontaires -> mission)
+### Flux (volontaires -\> mission)
 
 ```{r}
 library(RColorBrewer )
@@ -373,16 +384,14 @@ leaflet() %>%
                           mutate(2*missions^(1/2)) %>% pull(12)             )
 ```
 
-
 ### Flux annuels
 
 [![](images/fluxSC.PNG)</br>\
 flux de nouveaux volontaires par année](https://pierre-stephanelebre.shinyapps.io/fluxSC/)
 
-***
+------------------------------------------------------------------------
 
 > Cet outil permet de suivre année après année ou sur une période les flux de volontaires entre leur lieu de résidence et leur lieu de mission
-
 
 ```{r, eval=FALSE}
 library(mapdeck)
@@ -410,9 +419,7 @@ fluxarc_html
 
 ```
 
-
-
-# Engagement international {data-orientation="rows" data-icon="fa-globe-africa" .storyboard}
+# Engagement international {.storyboard data-orientation="rows" data-icon="fa-globe-africa"}
 
 ### Missions à l'étranger
 
@@ -434,11 +441,12 @@ baseSC %>%
            footnote_as_chunk = T) 
 
 ```
-***
 
--  Des liens privilégiés avec l'Allemagne.
+------------------------------------------------------------------------
 
-# `r fa(name = "fas fa-city")` Quartier politique de la ville {data-orientation="rows" .storyboard}
+-   Des liens privilégiés avec l'Allemagne.
+
+# `r fa(name = "fas fa-city")` Quartier politique de la ville {.storyboard data-orientation="rows"}
 
 ### Missions effectuées par les jeunes en QPV
 
@@ -489,18 +497,15 @@ baseSC %>%
            footnote_as_chunk = T)
 
 ```
-***
 
--  Environ un jeune de 16 à 25 ans sur 100 s'engage dans une mission de Service civique, y compris dans les QPV 
+------------------------------------------------------------------------
 
--  Près d'un volontaire sur cinq est issu de quartier prioritaire dans le Territoire de Belfort et dans le Doubs.
+-   Environ un jeune de 16 à 25 ans sur 100 s'engage dans une mission de Service civique, y compris dans les QPV
 
-# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+-   Près d'un volontaire sur cinq est issu de quartier prioritaire dans le Territoire de Belfort et dans le Doubs.
 
-**Sources :**  
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-* Agence du Service Civique, Elisa, traitement DRAJES BFC
+**Sources :**
 
-
-
-
+-   Agence du Service Civique, Elisa, traitement DRAJES BFC
