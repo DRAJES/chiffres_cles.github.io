@@ -17,7 +17,7 @@ output:
 ### Calendrier des formations
 
 [![](images/calendrier.png) </br>\
-Calendrier des formations du ministère des Sports](https://foromes.calendrier.sports.gouv.fr/#/formation)
+Calendrier des formations du ministère des Sports](https://foromes.calendrier.sports.gouv.fr/#/formation){target="_blank}
 
 ***
 
@@ -28,7 +28,7 @@ Calendrier des formations du ministère des Sports](https://foromes.calendrier.s
 ### `r fa(name = "fas fa-map-pin")` Cartographie nationale des OF
 
 [![](images/exploit.PNG) </br>\
-Cartographie nationale des formations en cours ou à venir](https://donnees-formation-js.social.gouv.fr/)
+Cartographie nationale des formations en cours ou à venir](https://donnees-formation-js.social.gouv.fr/){target="_blank}
 
 ***
 
@@ -39,7 +39,7 @@ Cartographie nationale des formations en cours ou à venir](https://donnees-form
 
 
 [![](images/FCE.PNG) </br>\
-Visualisation des Oragnismes de Formation de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/)
+Visualisation des Oragnismes de Formation de la région](https://pierre-stephanelebre.shinyapps.io/FCEshiny/){target="_blank}
 
 ***
 

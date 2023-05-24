@@ -249,7 +249,7 @@ hchart(RNA %>%
 ```
 
 
-### Evolution régionale
+### Nombre de créations par année
 
 ```{r}
 hw_grid(
@@ -432,7 +432,7 @@ rowheight = 600)
 
 -  de nombreuses associations sportives
 
-### Evolutions départementales
+### Nombre de créations par année
 
 ```{r}
 #```{r, figures-side, fig.show="hold", out.width="50%"}

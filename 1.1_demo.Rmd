@@ -331,6 +331,10 @@ basecom %>%
   
 ```
 
+***
+
+Cette base de donnée permet de rattacher chaque commune à un territoire d'appartenance selon la nomenclature de l'Insee : https://www.insee.fr/fr/information/2028028 
+
 ### Géographie régionale
 
 ```{r}
@@ -375,7 +379,11 @@ leaflet() %>%
 ```
 ***
 
+Cette carte permet de choisir différentes tuiles de représentation fournies par des producteurs de données
+
 > Choisissez les couches à afficher ou à superposer à l'aide du menu ci-contre
+
+
 
 # `r fa(name = "fas fa-tree")` CRTE {.storyboard data-orientation="rows" height="20"}
 

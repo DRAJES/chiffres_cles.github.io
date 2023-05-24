@@ -88,17 +88,21 @@ $Région, Département$
 
 -   Assistantes maternelles et garde d'enfants à domicile
 
-### 2.3 [Accueils collectifs de mineurs](2.3_ACM.html)
+### 2.2 [Scolaire](2.3_scolaire.html)
+
+-   data.education.gouv.fr
+
+### 2.4 [Accueils collectifs de mineurs](2.4_ACM.html)
 
 $Région, Département$
 
 -   Lieux d'accueil et places par groupe d'âge sans hébergement
 
--   [Avec hébergement, carte](2.3_ACM.html#avec-hébergement)
+-   [Avec hébergement, carte](2.4_ACM.html#avec-hébergement)
 
--   [Scoutisme](2.3_ACM.html#scoutisme)
+-   [Scoutisme](2.4_ACM.html#scoutisme)
 
--   [Cartographie interactive](2.3_ACM.html#cartographie-interactive)
+-   [Cartographie interactive](2.4_ACM.html#cartographie-interactive)
 
 ------------------------------------------------------------------------
 

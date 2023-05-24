@@ -12,9 +12,8 @@ output:
       - { title: "Accueil", href: index.html, align: right, icon: fa-home }
     theme: simplex
 ---
- 
- 
-```{r} 
+
+```{r}
 load("data/demo/RPage.RData")
 source("R/data/pop_dep_age.R")
 library(summarywidget)
@@ -106,25 +105,26 @@ pal2 <- colorBin("YlOrBr", domain =100*carte$p1529/carte$pop ,
 
 ```
 
-# ![](images/BFC_s.svg) Régions {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_s.svg) Régions {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons régionales
-  
+
 ```{r,echo=F}
 tab <- region_tab %>%
   demo(geo=Région)
 
 tab %>%  
   credits()
-```   
-***
+```
 
--  La population de Bourgogne-Franche-Comté est plutôt âgée. L'indice de jeunesse s'établit à 
-**`r  prettyNum(round(region$ind_jeun[3],1),decimal.mark=",")`**, nettement en dessous de la valeur métropolitaine.
+------------------------------------------------------------------------
 
--  Les **`r  prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark=" ")`** jeunes sont sous-représentés et les + de 65 ans sont surreprésentés.
+-   La population de Bourgogne-Franche-Comté est plutôt âgée. L'indice de jeunesse s'établit à **`r  prettyNum(round(region$ind_jeun[3],1),decimal.mark=",")`**, nettement en dessous de la valeur métropolitaine.
+
+-   Les **`r  prettyNum(round(region$p1529[3]/1000,0)*1000,big.mark=" ")`** jeunes sont sous-représentés et les + de 65 ans sont surreprésentés.
 
 ### Structure régionale
+
 ```{r}
 region %>%
   dplyr::select(REG,LIBGEO,p20,p60,pop) %>%
@@ -137,11 +137,13 @@ region %>%
   arrange(REG,Région,âge)  %>%
 hstructure("Région")
 ```
-***
 
--  La part de population de 21 à 59 est la seconde plus faoble de France derrière celle du Centre-Val de Loire (**48,9 %** de la population)
+------------------------------------------------------------------------
+
+-   La part de population de 21 à 59 est la seconde plus faoble de France derrière celle du Centre-Val de Loire (**48,9 %** de la population)
 
 ### Pyramide BFC
+
 ```{r}
 pop_age_bfc %>% 
   group_by(AGED100,SEXE) %>%
@@ -161,11 +163,13 @@ pop_age_bfc %>%
   hc_add_theme(thm)  %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
-***
 
--  Un déficit de jeunes de 20 à 30 ans assez marqué
+------------------------------------------------------------------------
+
+-   Un déficit de jeunes de 20 à 30 ans assez marqué
 
 ### Carte régionale
+
 ```{r}
 carte <- regwgs
 carte@data <- carte@data %>% select(Région=REG,var)
@@ -178,9 +182,9 @@ leaflet(carte) %>%
    
 ```
 
-# ![](images/BFC_dep_s.svg) Départements {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_dep_s.svg) Départements {.storyboard data-orientation="rows" height="30"}
 
-### Comparaisons départementales  
+### Comparaisons départementales
 
 ```{r,echo=F}
 tab <- dep27_tab %>%  
@@ -191,12 +195,14 @@ tab <- dep27_tab %>%
 tab %>%  
   credits()
 ```
-***
 
--  La Côte d'Or est le département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux. 
--  Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
+------------------------------------------------------------------------
+
+-   La Côte d'Or est le département où les 15/29 ans sont les plus nombreux tandis que le Doubs est celui ou les plus de 65 ans sont les moins nombreux.
+-   Dans la Nièvre, le déséquilibre est très marqué. Les plus de 65 ans sont deux fois plus nombreux que les 15/29 ans.
 
 ### Structure par départements
+
 ```{r}
 departement %>% 
   filter(DEP %in% depbfc) %>%
@@ -210,11 +216,13 @@ departement %>%
   arrange(DEP,Département,âge) %>%
   hstructure("Département")
 ```
-***
 
--  Le Doubs est le département où la part de jeunes est la plus importante.
+------------------------------------------------------------------------
+
+-   Le Doubs est le département où la part de jeunes est la plus importante.
 
 ### Pyramides départementales
+
 ```{r}
 list_of_plots <- map(depbfc, function(x) {
  
@@ -243,11 +251,12 @@ list_of_plots <- map(depbfc, function(x) {
 hw_grid(list_of_plots,ncol = 4, rowheight = 300) %>%
   htmltools::browsable()
 ```
-***
 
--  Le Doubs et surtout la Côte d'Or marquent des pics importants pour les étudiants.
+------------------------------------------------------------------------
 
--  La pyramide de la Nièvre est très décalée verts le haut.
+-   Le Doubs et surtout la Côte d'Or marquent des pics importants pour les étudiants.
+
+-   La pyramide de la Nièvre est très décalée verts le haut.
 
 ### Création de classes d'âges à façon
 
@@ -302,20 +311,27 @@ Territoire de Belfort : **`r pop90`** dont **`r fem90`** femmes.
 
 Soit **`r popbfc`** en Bourgogne-Franche-Comté dont **`r fembfc`** femmes.
 
+***
+
+> Source : RP2019
+
+*L'outil interactif en diapositive suivante permet d'afficher des données plus précises et de les cartographier*
+
 ### Outil interactif en ligne
 
-[![](images/ageD.PNG){size=90%} </br>\
-population des territoires par âge à façon](https://pierre-stephanelebre.shinyapps.io/ageD/)
+[![](images/ageD.PNG){size="70%"} </br>
+population des territoires par âge à façon](<https://pierre-stephanelebre.shinyapps.io/ageD/>){target="_blank"} 
 
-***
+------------------------------------------------------------------------
 
 > Cet outil permet de définir ses propres classes d'âge, indique la part de la population concernée et le taux de femmes dans cette population.
 
-> En prime, il affiche une carte qui représente la sous ou surreprésentation de ces données. 
+> En prime, il affiche une carte qui représente la sous ou surreprésentation de ces données.
 
 > Il est possible de filtrer sur la région uniquement.
 
 ### Carte départementale
+
 ```{r}
 carte <- depwgs
 carte@data <- carte@data %>% select(Département=DEP,var)
@@ -331,10 +347,10 @@ leaflet(carte) %>%
   contour_bfc() 
 ```
 
-# ![](images/BFC_EPCI_s.svg) EPCI {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_EPCI_s.svg) EPCI {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons établissements publics de coopération intercommunale
-  
+
 ```{r,echo=F}
 tab <- epci27_tab %>%
   demo(geo=EPCI)
@@ -344,6 +360,7 @@ tab %>%
 ```
 
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% filter(!EPCI %in% c('BFC','METRO'))
 
@@ -354,11 +371,13 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
-***
+
+------------------------------------------------------------------------
 
 *Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
 
 ### Carte ECPI
+
 ```{r}
 carte <- epcicarto
 carte@data <- carte@data %>% select(EPCI,var)
@@ -369,21 +388,21 @@ leaflet(carte) %>%
   carto() %>%
   contour_depbfc() 
 ```
-  
-  
 
-# ![](images/BFC_BV_s.svg) Bassins de vie {data-orientation="rows" height=30 .storyboard}
+# ![](images/BFC_BV_s.svg) Bassins de vie {.storyboard data-orientation="rows" height="30"}
 
 ### Comparaisons bassins de vie 2022
+
 ```{r,echo=F}
 tab <- bv27_tab %>%
   demo(geo=BV2022)
 
 tab %>%  
   credits()
-```  
-  
+```
+
 ### Tableau filtré
+
 ```{r}
 tab <- tab %>% filter(!BV2022 %in% c('BFC','METRO'))
 
@@ -394,11 +413,13 @@ filter_checkbox("dep","Département",sd,group=~filtre_DEP,
 
 sd %>% datafiltre()
 ```
-***
+
+------------------------------------------------------------------------
 
 *Sélectionnez un ou plusieurs départements pour voir les territoires correspondants*
-  
+
 ### Carte BV 2022
+
 ```{r}
 carte <- bvcarto
 carte@data <- carte@data %>% select(BV2022,var)
@@ -410,13 +431,11 @@ leaflet(carte) %>%
   contour_depbfc() 
 ```
 
-# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
+# *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
-**Sources :**  
+**Sources :**
 
-* Insee, Recensement de la population 2018
+-   Insee, Recensement de la population 2018
 
-  + https://www.insee.fr/fr/information/5369871
-  + https://www.insee.fr/fr/statistiques/5397467?geo=FE-1
-
-
+    -   <https://www.insee.fr/fr/information/5369871>
+    -   <https://www.insee.fr/fr/statistiques/5397467?geo=FE-1>

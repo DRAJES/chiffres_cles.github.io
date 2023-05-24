@@ -116,7 +116,7 @@ leaflet(carte) %>%
 ### Baromètre jeunesse
 
 [![](img/barometre_jeune.PNG){height="500px"} </br>\
-Baromètre Jeunesse Injep](https://injep.fr/wp-content/uploads/2022/07/2_Fiche_Jeunesse_Bourg_Fr_Comte_2021.pdf)
+Baromètre Jeunesse Injep](https://injep.fr/wp-content/uploads/2022/07/2_Fiche_Jeunesse_Bourg_Fr_Comte_2021.pdf){target="_blank}
 
 ------------------------------------------------------------------------
 

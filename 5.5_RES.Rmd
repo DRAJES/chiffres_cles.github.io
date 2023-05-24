@@ -681,7 +681,7 @@ Le modèle a été lissé selon un spline de régression cubique et une précisi
 > schématisation
 
 [![](images/GAM.png){height=500px} </br>\
-Analyse de la dotation des territoires](https://pierre-stephanelebre.shinyapps.io/ANS_carence/)
+Analyse de la dotation des territoires](https://pierre-stephanelebre.shinyapps.io/ANS_carence/){target="_blank}
 
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 

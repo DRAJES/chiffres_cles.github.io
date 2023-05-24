@@ -635,7 +635,7 @@ En raison des effectifs assez faibles, les profils sont établis sur la base de 
 ### Fiches régionales
 
 [![](images/IDJEPS.PNG) </br>\
-Insertion Professionnelle des diplômés de l'animation et du sport](https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf)
+Insertion Professionnelle des diplômés de l'animation et du sport](https://injep.fr/wp-content/uploads/2022/02/BOURGOGNE-FRANCHE-COMTE-BPJEPS-2017-2018.pdf){target="_blank}
 
 ------------------------------------------------------------------------
 

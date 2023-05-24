@@ -26,8 +26,10 @@ navbar:
           href: 2.1_jeunesse.html
         - text: "Préscolaire"
           href: 2.2_presco.html
+        - text: "Scolaire"
+          href: 2.3_scolaire.html          
         - text: "Accueils collectifs de mineurs"
-          href: 2.3_ACM.html
+          href: 2.4_ACM.html
         - text: "---------"
         - text: "Engagement"
         - text: "Vie associative"
