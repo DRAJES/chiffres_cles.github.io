@@ -12,11 +12,8 @@ output:
     theme: simplex
 ---
 
-
 ### Données éducation, élèves et établissements
 
-Pour toutes les données relatives aux élèves et aux établissements, les Services Statistiques Académiques (SSA) de la région sont les principaux producteurs. Une plate-forme dédiée a été créée comprenant 110 jeux de données. Le lien vers data.education sur votre droite.
+Pour toutes les données relatives aux élèves et aux établissements, les Services Statistiques Académiques (SSA) de la région sont les principaux producteurs. Une plate-forme dédiée a été créée comprenant 110 jeux de données.
 
-***
-
-[](https://data.education.gouv.fr/explore/?sort=modified){target="_blank}
+[data.education.gouv.fr](https://data.education.gouv.fr/explore/?sort=modified){target="\"_blank"}
