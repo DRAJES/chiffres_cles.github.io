@@ -460,7 +460,7 @@ Cette carte calcule les temps d'accès par commune à la piscine la plus proche.
 
 **Sources :**
 
--   Injep, MEDES, recensement des "licences et des clubséquipements sportifs (RES)
+-   Injep, MEDES, Recensement des licences et des clubs sportifs  ; Recensement des équipements sportifs (RES)
 
     -   <https://equipements.sports.gouv.fr/pages/accueil/>
     -   <https://carto-stats.injep.fr/#c=home>

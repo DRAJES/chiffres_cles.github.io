@@ -46,6 +46,12 @@ window.FlexDashboardComponents = [];
 <link href="site_libs/value-box-accent-static-0.6.1/theme-simplex-value-box.css" rel="stylesheet" />
 <link href="site_libs/flexdashboard-css-0.6.1/flexdashboard.min.css" rel="stylesheet" />
 <link href="site_libs/flexdashboard-css-0.6.1/theme-simplex.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="site_libs/raphael-2.1.4/raphael-2.1.4.min.js"></script>
+<link href="site_libs/justgage-1.2.2.1/justgage.css" rel="stylesheet" />
+<script src="site_libs/justgage-1.2.2.1/justgage.js"></script>
+<script src="site_libs/gauge-binding-0.6.1/gauge.js"></script>
+<script src="site_libs/sly-1.6.1/sly.min.js"></script>
 <style type="text/css">
 /*
   CSS for flexdashboard.js' use of Sly(). The sizing/position of this CSS needs to be
@@ -1868,15 +1874,100 @@ window.FlexDashboardComponents.push({
 
 <div id="dashboard-container">
 
-<div id="données-éducation-élèves-et-établissements"
-class="section level3">
-<h3>Données éducation, élèves et établissements</h3>
+<div id="données" class="section level1 storyboard"
+data-orientation="rows" height="30" data-icon="fa-signal"
+font-size="25px">
+<h1 class="storyboard">Données</h1>
+<div id="data-education.gouv.fr" class="section level3">
+<h3>Data-education.gouv.fr</h3>
+<p><a href="https://data.education.gouv.fr/explore/?sort=modified"
+target="_blank"><img src="images/data-educ.PNG" height="500" />
+</br><br />
+data.education.gouv.fr</a></p>
+<hr />
 <p>Pour toutes les données relatives aux élèves et aux établissements,
 les Services Statistiques Académiques (SSA) de la région sont les
 principaux producteurs. Une plate-forme dédiée a été créée comprenant
 110 jeux de données.</p>
-<p><a href="https://data.education.gouv.fr/explore/?sort=modified"
-target="&quot;_blank">data.education.gouv.fr</a></p>
+</div>
+</div>
+<div id="cartographie" class="section level1 storyboard"
+data-orientation="rows" height="30" data-icon="fa-globe"
+font-size="25px">
+<h1 class="storyboard">Cartographie</h1>
+<div id="geo-education" class="section level3">
+<h3>Geo-education</h3>
+<p><a
+href="https://carto.depp.education.fr/GeoEducation/#view=map1&amp;c=indicator"
+target="_blank"><img src="images/geo-educ.PNG" height="500" />
+</br><br />
+géo-education</a></p>
+<hr />
+<p>En complément, une cartographie interactive (géoclip) fournit des
+informations géolocalisées.</p>
+</div>
+</div>
+<div id="dispositifs" class="section level1" data-orientation="rows"
+height="30" data-icon="fa-school" font-size="25px">
+<h1>Dispositifs</h1>
+<div id="row" class="section level2">
+<h2>Row</h2>
+<div id="apq" class="section level3">
+<h3>30’APQ</h3>
+<p>30 minutes d’activités physiques quotidiennes à l’école</p>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+</div>
+<div id="srav" class="section level3">
+<h3>SRAV</h3>
+<p>Nombre d’attestations “savoir rouler à vélo” délivrées</p>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<!-- KNITR_ASIS_OUTPUT_TOKEN -->
+<div class="gauge html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-001a18070e742bd09d53" style="width:80%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-001a18070e742bd09d53">{"x":{"value":12171,"min":0,"max":7730,"customSectors":{"percents":false,"ranges":[{"lo":0,"hi":7730,"color":"#9eee9e"}]},"symbol":null,"label":"Attestations","humanFriendly":false,"humanFriendlyDecimal":1,"href":null},"evals":[],"jsHooks":[]}</script>
+<!-- KNITR_ASIS_OUTPUT_TOKEN -->
+</div>
+<div id="aisance-aquatique" class="section level3">
+<h3>Aisance aquatique</h3>
+<p>Nombre d’enfants ayant suivi un cycle d’Aisance Aquatique</p>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<!-- KNITR_ASIS_OUTPUT_TOKEN -->
+<div class="gauge html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9ec0c8ba6a4be43e9d26" style="width:80%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-9ec0c8ba6a4be43e9d26">{"x":{"value":2260,"min":0,"max":3408,"customSectors":{"percents":false,"ranges":[{"lo":0,"hi":3408,"color":"#b0c4de"}]},"symbol":null,"label":"Enfants","humanFriendly":false,"humanFriendlyDecimal":1,"href":null},"evals":[],"jsHooks":[]}</script>
+<!-- KNITR_ASIS_OUTPUT_TOKEN -->
+</div>
+</div>
+<div id="row-1" class="section level2">
+<h2>Row</h2>
+<div id="baromètre-des-réslutats-de-laction-publique"
+class="section level3">
+<h3>Baromètre des réslutats de l’action publique</h3>
+<p><a href="https://barometre-resultats.data.gouv.fr/par-territoire"
+target="_blank"><img src="images/barometre-action.PNG" height="500" />
+</br><br />
+baromètre des résultats</a></p>
+</div>
+</div>
+</div>
+<div id="en-savoir" class="section level1" data-orientation="rows"
+data-icon="fa-info-circle" font-size="25px">
+<h1><em>En savoir</em> <strong>+</strong></h1>
+<p><strong>Sources :</strong></p>
+<ul>
+<li><p>Division de l’évaluation, de la prospective et de la performance
+(DEPP - SSM éducation nationale)</p></li>
+<li><p>Baromètre résultat de l’action publique</p>
+<ul>
+<li><a
+href="https://www.data.gouv.fr/fr/datasets/barometre-des-resultats-de-laction-publique/"
+class="uri">https://www.data.gouv.fr/fr/datasets/barometre-des-resultats-de-laction-publique/</a></li>
+</ul></li>
+</ul>
 </div>
 
 </div>

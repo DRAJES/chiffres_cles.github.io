@@ -15,6 +15,7 @@ output:
 ```{r}
 
 load("data/jeunesse/ACM_evo.RData")
+library(crosstool)
 
 #crosstalk
 filtreACM <- function(tab=tab) {
@@ -54,13 +55,25 @@ ACMH <- ACMH_reg %>%
 
 tab <- SharedData$new(ACMH)
 
+
 filter_checkbox("sejour","Séjour",tab,group=~séjour,
               #  selected ="Ensemble des séjours",
                 inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()
 
+#crosstool(tab %>% filtreACM(),"transmitter",init= which(tab$séjour == "Ensemble des séjours")) 
+  crosstool(tab  %>% filtreACM(), 
+            # transceiver widgets are more like normal crosstalk widgets.
+            class = "transceiver",  
+            # set the initial value 
+            init = which(tab$séjour == "Ensemble des séjours"),
+            # channel set to "filter" to use the crosstalk filter handle
+            channel ="filter",
+            # use with init = which(xx == yy) to reset the initial filter/select handle
+            reset = rownames(tab))
 ```
+
 ***
 
 Les Accueils collectifs de mineurs avec hébergement regroupent les centres de vacances, les colonies de vacances...\
@@ -71,6 +84,14 @@ Les Accueils collectifs de mineurs avec hébergement regroupent les centres de v
 **(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
 *Sélectionnez un type de séjour pour voir une comparaison régionale*
+
+```{js}
+function filter_default() {
+    document.getElementById("sejour").getElementsByClassName("selectized")[0].selectize.setValue("Ensemble des séjours", false);
+ }
+window.onload = filter_default;
+```
+
 
 ### Evolutions régionales
 
@@ -1036,9 +1057,9 @@ Visualisation des ACM de la région](https://pierre-stephanelebre.shinyapps.io/A
     
 ```{js}
 function filter_default() {
-    document.getElementById("sejour").getElementsByClassName("selectized")[0].selectize.setValue("Ensemble des séjours", false);
-    document.getElementById("type").getElementsByClassName("selectized")[0].selectize.setValue("Accueils loisirs ou jeunes", false);
-    document.getElementById("periode").getElementsByClassName("selectized")[0].selectize.setValue("année", false);
+    document.getElementById("sejour").getElementsByClassName("selectized")[0].selectize.setValue("Ensemble des séjours", false)
+    document.getElementById("type").getElementsByClassName("selectized")[0].selectize.setValue("Accueils loisirs ou jeunes", false)
+    document.getElementById("periode").getElementsByClassName("selectized")[0].selectize.setValue("année", false)
  }
-window.onload = filter_default;
+$(document).ready(filter_default);
 ```

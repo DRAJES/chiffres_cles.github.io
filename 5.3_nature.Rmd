@@ -209,7 +209,7 @@ nature27 %>%
 
 -  Une grande majorité de site de sport de nature de la région sont des boucles de randonnée.
 
-# Cartes {data-orientation="rows" data-icon="globe" .storyboard}
+# Cartes {data-orientation="rows" data-icon="fa-globe" .storyboard}
 
 ### Carte filtrable
 
@@ -294,17 +294,15 @@ l %>%
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px" }
 
 
-**Sources :**  
+**Sources :**
 
+-   Injep, MEDES, Recensement des licences et des clubs sportifs  ; Recensement des équipements sportifs (RES)
 
-
-* Injep, MEDES, recensement des "licences et des clubséquipements sportifs (RES)
-
-  + https://equipements.sports.gouv.fr/pages/accueil/
-  + https://carto-stats.injep.fr/#c=home
-  + https://www.data.gouv.fr/fr/datasets/recensement-des-equipements-sportifs-espaces-et-sites-de-pratiques/  
+    -   <https://equipements.sports.gouv.fr/pages/accueil/>
+    -   <https://carto-stats.injep.fr/#c=home>
+    -   <https://www.data.gouv.fr/fr/datasets/recensement-des-equipements-sportifs-espaces-et-sites-de-pratiques/>
   
-* Insee, Base permanente des équipements
+-   Insee, Base permanente des équipements
 
-  + https://www.insee.fr/fr/metadonnees/source/operation/s2027/presentation
+    -   <https://www.insee.fr/fr/metadonnees/source/operation/s2027/presentation>
 
