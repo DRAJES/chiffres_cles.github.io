@@ -36,28 +36,7 @@ pop_new <- read_csv2("I:/SUPPORT/04_STATS/Sources/INSEE/RP/RP2019/BTT_TD_POP1B_2
 
 save(pop_new,file = "data/demo/RPage.RData")
 
-#op_new <- pop_new %>% 
-#         transmute(CODGEO,
-#                   poph=rowSums(pop_new[,c(3:103)]),
-#                   popf=rowSums(pop_new[,c(104:204)]),
-#                   p1529h=rowSums(pop_new[,c(18:32)]),
-#                   p1529f=rowSums(pop_new[,c(119:133)]),
-#                   p1625h=rowSums(pop_new[,c(19:28)]),
-#                   p1625f=rowSums(pop_new[,c(118:129)]),
-#                   p65h=rowSums(pop_new[,c(68:103)]),
-#                   p65f=rowSums(pop_new[,c(169:204)]),
-#                   p75h=rowSums(pop_new[,c(78:103)]),
-#                   p75f=rowSums(pop_new[,c(179:204)]),
-#                   p20=rowSums(pop_new[,c(3:22)])+rowSums(pop_new[,c(104:123)]),
-#                   p60=rowSums(pop_new[,c(63:103)])+rowSums(pop_new[,c(164:204)]),
-#                   pop=poph+popf,
-#                p1529=p1529h+p1529f,
-#                p1625=p1625h+p1625f,
-#                p65=p65h+p65f,
-#                p75=p75h+p75f     )  %>% 
-## left_join(.,passage %>% distinct(CODGEO_2020,.keep_all = T) ,by=c("CODGEO" = "CODGEO_2020") ) %>%
-# group_by(CODGEO) %>%
-# summarise_if(is.numeric,sum) %>%mutate(DEP=substr(CODGEO,1,2))
+
 
 pop_new <- pop_new %>% 
               mutate (NB = as.numeric(NB)) %>%
@@ -93,28 +72,6 @@ sum(pop_new$pop[pop_new$DEP!="97"],na.rm=T)
 #pop_ante <- read_excel("I:/SUPPORT/04_STATS/Sources/INSEE/RP/RP2013/BTX_TD_POP1B_2013.xls",sheet = 1,skip = 10)
 pop_ante13 <- read.csv2("I:/SUPPORT/04_STATS/Sources/INSEE/RP/RP2013/BTT_TD_POP1B_2013.txt", header=T,sep=";")
 
-#pop_ante <- pop_ante %>%
-#  transmute(CODGEO,
-#            poph=rowSums(pop_ante[,c(3:103)]),
-#            popf=rowSums(pop_ante[,c(104:204)]),
-#            p1529h=rowSums(pop_ante[,c(18:32)]),
-#            p1529f=rowSums(pop_ante[,c(119:133)]),
-#            p1625h=rowSums(pop_ante[,c(19:28)]),
-#            p1625f=rowSums(pop_ante[,c(118:129)]),
-#            p65h=rowSums(pop_ante[,c(68:103)]),
-#            p65f=rowSums(pop_ante[,c(169:204)]),
-#            p75h=rowSums(pop_ante[,c(78:103)]),
-#            p75f=rowSums(pop_ante[,c(179:204)]),
-#            p20=rowSums(pop_ante[,c(3:22)])+rowSums(pop_ante[,c(104:123)]),
-#            p60=rowSums(pop_ante[,c(63:103)])+rowSums(pop_ante[,c(164:204)]),
-#            pop=poph+popf,
-#            p1529=p1529h+p1529f,
-#            p1625=p1625h+p1625f,
-#            p65=p65h+p65f,
-#            p75=p75h+p75f     )  %>%
-#  left_join(.,passage %>% distinct(CODGEO_2015,.keep_all = T) ,by=c("CODGEO" = "CODGEO_2015") ) %>%
-#  group_by(CODGEO_2021) %>%
-#  summarise_if(is.numeric,sum) 
 
 pop_ante <- pop_ante13 %>% 
               mutate(NB=as.numeric(NB)) %>%

@@ -169,7 +169,7 @@ tab <- dep27_tab %>%
   select(-Région)
 
 tab  %>% 
-  cc_kable(aligne = "cclrrrcccll") %>%
+  cc_kable(aligne = "clrrrcccll") %>%
   credits()
 
 ```

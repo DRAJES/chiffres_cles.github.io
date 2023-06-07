@@ -56,6 +56,10 @@ navbar:
           href: 5.5_RES.html
         - text: "Jeux Olympiques"
           href: 5.6_JO.html
+        - text: "---------"
+        - text: "Inspection Contrôle"
+        - text: "Bilan ICE"
+          href: 6.1_ICE.html
           
   right:
     - icon: fa-question fa-lg

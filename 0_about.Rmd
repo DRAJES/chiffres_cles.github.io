@@ -57,6 +57,7 @@ load("data/demo/basecom.RData")
 load("data/demo/cartes.RData")
 
 source("R/fonctions/theme.R")
+source("R/fonctions/fonctions.R")
 source("R/fonctions/fonctions_carto.R")
 source("R/fonctions/fonctions_merge.R")
 

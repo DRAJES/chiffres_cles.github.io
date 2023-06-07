@@ -220,9 +220,9 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "banR",
       "RemoteUsername": "joelgombin",
-      "RemoteRef": "HEAD",
+      "RemoteRepo": "banR",
+      "RemoteRef": "master",
       "RemoteSha": "2234b55419b6e93760aa50c97efaa2350e9720d6",
       "Requirements": [
         "R",
@@ -236,7 +236,7 @@
         "tibble",
         "utils"
       ],
-      "Hash": "23842553a3c8f10015de1d22b8256e1a"
+      "Hash": "7a25aa7c7a3e1fa7f23b74b884eec49d"
     },
     "base64enc": {
       "Package": "base64enc",
@@ -516,6 +516,23 @@
         "lazyeval"
       ],
       "Hash": "6aa54f69598c32177e920eb3402e8293"
+    },
+    "crosstool": {
+      "Package": "crosstool",
+      "Version": "0.0.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "crosstool",
+      "RemoteUsername": "bwlewis",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "0dbb753645e6ca53f80f96492024e2f742337fb7",
+      "Requirements": [
+        "R",
+        "crosstalk",
+        "htmlwidgets"
+      ],
+      "Hash": "6b112ec4ab19cca9df3f95ef752dd86b"
     },
     "curl": {
       "Package": "curl",
@@ -1331,7 +1348,7 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.42",
+      "Version": "1.43",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1343,7 +1360,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "8329a9bcc82943c8069104d4be3ee22d"
+      "Hash": "9775eb076713f627c07ce41d8199d8f6"
     },
     "labeling": {
       "Package": "labeling",
@@ -1636,6 +1653,23 @@
       ],
       "Hash": "0f7cd2962e3044bb940cca4f4b5cecbe"
     },
+    "openxlsx": {
+      "Package": "openxlsx",
+      "Version": "4.2.5.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "grDevices",
+        "methods",
+        "stats",
+        "stringi",
+        "utils",
+        "zip"
+      ],
+      "Hash": "c03b4c18d42da881fb8e15a085c2b9d6"
+    },
     "osrm": {
       "Package": "osrm",
       "Version": "4.1.1",
@@ -1878,6 +1912,22 @@
       ],
       "Hash": "6069eb2a6597963eae0605c1875ff14c"
     },
+    "readODS": {
+      "Package": "readODS",
+      "Version": "1.8.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cellranger",
+        "purrr",
+        "readr",
+        "stringi",
+        "utils",
+        "xml2"
+      ],
+      "Hash": "6cbfab165a9d86363941727612bddf19"
+    },
     "readr": {
       "Package": "readr",
       "Version": "2.1.4",
@@ -1967,7 +2017,7 @@
     },
     "rgdal": {
       "Package": "rgdal",
-      "Version": "1.6-6",
+      "Version": "1.6-7",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1979,11 +2029,11 @@
         "stats",
         "utils"
       ],
-      "Hash": "05c7c91191407d54da92816fb849ab29"
+      "Hash": "10b777236c9e7855bc9dea8e347e30b7"
     },
     "rgeos": {
       "Package": "rgeos",
-      "Version": "0.6-2",
+      "Version": "0.6-3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1994,7 +2044,27 @@
         "stats",
         "utils"
       ],
-      "Hash": "9511acfd44e26cd310b9975f63ac9f72"
+      "Hash": "223075bf775559b8a3e7252624e9bf1c"
+    },
+    "rio": {
+      "Package": "rio",
+      "Version": "0.5.29",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "curl",
+        "data.table",
+        "foreign",
+        "haven",
+        "openxlsx",
+        "readxl",
+        "stats",
+        "tibble",
+        "tools",
+        "utils"
+      ],
+      "Hash": "9ee902fb3142b159f60bdb4eaf763a3a"
     },
     "rjson": {
       "Package": "rjson",
@@ -2033,7 +2103,7 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.21",
+      "Version": "2.22",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2053,7 +2123,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "493df4ae51e2e984952ea4d5c75786a3"
+      "Hash": "75a01be060d800ceb14e32c666cacac9"
     },
     "rprojroot": {
       "Package": "rprojroot",
@@ -2151,7 +2221,7 @@
     },
     "sf": {
       "Package": "sf",
-      "Version": "1.0-12",
+      "Version": "1.0-13",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2170,7 +2240,7 @@
         "units",
         "utils"
       ],
-      "Hash": "5b41b4f0bd22b38661d82205a87deb4b"
+      "Hash": "8fb4839843abc03528ff9f86424d6acd"
     },
     "shiny": {
       "Package": "shiny",
@@ -2262,7 +2332,7 @@
     },
     "sp": {
       "Package": "sp",
-      "Version": "1.6-0",
+      "Version": "1.6-1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2275,7 +2345,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "6674e075a078d9c3bde8ba800367347c"
+      "Hash": "ca27b2643e3593b7688244d035f2cd92"
     },
     "sparkline": {
       "Package": "sparkline",
@@ -2350,10 +2420,10 @@
     },
     "sys": {
       "Package": "sys",
-      "Version": "3.4.1",
+      "Version": "3.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "34c16f1ef796057bfa06d3f4ff818a5d"
+      "Hash": "3a1be13d68d47a8cd0bfd74739ca1555"
     },
     "systemfonts": {
       "Package": "systemfonts",

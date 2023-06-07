@@ -36,14 +36,68 @@ pm_color_bar2 <- function(color1 = "lightgreen", color2 = "pink", ...){
               color = ifelse(x> 0,'green',ifelse(x<0,'red','lightgrey')),
               "text-align" = ifelse(x > 0, 'left', ifelse(x<0, 'right', 'center')),
               "width"='100%',
-              "background" = bg(ifelse(x >= 0, 0.5,xnormalize(x)),
-                                ifelse(x >= 0,xnormalize(x),0.5),
+              "background" = bg(ifelse(x >= 0, 0.5,normalize(x)),
+                                ifelse(x >= 0,normalize(x),0.5),
                                 ifelse(x >= 0, color1, color2))
             ))
 }
 
 
 
+
+
+# forme <- function(.tbl){
+#   .tbl %>% 
+#     mutate_at(vars(starts_with("pop")), ~ cell_spec(digits(.,0,big.mark = " ")))%>%
+#     mutate(rang= if_else( rank(densite) < 4, 
+#                           cell_spec(rank(-densite),"html",color = "green", bold=T) ,
+#                           cell_spec(rank(-densite),"html",color = "grey", bold=F)  ) ) %>%
+#     mutate(diffjeun=if_else( diffjeun < 0,
+#                              cell_spec(digits(round(diffjeun/10,0)*10 ,
+#                                               0,big.mark = " "),"html",color = "red"),
+#                              cell_spec(digits(round(diffjeun/10,0)*10 ,
+#                                               0,big.mark = " "),"html",color = "green")
+#     )) %>%
+#     mutate( densite =  color_tile('white','grey')
+#             (digits(densite,1,big.mark = " ",decimal.mark=",")),
+#             part_15_29=color_bar("#98FB98")
+#             (digits(part_15_29,1,big.mark = " ",decimal.mark=",")),
+#             part_16_25=color_bar("#ADFF2F")
+#             (digits(part_16_25,1,big.mark = " ",decimal.mark=",")),
+#             part_65=color_bar("Plum")
+#             (digits(part_65,1,big.mark = " ",decimal.mark=",")),
+#             part_75=color_bar("Plum")
+#             (digits(part_75,1,big.mark = " ",decimal.mark=",")),
+#             evolution= ifelse(evolution < 0,
+#                               normalize_bar("#ff000050")(digits(evolution,2,decimal.mark=",")),
+#                               normalize_bar("#00800050")(digits(evolution,2,decimal.mark=",")) ),
+#             evol1529=ifelse(evol1529 < 0,
+#                             normalize_bar("#FF7F5050")(digits(evol1529,2,decimal.mark=",")),
+#                             normalize_bar("#98FB9850")(digits(evol1529,2,decimal.mark=",")) ),
+#             evol1625=ifelse(evol1625 < 0,
+#                             normalize_bar("#ff634750")(digits(evol1625,2,decimal.mark=",")),
+#                             normalize_bar("#ADFF2F50")(digits(evol1625,2,decimal.mark=",")) ),
+#             evol65=ifelse(evol65 < 0,
+#                           normalize_bar("#D2B48C50")(digits(evol65,2,decimal.mark=",")),
+#                           normalize_bar("#dda0dd50")(digits(evol65,2,decimal.mark=",")) ),
+#             evol75=normalize_bar("#dda0dd50")
+#             (digits(evol75,2,big.mark = " ",decimal.mark=",")),
+#             ind_jeun= color_tile('#9B90CE','#F2F0F7',alpha=0.3)
+#             (digits(ind_jeun,1,big.mark = " ",decimal.mark=",")),
+#             propF= color_tile('white','pink',alpha=0.5)
+#             (digits(propF,1,big.mark = " ",decimal.mark=",")),
+#             prop65F= color_tile('white','pink',alpha=0.5)
+#             (digits(prop65F,1,big.mark = " ",decimal.mark=",")),
+#             prop1529F= color_tile('white','pink',alpha=0.5)
+#             (digits(prop1529F,1,big.mark = " ",decimal.mark=",")),
+#             prop1625F= color_tile('white','pink',alpha=0.5)
+#             (digits(prop1625F,1,big.mark = " ",decimal.mark=",")),
+#             partZRR=color_bar('lightgreen')
+#             (digits(partZRR,1,big.mark = " ",decimal.mark=",")),
+#             partQPV=color_bar('orange')
+#             (digits(partQPV,1,big.mark = " ",decimal.mark=","))
+#     )    %>% relocate(rang, .after=densite )
+# }
 
 
 forme <- function(.tbl){
@@ -68,18 +122,14 @@ forme <- function(.tbl){
             (digits(part_65,1,big.mark = " ",decimal.mark=",")),
             part_75=color_bar("Plum")
             (digits(part_75,1,big.mark = " ",decimal.mark=",")),
-            evolution= ifelse(evolution < 0,
-                              normalize_bar("#ff000050")(digits(evolution,2,decimal.mark=",")),
-                              normalize_bar("#00800050")(digits(evolution,2,decimal.mark=",")) ),
-            evol1529=ifelse(evol1529 < 0,
-                            normalize_bar("#FF7F5050")(digits(evol1529,2,decimal.mark=",")),
-                            normalize_bar("#98FB9850")(digits(evol1529,2,decimal.mark=",")) ),
-            evol1625=ifelse(evol1625 < 0,
-                            normalize_bar("#ff634750")(digits(evol1625,2,decimal.mark=",")),
-                            normalize_bar("#ADFF2F50")(digits(evol1625,2,decimal.mark=",")) ),
-            evol65=ifelse(evol65 < 0,
-                          normalize_bar("#D2B48C50")(digits(evol65,2,decimal.mark=",")),
-                          normalize_bar("#dda0dd50")(digits(evol65,2,decimal.mark=",")) ),
+            evolution= pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+            (digits(evolution,2,decimal.mark=",")),
+            evol1529=pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+            (digits(evol1529,2,decimal.mark=",")),
+            evol1625=pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+            (digits(evol1625,2,decimal.mark=",")),
+            evol65=pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+            (digits(evol65,2,decimal.mark=",")),
             evol75=normalize_bar("#dda0dd50")
             (digits(evol75,2,big.mark = " ",decimal.mark=",")),
             ind_jeun= color_tile('#9B90CE','#F2F0F7',alpha=0.3)
@@ -98,6 +148,7 @@ forme <- function(.tbl){
             (digits(partQPV,1,big.mark = " ",decimal.mark=","))
     )    %>% relocate(rang, .after=densite )
 }
+
 
 
 noms <- function(.tbl){

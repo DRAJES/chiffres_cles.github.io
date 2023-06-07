@@ -57,6 +57,7 @@ datafiltre <- function(.tbl=sd)  {
   .tbl %>% 
     datatable(escape = FALSE,
               height = 700,
+              #extensions = 'Responsive',
               extensions = c('Scroller', 'Buttons'),
               options = list(
                 dom = 'Bfrtip',

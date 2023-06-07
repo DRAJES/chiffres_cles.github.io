@@ -33,7 +33,7 @@ demo <- function(.tbl,geo) {.tbl %>%
 #définition des sources et headers
 credits <- function(.tbl){
   .tbl %>% 
-    cc_kable(aligne = "clrrrrlllc") %>%
+    cc_kable(aligne = "clrrrrcclc") %>%
     add_header_above(c(" " = 5, "Evolution 2013-2019" = 4," ")) %>%
     footnote(general = " Insee RP2013, RP2019", 
            general_title = "Source : ", 
@@ -171,8 +171,7 @@ tab %>%
 sparkline(0)
 tab <- tab %>% 
   filter(!EPCI %in% c('BFC','METRO')) %>% 
-  select(-" ") %>%
-  formattable() 
+  select(-" ") 
 
 sd <- tab_filtre(geo=EPCI)
 
@@ -221,16 +220,16 @@ tab %>%
 sparkline(0)
 
 tab <- tab %>% 
-  filter(!BV2022 %in% c('BFC','METRO')) %>% 
-  select(-" ") %>%
-  formattable() 
+  filter(!BV2022 %in% c('BFC','METRO'))  %>%
+  select(-" ") 
+  #formattable() 
 
-sd <- tab_filtre(geo=BV2022)
+sd <- tab_filtre(geo=BV2022) 
 
 filter_checkbox("dep","Département",sd,group=~filtre_DEP, 
                 inline=TRUE, allLevels = FALSE)
 
-sd %>% datafiltre() %>% sparkline::spk_add_deps()
+sd %>%  datafiltre() %>% sparkline::spk_add_deps()
 ```
 ***
 

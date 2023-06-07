@@ -53,7 +53,7 @@ ACMH <- ACMH_reg %>%
   arrange(REG) %>%
   select(-année)
 
-tab <- SharedData$new(ACMH)
+tab <- SharedData$new(ACMH %>% select(-REG))
 
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,
@@ -63,15 +63,15 @@ filter_checkbox("sejour","Séjour",tab,group=~séjour,
 tab %>% filtreACM()
 
 #crosstool(tab %>% filtreACM(),"transmitter",init= which(tab$séjour == "Ensemble des séjours")) 
-  crosstool(tab  %>% filtreACM(), 
+  crosstool(tab , 
             # transceiver widgets are more like normal crosstalk widgets.
             class = "transceiver",  
             # set the initial value 
-            init = which(tab$séjour == "Ensemble des séjours"),
+            init = which(ACMH$séjour == "Ensemble des séjours"),
             # channel set to "filter" to use the crosstalk filter handle
             channel ="filter",
             # use with init = which(xx == yy) to reset the initial filter/select handle
-            reset = rownames(tab))
+            reset = rownames(ACMH))
 ```
 
 ***
@@ -102,9 +102,10 @@ tab <- ACMH_reg %>%
   filter(REG %in% c(11:94,"Total France métropolitaine",
                     "Total France + Étranger") ) %>%
   arrange(REG) %>%
-  group_by(REG,`séjour`) %>%
+  group_by(Destination,`séjour`) %>% 
+  relocate(séjour,.after = last_col()) %>%
    summarise_at(vars(`Nombre de séjours`:`Nombre de journées enfants`),spk_chr) %>%
-   formattable() 
+   formattable()
 #   sparkline::spk_add_deps()
 
    tab <- SharedData$new(tab)
@@ -113,10 +114,20 @@ filter_checkbox("sejour","Séjour",tab,group=~séjour,
                 inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
+
+  # crosstool(tab , 
+  #           class = "transceiver",  
+  #           init = which(tab2$séjour == "Ensemble des séjours"),
+  #           channel ="filter",
+  #           reset = rownames(tab2))
 ```
 ***
 
+
 *Sélectionnez un type de séjour pour voir une comparaison régionale*
+
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
 ### Comparaisons régionales
 
@@ -316,12 +327,18 @@ ACMHdep <- ACMH_dep %>%
   arrange(DEP) %>%
   select(-année) 
 
-tab <- SharedData$new(ACMHdep)
+tab <- SharedData$new(ACMHdep %>% select(-DEP))
 
 filter_checkbox("sejour","Séjour",tab,group=~séjour,
                 inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()
+
+  crosstool(tab , 
+            class = "transceiver",  
+            init = which(ACMHdep$séjour == "Ensemble des séjours"),
+            channel ="filter",
+            reset = rownames(ACMHdep))
 
 ```
 ***
@@ -334,7 +351,8 @@ tab %>% filtreACM()
 tab <- ACMH_dep %>% 
   filter(DEP %in% depbfc)  %>%
   arrange(DEP) %>%
-  group_by(DEP,`séjour`) %>%
+  group_by(Destination,`séjour`) %>% 
+  relocate(séjour,.after = last_col()) %>%
    summarise_at(vars(`Nombre de séjours`:`Nombre de journées enfants`),spk_chr) %>%
    formattable() 
 
@@ -346,11 +364,18 @@ filter_checkbox("sejour","Séjour",tab,group=~séjour,
 tab %>% filtreACM() %>%
   spk_add_deps() 
 
-
+  # crosstool(tab , 
+  #           class = "transceiver",  
+  #           init = which(tab2$séjour == "Ensemble des séjours"),
+  #           channel ="filter",
+  #           reset = rownames(tab2))
 ```
 ***
 
 *Sélectionnez un type de séjour pour voir une comparaison départementale*
+
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
 ### Comparaisons départementales
 
@@ -428,7 +453,7 @@ ALJSH <- ALJSH_reg %>%
   relocate(`taux de communes disposant d'un accueil`,.after = `Nombre de communes`) %>%
   select(-année)
 
-tab <- SharedData$new(ALJSH)
+tab <- SharedData$new(ALJSH %>% select (-REG))
 
 filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
                 inline=TRUE, allLevels = FALSE)
@@ -437,7 +462,15 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
 
 tab %>% filtreACM()
 
+  crosstool(tab , 
+            class = "transceiver",  
+            init = which(ALJSH$`type d'accueil` == "Accueils loisirs ou jeunes" & 
+                           ALJSH$`période d'activité` == "année"),
+            channel ="filter",
+            reset = rownames(ALJSH))
+
 ```
+
 ***
 
 Les Accueils collectifs de mineurs sans hébergement regroupent les accueils périscolaires, les centres de loisirs...\
@@ -459,7 +492,8 @@ tab <- ALJSH_reg %>%
   filter(REG %in% c(11:94,"Total France métropolitaine",
                     "Total France + Étranger") ) %>%
   arrange(REG) %>%
-  group_by(REG,`type d'accueil`,`période d'activité`) %>%
+  group_by(Région,`type d'accueil`,`période d'activité`) %>% 
+  relocate(c(`type d'accueil`,`période d'activité`),.after = last_col() ) %>%
    summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) %>%
    formattable() 
 #   sparkline::spk_add_deps()
@@ -472,10 +506,14 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
                 inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
+
 ```
 ***
 
 *Sélectionnez un type de séjour pour voir une comparaison régionale*
+
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
 ### Comparaisons
 
@@ -693,7 +731,7 @@ ALJSHdep <- ALJSH_dep %>%
   arrange(DEP) %>%
   select(-année) 
 
-tab <- SharedData$new(ALJSHdep)
+tab <- SharedData$new(ALJSHdep %>% select(-DEP))
 
 filter_checkbox("type","Type de séjour",tab,group=~`type d'accueil`,
                 inline=TRUE, allLevels = FALSE)
@@ -701,6 +739,14 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
                 inline=TRUE, allLevels = FALSE)
 
 tab %>% filtreACM()
+
+  crosstool(tab , 
+            class = "transceiver",  
+            init = which(ALJSHdep$`type d'accueil` == "Accueils loisirs ou jeunes" & 
+                           ALJSHdep$`période d'activité` == "année"),
+            channel ="filter",
+            reset = rownames(ALJSHdep))
+
 
 ```
 ***
@@ -713,7 +759,8 @@ tab %>% filtreACM()
 tab <- ALJSH_dep %>% 
   filter(DEP %in% depbfc)  %>%
   arrange(DEP) %>%
-  group_by(DEP,`type d'accueil`,`période d'activité`) %>%
+  group_by(Département,`type d'accueil`,`période d'activité`) %>%
+  relocate(c(`type d'accueil`,`période d'activité`),.after = last_col() ) %>%
    summarise_at(vars(`Nombre de communes`:`Mineurs déclarés en situation de handicap`),spk_chr) %>%
    formattable() 
 
@@ -727,10 +774,14 @@ filter_checkbox("periode","Période d'activité",tab,group=~`période d'activit�
 tab %>% filtreACM() %>%
   spk_add_deps() 
 
+
 ```
 ***
 
 *Sélectionnez un type de séjour pour voir une comparaison départementale*
+
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
 ### Comparaisons départementales
 
@@ -865,6 +916,8 @@ tab <- AS_reg %>%
 tab %>% filtreACM()  %>% sparkline::spk_add_deps()
 ```
 
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
+
 ### Comparaisons régionales
 
 ```{r}
@@ -977,6 +1030,9 @@ tab %>% filtreACM() %>%
 
 
 ```
+
+
+**(1) : Depuis le printemps 2017, les tranches d'âges 6-11 ans d'une part, 12-17 ans d'autre part ont été remplacées respectivement par les tranches d'âges 6-13 ans d'une part et 14-17 ans d'autre part par souci de cohérence avec la réglementation en vigueur au sein des accueils collectifs de mineurs.**
 
 
 ### Comparaisons départementales

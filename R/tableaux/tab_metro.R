@@ -1,8 +1,8 @@
 Sys.setlocale("LC_CTYPE","french")
 options(encoding = "UTF-8")
-source("librairies.R")
+#source("librairies.R")
 load("data/demo/basecom.RData")
-source("R/data/fonctions.R")
+source("R/fonctions/fonctions.R")
 
 #création des tableaux
 

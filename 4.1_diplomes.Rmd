@@ -355,17 +355,15 @@ bafaregm %>%
                 pivot_wider(names_from = année,values_from = BAFA) %>%
                 mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% 
                 pull (evo) ) %>%
-  mutate(`BAFA %`= ifelse(...19 < 0,
-                         normalize_bar("#ff000050")(digits(...19,1,decimal.mark=",")),
-                         normalize_bar("#00800050")(digits(...19,1,decimal.mark=",")) ) ) %>%
+  mutate(`BAFA %`= pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+         (digits(...19,1,decimal.mark=","))) %>%
   bind_cols(  bafdregm %>% 
                 filter(sexe=="Ensemble" & année %in% c(2011,2021)) %>% 
                 pivot_wider(names_from = année,values_from = BAFD) %>%
                 mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% 
                 pull (evo) ) %>%
-  mutate(`BAFD %`= ifelse(...21 < 0,
-                          normalize_bar("#ff000050")(digits(...21,1,decimal.mark=",")),
-                          normalize_bar("#00800050")(digits(...21,1,decimal.mark=",")) ) ) %>%
+  mutate(`BAFD %`= pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+         (digits(...21,1,decimal.mark=","))) %>%
   arrange(CODGEO) %>%
   bind_cols( bafaregm %>%
                filter(sexe=="Ensemble")  %>% # sparkline
@@ -486,9 +484,8 @@ bafadepm %>%
                 pivot_wider(names_from = année,values_from = BAFA) %>%
                 mutate (evo=100*(`2021`-`2011`)/`2011` ) %>% 
                 pull (evo) ) %>%
-  mutate(`evo BAFA`= ifelse(...11 < 0,
-                            normalize_bar("#ff000050")(digits(...11,1,decimal.mark=",")),
-                            normalize_bar("#00800050")(digits(...11,1,decimal.mark=",")) ) ) %>%
+  mutate(`evo BAFA`= pm_color_bar2(color1 = "lightgreen", color2 = "pink")
+         (digits(...11,1,decimal.mark=","))) %>%
   bind_cols( bafadepm %>%
                filter(dep %in% depbfc & sexe=="Ensemble")  %>% # sparkine 
                group_by(dep) %>%

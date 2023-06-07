@@ -40,20 +40,11 @@ En complément, une cartographie interactive (géoclip) fournit des informations
 Row
 -------------------------------------
 
-### 30'APQ
+
+### Savoir rouler à vélo
 
 
-30 minutes d'activités physiques quotidiennes à l'école
-
-```{r}
-
-```
-
-
-### SRAV
-
-
-Nombre d'attestations "savoir rouler à vélo" délivrées
+Nombre d'attestations "savoir rouler à vélo" délivrées (/objectif)
 
 
 ```{r}
@@ -64,7 +55,7 @@ flexdashboard::gauge(12171,min = 0,max=7730,label = "Attestations",
 
 ### Aisance aquatique
 
-Nombre d'enfants ayant suivi un cycle d'Aisance Aquatique
+Nombre d'enfants ayant suivi un cycle d'Aisance Aquatique (/objectif)
 
 ```{r}
 flexdashboard::gauge(2260,min = 0,max=3408,label = "Enfants",
@@ -74,6 +65,33 @@ flexdashboard::gauge(2260,min = 0,max=3408,label = "Enfants",
 
 Row
 -------------------------------------
+
+### 30 minutes d'activités physiques quotidiennes à l'école
+
+
+```{r}
+apq <- read.csv2("data/formation/fr-en-ecoles-labellisees-30-minutes-d-activite-physique-quotidienne-30-apq.csv")
+
+leaflet() %>% contour_depbfc() %>%
+  addAwesomeMarkers(data=apq,lat=~as.numeric(latitude),lng=~as.numeric(longitude),
+             popup=~popupTable(apq %>% 
+                                 mutate(Nom_etablissement=str_to_title(Nom_etablissement),
+                                        ministere_tutelle=str_to_title(ministere_tutelle)) %>%
+                                 select(Type,Nom_etablissement,
+                                        Statut_public_prive, ministere_tutelle,
+                                        Commune, Educ_Prio, Cite_educative,
+                                        QPV,ULIS,SIREN_SIRET,Effectif,
+                                        nombre_classes_participantes,nombre_élèves_participants,
+                                        `moments de la journée` = moments_journée_30_min_activité_physique,
+                                        `Nombre de moments` = Nombre_moments_.journée),
+                               row.numbers = F,feature.id = F),
+             clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F)
+             ) 
+  
+
+
+```
+
 
 ### Baromètre des réslutats de l'action publique
 

@@ -92,6 +92,10 @@ $Région, Département$
 
 -   data.education.gouv.fr
 
+-   geo-education
+
+-   baromètre des résultats de l'action publique
+
 ### 2.4 [Accueils collectifs de mineurs](2.4_ACM.html)
 
 $Région, Département$
@@ -213,5 +217,15 @@ $Région$
 -   Centres de préparations aux Jeux Olympiques
 
 -   Etablissements labellisés génération 2024 
+
+------------------------------------------------------------------------
+
+## 6. **Inspection Contrôle Evaluation**
+
+### 6.1 [Bilan ICE](6.1_ICE.html)
+
+$Région, Département$
+
+-   contrôles ACM, EAPS, Service Civique, enquêtes
 
 
