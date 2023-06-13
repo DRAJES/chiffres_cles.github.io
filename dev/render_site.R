@@ -1,4 +1,4 @@
-#y renv::snapshot()     #renv sert à installer les packages lors du déployment github actions
+# renv::snapshot()     #renv sert à installer les packages lors du déployment github actions
 
 #if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv") 
 

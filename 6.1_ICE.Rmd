@@ -260,21 +260,9 @@ ensemble_dep %>%
            parallelAxes = list(gridLineInterpolation = "polygon",
                                lineWidth = 0),
            reflow = TRUE) %>%
-  # hc_yAxis(title = list(text="ACM"),
-  #          min=0,
-  #          max=100 )%>%
-  # hc_yAxis(title = list(text="enquetes ACM"),
-  #          min=0,
-  #           max=10) %>%
-  # hc_yAxis(title = list(text="EAPS"),
-  #          min=0,
-  #          max=100) %>%
-  # hc_yAxis(title = list(text="enquête EAPS"),
-  #          min=0,
-  #          max=10) %>%
-  # hc_yAxis(title = list(text="SC"),
-  #          min=0,
-  #          max=20) %>%
+    hc_legend(enabled=TRUE) %>%
+
+  hc_yAxis(categories=.[["type"]], min=0) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name")
 ```
 
@@ -336,11 +324,13 @@ ensemble_dep %>%
   hchart("area",
          hcaes(x=type,y=value),
          color=couleurs[i]) %>%
-    hc_chart(polar = TRUE) %>%
+    hc_chart(polar = TRUE,
+             parallelCoordinates=FALSE) %>%
   hc_yAxis(gridLineInterpolation = "polygon",
            lineWidth = 0,
-           min = 0.1,
+           min = 0.1, max=80,
            type="logarithmic" ) %>%
+  hc_xAxis(categories=.[["type"]],min=0) %>%
   hc_exporting(enabled = TRUE, filename = "custom-file-name") }
 
 radar_ice(i = 1)

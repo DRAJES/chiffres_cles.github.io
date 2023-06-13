@@ -2125,6 +2125,17 @@
       ],
       "Hash": "75a01be060d800ceb14e32c666cacac9"
     },
+    "rpivotTable": {
+      "Package": "rpivotTable",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "htmlwidgets"
+      ],
+      "Hash": "a7ce09cc0ac98041b252d7af4a3cc131"
+    },
     "rprojroot": {
       "Package": "rprojroot",
       "Version": "2.0.3",
