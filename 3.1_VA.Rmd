@@ -15,6 +15,7 @@ output:
 ```{r}
 
 load("data/engagement/asso.RData")
+load("data/engagement/asso_emploi.RData")
 
 RNApop <- RNAcom %>%
       left_join(.,basecom %>% 
@@ -23,14 +24,14 @@ RNApop <- RNAcom %>%
 
 #tableau des asso
 asso_tab <- function(geo){
-RNApop %>% 
-  filter (!is.na({{geo}}) & !is.na(objr)) %>% 
-  group_by({{geo}},objr) %>% 
-  summarise(asso=sum(total,na.rm = T)) %>%
-  pivot_wider({{geo}} ,names_from = objr , values_from = asso) %>%
-  adorn_totals("col", name = "total" ) %>%
-  left_join(.,pop_basecom({{geo}}),
-            by=names(select(., {{geo}})) ) 
+  RNApop %>% 
+    filter (!is.na({{geo}}) & !is.na(objr)) %>% 
+    group_by({{geo}},objr) %>% 
+    summarise(asso=sum(total,na.rm = T)) %>%
+    pivot_wider({{geo}} ,names_from = objr , values_from = asso) %>%
+    adorn_totals("col", name = "total" ) %>%
+    left_join(.,pop_basecom({{geo}}),
+              by=names(select(., {{geo}})) ) 
 }
 
 #crédits et mise en forme
@@ -296,6 +297,8 @@ carte_asso() %>% contour_bfc()
 ```
 ***
 
+*un clic sur le diagramme indique le nombre d'associations par domaine, un clic sur le territoire donne le nombre total et le taux pour 100 habitants*
+
 **Hors Alsace-Moselle**
 
 # ![](images/BFC_dep_s.svg) Départements {.storyboard data-orientation="rows" height="30"}
@@ -471,6 +474,26 @@ hw_grid(
 
 Créations d'associations par année
 
+### Associations employeuses
+
+```{r}
+asso_emploi %>%
+  mutate(across(3:4,~round(.,1))) %>%
+  cc_kable(aligne = "lrrr") %>% 
+  footnote(general = "Urssaf Caisse nationale-MSA. Traitements R&S.", 
+             general_title = "Source : ",
+             footnote_as_chunk = T)
+  
+```
+
+***
+
+L'emploi associatif est particulièrement développé en **Haute-Saône**. Plus d'un emploi salarié privé sur six relève du secteur associatif. 
+
+*voir synthèse 0.1 pour une représentation graphique*
+
+
+
 ### Carte départementale
 
 ```{r}
@@ -479,6 +502,8 @@ carte <- merge(depwgs,RNAcarto(geo=DEP),by="DEP")
 carte_asso() %>% contour_bfc()
 ```
 ***
+
+*un clic sur le diagramme indique le nombre d'associations par domaine, un clic sur le territoire donne le nombre total et le taux pour 100 habitants*
 
 **Hors Alsace-Moselle**
 
@@ -524,6 +549,11 @@ carte_asso() %>% contour_depbfc()
 
 ```
 
+***
+
+*un clic sur le diagramme indique le nombre d'associations par domaine, un clic sur le territoire donne le nombre total et le taux pour 100 habitants*
+
+
 # ![](images/BFC_BV_s.svg) Bassins de vie {.storyboard data-orientation="rows" height="30"}
 
 ### Tableau des associations par bassin de vie 2022
@@ -566,6 +596,11 @@ carte <- merge(bvcarto,RNAcarto(geo=BV2022),by="BV2022")
 carte_asso() %>% contour_depbfc()
 ```
 
+***
+
+*un clic sur le diagramme indique le nombre d'associations par domaine, un clic sur le territoire donne le nombre total et le taux pour 100 habitants*
+
+
 # *En savoir* **+** {data-orientation="rows" data-icon="fa-info-circle" font-size="25px"}
 
 **Sources :**
@@ -579,3 +614,8 @@ carte_asso() %>% contour_depbfc()
 -   Recherche et solidarités
 
     -   <https://recherches-solidarites.org/dans-les-regions-liste/#Bourgogne>
+    
+-   Injep
+
+    -   <https://injep.fr/publication/les-fiches-regionales-de-la-vie-associative-2022/>    
+    

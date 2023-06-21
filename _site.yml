@@ -13,7 +13,11 @@ navbar:
     - text: "Navigation"
       icon: fa-gear
       menu:
-        - text: "Généralités"
+        - text: "Synthèse"
+        - text: "sélection d'indicateurs"
+          href: 6.0_synthèse.html
+        - text: "---------"
+        - text: "Population et territoires"
         - text: "Territoire(s)"
           href: 1.1_demo.html
         - text: "Structure de la population"
@@ -60,6 +64,7 @@ navbar:
         - text: "Inspection Contrôle"
         - text: "Bilan ICE"
           href: 6.1_ICE.html
+
           
   right:
     - icon: fa-question fa-lg

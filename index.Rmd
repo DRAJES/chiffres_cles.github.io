@@ -34,6 +34,16 @@ données. Porté par l'Insee, le SSP assure **l'indépendance**, la
 
 ------------------------------------------------------------------------
 
+## 0. **Synthèse**
+
+### 0.1 [Synthèse](6.0_synthèse.html)
+
+$Département$
+
+-   sélection d'indicateurs
+
+------------------------------------------------------------------------
+
 ## 1. **Généralités**
 
 ### 1.1 [Territoire(s)](1.1_demo.html)
@@ -220,12 +230,13 @@ $Région$
 
 ------------------------------------------------------------------------
 
-## 6. **Inspection Contrôle Evaluation**
+## 6. **Inspection Contrôle et synthèse**
 
 ### 6.1 [Bilan ICE](6.1_ICE.html)
 
 $Région, Département$
 
 -   contrôles ACM, EAPS, Service Civique, enquêtes
+
 
 

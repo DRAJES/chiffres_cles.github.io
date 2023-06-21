@@ -46,6 +46,8 @@ pop_new <- pop_new %>%
                         popf=sum(NB[SEXE==2],na.rm = T),
                         p1529=sum(NB[AGED100 > "014" & AGED100 < "030"],na.rm = T),
                         p1625=sum(NB[AGED100 > "015" & AGED100 < "026"],na.rm = T),
+                        p617=sum(NB[AGED100 > "005" & AGED100 < "018"],na.rm = T),
+                        p1825=sum(NB[AGED100 > "017" & AGED100 < "026"],na.rm = T),
                         p20=sum(NB[AGED100<"020"],na.rm = T),
                         p60=sum(NB[AGED100>"060"],na.rm = T),
                         p65=sum(NB[AGED100>"064"],na.rm = T),

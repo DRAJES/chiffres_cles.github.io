@@ -282,14 +282,18 @@ carte <- merge(carte, piscines %>%
 leaflet(epcicarto) %>% 
   carto() %>%
   contour_depbfc() %>%
+ # addMapPane("tous bassins", zIndex = 450) %>%
   addAwesomeMarkers(data=bassins,icon=icons,
                     popup = popupTable(bassins,
                                        row.numbers = F,feature.id = F),
-                    group = "tous bassins") 
+                    group = "tous bassins" ) %>%
+  addLayersControl(overlayGroups = "tous bassins")
 
 ```
 
 ------------------------------------------------------------------------
+
+*Afficher et cacher les piscines avec le menu en haut à droite, les cercles et les marqueurs sont cliquables pour plus d'informations*
 
 > La taille du cercle représente le nombre de bassins publics
 
@@ -355,10 +359,15 @@ leaflet(bvcarto) %>%
   addAwesomeMarkers(data=bassins,icon=icons,
                     popup = popupTable(bassins,
                                        row.numbers = F,feature.id = F),
-                    group = "tous bassins") 
+                    group = "tous bassins") %>%
+  addLayersControl(overlayGroups = "tous bassins")
+
 ```
 
 ------------------------------------------------------------------------
+
+*Afficher et cacher les piscines avec le menu en haut à droite, les cercles et les marqueurs sont cliquables pour plus d'informations*
+
 
 > La taille du cercle représente le nombre de bassins publics
 
@@ -374,6 +383,7 @@ factPal <- colorFactor("Blues", iso_diff$drive_times,na.color = "#808080")
 leaflet() %>% 
   setView(mean(bassins$lon), mean(bassins$lat), zoom = 8) %>%
   addProviderTiles(providers$CartoDB.Positron) %>% 
+  addMapPane("geo",zIndex = 1000) %>%
   addAwesomeMarkers(data=bassins,icon=icons,
                     popup = popupTable(bassins,row.numbers = F,feature.id = F),
                     group = "tous bassins") %>%
@@ -426,13 +436,15 @@ leaflet() %>%
   addLayersControl(baseGroups = c("tous bassins","bassins couverts",
                                   "bassins annuels","bassins annuels couverts"),
                    overlayGroups="écoles",
-                   options = layersControlOptions(collapsed = F,autoZIndex = F)) %>%  
-  addPolygons(data=reg27carto, group = "écoles", 
+                   options = layersControlOptions(collapsed = FALSE,autoZIndex = TRUE)) %>%  
+  addPolygons(data=reg27carto, group = "geo", 
               color = "white", weight = 4,
-             fill=F, smoothFactor = 5 ) %>%
-  addPolygons(data=dep27carto, group = "écoles", 
+             fill=F, smoothFactor = 5,
+             options = pathOptions(pane = "geo")) %>%
+  addPolygons(data=dep27carto, group = "geo", 
               color = "white", weight = 3,
-              fill=F,smoothFactor = 2) %>%
+              fill=F,smoothFactor = 2,
+              options = pathOptions(pane = "geo")) %>%
   addLegend( pal = factPal, values = iso_diff$drive_times,   
              "bottomright", title = "temps d'accès") 
 ```

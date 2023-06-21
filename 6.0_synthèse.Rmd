@@ -1,0 +1,651 @@
+---
+title: "indicateurs synthétiques"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    horizontal_layout: fill
+    social: menu
+    #source_code: embed
+    navbar:
+      - { title: "Accueil", href: index.html, align: right, icon: fa-home }
+    theme: simplex
+   
+---
+  
+<style type="text/css">
+  body{
+  font-size: 16pt;
+  }
+</style>
+  
+  
+```{r}
+
+corea0 <- basecom %>% 
+  filter(REG=='27') %>%
+  group_by(DEP)%>%
+  summarise(superf=sum(SUPERF,na.rm=TRUE),
+            pop=sum(pop,na.rm=TRUE),
+            p617=round(sum(p617,na.rm=TRUE),0),
+            p1825=round(sum(p1825,na.rm=TRUE),0)) %>%
+  adorn_totals("row",name="BFC") %>%
+  bind_rows(basecom %>% 
+              group_by() %>% 
+              summarise(superf=sum(SUPERF,na.rm=TRUE),
+                        pop=sum(pop,na.rm=TRUE),
+                        p617=round(sum(p617,na.rm=TRUE),0),
+                        p1825=round(sum(p1825,na.rm=TRUE),0))) %>%
+  mutate(DEP=replace(DEP,is.na(DEP),"FM")) %>%
+  libelle(geo=DEP) %>%
+  mutate(Libellé=replace(Libellé,is.na(Libellé),"France")) %>%
+  left_join(.,club_dep_bfc %>% 
+              select(-1) %>%
+              filter(fede=="Total (hors groupements sportifs)") %>%
+              pivot_longer(-fede,names_to = "DEP",values_to = "clubs") %>%
+              select(DEP,clubs),
+            by="DEP") %>%
+  left_join(.,lic_dep_bfc %>% 
+              select(-1) %>%
+              filter(fede=="Total général (hors groupements nationaux)") %>%
+              pivot_longer(-fede,names_to = "DEP",values_to = "licences") %>%
+              select(DEP,licences),
+            by="DEP") %>%
+  left_join(equip %>% 
+              filter(DEP %in% depbfc) %>%
+              group_by(DEP) %>%
+              summarise(equ=n()) %>%
+              adorn_totals("row",name = "BFC") %>%
+              bind_rows(equip %>% 
+                          group_by() %>%
+                          summarise(equ=n()) ) %>%
+              mutate(DEP=replace(DEP,is.na(DEP),"FM")), 
+            by="DEP") %>%
+  left_join( RNApop %>% 
+               filter ( DEP %in% depbfc & !is.na(objr) ) %>% 
+               group_by(DEP) %>% 
+               summarise(asso=sum(total,na.rm = T)) %>% 
+               adorn_totals("row",name = "BFC") %>%
+               bind_rows(RNApop %>% 
+                           filter ( !is.na(DEP) & !is.na(objr) ) %>% 
+                           group_by() %>% 
+                           summarise(asso=sum(total,na.rm = T))) %>%
+               mutate(DEP=replace(DEP,is.na(DEP),"FM")),
+             by="DEP") %>%
+  bind_cols(asso_emploi %>% select(2)) %>%
+  rename(Habitants=pop,`Enfants 6-17 ans`=p617,`Jeunes 18-25 ans`=p1825,
+         Clubs=clubs,Licences=licences,Équipements=equ,
+         Associations=asso,`Emploi salarié associatif`=`Effectif salarié associatif`)
+
+  
+  
+corea_taux0 <- corea0 %>% 
+  select(-11) %>%
+  mutate(across(5:10,~100*./Habitants)) %>%
+  mutate(Densité = Habitants/superf,
+         "Clubs/10 000 hab" = 100*Clubs,
+         "Associations/1 000 hab"=10*Associations,
+         "Équipements /10 000 hab"=100*Équipements) %>%
+  bind_cols(asso_emploi %>% select(3)) %>%
+  select(DEP,Libellé,"Densité","Enfants 6-17 ans (%)"="Enfants 6-17 ans",
+         "Jeunes 18-25 ans (%)"="Jeunes 18-25 ans",
+         "Clubs/10 000 hab",
+         "Licences (%)"="Licences",
+         "Équipements /10 000 hab",
+         "Associations/1 000 hab",
+         "Emploi salarié associatif dans emploi privé"=`Part de l'effectif salarié associatif dans l'emploi privé total                  (%)`)
+
+
+
+
+
+
+corea <- corea0 %>%
+  select(-superf) %>%
+    pivot_longer(3:10,names_to = "type")
+corea_taux <- corea_taux0 %>%
+  mutate(across(3:10, ~ round(.,1))) %>%
+  pivot_longer(3:10,names_to = "type")
+
+
+  
+  corea_coul <- c("#434348","#90ed7d","#8085e9","#f15c80","#e4d354","#2b908f","#00ffff","#ff4500")
+  
+  
+  
+  ## Réordonnancement de corea_taux$`Libellé `
+  corea_taux$Libellé <- corea_taux$Libellé %>%
+    fct_relevel("Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
+      "Saône-et-Loire", "Territoire de Belfort", "Yonne", "Bourgogne-Franche-Comté","France")
+
+
+
+
+indicateurs <- function(i){
+  
+  couleur <- c("#ffa500","#87ceeb","#1e90ff","#ff7f50","#fa8072","#6a5acd","#90ee90","#6b8e23")
+  
+  hw_grid(
+    corea %>%
+      filter(type %in% corea$type[i]) %>%
+      hchart("bar",
+             hcaes(x=Libellé,y=value
+                   ,group=type
+             ),
+             color = glue('{couleur[i]}50') ,
+             # name="Bourgogne-Franche-Comté",
+             showInLegend = TRUE, 
+             #size='100%',
+             #innerSize='40%', 
+             # pointPlacement=0.2,
+             dataLabels = list(enabled = TRUE,
+                               #                  format = "{point.type} <br> {point.value}",
+                               format = "{point.value}",
+                               #formatter = JS("fonction(){
+                               #return (point.valeur / 1000).toFixed(2) + 'M€'
+                               #}"),
+                               distance = 2,
+                               padding = 1
+                               #,style = list(fontSize = "6px")
+             ),
+      )   %>%
+      hc_chart(options3d = list(enabled = TRUE, beta = 10, alpha = 0)) %>%
+      hc_title(verticalAlign="top",
+               text = glue('Nombre {corea$type[i]}')  )%>%  
+      #  hc_subtitle(verticalAlign="top",
+      #              text = "nombre de jeunes et enfants")  %>%  
+      hc_yAxis(title=list(text="Nombre"),
+               type='logarithmic') %>%
+      hc_xAxis(title=NULL) %>%
+      
+      # hc_add_theme(thm) %>%
+      hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+    
+    corea_taux %>%
+      filter(type %in% corea_taux$type[i]) %>%
+      hchart("bar",
+             hcaes(x=Libellé,y=value
+                   ,group=type
+             ),
+             color = couleur[i] ,
+             # name="Bourgogne-Franche-Comté",
+             showInLegend = TRUE, 
+             #size='100%',
+             #innerSize='40%', 
+             # pointPlacement=0.2,
+             dataLabels = list(enabled = TRUE,
+                               format = "{point.value}",
+                               #formatter = JS("fonction(){
+                               #return (point.valeur / 1000).toFixed(2) + 'M€'
+                               #}"),
+                               distance = 2,
+                               padding = 1
+                               #,style = list(fontSize = "6px")
+             ),
+      )   %>%
+      hc_chart(options3d = list(enabled = TRUE, beta = 10, alpha = 0)) %>%
+      hc_title(verticalAlign="top",
+               text = glue('Taux {corea_taux$type[i]}')  )%>%  
+      #  hc_subtitle(verticalAlign="top",
+      #              text = "taux de jeunes et enfants")  %>%  
+      hc_yAxis(title=list(text="Taux"),
+               type='normal') %>%
+      hc_xAxis(title=NULL) %>%
+      
+      # hc_add_theme(thm) %>%
+      hc_exporting(enabled = TRUE, filename = "custom-file-name"),
+    
+    
+    ncol=2 ) }
+
+carte_indic <- function(i,palette){ 
+
+carto27 <- dep27carto
+carto27@data <- carto27@data %>% select(DEP)
+carto27 <- merge(carto27 , 
+               corea %>% filter (type == corea$type[i] ),
+      by="DEP")
+carto27 <- merge(carto27 , 
+               corea_taux %>% filter (type == corea_taux$type[i] ),
+      by="DEP")
+
+pal_indic <- colorBin(palette, 
+                domain = carto27$value.y ,
+                bins= unique(classIntervals(carto27$value.y,
+                                     n=6,style = "jenks")$brks) )
+
+
+leaflet() %>%
+  addPolygons(data=carto27, 
+              color = "#2F4F4F", weight = 2, smoothFactor = 2,
+              fillColor = ~pal_indic(value.y),
+              fillOpacity = 0.8) %>%
+  addCircleMarkers(lng = centroid(carto27)[,1] ,lat = centroid(carto27)[,2],
+             radius = (1000* carto27$value.x / sd(carto27$value.x))^(1/2),
+             label = carto27$value.x,
+             fillOpacity = 0.1,
+             labelOptions = labelOptions(noHide = T, textsize = "15px",
+                                         textOnly = FALSE,direction = "center") ) %>%
+ # contour_depbfc() %>%
+    addProviderTiles(providers$CartoDB.Positron, 
+                   options = tileOptions(minZoom=8, maxZoom=8)) %>%
+ addLegend( pal = pal_indic ,values = carto27$value.y,
+               position = "bottomright", title = glue( "Cercles : {colnames(corea0)[i+3]}</br> Couleurs : {colnames(corea_taux0)[i+2]}" ) )
+            }
+```
+
+# Bilan graphique {.storyboard}
+
+### Population {data-commentary-width="800"}
+
+La région compte 2 805 600 habitants au recensement 2019 soit une densité de 58,7 habitants au km², deux fois moins qu'en France. Certains territoires comme la Nièvre sont très peu denses.
+
+```{r}
+indicateurs(i=1)
+ 
+```
+
+------------------------------------------------------------------------
+
+```{r}
+carte_indic(1,"YlOrBr")
+
+```
+
+### Enfants de 6 à 17 ans {data-commentary-width="800"}
+
+401 300 enfants ont entre 6 et 17 ans. En proportion de la population, c'est moins qu'en France. Seuls 3 départements ont un taux d'enfants supérieur au niveau national.
+
+```{r}
+
+indicateurs(i=2)
+
+
+```
+
+------------------------------------------------------------------------
+  
+```{r}
+carte_indic(2,"Blues")
+
+```
+
+### Jeunes de 18 à 25 ans {data-commentary-width="800"}
+
+234 400 jeunes ont entre 18 et 25 ans. Ils sont particulièrement nombreux en Côté d'Or et dans le Doubs. Leur nombre est faible dans le Jura, la Nièvre, la Haute-Saône et l'Yonne.
+
+```{r}
+
+indicateurs(i=3)
+
+
+```
+
+------------------------------------------------------------------------
+  
+```{r}
+carte_indic(3,"Blues")
+
+```
+
+### Clubs sportifs {data-commentary-width="800"}
+
+La région compte 7500 clubs sportifs. Les clubs sont nombreux et de petite taille, surtout dans la Nièvre.
+
+```{r}
+
+indicateurs(i=4)
+
+
+```
+
+------------------------------------------------------------------------
+  
+```{r}
+carte_indic(4,"Oranges")
+
+```
+
+### Licences sportives {data-commentary-width="800"}
+
+La région est moins dynamique que la France en terme de licences sportives. 500 000 licences sont délivrées dans la région. Le Jura est le département le plus sportif, porté par les sports de montagne et de nature.
+
+```{r}
+
+indicateurs(i=5)
+
+
+```
+
+------------------------------------------------------------------------
+  
+```{r}
+carte_indic(5,"Oranges")
+
+```
+
+### Equipements sportifs {data-commentary-width="800"}
+
+En lien avec une densité faible, la région est bien dotée en équipements sportifs. Il existe près de 15 000 équipements sur le territoire. Tous les départements sont mieux dotés qu'au niveau national. La Haute-Saône est même le département le mieux doté de France en équipements de proximité (cependant, ils peuvent être vieillissants).
+
+```{r}
+
+indicateurs(i=6)
+
+ 
+```
+
+------------------------------------------------------------------------
+
+```{r}
+carte_indic(6,"Purples")
+
+```
+
+### Associations {data-commentary-width="800"}
+
+Au sens du RNA, la région compte 117 000 associations. Selon les estimations, cela représente environ 65 000 associations actives. La région est bien dôtée par rapport au niveau national.
+
+```{r}
+
+indicateurs(i=7)
+
+ 
+```
+
+------------------------------------------------------------------------
+
+```{r}
+carte_indic(7,"Greens")
+
+```
+
+
+
+### Emploi salarié associatif {data-commentary-width="800"}
+
+L'emploi salarié associatif est bien développé dans la région. Les associations comptabilisent 76 400 emplois salariés, soit 10.6 de l'emploi salarié privé total. La Haute-Saône est particulièrement bien dotée.
+
+```{r}
+
+indicateurs(i=8)
+
+ 
+```
+
+------------------------------------------------------------------------
+
+```{r}
+carte_indic(8,"Greens")
+
+```
+
+# Radars {data-orientation="rows" height="20" data-icon="fa-chart-line"}
+
+## Row
+
+### Côte d'Or
+
+```{r}
+radar_corea <- function(i){
+
+    corea_taux %>%
+    filter(DEP %in% c(depbfc[i],'BFC','FM' ) ) %>%
+    
+    hchart("area",
+           hcaes(x=type,y=value,group=Libellé),
+           color=c(corea_coul[i],"#7cb5ec","#f7a35c"),
+           dashStyle=c('Solid','ShortDash','ShortDot'),
+           fillOpacity=c(0.5,0.1,0.1)
+    ) %>%
+    hc_chart(polar = TRUE,
+             parallelCoordinates=TRUE) %>%
+    hc_legend(enabled=TRUE) %>%
+    hc_xAxis(title = NULL          ) %>%
+    hc_yAxis(title=NULL,
+             gridLineInterpolation = "polygon",
+             lineWidth = 0,
+             #         min = 1,
+             #        max= 100,
+             type="normal" ) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name") }
+
+radar_corea(i = 1)
+```
+
+### Doubs
+
+```{r}
+radar_corea(i = 2)
+
+```
+
+### Jura
+
+```{r}
+radar_corea(i = 3)
+
+```
+
+### Nièvre
+
+```{r}
+radar_corea(i = 4)
+
+```
+
+## Row
+
+### Haute-Saône
+
+```{r}
+radar_corea(i = 5)
+
+```
+
+### Saône et Loire
+
+```{r}
+radar_corea(i = 6)
+
+```
+
+### Territoire de Belfort
+
+```{r}
+radar_corea(i = 8)
+
+```
+
+### Yonne
+
+```{r}
+radar_corea(i = 7)
+
+```
+
+# Graphiques {data-orientation="rows" height="20" data-icon="fa-chart-line"}
+
+## Row
+
+### Côte d'Or
+
+```{r}
+bar_corea <- function(i){
+
+  corea_taux %>%
+    filter(DEP %in% c(depbfc[i],'BFC','FM' ) ) %>%
+    
+    hchart("bar",
+           hcaes(x=type,y=value,group=Libellé),
+           color=c(corea_coul[i],"#7cb5ec","#f7a35c"),
+           dashStyle=c('Solid','ShortDash','ShortDot'),
+           opacity=c(1,0.7,0.6)
+    ) %>%
+    hc_chart(polar = FALSE,
+             parallelCoordinates=TRUE) %>%
+    hc_legend(enabled=TRUE) %>%
+    hc_xAxis(categories = corea_taux$type          ) %>%
+    hc_yAxis(title=NULL,
+             gridLineInterpolation = "polygon",
+             lineWidth = 0,
+             #    min = 1,
+             #     max= 80,
+             type="normal" 
+    ) %>%
+    hc_exporting(enabled = TRUE, filename = "custom-file-name") }
+
+bar_corea(i = 1)
+```
+
+### Doubs
+
+```{r}
+bar_corea(i = 2)
+
+```
+
+### Jura
+
+```{r}
+bar_corea(i = 3)
+
+```
+
+### Nièvre
+
+```{r}
+bar_corea(i = 4)
+
+```
+
+## Row
+
+### Haute-Saône
+
+```{r}
+bar_corea(i = 5)
+
+```
+
+### Saône et Loire
+
+```{r}
+bar_corea(i = 6)
+
+```
+
+### Territoire de Belfort
+
+```{r}
+bar_corea(i = 8)
+
+```
+
+### Yonne
+
+```{r}
+bar_corea(i = 7)
+
+```
+
+# Comparaisons départementales {.storyboard}
+
+### parallel coordinates
+
+```{r}
+corea_taux %>%
+  hchart("line",
+         hcaes(x=type,y=value,group=Libellé),
+         #stacking="normal",
+         lineWidth=c(rep(2,8),4,3),
+         dashStyle=c(rep('Solid',8),'ShortDash','ShortDot'),
+         marker=list(enabled=FALSE),
+         fillOpacity=0.1,
+         showInLegend=TRUE) %>%
+  hc_chart(polar = FALSE,
+           parallelCoordinates=TRUE,
+           zoomType = "xy", 
+           parallelAxes = list(gridLineInterpolation = "polygon",
+                               lineWidth = 0),
+           reflow = TRUE) %>%
+  hc_legend(enabled=TRUE) %>%
+  hc_yAxis(gridLineInterpolation = "polygon",
+           lineWidth = 0,
+           #     min = 100000,
+           type="logarithmic" ) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+```
+
+------------------------------------------------------------------------
+  
+Suivre les écarts des départements par rapport au niveau régional et au niveau national
+
+
+### écarts à la région
+
+```{r}
+corea_taux0 %>%
+  mutate(across(4:10, ~ round(. - .[DEP=="BFC"],1)) ) %>%
+  pivot_longer(3:10,names_to = "type") %>% 
+  mutate(Libellé= fct_relevel(Libellé,"Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
+      "Saône-et-Loire", "Territoire de Belfort", "Yonne", "Bourgogne-Franche-Comté","France") ) %>%
+
+  # filter(type!="Population") %>%
+  hchart("line",
+         hcaes(x=type,y=value,group=Libellé),
+         #stacking="normal",
+         lineWidth=c(rep(2,8),5,3),
+         dashStyle=c(rep('Solid',8),'ShortDash','ShortDot'),
+         marker=list(enabled=FALSE),
+         fillOpacity=0.1,
+         showInLegend=TRUE) %>%
+  hc_chart(polar = FALSE,
+           parallelCoordinates=TRUE,
+           zoomType = "xy", 
+           parallelAxes = list(gridLineInterpolation = "polygon",
+                               lineWidth = 0),
+           reflow = TRUE) %>%
+  hc_legend(enabled=TRUE) %>%
+  hc_yAxis(gridLineInterpolation = "polygon",
+           lineWidth = 0,
+           #     min = 100000,
+           type="normal" ) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+```
+
+
+
+### écarts à la France
+  
+```{r}
+corea_taux0 %>%
+  mutate(across(4:10, ~ round( . - .[DEP=="FM"],1) ) ) %>%
+  pivot_longer(3:10,names_to = "type") %>%
+   mutate(Libellé= fct_relevel(Libellé,"Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
+      "Saône-et-Loire", "Territoire de Belfort", "Yonne", "Bourgogne-Franche-Comté","France") ) %>%
+ 
+  # filter(type!="Population") %>%
+  hchart("line",
+         hcaes(x=type,y=value,group=Libellé),
+         #stacking="normal",
+         lineWidth=c(rep(2,8),3,6),
+         dashStyle=c(rep('Solid',8),'ShortDash','ShortDot'),
+         marker=list(enabled=FALSE),
+         fillOpacity=0.1,
+         showInLegend=TRUE) %>%
+  hc_chart(polar = FALSE,
+           parallelCoordinates=TRUE,
+           zoomType = "xy", 
+           parallelAxes = list(gridLineInterpolation = "polygon",
+                               lineWidth = 0),
+           reflow = TRUE) %>%
+  hc_legend(enabled=TRUE) %>%
+  hc_yAxis(gridLineInterpolation = "polygon",
+           lineWidth = 0,
+           #     min = 100000,
+           type="normal" ) %>%
+  hc_exporting(enabled = TRUE, filename = "custom-file-name")
+```
+
+

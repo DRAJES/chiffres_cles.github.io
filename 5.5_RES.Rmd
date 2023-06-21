@@ -234,8 +234,8 @@ palb <- colorBin("YlOrBr", domain =carte$`taux bassins` ,
                 #,group="minicharts"   #ne fonctionne pas
                 ) %>% 
     syncWith("minicharts") %>%
-    addLayersControl( overlayGroups = groupes,
-                      baseGroups= c("minicharts"),
+    addLayersControl( overlayGroups = c(groupes),
+                      baseGroups= c("minicharts","NULL"),
                       options = layersControlOptions(collapsed = F,autoZIndex = T)) %>%
   hideGroup(groupes[2:5])
   }
