@@ -77,8 +77,8 @@ corea0 <- basecom %>%
          Clubs=clubs,Licences=licences,Équipements=equ,
          Associations=asso,`Emploi salarié associatif`=`Effectif salarié associatif`)
 
-  
-  
+
+
 corea_taux0 <- corea0 %>% 
   select(-11) %>%
   mutate(across(5:10,~100*./Habitants)) %>%
@@ -102,21 +102,22 @@ corea_taux0 <- corea0 %>%
 
 corea <- corea0 %>%
   select(-superf) %>%
-    pivot_longer(3:10,names_to = "type")
+  pivot_longer(3:10,names_to = "type")
 corea_taux <- corea_taux0 %>%
   mutate(across(3:10, ~ round(.,1))) %>%
   pivot_longer(3:10,names_to = "type")
 
 
-  
-  corea_coul <- c("#434348","#90ed7d","#8085e9","#f15c80","#e4d354","#2b908f","#00ffff","#ff4500")
-  
-  
-  
-  ## Réordonnancement de corea_taux$`Libellé `
-  corea_taux$Libellé <- corea_taux$Libellé %>%
-    fct_relevel("Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
-      "Saône-et-Loire", "Territoire de Belfort", "Yonne", "Bourgogne-Franche-Comté","France")
+
+corea_coul <- c("#434348","#90ed7d","#8085e9","#f15c80","#e4d354","#2b908f","#00ffff","#ff4500")
+
+
+
+## Réordonnancement de corea_taux$`Libellé `
+corea_taux$Libellé <- corea_taux$Libellé %>%
+  fct_relevel("Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
+              "Saône-et-Loire", "Territoire de Belfort", "Yonne", 
+              "Bourgogne-Franche-Comté","France")
 
 
 
@@ -199,38 +200,40 @@ indicateurs <- function(i){
     ncol=2 ) }
 
 carte_indic <- function(i,palette){ 
-
-carto27 <- dep27carto
-carto27@data <- carto27@data %>% select(DEP)
-carto27 <- merge(carto27 , 
-               corea %>% filter (type == corea$type[i] ),
-      by="DEP")
-carto27 <- merge(carto27 , 
-               corea_taux %>% filter (type == corea_taux$type[i] ),
-      by="DEP")
-
-pal_indic <- colorBin(palette, 
-                domain = carto27$value.y ,
-                bins= unique(classIntervals(carto27$value.y,
-                                     n=6,style = "jenks")$brks) )
-
-
-leaflet() %>%
-  addPolygons(data=carto27, 
-              color = "#2F4F4F", weight = 2, smoothFactor = 2,
-              fillColor = ~pal_indic(value.y),
-              fillOpacity = 0.8) %>%
-  addCircleMarkers(lng = centroid(carto27)[,1] ,lat = centroid(carto27)[,2],
-             radius = (1000* carto27$value.x / sd(carto27$value.x))^(1/2),
-             label = carto27$value.x,
-             fillOpacity = 0.1,
-             labelOptions = labelOptions(noHide = T, textsize = "15px",
-                                         textOnly = FALSE,direction = "center") ) %>%
- # contour_depbfc() %>%
+  
+  carto27 <- dep27carto
+  carto27@data <- carto27@data %>% select(DEP)
+  carto27 <- merge(carto27 , 
+                   corea %>% filter (type == corea$type[i] ),
+                   by="DEP")
+  carto27 <- merge(carto27 , 
+                   corea_taux %>% filter (type == corea_taux$type[i] ),
+                   by="DEP")
+  
+  pal_indic <- colorBin(palette, 
+                        domain = carto27$value.y ,
+                        bins= unique(classIntervals(carto27$value.y,
+                                                    n=5,style = "pretty")$brks) )
+  
+  
+  leaflet() %>%
+    addPolygons(data=carto27, 
+                color = "#2F4F4F", weight = 2, smoothFactor = 2,
+                fillColor = ~pal_indic(value.y),
+                fillOpacity = 0.8) %>%
+    addCircleMarkers(lng = centroid(carto27)[,1] ,lat = centroid(carto27)[,2],
+                     radius = (1000* carto27$value.x / sd(carto27$value.x))^(1/2),
+                     label = carto27$value.x,
+                     fillOpacity = 0.1,
+                     labelOptions = labelOptions(noHide = T, textsize = "15px",
+                                                 textOnly = FALSE,direction = "center") ) %>%
+    # contour_depbfc() %>%
     addProviderTiles(providers$CartoDB.Positron, 
-                   options = tileOptions(minZoom=8, maxZoom=8)) %>%
- addLegend( pal = pal_indic ,values = carto27$value.y,
-               position = "bottomright", title = glue( "Cercles : {colnames(corea0)[i+3]}</br> Couleurs : {colnames(corea_taux0)[i+2]}" ) )
+                     options = tileOptions(minZoom=8, maxZoom=8)) %>%
+    addLegend( pal = pal_indic ,values = carto27$value.y,
+               position = "bottomleft") 
+#               title = glue( "Cercles : {colnames(corea0)[i+3]}</br> 
+#                             Couleurs : {colnames(corea_taux0)[i+2]}" ) )
             }
 ```
 
@@ -247,7 +250,7 @@ indicateurs(i=1)
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(1,"YlOrBr")
 
 ```
@@ -265,7 +268,7 @@ indicateurs(i=2)
 
 ------------------------------------------------------------------------
   
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(2,"Blues")
 
 ```
@@ -283,7 +286,7 @@ indicateurs(i=3)
 
 ------------------------------------------------------------------------
   
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(3,"Blues")
 
 ```
@@ -301,7 +304,7 @@ indicateurs(i=4)
 
 ------------------------------------------------------------------------
   
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(4,"Oranges")
 
 ```
@@ -319,7 +322,7 @@ indicateurs(i=5)
 
 ------------------------------------------------------------------------
   
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(5,"Oranges")
 
 ```
@@ -337,7 +340,7 @@ indicateurs(i=6)
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(6,"Purples")
 
 ```
@@ -355,7 +358,7 @@ indicateurs(i=7)
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(7,"Greens")
 
 ```
@@ -375,7 +378,7 @@ indicateurs(i=8)
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r out.width="100%",fig.asp= 1 }
 carte_indic(8,"Greens")
 
 ```
@@ -388,8 +391,8 @@ carte_indic(8,"Greens")
 
 ```{r}
 radar_corea <- function(i){
-
-    corea_taux %>%
+  
+  corea_taux %>%
     filter(DEP %in% c(depbfc[i],'BFC','FM' ) ) %>%
     
     hchart("area",
@@ -472,7 +475,7 @@ radar_corea(i = 7)
 
 ```{r}
 bar_corea <- function(i){
-
+  
   corea_taux %>%
     filter(DEP %in% c(depbfc[i],'BFC','FM' ) ) %>%
     
@@ -485,7 +488,7 @@ bar_corea <- function(i){
     hc_chart(polar = FALSE,
              parallelCoordinates=TRUE) %>%
     hc_legend(enabled=TRUE) %>%
-    hc_xAxis(categories = corea_taux$type          ) %>%
+    hc_xAxis(title=NULL         ) %>%
     hc_yAxis(title=NULL,
              gridLineInterpolation = "polygon",
              lineWidth = 0,
@@ -570,7 +573,8 @@ corea_taux %>%
                                lineWidth = 0),
            reflow = TRUE) %>%
   hc_legend(enabled=TRUE) %>%
-  hc_yAxis(gridLineInterpolation = "polygon",
+  hc_yAxis(title=NULL,
+           gridLineInterpolation = "polygon",
            lineWidth = 0,
            #     min = 100000,
            type="logarithmic" ) %>%
@@ -589,8 +593,9 @@ corea_taux0 %>%
   mutate(across(4:10, ~ round(. - .[DEP=="BFC"],1)) ) %>%
   pivot_longer(3:10,names_to = "type") %>% 
   mutate(Libellé= fct_relevel(Libellé,"Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
-      "Saône-et-Loire", "Territoire de Belfort", "Yonne", "Bourgogne-Franche-Comté","France") ) %>%
-
+                              "Saône-et-Loire", "Territoire de Belfort", "Yonne", 
+                              "Bourgogne-Franche-Comté","France") ) %>%
+  
   # filter(type!="Population") %>%
   hchart("line",
          hcaes(x=type,y=value,group=Libellé),
@@ -607,7 +612,8 @@ corea_taux0 %>%
                                lineWidth = 0),
            reflow = TRUE) %>%
   hc_legend(enabled=TRUE) %>%
-  hc_yAxis(gridLineInterpolation = "polygon",
+  hc_yAxis(title=NULL,
+           gridLineInterpolation = "polygon",
            lineWidth = 0,
            #     min = 100000,
            type="normal" ) %>%
@@ -622,9 +628,10 @@ corea_taux0 %>%
 corea_taux0 %>%
   mutate(across(4:10, ~ round( . - .[DEP=="FM"],1) ) ) %>%
   pivot_longer(3:10,names_to = "type") %>%
-   mutate(Libellé= fct_relevel(Libellé,"Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
-      "Saône-et-Loire", "Territoire de Belfort", "Yonne", "Bourgogne-Franche-Comté","France") ) %>%
- 
+  mutate(Libellé= fct_relevel(Libellé,"Côte-d'Or", "Doubs", "Haute-Saône", "Jura", "Nièvre",
+                              "Saône-et-Loire", "Territoire de Belfort", "Yonne", 
+                              "Bourgogne-Franche-Comté","France") ) %>%
+  
   # filter(type!="Population") %>%
   hchart("line",
          hcaes(x=type,y=value,group=Libellé),
@@ -641,7 +648,8 @@ corea_taux0 %>%
                                lineWidth = 0),
            reflow = TRUE) %>%
   hc_legend(enabled=TRUE) %>%
-  hc_yAxis(gridLineInterpolation = "polygon",
+  hc_yAxis(title=NULL,
+           gridLineInterpolation = "polygon",
            lineWidth = 0,
            #     min = 100000,
            type="normal" ) %>%
