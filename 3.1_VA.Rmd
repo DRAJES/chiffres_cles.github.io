@@ -474,7 +474,11 @@ hw_grid(
 
 Créations d'associations par année
 
-### Associations employeuses
+### Associations employeuses {data-commentary-width="800"}
+
+
+L'emploi associatif est particulièrement développé en **Haute-Saône**. Plus d'un emploi salarié privé sur six relève du secteur associatif. 
+
 
 ```{r}
 asso_emploi %>%
@@ -488,9 +492,45 @@ asso_emploi %>%
 
 ***
 
-L'emploi associatif est particulièrement développé en **Haute-Saône**. Plus d'un emploi salarié privé sur six relève du secteur associatif. 
 
-*voir synthèse 0.1 pour une représentation graphique*
+```{r out.width="100%",fig.asp= 1 }
+
+carto27 <- dep27carto
+carto27@data <- carto27@data %>% select(DEP)
+carto27 <- merge(carto27 , 
+                 asso_emploi %>%
+                   mutate(across(3:4,~round(.,1))) %>% 
+                   rename(Libellé=...1) %>%
+                   bind_cols(DEP=c(depbfc,"","")),
+                 by="DEP")
+
+pal_indic <- colorBin("Greens", 
+                      domain = carto27$`Part de l'effectif salarié associatif dans l'emploi privé total                  (%)` ,
+                      bins= unique(classIntervals(carto27$`Part de l'effectif salarié associatif dans l'emploi privé total                  (%)` ,
+                                                  n=5,style = "pretty")$brks) )
+
+
+leaflet(carto27) %>%
+    addProviderTiles(providers$CartoDB.Positron, 
+                   options = tileOptions(minZoom=8, maxZoom=8)) %>%
+  addPolygons(color = "#2F4F4F", weight = 2, smoothFactor = 2,
+              fillColor =  ~ pal_indic(`Part de l'effectif salarié associatif dans l'emploi privé total                  (%)`),
+              fillOpacity = 0.8) %>%
+  addCircleMarkers(lng = centroid(carto27)[,1] ,lat = centroid(carto27)[,2],
+                   radius =~ (1000* `Effectif salarié associatif` / sd(`Effectif salarié associatif`))^(1/2),
+                   label = ~ `Effectif salarié associatif`,
+                   fillOpacity = 0.1,
+                   labelOptions = labelOptions(noHide = T, textsize = "15px",
+                                               textOnly = FALSE,direction = "center"),
+                   popup = popupTable(carto27@data,
+                                 feature.id=F,row.numbers = F) ) %>%
+  addLegend( pal = pal_indic ,
+             values = carto27$`Part de l'effectif salarié associatif dans l'emploi privé total                  (%)`,
+             position = "bottomleft") 
+#               title = glue( "Cercles : {colnames(corea0)[i+3]}</br> 
+#                             Couleurs : {colnames(corea_taux0)[i+2]}" ) )
+
+```
 
 
 

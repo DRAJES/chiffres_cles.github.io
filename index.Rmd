@@ -34,9 +34,9 @@ données. Porté par l'Insee, le SSP assure **l'indépendance**, la
 
 ------------------------------------------------------------------------
 
-## 0. **Synthèse**
+## 0. **Synthèse **
 
-### 0.1 [Synthèse](6.0_synthèse.html)
+### 0.1 [Sélection d'indicateurs départementaux](6.0_synthèse.html)
 
 $Département$
 
@@ -129,6 +129,8 @@ $Région, Département, EPCI, BV$
 -   Nombre d'associations et taux
 
 -   Domaine d'intervention, carte
+
+-   Emploi associatif
 
 ### 3.2 [Service civique](3.2_SC.html)
 
@@ -230,7 +232,7 @@ $Région$
 
 ------------------------------------------------------------------------
 
-## 6. **Inspection Contrôle et synthèse**
+## 6. **Inspection Contrôle**
 
 ### 6.1 [Bilan ICE](6.1_ICE.html)
 
