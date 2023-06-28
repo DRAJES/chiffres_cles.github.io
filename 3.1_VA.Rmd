@@ -161,18 +161,19 @@ hw_grid(
 ```
 ***
 
--   En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le Répertoire National des Associations (RNA).
-
--   C'est la **troisième** région de France en nombre d'association par habitant derrière la Corse et l'Occitanie, **9e** région française en nombre d'associations
-
--   Les associations sportives représentent près du quart des associations (plus grande proportion de France).
 
 
-    -   Si le répertoire est exhaustif, il est en revanche peu actualisé, en particulier pour les associations qui ont peu d'activité ou ne font pas de demande de subvention. On estime à un peu plus de la moitié les associations véritablement actives (entre **60 000 et 65 000** dans la région, sans clé de répartition).
+>   Le Répertoire National des Associations (RNA) recense de manière exhaustive les associations déclarées. Mais il est peu actualisé, en particulier pour les associations qui ont peu d'activité ou ne font pas de demande de subvention.  
+On estime à un peu plus de la moitié les associations véritablement actives (entre **60 000 et 65 000** dans la région, sans clé de répartition).  
+Parmi elles, **6 200** emploient au moins un salarié. Cela signifie qu'entre **54 000** et **59 000** associations fonctionnent uniquement grâce à l'engagement des **bénévoles**.
     
+-   En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le RNA.
+
+-   La Bourgogne-Franhce-Comté est la  **troisième** région de France en nombre d'association par habitant derrière la Corse et l'Occitanie, **9e** région française en nombre d'associations.
 
 
 **Hors Alsace-Moselle**
+
 
 ### Tableau régional
 
@@ -228,6 +229,8 @@ rowheight = 600)
 
 ```
 ***
+
+-   Les associations sportives représentent près du quart des associations de Bourgogne-Franche-Comté (plus grande proportion de France).
 
 **Hors Alsace-Moselle**
 
@@ -477,12 +480,13 @@ Créations d'associations par année
 ### Associations employeuses {data-commentary-width="800"}
 
 
-L'emploi associatif est particulièrement développé en **Haute-Saône**. Plus d'un emploi salarié privé sur six relève du secteur associatif. 
+**6 200** associations déclarent **76 420** salariés auprès des Urssaf en Bourgogne-Franche-Comté.  L'emploi associatif est particulièrement développé en **Haute-Saône** : plus d'un emploi salarié privé sur six relève du secteur associatif. 
 
 
 ```{r}
 asso_emploi %>%
   mutate(across(3:4,~round(.,1))) %>%
+  rename(Libellé=...1) %>%
   cc_kable(aligne = "lrrr") %>% 
   footnote(general = "Urssaf Caisse nationale-MSA. Traitements R&S.", 
              general_title = "Source : ",
