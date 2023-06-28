@@ -163,8 +163,8 @@ hw_grid(
 
 
 
->   Le Répertoire National des Associations (RNA) recense de manière exhaustive les associations déclarées. Mais il est peu actualisé, en particulier pour les associations qui ont peu d'activité ou ne font pas de demande de subvention.  
-On estime à un peu plus de la moitié les associations véritablement actives (entre **60 000 et 65 000** dans la région, sans clé de répartition).  
+>   Le Répertoire National des Associations (RNA) recense de manière exhaustive les associations déclarées. Mais il est peu actualisé, en particulier pour les associations qui ont peu d'activité ou ne font pas de demande de subvention.  <br>
+On estime à un peu plus de la moitié les associations véritablement actives (entre <br>**60 000 et 65 000** dans la région, sans clé de répartition).  <br>
 Parmi elles, **6 200** emploient au moins un salarié. Cela signifie qu'entre **54 000** et **59 000** associations fonctionnent uniquement grâce à l'engagement des **bénévoles**.
     
 -   En novembre 2022, la Bourgogne-Franche-Comté compte **117 000** associations selon le RNA.
