@@ -74,6 +74,12 @@ options(knitr.table.format = "html")
 ```
 
 
+<style type="text/css">
+  body{
+  font-size: 16pt;
+  }
+</style>
+
 #<style>
 #.active {
 #  font-size:25px;
