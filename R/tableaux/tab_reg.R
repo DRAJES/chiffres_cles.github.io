@@ -1,7 +1,8 @@
 region <- basecomQPV %>%
   group_by(REG)%>% 
   tableau() %>%
-  left_join(.,appartenance %>% filter(NIVGEO=="REG") %>%
+  left_join(.,appartenance %>% 
+              filter(NIVGEO=="REG") %>%
               select(CODGEO,LIBGEO) ,
             by=c("REG" = "CODGEO") ) 
 

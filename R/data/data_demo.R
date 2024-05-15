@@ -62,8 +62,7 @@ pop_new <- pop_new %>%
             p60f=sum(NB[SEXE==2 & AGED100>"060"],na.rm = T),
   )
 
-pop_ante14 <- read.csv2("data/insee/BTT_TD_POP1B_2014.txt", header=T,sep=";")
-
+pop_ante14 <- read.delim("data/insee/BTT_TD_POP1B_2014.txt", header=T,sep=";")  #https://www.insee.fr/fr/statistiques/2863610?sommaire=2867849
 
 pop_ante <- pop_ante14 %>% 
   mutate(NB=as.numeric(NB)) %>%
@@ -123,7 +122,7 @@ basecomQPV$popMuniQPV[is.na(basecomQPV$popMuniQPV)] <- 0
 
 basecom <- basecomQPV %>% 
   left_join(.,BV2022 %>%
-              dplyr::select(CODGEO,BV2022,LIBBV2022),
+              dplyr::select(CODGEO,LIBBV2022),
             by="CODGEO")
 
 

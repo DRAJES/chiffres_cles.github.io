@@ -1,6 +1,8 @@
 Sys.setlocale("LC_CTYPE","french")
 options(encoding = "UTF-8")
 #source("librairies.R")
+library(kableExtra)
+library(formattable)
 load("data/demo/basecom.RData")
 source("R/fonctions/fonctions.R")
 
