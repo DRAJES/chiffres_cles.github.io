@@ -3,8 +3,9 @@ library(sparkline)
 sparkline(0)
 load("data/demo/basecom.RData")
 
-serie <- read.csv2 ("I:/SUPPORT/04_STATS/Sources/INSEE/RP/evolution/base-cc-serie-historique-2018.CSV",as.is = T)
-serie <- serie %>% select(1:9) %>% 
+serie <- read.csv2 ("data/insee/base-cc-serie-historique-2020.CSV",as.is = T) #https://www.insee.fr/fr/statistiques/7632565
+serie <- serie %>% 
+  select(CODGEO:D68_POP) %>% 
   left_join(.,basecom %>%
               select(CODGEO,DEP,REG,EPCI,BV2022),by="CODGEO") %>%
   filter(REG>'10')
