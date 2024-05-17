@@ -10,12 +10,6 @@ serie <- serie %>%
               select(CODGEO,DEP,REG,EPCI,BV2022),by="CODGEO") %>%
   filter(REG>'10')
 
-#serie <- read_excel ("I:/SUPPORT/04_STATS/Sources/INSEE/RP/evolution/base-pop-historiques-1876-2018.xlsx",sheet = 1,skip = 5)
-#serie <- serie %>% select(1,5:36) %>% 
-#  left_join(.,communes,by="CODGEO") %>%
-#  filter(REG>'10')
-
-
 serie_metro <- serie %>%  
   mutate(REG="METRO")  %>% 
   group_by(REG) %>%  
@@ -23,7 +17,7 @@ serie_metro <- serie %>%
   pivot_longer(!REG, names_to = "année",values_to = "pop") %>% 
   group_by(REG) %>%
   arrange((année),.by_group=T) %>%
-  summarise(evol68_18=spk_chr(pop))
+  summarise(evol68_20=spk_chr(pop))
 
 serie_reg <- serie %>% 
   group_by(REG) %>%  
@@ -31,7 +25,7 @@ serie_reg <- serie %>%
   pivot_longer(!REG, names_to = "année",values_to = "pop") %>% 
   group_by(REG) %>%
   arrange((année),.by_group=T) %>%
-  summarise(evol68_18=spk_chr(pop))%>%
+  summarise(evol68_20=spk_chr(pop))%>%
   rbind(serie_metro)
 
 serie_dep <- serie %>% 
@@ -40,7 +34,7 @@ serie_dep <- serie %>%
   pivot_longer(!c('REG','DEP'), names_to = "année",values_to = "pop") %>% 
   group_by(REG,DEP) %>%
   arrange((année),.by_group=T) %>%
-  summarise(evol68_18=spk_chr(pop)) %>%
+  summarise(evol68_20=spk_chr(pop)) %>%
   rbind(serie_reg %>% 
           filter (REG=='27') %>% 
           mutate(DEP="BFC"))%>%
@@ -53,7 +47,7 @@ serie_epci <- serie %>%
   pivot_longer(!EPCI, names_to = "année",values_to = "pop") %>% 
   group_by(EPCI) %>%
   arrange((année),.by_group=T) %>%
-  summarise(evol68_18=spk_chr(pop))%>%
+  summarise(evol68_20=spk_chr(pop))%>%
   rbind(serie_reg %>% 
           filter (REG=='27') %>% 
           mutate(EPCI="BFC") %>% 
@@ -65,7 +59,7 @@ serie_bv <- serie %>%
   pivot_longer(!BV2022, names_to = "année",values_to = "pop") %>% 
   group_by(BV2022) %>%
   arrange((année),.by_group=T) %>%
-  summarise(evol68_18=spk_chr(pop))%>%
+  summarise(evol68_20=spk_chr(pop))%>%
   rbind(serie_reg %>% 
           filter (REG=='27') %>% 
           mutate(BV2022="BFC") %>% 
