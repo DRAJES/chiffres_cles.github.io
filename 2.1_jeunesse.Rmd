@@ -63,15 +63,16 @@ palevo <- colorBin("RdYlBu", domain =-10:10 ,
               labFormat = labelFormat(suffix =  " %"),
               position = "bottomright") %>%
   
-    addCircles(centroid(carte)[,1],centroid(carte)[,2],
+    addCircles(centroid(as_Spatial(carte$geometry))[,1],
+               centroid(as_Spatial(carte$geometry))[,2],
              radius = ~50*p1529^(1/2), 
              color = "#4169E1", weight=4, opacity = 0.8,
              fillColor = ~palevo(evol1529), fillOpacity = 0.8,
              highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, 
                           fillOpacity =  0.4 ),
-             popup = popupTable(carte@data %>% 
-                                   select(-var) ,
+             popup = popupTable(carte %>% 
+                                   select(Nom:`indice jeunesse <sup>1</sup>`) ,
                                 feature.id=F,row.numbers = F) ) %>%
     addLegend(pal = palevo, values =  carte$evol1529, 
               opacity = 0.7, 
@@ -104,9 +105,10 @@ tab %>%
 ```{r}
 #pal3 <- colorQuantile("RdYlBu", domain =region$evol1529 ,probs = seq(0, 1, 0.2) , reverse = T)
 
-carte <- regwgs
-carte@data <- carte@data %>% select(Région=REG,var)
-carte <- merge(carte,tab,by="Région")
+carte <- regwgs |> 
+  dplyr::select(Région=REG,geometry,p1529,prop1529,evol1529)  |>  
+  left_join(tab ,
+            by=join_by(Région))
 
 leaflet(carte) %>%  
   carto() %>%
@@ -146,11 +148,15 @@ tab %>%
 ### Carte départementale
 
 ```{r}
-carte <- depwgs
-carte@data <- carte@data %>% select(Département=DEP,var)
-carte <- merge(carte,dep_tab[-10,-1] %>%  
-                 demo(geo=Département),
-               by="Département")
+carte <- depwgs |> 
+  dplyr::select(Département=DEP,geometry,p1529,prop1529,evol1529)
+
+carte <- carte |> 
+  left_join(dep_tab %>%   
+              select(-Région) |> 
+              ungroup() |> 
+              demo(geo=Département)
+            ,by="Département")
 
 
 leaflet(carte) %>%  
@@ -195,9 +201,10 @@ sd %>% datafiltre()
 
 ```{r,echo=F}
 
-carte <- epcicarto
-carte@data <- carte@data %>% select(EPCI,var)
-carte <- merge(carte,tab,by="EPCI")
+carte <- epcicarto |> 
+  dplyr::select(EPCI=CODE_SIREN,geometry,p1529,prop1529,evol1529)  |>  
+  left_join(tab,
+            by=join_by(EPCI))
 
 
 leaflet(carte) %>%  
@@ -237,9 +244,10 @@ sd %>% datafiltre()
 ### Carte BV 2022
 
 ```{r,echo=F}
-carte <- bvcarto
-carte@data <- carte@data %>% select(BV2022,var)
-carte <- merge(carte,tab,by="BV2022")
+carte <- bvcarto |> 
+  dplyr::select(BV2022,geometry,p1529,prop1529,evol1529)  |>  
+  left_join(tab,
+            by=join_by(BV2022))
 
 
 leaflet(carte) %>%  

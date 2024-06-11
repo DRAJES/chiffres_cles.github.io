@@ -4,7 +4,7 @@ contour_bfc <-  function(.map){
                      options = tileOptions(minZoom=6, maxZoom=9)) %>%
     setView(lng = 5.1, lat = 47.27, zoom = 6) %>%
     addMapPane("departement", zIndex = 430) %>%
-    addPolygons(data=reg27carto,group  = "BFC",
+    addPolygons(data=reg27carto$geometry,group  = "BFC",
                 color="#8b008b",weight = 5, opacity = 1, 
                 fill = F, smoothFactor = 5,
                 options = pathOptions(pane = "departement")) }
@@ -16,7 +16,7 @@ contour_depbfc <-   function(.map,zoom = 8){
     addProviderTiles(providers$CartoDB.Positron,
                      options = tileOptions(minZoom=7, maxZoom=14)) %>%
     addMapPane("region", zIndex = 420) %>%
-    addPolygons(data=dep27carto,group  = "BFC",
+    addPolygons(data=dep27carto$geometry,group  = "BFC",
                 color="#800080",weight = 3, opacity = 1, 
                 fill = F, smoothFactor = 2,
                 options = pathOptions(pane = "region")) }

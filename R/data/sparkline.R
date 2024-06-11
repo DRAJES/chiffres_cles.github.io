@@ -5,9 +5,9 @@ load("data/demo/basecom.RData")
 
 serie <- read.csv2 ("data/insee/base-cc-serie-historique-2020.CSV",as.is = T) #https://www.insee.fr/fr/statistiques/7632565
 serie <- serie %>% 
-  select(CODGEO:D68_POP) %>% 
+  dplyr::select(CODGEO:D68_POP) %>% 
   left_join(.,basecom %>%
-              select(CODGEO,DEP,REG,EPCI,BV2022),by="CODGEO") %>%
+              dplyr::select(CODGEO,DEP,REG,EPCI,BV2022),by="CODGEO") %>%
   filter(REG>'10')
 
 serie_metro <- serie %>%  
@@ -51,7 +51,7 @@ serie_epci <- serie %>%
   rbind(serie_reg %>% 
           filter (REG=='27') %>% 
           mutate(EPCI="BFC") %>% 
-          select(-REG))
+          dplyr::select(-REG))
 
 serie_bv <- serie %>% 
   group_by(BV2022) %>%  
@@ -63,7 +63,7 @@ serie_bv <- serie %>%
   rbind(serie_reg %>% 
           filter (REG=='27') %>% 
           mutate(BV2022="BFC") %>% 
-          select(-REG))
+          dplyr::select(-REG))
 
 save(serie_metro,serie_reg,serie_dep,serie_epci,serie_bv,
      file="data/demo/spark.RData")

@@ -46,31 +46,33 @@ credits <- function(.tbl){
 #définition des ronds proportionnels
 carto <- function(.map) {
   .map %>%
-  addPolygons(data = carte,
+  addPolygons(data = carte$geometry,
               color = "#2F4F4F", weight=2, opacity = 0.6, 
               fill=F, smoothFactor = 2 ) %>%
-  addCircles(centroid(carte)[,1],centroid(carte)[,2],group = "carte",
+  addCircles(centroid(as_Spatial(carte$geometry))[,1],
+             centroid(as_Spatial(carte$geometry))[,2],
+             group = "carte",
              radius = 50*carte$pop^(1/2), 
              color = "#4169E1", opacity = 0.8,weight=4,
              fillColor = "#FFFFFF", fillOpacity = 0.3,
              highlight = highlightOptions (
                           color = "#00FFFF", weight = 5,
                           fillOpacity =  0.1 ),
-             popup = popupTable(carte@data %>% 
-                                  select(-pop),
+             popup = popupTable(carte |> 
+                                  dplyr::select(-pop,-geometry),
                                  feature.id=F,row.numbers = F))
 }
 
 #définition de la couche QPV
 QPV <- function(.map){
   .map %>%
-    addPolygons(data=QPV27, group  = "QPV",
+    addPolygons(data=QPV27$geometry |> st_transform(4326), group  = "QPV",
               color="#2F4F4F",weight = 2, fill = T,
               highlight = highlightOptions (
                               color = "#000080", weight = 5, 
                               fillOpacity =  0.4 ),
-              popup = glue("QP : {QPV27$LIBGEO} <br> 
-                           Population : {QPV27$POP_MUN}") ) 
+              popup = glue("QP : {QPV27$Lib_QP} <br> 
+                           Population : {QPV27$popMuniQPV}") ) 
 }
 
 #définition de la couche ZRR
@@ -94,10 +96,11 @@ pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c",
                      "#e98e8b","#bfef94","#a0d27b","#006a49"),
                    domain = NULL)  
   .map %>%
-      addPolygons(data=densitewgs,
-              fillColor = ~pal(Typdgrd), fillOpacity = 0.5,
+      addPolygons(data=densitewgs[1],
+              fillColor = ~pal(as.factor(DENS)), fillOpacity = 0.5,
               stroke = F, group = "densite" ) %>% 
-      addLegend(pal = pal, values = unique(densitewgs$Lblldgr), 
+      addLegend(pal = pal, 
+                values = unique(densitewgs$LIBDENS), 
                 opacity = 0.7, 
                 title = "grille densité 7 niveaux", 
                 position = "bottomright") 
@@ -110,7 +113,6 @@ pal <- colorFactor(c("#e23e3e","#fa7f00","#e1ec3c",
 ### Comparaisons régionales
 
 ```{r}
-
 tab <-  region_tab %>%   
    left_join(.,pop_basecom(REG) %>% 
                adorn_totals("row",name="METRO"),
@@ -120,8 +122,6 @@ tab <-  region_tab %>%
 tab %>%
   cc_kable(aligne = "clrrrccll") %>%
   credits()
-
-  
 ```
 ***
 
@@ -134,9 +134,10 @@ tab %>%
 ### Carte régionale
 
 ```{r}
-carte <- regwgs
-carte@data <- carte@data %>% select(Région=REG,pop)
-carte <- merge(carte,tab,by="Région")
+carte <- regwgs |> 
+  dplyr::select(Région=REG,geometry,pop)  |>  
+  left_join(tab,
+            by=join_by(Région))
 
 leaflet() %>%
  carto_ZRR() %>%
@@ -154,7 +155,6 @@ leaflet() %>%
 ### Comparaisons départementales
 
 ```{r}
-
 tab <- dep27_tab %>%  
   left_join(.,pop_basecom(DEP) %>% 
               adorn_totals("row",name="BFC") %>%
@@ -166,7 +166,7 @@ tab <- dep27_tab %>%
   bind_cols(rang_national=dep27_tab$rang_national) %>%
   relocate(rang_national,.after = rang)  %>% 
   ungroup() %>%  
-  select(-Région)
+  dplyr::select(-Région)
 
 tab  %>% 
   cc_kable(aligne = "clrrrcccll") %>%
@@ -180,8 +180,9 @@ La densité dépasse 230 habitants par km² dans le Territoire de Belfort et seu
 ### Carte départementale
 
 ```{r}
-carte <- depwgs
-carte@data <- carte@data %>% select(Département=DEP,pop)
+carte <- depwgs |> 
+  dplyr::select(Département=DEP,geometry,pop)  
+
 carte <- merge(carte,dep_tab %>% 
                  left_join(.,pop_basecom(DEP),
                            by=c("Département"="DEP")) %>%
@@ -189,7 +190,7 @@ carte <- merge(carte,dep_tab %>%
                  bind_cols(rang_national=dep_tab$rang_national) %>%
                  relocate(rang_national,.after = rang)  %>% 
                  ungroup() %>%  
-                 select(-Région),
+                 dplyr::select(-Région),
                by="Département")
 
 
@@ -244,16 +245,16 @@ sd %>% datafiltre()
 ### Carte EPCI
 
 ```{r}
-carte <- epcicarto
-carte@data <- carte@data %>% select(EPCI,pop)
-carte <- merge(carte,tab,by="EPCI")
+carte <- epcicarto |> 
+  dplyr::select(EPCI=CODE_SIREN,geometry,pop)  |>  
+  left_join(tab,
+            by=join_by(EPCI))
 
-
-leaflet() %>% 
-  densite() %>%
-  carto() %>%
-  contour_depbfc() %>% 
-  QPV()
+leaflet()  |>  
+  densite()  |> 
+  carto()  |> 
+  contour_depbfc()  
+#  QPV()
 ```
 ***
 
@@ -300,15 +301,16 @@ sd %>% datafiltre()
 ### Carte BV 2022
 
 ```{r}
-carte <- bvcarto
-carte@data <- carte@data %>% select(BV2022,pop)
-carte <- merge(carte,tab,by="BV2022")
+carte <- bvcarto |> 
+  dplyr::select(BV2022,geometry,pop)  |>  
+  left_join(tab,
+            by=join_by(BV2022))
 
-leaflet() %>% 
-  carto_ZRR() %>%
-  carto() %>%
-  contour_depbfc () %>%
-  QPV()
+leaflet()  |>  
+  carto_ZRR()  |> 
+  carto() |> 
+  contour_depbfc ()  
+#  QPV()
 ```
 ***
 
@@ -321,7 +323,7 @@ leaflet() %>%
 ```{r}
 basecom %>% 
   filter(REG=='27') %>% 
-  select(CODGEO:SUPERF) %>%
+  dplyr::select(CODGEO:SUPERF) %>%
   
   cc_kable("clrrrrrrrrrrrrrrrrrr") %>%
   footnote(general = "Insee, Code officiel géographique", 

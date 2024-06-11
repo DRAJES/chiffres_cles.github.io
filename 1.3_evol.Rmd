@@ -53,15 +53,16 @@ pal <- colorBin("RdYlGn", domain =-5:5 ,
   .map %>%
     addPolygons(color = "#2F4F4F", weight = 2,opacity = 0.6,
                 fill =F, smoothFactor = 2 ) %>%
-    addCircles(centroid(carte)[,1],centroid(carte)[,2],
+    addCircles(centroid(as_Spatial(carte$geometry))[,1],
+               centroid(as_Spatial(carte$geometry))[,2],
                radius = ~50*pop^(1/2), 
                color = "#4169E1", weight = 4,
                fillColor = ~pal(evol), fillOpacity = 0.7,
                highlight = highlightOptions (
                           color = "#00FFFF",  weight = 5, 
                           fillOpacity =  0.4 ),
-             popup = popupTable(carte@data %>%
-                                  select(-var) ,
+             popup = popupTable(carte %>%
+                                  select(Nom:evol68_20) ,
                                 feature.id=F,row.numbers = F) )%>%
     addLegend(pal = pal, values =  regwgs$evol, 
               opacity = 0.7, 
@@ -100,9 +101,10 @@ tab %>%
 ### Carte régionale
 
 ```{r,echo=F}
-carte <- regwgs
-carte@data <- carte@data %>% select(Région=REG,var)
-carte <- merge(carte,tab,by="Région")
+carte <- regwgs |> 
+  dplyr::select(Région=REG,geometry,pop,evol)  |>  
+  left_join(tab ,
+            by=join_by(Région))
 
 leaflet(carte) %>%  
   carto() %>%
@@ -136,13 +138,16 @@ tab %>%
 ### Carte départementale
 
 ```{r,echo=F}
-carte <- depwgs
-carte@data <- carte@data %>% select(Département=DEP,var)
-carte <- merge(carte,dep_tab[-10,-1] %>%  
-                 demo(geo=Département) %>%
-                 left_join(.,serie_dep[,2:3],
-                           by=c("Département" = "DEP") ),
-               by="Département")
+carte <- depwgs |> 
+  dplyr::select(Département=DEP,geometry,pop,evol)
+
+carte <- carte |> 
+  left_join(dep_tab %>% 
+                 select(-Région) %>% ungroup() |> 
+                 demo(geo=Département),
+               by="Département") |> 
+  left_join(tab |> select(Département,evol68_20),
+            by="Département")
 
 leaflet(carte) %>%  
   carto() %>%
@@ -187,9 +192,10 @@ sd %>% datafiltre() %>% sparkline::spk_add_deps()
 ### Carte ECPI
   
 ```{r,echo=F}
-carte <- epcicarto
-carte@data <- carte@data %>% select(EPCI,var)
-carte <- merge(carte,tab,by="EPCI")
+carte <- epcicarto |> 
+  dplyr::select(EPCI=CODE_SIREN,geometry,pop,evol)  |>  
+  left_join(tab,
+            by=join_by(EPCI))
 
 
 leaflet(carte) %>%  
@@ -238,9 +244,10 @@ sd %>%  datafiltre() %>% sparkline::spk_add_deps()
 ### Carte BV 2022
 
 ```{r,echo=F}
-carte <- bvcarto
-carte@data <- carte@data %>% select(BV2022,var)
-carte <- merge(carte,tab,by="BV2022")
+carte <- bvcarto |> 
+  dplyr::select(BV2022,geometry,pop,evol)  |>  
+  left_join(tab,
+            by=join_by(BV2022))
 
 
 leaflet(carte) %>%  

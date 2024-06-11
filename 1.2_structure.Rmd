@@ -16,6 +16,7 @@ output:
 ```{r}
 load("data/demo/RPage.RData")
 source("R/data/pop_dep_age.R")
+#devtools::install_github("kent37/summarywidget")
 library(summarywidget)
 
 pop_age_bfc <-   pop_new %>% 
@@ -86,15 +87,16 @@ pal2 <- colorBin("YlOrBr", domain =100*carte$p1529/carte$pop ,
   addLegend(pal = pal, values =  carte$ind_jeun, opacity = 0.7, 
             title = "indice de jeunesse", position = "bottomright") %>%
   
-  addCircles(centroid(carte)[,1],centroid(carte)[,2],
+  addCircles(centroid(as_Spatial(carte$geometry))[,1],
+             centroid(as_Spatial(carte$geometry))[,2],
              radius = ~100*p1529^(1/2), 
              color = "#4169E1", weight=4,
              fillColor = ~pal2(100*p1529/pop), fillOpacity = 0.7,
              highlight = highlightOptions (
                              color = "#00FFFF", weight = 5,
                              fillOpacity =  0.4 ),
-             popup = popupTable(carte@data %>%
-                                  select(-var),
+             popup = popupTable(carte %>%
+                                  select(Nom:`indice jeunesse <sup>1</sup>`),
                                 feature.id=F,row.numbers = F) ) %>%
   addLegend(pal = pal2,values = 100*carte$p1529/carte$pop,
             opacity = 0.7,
@@ -171,9 +173,10 @@ pop_age_bfc %>%
 ### Carte régionale
 
 ```{r}
-carte <- regwgs
-carte@data <- carte@data %>% select(Région=REG,var)
-carte <- merge(carte,tab,by="Région")
+carte <- regwgs |> 
+  dplyr::select(Région=REG,geometry,pop,p1529,ind_jeun)  |>  
+  left_join(tab ,
+            by=join_by(Région))
 
 
 leaflet(carte) %>%  
@@ -333,8 +336,9 @@ population des territoires par âge à façon](<https://pierre-stephanelebre.shi
 ### Carte départementale
 
 ```{r}
-carte <- depwgs
-carte@data <- carte@data %>% select(Département=DEP,var)
+carte <- depwgs |> 
+  dplyr::select(Département=DEP,geometry,pop,p1529,ind_jeun)
+
 carte <- merge(carte,dep_tab %>%  
                  demo(geo=Département) %>% 
                  ungroup() %>%
@@ -379,9 +383,10 @@ sd %>% datafiltre()
 ### Carte ECPI
 
 ```{r}
-carte <- epcicarto
-carte@data <- carte@data %>% select(EPCI,var)
-carte <- merge(carte,tab,by="EPCI")
+carte <- epcicarto |> 
+  dplyr::select(EPCI=CODE_SIREN,geometry,pop,p1529,ind_jeun)  |>  
+  left_join(tab,
+            by=join_by(EPCI))
 
 
 leaflet(carte) %>%  
@@ -421,9 +426,10 @@ sd %>% datafiltre()
 ### Carte BV 2022
 
 ```{r}
-carte <- bvcarto
-carte@data <- carte@data %>% select(BV2022,var)
-carte <- merge(carte,tab,by="BV2022")
+carte <- bvcarto |> 
+  dplyr::select(BV2022,geometry,pop,p1529,ind_jeun)  |>  
+  left_join(tab,
+            by=join_by(BV2022))
 
 
 leaflet(carte) %>%  

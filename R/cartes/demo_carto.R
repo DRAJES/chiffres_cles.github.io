@@ -1,4 +1,4 @@
-library(rgdal)
+#library(rgdal)
 library(leaflet)
 library(tidyverse)
 library(geosphere)
@@ -159,16 +159,28 @@ QPV27 <- merge(QPV,QPVpop |>
                all.x=F,all.y=T)
 plot(QPV27[1])
 
-ZRR <- read_excel("data/data.gouv/diffusion-zonages-zrr-cog2021.xls",sheet = 1,skip = 5)
+ZRR <- read_excel("data/data.gouv/diffusion-zonages-zrr-cog2021.xls",sheet = 1,skip = 5) #https://www.data.gouv.fr/fr/datasets/zones-de-revitalisation-rurale-zrr/
+
+passage <- read_excel("data/insee/table_passage_annuelle_2024.xlsx",sheet = 1,skip=5)
+
+#passage en géométrie 2024
+ZRR2024 <- ZRR |> 
+  filter(substr(CODGEO,1,2)<97) |> 
+  left_join(passage |> dplyr::select(CODGEO_2021,CODGEO_2024),
+                              by=join_by(CODGEO==CODGEO_2021)) |> 
+  group_by(CODGEO_2024,ZRR_SIMP) |> summarise(first(CODGEO_2024))
 
 jointure <- merge(comm84 |> 
                     filter(INSEE_REG>"10"),
-                  ZRR,by.x="INSEE_COM",by.y="CODGEO",all.x=F)
+                  ZRR2024,by.x="INSEE_COM",by.y="CODGEO_2024",all.x=F)
+
 ZRRwgs <- jointure |> 
   group_by(ZRR_SIMP) |> 
   summarise(geometry=st_union(geometry))
 
 ZRRwgs <- st_simplify(ZRRwgs,dTolerance = 1e3)
+#ZRRwgs <- smooth(ZRRwgs,method = "ksmooth",4)
+
 plot(ZRRwgs[1])
 #ZRR <- spTransform(ZRR,CRS("+proj=longlat +datum=WGS84"))  
 
@@ -177,22 +189,22 @@ depwgs <- depwgs[order(depwgs$pop,decreasing = T),]
 epcicarto <- epcicarto[order(epcicarto$pop,decreasing = T),]
 bvcarto <- bvcarto[order(bvcarto$pop,decreasing = T),]
 
-ZRR <- subset(ZRR,ZRR_2018 != "Non classée")
-regwgs <- subset(regwgs,REG > "10")
-depwgs <- subset(depwgs,INSEE_REG > "10")
+ZRR <- subset(ZRRwgs,ZRR_SIMP != "NC - Commune non classée")
+#regwgs <- subset(regwgs,REG > "10")
+#depwgs <- subset(depwgs,INSEE_REG > "10")
 
 reg27carto <- subset(regwgs ,REG=="27")
 dep27carto <- subset(depwgs, REG=="27")
 
 
-leaflet(densitewgs) %>% 
+leaflet(ZRR) %>% 
   addProviderTiles(providers$CartoDB.Positron) %>%
   setView(lng = 5.1, lat = 47.27, zoom = 8) %>%
   addPolygons(weight=2,opacity = 1,color = "#2F4F4F", fill=F )
 
 
-save(regwgs,depwgs,bvwgs84,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
+save(regwgs,depwgs,bvwgs,epciwgs,densitebfc,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
      com27wgs,QPV27,ZRR,file = "data/demo/cartes.RData")
-save(regwgs,depwgs,bvwgs84,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
-     com27wgs,QPV27,ZRR,file = "I:/SUPPORT/05_CARTO/Fonds de cartes/cartes.RData")
+#save(regwgs,depwgs,bvwgs84,epciwgs,densiteBFC,densitewgs,reg27carto,dep27carto,epcicarto,bvcarto,
+#     com27wgs,QPV27,ZRR,file = "I:/SUPPORT/05_CARTO/Fonds de cartes/cartes.RData")
 
