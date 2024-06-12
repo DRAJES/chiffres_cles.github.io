@@ -3,6 +3,7 @@ options(encoding = "UTF-8")
 #source("librairies.R")
 library(kableExtra)
 library(formattable)
+library(tidyverse)
 load("data/demo/basecom.RData")
 source("R/fonctions/fonctions.R")
 

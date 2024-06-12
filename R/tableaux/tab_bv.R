@@ -1,9 +1,9 @@
-BV <- basecom %>%
-  group_by(BV2022)%>%
+BV <- basecomQPV %>%
+  group_by(BV2022) %>%
   tableau() %>%
   left_join(.,appartenance %>% 
               dplyr::filter(NIVGEO=="BV2022") %>%
-              dplyr::select(CODGEO,LIBGEO) ,
+              dplyr::distinct(CODGEO,LIBGEO) ,
             by=c("BV2022" = "CODGEO") )
 
 

@@ -2,8 +2,8 @@ EPCI <- basecomQPV %>%
   group_by(EPCI)%>%
   tableau() %>%
   left_join(.,appartenance %>% 
-              filter(NIVGEO=="EPCI") %>%
-              select(CODGEO,LIBGEO) ,
+              dplyr::filter(NIVGEO=="EPCI") %>%
+              dplyr::select(CODGEO,LIBGEO) ,
             by=c("EPCI" = "CODGEO") )
 
 
