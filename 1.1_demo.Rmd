@@ -66,12 +66,13 @@ carto <- function(.map) {
 #définition de la couche QPV
 QPV <- function(.map){
   .map %>%
-    addPolygons(data=QPV27$geometry |> st_transform(4326), group  = "QPV",
-              color="#2F4F4F",weight = 2, fill = T,
-              highlight = highlightOptions (
+    addPolygons(data=QPV27 |> st_transform(4326) |> st_cast("MULTIPOLYGON"),
+                group  = "QPV",
+                color="#2F4F4F",weight = 2, fill = T,
+                highlight = highlightOptions (
                               color = "#000080", weight = 5, 
                               fillOpacity =  0.4 ),
-              popup = glue("QP : {QPV27$Lib_QP} <br> 
+                popup = glue("QP : {QPV27$Lib_QP} <br> 
                            Population : {QPV27$popMuniQPV}") ) 
 }
 
@@ -253,8 +254,8 @@ carte <- epcicarto |>
 leaflet()  |>  
   densite()  |> 
   carto()  |> 
-  contour_depbfc()  
-#  QPV()
+  contour_depbfc()  |> 
+  QPV()
 ```
 ***
 
@@ -309,8 +310,8 @@ carte <- bvcarto |>
 leaflet()  |>  
   carto_ZRR()  |> 
   carto() |> 
-  contour_depbfc ()  
-#  QPV()
+  contour_depbfc ()  |> 
+  QPV()
 ```
 ***
 
